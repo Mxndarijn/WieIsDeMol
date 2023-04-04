@@ -1,0 +1,7 @@
+name: WieIsDeMol
+version: '${version}'
+main: nl.mxndarijn.wieisdemol.WieIsDeMol
+commands:
+  test:
+    Description: Test command for development
+    usage: /test
