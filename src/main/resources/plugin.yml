@@ -5,3 +5,6 @@ commands:
   test:
     Description: Test command for development
     usage: /test
+  maps:
+    description: maps
+    usage: /maps

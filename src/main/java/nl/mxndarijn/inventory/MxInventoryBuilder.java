@@ -1,10 +1,12 @@
 package nl.mxndarijn.inventory;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
 
 public class MxInventoryBuilder {
@@ -14,7 +16,7 @@ public class MxInventoryBuilder {
     protected boolean cancelEvent = true;
     protected boolean canBeClosed = true;
     protected MxInventoryBuilder(String name, MxInventorySlots slotType) {
-        inv = Bukkit.createInventory(null, slotType.slots, name);
+        inv = Bukkit.createInventory(null, slotType.slots, getRandomPrefix() + name);
         onClickedMap = new HashMap<>();
     }
 
@@ -52,5 +54,22 @@ public class MxInventoryBuilder {
     public MxInventoryBuilder defaultCancelEvent(boolean b) {
         cancelEvent = true;
         return this;
+    }
+
+    private String getRandomPrefix() {
+        StringBuilder prefix = new StringBuilder();
+        ChatColor[] list = ChatColor.values();
+        Random random = new Random();
+        for(int i = 0; i < 5; i++) {
+            ChatColor r = list[random.nextInt(list.length)];
+            prefix.append(r);
+        }
+        prefix.append(ChatColor.RESET);
+        return prefix.toString();
+    }
+
+    private int getRandom(int[] array) {
+        int rnd = new Random().nextInt(array.length);
+        return array[rnd];
     }
 }

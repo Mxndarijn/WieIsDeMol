@@ -10,18 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MxItemStackBuilder {
-    private ItemStack itemStack;
-    private ItemMeta itemMeta;
-    private List<String> lores;
-    private MxItemStackBuilder(Material mat) {
+    ItemStack itemStack;
+    ItemMeta itemMeta;
+    List<String> lores;
+    MxItemStackBuilder(Material mat) {
         this(mat, 1);
     }
 
-    private MxItemStackBuilder(Material mat, int amount) {
+    MxItemStackBuilder(Material mat, int amount) {
         this(mat, 1, 0);
     }
 
-    private MxItemStackBuilder(Material mat, int amount, int byteAmount) {
+    MxItemStackBuilder(Material mat, int amount, int byteAmount) {
         itemStack = new ItemStack(mat, amount, (byte) byteAmount);
         itemMeta = itemStack.getItemMeta();
         lores = new ArrayList<>();
@@ -49,7 +49,7 @@ public class MxItemStackBuilder {
         return this;
     }
 
-    public MxItemStackBuilder addItemFlag(ItemFlag flag) {
+    public MxItemStackBuilder addItemFlag(ItemFlag... flag) {
         itemMeta.addItemFlags(flag);
         return this;
     }

@@ -3,3 +3,9 @@ language-name: Nederlands
 # Messages
 # A placeholder begins with %% and ends with %%
 # Example: %%1%% or %%2%%
+
+#Error Messages
+no-permission: &cJe hebt hier geen permissie voor.
+no-player: &cOm dit te kunnen doen moet je een speler zijn.
+not-correct-world: &cDit kan je niet in deze wereld doen.
+error-while-executing-command: &cEr ging iets fout tijdens het uitvoeren van het commando, probeer het opnieuw of vraag een stafflid om hulp.

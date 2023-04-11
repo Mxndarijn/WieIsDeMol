@@ -1,12 +1,15 @@
 package nl.mxndarijn.wieisdemol;
 
+import nl.mxndarijn.commands.MapCommand;
 import nl.mxndarijn.data.ConfigFiles;
+import nl.mxndarijn.data.Permissions;
 import nl.mxndarijn.util.language.LanguageManager;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.world.WorldManager;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Optional;
@@ -20,6 +23,7 @@ public final class WieIsDeMol extends JavaPlugin {
         getCommand("test").setExecutor(new TestCommand());
         WorldManager.getInstance();
         LanguageManager.getInstance();
+        registerCommands();
 
         Logger.logMessage(LogLevel.Information, "Started Wie Is De Mol...");
     }
@@ -41,5 +45,10 @@ public final class WieIsDeMol extends JavaPlugin {
             Logger.setLogLevel(LogLevel.Debug);
             Logger.logMessage(LogLevel.Information, Prefix.LOGGER, "Log-level has been set to " + LogLevel.Debug.getName() + ChatColor.DARK_GRAY + " (default, not found in config)");
         }
+    }
+
+    private void registerCommands() {
+        Logger.logMessage(LogLevel.Information,"Registering commands...");
+        getCommand("maps").setExecutor(new MapCommand(Permissions.COMMAND_MAPS, true, false));
     }
 }

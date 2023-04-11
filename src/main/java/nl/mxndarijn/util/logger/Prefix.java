@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 
 public enum Prefix {
     MXATLAS(ChatColor.DARK_AQUA + "MxAtlas"),
+    MXCOMMAND(ChatColor.DARK_GREEN + "MxCommand"),
     WORLD_MANAGER(ChatColor.AQUA + "World-Manager"),
     LOGGER(ChatColor.DARK_PURPLE + "Logger"),
     LANGUAGE_MANAGER(ChatColor.GOLD + "Language-Manager"),

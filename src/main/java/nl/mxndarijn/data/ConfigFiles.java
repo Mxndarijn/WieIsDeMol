@@ -13,19 +13,13 @@ import java.io.*;
 import java.nio.file.Files;
 
 public enum ConfigFiles {
-    MAIN_CONFIG("config", "config"),
-    DEFAULT_LANGUAGE("nl-NL", "languages/nl-NL");
+    MAIN_CONFIG("config.yml", "config.yml"),
+    DEFAULT_LANGUAGE("nl-NL.yml", "languages/nl-NL.yml");
 
     private final FileConfiguration fileConfiguration;
     private final File file;
     private final String fileName;
     ConfigFiles(String fileName, String path) {
-        if(!fileName.endsWith(".yml")) {
-            fileName = fileName + ".yml";
-        }
-        if(!path.endsWith(".yml")) {
-            path = path + ".yml";
-        }
         this.fileName = fileName;
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
         file = new File(plugin.getDataFolder() + File.separator + path);
@@ -42,5 +36,9 @@ public enum ConfigFiles {
 
     public File getFile() {
         return file;
+    }
+
+    public String getFileName() {
+        return fileName;
     }
 }
