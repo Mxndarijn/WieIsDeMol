@@ -1,0 +1,33 @@
+# Name of the preset
+name: DefaultValue
+
+# Host difficulty
+# Min value 0, Max value 5
+host-difficulty: 4
+
+# Play difficulty
+# Min value 0, Max value 5
+play-difficulty: 3
+
+# Colors that will be in the game
+colors:
+  Red:
+    x: 1
+    y: 1
+    z: 1
+    yaw: 1
+    pitch: 0
+  Lime:
+    x: 1
+    y: 1
+    z: 1
+    yaw: 1
+    pitch: 0
+
+#Item info
+skull-uuid: f8afdccd-138f-4afb-8c4c-c79ebf42e0d1
+
+# Locked Info
+locked: false
+locked-by: Unknown
+lock-reason: Unknown

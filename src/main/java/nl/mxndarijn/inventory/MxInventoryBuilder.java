@@ -6,55 +6,71 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
 
-public class MxInventoryBuilder {
+public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
     protected Inventory inv;
     protected HashMap<Integer, MxItemClicked> onClickedMap;
+    protected MxInventorySlots slotType;
+    protected String name;
     protected boolean delete = true;
     protected boolean cancelEvent = true;
     protected boolean canBeClosed = true;
     protected MxInventoryBuilder(String name, MxInventorySlots slotType) {
-        inv = Bukkit.createInventory(null, slotType.slots, getRandomPrefix() + name);
+        this.slotType = slotType;
+        this.name = getRandomPrefix() + name;
+        inv = Bukkit.createInventory(null, slotType.slots, this.name);
         onClickedMap = new HashMap<>();
     }
 
-    public static MxInventoryBuilder create(String name, MxInventorySlots slotType) {
+    /*public static MxInventoryBuilder create(String name, MxInventorySlots slotType) {
         return new MxInventoryBuilder(name, slotType);
-    }
+    }*/
 
-    public MxInventoryBuilder addItem(ItemStack is, MxItemClicked onClicked) {
+    public T addItem(ItemStack is, MxItemClicked onClicked) {
         inv.addItem(is);
         onClickedMap.put(inv.first(is), onClicked);
-        return this;
+        return (T) this;
     }
 
-    public MxInventoryBuilder setItem(ItemStack is, int slot, MxItemClicked onClicked) {
+    public T setItem(ItemStack is, int slot, MxItemClicked onClicked) {
         inv.setItem(slot, is);
         onClickedMap.put(slot, onClicked);
-        return this;
+        return (T) this;
     }
 
-    public MxInventoryBuilder deleteInventoryWhenClosed(boolean delete) {
+    public T deleteInventoryWhenClosed(boolean delete) {
         this.delete = delete;
-        return this;
+        return (T) this;
     }
 
-    public MxInventoryBuilder canBeClosed(boolean closed) {
+    public T canBeClosed(boolean closed) {
         this.canBeClosed = closed;
-        return this;
+        return (T) this;
     }
 
 
     public MxInventory build() {
-        return new MxInventory(inv, onClickedMap, delete, cancelEvent, canBeClosed);
+        return new MxInventory(inv, name, onClickedMap, delete, cancelEvent, canBeClosed);
     }
 
-    public MxInventoryBuilder defaultCancelEvent(boolean b) {
+    public T defaultCancelEvent(boolean b) {
         cancelEvent = true;
-        return this;
+        return (T) this;
     }
+
+    public T changeTitle(String newTitle) {
+        this.name = getRandomPrefix() + newTitle;
+        Inventory inventory = Bukkit.createInventory(null, slotType.slots, this.name);
+        onClickedMap.forEach((index, clicked) -> {
+            inventory.setItem(index, inv.getItem(index));
+        });
+        this.inv = inventory;
+        return (T) this;
+    }
+
 
     private String getRandomPrefix() {
         StringBuilder prefix = new StringBuilder();

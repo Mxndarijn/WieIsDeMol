@@ -5,6 +5,6 @@ import org.bukkit.inventory.Inventory;
 
 public interface MxItemClicked {
 
-    public void OnItemClicked(Inventory inv, InventoryClickEvent e);
+    public void OnItemClicked(MxInventory inv, InventoryClickEvent e);
 
 }

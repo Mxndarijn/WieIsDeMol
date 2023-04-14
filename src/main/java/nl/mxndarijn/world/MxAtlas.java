@@ -66,7 +66,7 @@ public class MxAtlas {
         }
         WorldCreator wc = new WorldCreator(mxWorld.getDir().toString());
         wc.environment(World.Environment.NORMAL);
-        wc.type(WorldType.CUSTOMIZED);
+        wc.type(WorldType.FLAT);
         wc.generator(new VoidGenerator());
         wc.generateStructures(false);
 

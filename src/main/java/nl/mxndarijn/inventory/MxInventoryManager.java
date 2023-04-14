@@ -33,9 +33,8 @@ public class MxInventoryManager implements Listener {
 
     @EventHandler
     public void InventoryClick(InventoryClickEvent e) {
-        if(e.getWhoClicked() == null ||
-            e.getClickedInventory() == null ||
-            e.getClickedInventory().getTitle() == null) {
+        e.getWhoClicked();
+        if(e.getClickedInventory() == null || e.getView().getTitle() == null) {
             return;
         }
 
@@ -43,17 +42,20 @@ public class MxInventoryManager implements Listener {
         if(!inventories.containsKey(uuid)) {
             return;
         }
-        inventories.get(uuid).forEach(mxInventory -> {
-            if(mxInventory.getName().equals(e.getClickedInventory().getTitle())) {
-                if(mxInventory.isCancelEvent()) {
+        List<MxInventory> get = inventories.get(uuid);
+        for (int i = 0; i < get.size(); i++) {
+            MxInventory mxInventory = get.get(i);
+            if (mxInventory.getName().equals(e.getView().getTitle())) {
+                if (mxInventory.isCancelEvent()) {
                     e.setCancelled(true);
                 }
                 MxItemClicked clicked = mxInventory.getOnClickedMap().getOrDefault(e.getSlot(), null);
-                if(clicked != null) {
-                    clicked.OnItemClicked(e.getClickedInventory(), e);
+                if (clicked != null) {
+                    clicked.OnItemClicked(mxInventory, e);
                 }
+                break;
             }
-        });
+        }
     }
 
     @EventHandler void InventoryClose(InventoryCloseEvent e) {
@@ -65,7 +67,7 @@ public class MxInventoryManager implements Listener {
         Iterator<MxInventory> i = list.iterator();
         while(i.hasNext()) {
             MxInventory mxInventory = i.next();
-            if(mxInventory.getName().equals(e.getInventory().getTitle())) {
+            if(mxInventory.getName().equals(e.getView().getTitle())) {
                 if(!mxInventory.isCanBeClosed()) {
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         e.getPlayer().openInventory(mxInventory.getInv());

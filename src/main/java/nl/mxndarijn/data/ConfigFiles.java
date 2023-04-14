@@ -14,6 +14,7 @@ import java.nio.file.Files;
 
 public enum ConfigFiles {
     MAIN_CONFIG("config.yml", "config.yml"),
+    HEAD_DATA("head-data.yml", "head-data.yml"),
     DEFAULT_LANGUAGE("nl-NL.yml", "languages/nl-NL.yml");
 
     private final FileConfiguration fileConfiguration;
@@ -24,6 +25,7 @@ public enum ConfigFiles {
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
         file = new File(plugin.getDataFolder() + File.separator + path);
         if(!file.exists()) {
+            Logger.logMessage(LogLevel.Information, Prefix.CONFIG_FILES, "Could not load: " + file.getName() + ". Trying to load it from internal sources...");
             Functions.copyFileFromResources(fileName, path);
         }
         fileConfiguration =  YamlConfiguration.loadConfiguration(file);

@@ -1,4 +1,4 @@
-package nl.mxndarijn.inventory;
+package nl.mxndarijn.inventory.item;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -9,7 +9,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MxItemStackBuilder {
+public class MxItemStackBuilder<T extends MxItemStackBuilder<T>> {
     ItemStack itemStack;
     ItemMeta itemMeta;
     List<String> lores;
@@ -27,41 +27,29 @@ public class MxItemStackBuilder {
         lores = new ArrayList<>();
     }
 
-    public static MxItemStackBuilder create(Material mat) {
-        return new MxItemStackBuilder(mat);
-    }
-
-    public static MxItemStackBuilder create(Material mat, int amount) {
-        return new MxItemStackBuilder(mat, amount);
-    }
-
-    public static MxItemStackBuilder create(Material mat, int amount, int byteAmount) {
-        return new MxItemStackBuilder(mat, amount, byteAmount);
-    }
-
-    public MxItemStackBuilder setName(String name) {
+    public T setName(String name) {
         itemMeta.setDisplayName(name);
-        return this;
+        return (T) this;
     }
 
-    public MxItemStackBuilder addLore(String lore) {
+    public T addLore(String lore) {
         lores.add(lore);
-        return this;
+        return (T) this;
     }
 
-    public MxItemStackBuilder addItemFlag(ItemFlag... flag) {
+    public T addItemFlag(ItemFlag... flag) {
         itemMeta.addItemFlags(flag);
-        return this;
+        return (T) this;
     }
 
-    public MxItemStackBuilder addEnchantment(Enchantment enchantment, int level, boolean ignoreLevelRestrictions) {
+    public T addEnchantment(Enchantment enchantment, int level, boolean ignoreLevelRestrictions) {
         itemMeta.addEnchant(enchantment, level, ignoreLevelRestrictions);
-        return this;
+        return (T) this;
     }
 
-    public MxItemStackBuilder setUnbreakable(boolean unbreakable) {
+    public T setUnbreakable(boolean unbreakable) {
         itemMeta.setUnbreakable(unbreakable);
-        return this;
+        return (T) this;
     }
 
     public ItemStack build() {

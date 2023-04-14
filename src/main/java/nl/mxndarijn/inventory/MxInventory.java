@@ -12,10 +12,10 @@ public class MxInventory {
     private final boolean cancelEvent;
     private final boolean canBeClosed;
 
-    public MxInventory(Inventory inv, HashMap<Integer, MxItemClicked> onClickedMap, boolean delete, boolean cancelEvent, boolean closed) {
+    public MxInventory(Inventory inv, String invName, HashMap<Integer, MxItemClicked> onClickedMap, boolean delete, boolean cancelEvent, boolean closed) {
         this.inv = inv;
         this.onClickedMap = onClickedMap;
-        this.name = inv.getTitle();
+        this.name = invName;
         this.delete = delete;
         this.cancelEvent = cancelEvent;
         this.canBeClosed = closed;

@@ -1,6 +1,7 @@
 name: WieIsDeMol
 version: '1.0-SNAPSHOT'
 main: nl.mxndarijn.wieisdemol.WieIsDeMol
+api-version: 1.16
 commands:
   test:
     Description: Test command for development
@@ -8,3 +9,6 @@ commands:
   maps:
     description: maps
     usage: /maps
+  presets:
+    description: presets
+    usage: /presets
