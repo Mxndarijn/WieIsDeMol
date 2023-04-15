@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
@@ -53,5 +55,10 @@ public class Functions {
                 Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not close stream for config file: " + fileName);
             }
         }
+    }
+
+    public static String convertComponentToString(Component c) {
+        PlainComponentSerializer plainSerializer = PlainComponentSerializer.plain();
+        return  plainSerializer.serialize(c);
     }
 }

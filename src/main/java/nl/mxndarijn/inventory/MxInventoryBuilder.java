@@ -57,7 +57,7 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
     }
 
     public T defaultCancelEvent(boolean b) {
-        cancelEvent = true;
+        cancelEvent = b;
         return (T) this;
     }
 

@@ -1,4 +1,4 @@
-package nl.mxndarijn.wieisdemol;
+package nl.mxndarijn.commands;
 
 import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
 import nl.mxndarijn.inventory.*;
@@ -74,6 +74,7 @@ public class TestCommand implements CommandExecutor {
                 MxListInventoryBuilder.create(ChatColor.RED + "Test Inventory", MxInventorySlots.SIX_ROWS)
                     .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                     .addListItems(items)
+                    .defaultCancelEvent(false)
                     .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
                             .setName(ChatColor.GRAY + "Test-Item")
                             .build(), 52, null)

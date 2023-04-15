@@ -33,16 +33,14 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
 
         this.previousPageItemStack = Optional.of(
                 MxSkullItemStackBuilder.create(1)
-//                        .setOwner(Bukkit.getOfflinePlayer("Mxndarijn").getUniqueId()) // arrow left a68f0b64-8d14-4000-a95f-4b9ba14f8df9
                         .setName(ChatColor.GRAY + "Vorige pagina")
-                        .setSkinFromHeadsData("youtube")
+                        .setSkinFromHeadsData("arrow-left")
                         .build());
 
         this.nextPageItemStack = Optional.of(
                 MxSkullItemStackBuilder.create(1)
-//                        .setOwner(Bukkit.getOfflinePlayer(UUID.fromString("50c8510b-5ea0-4d60-be9a-7d542d6cd156")).getUniqueId()) // arrow right
-                        .setSkinFromHeadsData("test")
                         .setName(ChatColor.GRAY + "Volgende pagina")
+                        .setSkinFromHeadsData("arrow-right")
                         .build());
     }
 

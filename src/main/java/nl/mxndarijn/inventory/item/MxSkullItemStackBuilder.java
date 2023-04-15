@@ -2,13 +2,13 @@ package nl.mxndarijn.inventory.item;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.SkullType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -47,7 +47,11 @@ public class MxSkullItemStackBuilder extends MxItemStackBuilder<MxSkullItemStack
     public MxSkullItemStackBuilder setOwner(UUID id) {
         SkullMeta meta = (SkullMeta) itemMeta;
         OfflinePlayer p = Bukkit.getOfflinePlayer(id);
-        meta.setOwningPlayer(p);
+        Logger.logMessage(LogLevel.DebugHighlight, Prefix.MXINVENTORY, "Setting owner: " + p.getName());
+        boolean returnedValue = meta.setOwningPlayer(p);
+        if(!returnedValue) {
+            Logger.logMessage(LogLevel.Error, Prefix.MXINVENTORY, "Could not set owner of skull");
+        }
         return this;
     }
 
@@ -55,7 +59,6 @@ public class MxSkullItemStackBuilder extends MxItemStackBuilder<MxSkullItemStack
         Optional<String> dataOpt = MxHeadManager.getInstance().getTextureValue(value);
         if(dataOpt.isPresent()) {
             String data = dataOpt.get();
-            Logger.logMessage(LogLevel.DebugHighlight, Prefix.MXINVENTORY, "Info: " + data);
             GameProfile profile = new GameProfile(UUID.randomUUID(), null);
             profile.getProperties().put("textures", new Property("textures", data));
             try
@@ -63,7 +66,6 @@ public class MxSkullItemStackBuilder extends MxItemStackBuilder<MxSkullItemStack
                 Field profileField = itemMeta.getClass().getDeclaredField("profile");
                 profileField.setAccessible(true);
                 profileField.set(itemMeta, profile);
-
             }
             catch (IllegalArgumentException|NoSuchFieldException|SecurityException | IllegalAccessException error)
             {

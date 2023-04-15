@@ -2,8 +2,9 @@ package nl.mxndarijn.commands;
 
 import nl.mxndarijn.data.Permissions;
 import nl.mxndarijn.inventory.*;
+import nl.mxndarijn.inventory.heads.MxHeadsType;
+import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
-import nl.mxndarijn.inventory.item.MxItemStackBuilder;
 import nl.mxndarijn.inventory.menu.MxDefaultInventoryBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -53,5 +54,6 @@ public class PresetsCommand extends MxCommand {
                         })
                 .build();
         MxInventoryManager.getInstance().addAndOpenInventory(p, inv);
+        //MxHeadManager.getInstance().storeSkullTexture(p.getInventory().getItemInMainHand(), "test", MxHeadsType.MANUALLY_ADDED);
     }
 }

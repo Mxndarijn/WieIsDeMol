@@ -2,7 +2,10 @@ package nl.mxndarijn.data;
 
 public enum Permissions {
     NO_PERMISSION(""),
-    COMMAND_MAPS("widm.maps");
+    COMMAND_MAPS("widm.maps"),
+    COMMAND_SKULLS("widm.skulls"),
+    COMMAND_SKULLS_ADD_SKULL("widm.addskull"),
+    COMMAND_SKULLS_REMOVE_SKULL("widm.removeskull");
 
     private final String permission;
     Permissions(String permission) {

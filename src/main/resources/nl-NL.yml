@@ -1,11 +1,16 @@
-language-name: Nederlands
-
 # Messages
 # A placeholder begins with %% and ends with %%
 # Example: %%1%% or %%2%%
 
-#Error Messages
-no-permission: &cJe hebt hier geen permissie voor.
-no-player: &cOm dit te kunnen doen moet je een speler zijn.
-not-correct-world: &cDit kan je niet in deze wereld doen.
-error-while-executing-command: &cEr ging iets fout tijdens het uitvoeren van het commando, probeer het opnieuw of vraag een stafflid om hulp.
+language-name: "Nederlands"
+no-permission: "&cJe hebt hier geen permissie voor."
+no-player: "&cOm dit te kunnen doen moet je een speler zijn."
+not-correct-world: "&cDit kan je niet in deze wereld doen."
+error-while-executing-command: "&cEr ging iets fout tijdens het uitvoeren van het commando, probeer het opnieuw of vraag een stafflid om hulp."
+command-skulls-default: "&7Klik op een skull om de skull toe te voegen aan je inventory."
+command-skulls-is-skull-player-skull: "&7Is de geselecteerde skull een PlayerSkull?"
+command-skulls-get-chat-input: "&7Typ de display naam van de skull"
+command-skulls-skull-not-added: "&cEr ging iets mis met het toevoegen, de skull is niet toegevoegd. Vraag een developer om ernaar te kijken."
+command-skulls-skull-added: "&aSkull toegevoegd."
+command-skulls-not-deleted: "&7Skull is niet verwijderd."
+command-skulls-deleted: "&aSkull verwijderd!"

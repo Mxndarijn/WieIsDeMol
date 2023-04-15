@@ -1,12 +1,10 @@
 package nl.mxndarijn.inventory.menu;
 
-import nl.mxndarijn.inventory.MxInventory;
-import nl.mxndarijn.inventory.MxInventoryBuilder;
-import nl.mxndarijn.inventory.MxInventorySlots;
-import nl.mxndarijn.inventory.MxItemClicked;
+import nl.mxndarijn.inventory.*;
 import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -49,7 +47,7 @@ public class MxMenuBuilder<T extends MxInventoryBuilder<T>> extends MxInventoryB
     @Override
     public MxInventory build() {
         previousMenu.ifPresent(mxInventory -> setItem(previousItem, previousItemStackSlot, (inv, e) -> {
-            e.getWhoClicked().openInventory(mxInventory.getInv());
+            MxInventoryManager.getInstance().addAndOpenInventory((Player) e.getWhoClicked(), mxInventory);
         }));
         return super.build();
     }

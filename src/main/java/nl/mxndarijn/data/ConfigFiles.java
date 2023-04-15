@@ -20,8 +20,11 @@ public enum ConfigFiles {
     private final FileConfiguration fileConfiguration;
     private final File file;
     private final String fileName;
+
+    private final String path;
     ConfigFiles(String fileName, String path) {
         this.fileName = fileName;
+        this.path = path;
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
         file = new File(plugin.getDataFolder() + File.separator + path);
         if(!file.exists()) {
@@ -42,5 +45,21 @@ public enum ConfigFiles {
 
     public String getFileName() {
         return fileName;
+    }
+
+    public void save() {
+        try {
+            Logger.logMessage(LogLevel.Information, Prefix.CONFIG_FILES, "Saving file... " + path);
+            fileConfiguration.save(file);
+        } catch (IOException e) {
+            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not save file... " + path);
+        }
+    }
+
+    public static void saveAll() {
+        Logger.logMessage(LogLevel.Information, Prefix.CONFIG_FILES, "Saving all files... ");
+        for(ConfigFiles value : values()) {
+            value.save();
+        }
     }
 }

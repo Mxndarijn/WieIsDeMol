@@ -1,2 +1,56 @@
-youtube: "ZDJmNmMwN2EzMjZkZWY5ODRlNzJmNzcyZWQ2NDU0NDlmNWVjOTZjNmNhMjU2NDk5YjVkMmI4NGE4ZGNlIn19fQ=="
-test: "OTI0ZTgyNWIyNWZmNzkzOGI1OGFmNTJmNThlNGQ1NGVjNTE0M2JkNWExYjQ4NGYxZmY5ZGQ2YmEwYWNhOWRjYiJ9fX0="
+# HOW TO USE
+# For this example we will use the site: https://minecraft-heads.com/custom-heads/miscellaneous/61007-youtube
+
+# Scroll down to Loot table: (Its also in other value)
+# Here you will find:
+# {
+#                          "type": "item",
+#                          "name": "minecraft:skull",
+#                          "weight": 50,
+#                          "functions": [
+#                            {
+#                              "function": "set_data",
+#                              "data": 3
+#                            },
+#                            {
+#                              "function": "set_nbt",
+#                              "tag": "{display:{Name:\"YouTube\"},SkullOwner:{Id:\"4520769e-a23b-4665-b3b0-8be999f2df2e\",Properties:{textures:[{Value:\"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI0ZTgyNWIyNWZmNzkzOGI1OGFmNTJmNThlNGQ1NGVjNTE0M2JkNWExYjQ4NGYxZmY5ZGQ2YmEwYWNhOWRjYiJ9fX0=\"}]}}}"
+#                            }
+#                          ]
+#                        }
+
+# We need the textures value.
+# So in this case it will become:
+# eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI0ZTgyNWIyNWZmNzkzOGI1OGFmNTJmNThlNGQ1NGVjNTE0M2JkNWExYjQ4NGYxZmY5ZGQ2YmEwYWNhOWRjYiJ9fX0=
+# Paste this value in this yml file like:
+#youtube:
+#  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI0ZTgyNWIyNWZmNzkzOGI1OGFmNTJmNThlNGQ1NGVjNTE0M2JkNWExYjQ4NGYxZmY5ZGQ2YmEwYWNhOWRjYiJ9fX0=
+#  type: manually-added
+#  name: Youtube-Logo
+
+# Player Skulls
+# If you want to add a skull and want that the server automatically checks if the skin is up to date, make the type player: Uncomment # to implement :)
+#Mxndarijn: #Normally dont use names, use uuids?
+#  value: ewogICJ0aW1lc3RhbXAiIDogMTY4MTU3MjgwMzE1NywKICAicHJvZmlsZUlkIiA6ICJmOGFmZGNjZDEzOGY0YWZiOGM0Y2M3OWViZjQyZTBkMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNeG5kYXJpam4iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlZDRiNzZhMTkzMThlNWE2Nzg4Y2NlNDc0N2UwMzFjOTc0M2JkMDZhZTRhZWM4YjNhM2QyYTRlZDkzYjRlOSIKICAgIH0KICB9Cn0=
+#  uuid: f8afdccd-138f-4afb-8c4c-c79ebf42e0d1
+#  type: player
+#  name: Mxndarijn
+
+youtube:
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI0ZTgyNWIyNWZmNzkzOGI1OGFmNTJmNThlNGQ1NGVjNTE0M2JkNWExYjQ4NGYxZmY5ZGQ2YmEwYWNhOWRjYiJ9fX0=
+  type: manually-added
+  name: Youtube-Logo
+f8afdccd-138f-4afb-8c4c-c79ebf42e0d1:
+  value: ewogICJ0aW1lc3RhbXAiIDogMTY4MTU3MjgwMzE1NywKICAicHJvZmlsZUlkIiA6ICJmOGFmZGNjZDEzOGY0YWZiOGM0Y2M3OWViZjQyZTBkMSIsCiAgInByb2ZpbGVOYW1lIiA6ICJNeG5kYXJpam4iLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGFlZDRiNzZhMTkzMThlNWE2Nzg4Y2NlNDc0N2UwMzFjOTc0M2JkMDZhZTRhZWM4YjNhM2QyYTRlZDkzYjRlOSIKICAgIH0KICB9Cn0=
+  uuid: f8afdccd-138f-4afb-8c4c-c79ebf42e0d1
+  type: player
+  name: Mxndarijn
+arrow-left:
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQ2OWUwNmU1ZGFkZmQ4NGU1ZjNkMWMyMTA2M2YyNTUzYjJmYTk0NWVlMWQ0ZDcxNTJmZGM1NDI1YmMxMmE5In19fQ==
+  type: manually-added
+  name: Pijl die naar links wijst
+arrow-right:
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTliZjMyOTJlMTI2YTEwNWI1NGViYTcxM2FhMWIxNTJkNTQxYTFkODkzODgyOWM1NjM2NGQxNzhlZDIyYmYifX19
+  type: manually-added
+  name: Pijl die naar rechts wijst
+

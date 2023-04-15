@@ -24,8 +24,8 @@ colors:
     yaw: 1
     pitch: 0
 
-#Item info
-skull-uuid: f8afdccd-138f-4afb-8c4c-c79ebf42e0d1
+#Item info Add the skull-data in head-data.yml with the same name, or do it in game
+skull-name: f8afdccd-138f-4afb-8c4c-c79ebf42e0d1
 
 # Locked Info
 locked: false

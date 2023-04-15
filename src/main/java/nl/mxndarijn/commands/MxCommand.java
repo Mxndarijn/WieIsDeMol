@@ -61,5 +61,5 @@ public abstract class MxCommand implements CommandExecutor {
         return true;
     }
 
-    abstract void execute(CommandSender sender, Command command, String label, String[] args);
+    abstract void execute(CommandSender sender, Command command, String label, String[] args) throws Exception;
 }

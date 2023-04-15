@@ -12,3 +12,12 @@ commands:
   presets:
     description: presets
     usage: /presets
+  skulls:
+    description: Custom heads
+    usage: /skulls
+    aliases:
+      - skulls
+      - skull
+      - head
+      - heads
+      - heads-database
