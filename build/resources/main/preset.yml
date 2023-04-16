@@ -1,33 +1,43 @@
 # Name of the preset
-name: DefaultValue
 
 # Host difficulty
 # Min value 0, Max value 5
-host-difficulty: 4
 
 # Play difficulty
 # Min value 0, Max value 5
-play-difficulty: 3
 
 # Colors that will be in the game
-colors:
-  Red:
-    x: 1
-    y: 1
-    z: 1
-    yaw: 1
-    pitch: 0
-  Lime:
-    x: 1
-    y: 1
-    z: 1
-    yaw: 1
-    pitch: 0
 
 #Item info Add the skull-data in head-data.yml with the same name, or do it in game
-skull-name: f8afdccd-138f-4afb-8c4c-c79ebf42e0d1
 
 # Locked Info
+
+# Is the preset configured
+
+name: Niet ingesteld
+
+host-difficulty: 0
+
+play-difficulty: 0
+
+colors:
+  red:
+    x: 1
+    y: 1
+    z: 1
+    yaw: 1
+    pitch: 0
+  light-green:
+    x: 1
+    y: 1
+    z: 1
+    yaw: 1
+    pitch: 0
+
+skull-id: question-mark
+
 locked: false
 locked-by: Unknown
 lock-reason: Unknown
+
+configured: false

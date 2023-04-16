@@ -6,11 +6,11 @@ import java.util.UUID;
 public class MxWorld {
     private String name;
     private UUID worldUID;
-    private UUID uuid;
+    private String uuid;
     private File dir;
     private boolean loaded;
 
-    public MxWorld(String name, UUID uuid, File dir) {
+    public MxWorld(String name, String uuid, File dir) {
         this.name = name;
         this.uuid = uuid;
         this.dir = dir;
@@ -27,7 +27,7 @@ public class MxWorld {
         this.loaded = b;
     }
 
-    public UUID getUUID() {
+    public String getUUID() {
         return uuid;
     }
 

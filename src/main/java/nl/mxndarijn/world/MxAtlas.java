@@ -64,44 +64,35 @@ public class MxAtlas {
             Logger.logMessage(LogLevel.Warning, Prefix.MXATLAS,  mxWorld.getName() + " is already loaded.");
             return true;
         }
-        WorldCreator wc = new WorldCreator(mxWorld.getDir().toString());
+        String path = mxWorld.getDir().toString().replace("\\", "/");
+        WorldCreator wc = new WorldCreator(path);
         wc.environment(World.Environment.NORMAL);
         wc.type(WorldType.FLAT);
         wc.generator(new VoidGenerator());
         wc.generateStructures(false);
 
         World world = wc.createWorld();
-        File worldSettings = new File(mxWorld.getDir() + "/worldsettings.yml");
-        File settings = new File(mxWorld.getDir() + "/settings.yml");
-        if(worldSettings.exists()) {
-            Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Loading worldsettings.yml... ");
-            FileConfiguration worldSettingsCfg = YamlConfiguration.loadConfiguration(worldSettings);
-            FileConfiguration settingsCfg = YamlConfiguration.loadConfiguration(settings);
-            world.setAutoSave(worldSettingsCfg.getBoolean("autosave"));
-            world.setKeepSpawnInMemory(worldSettingsCfg.getBoolean("keepSpawnInMemory"));
-
-            worldSettingsCfg.getConfigurationSection("gamerules").getKeys(false).forEach(val -> {
-                world.setGameRuleValue(val, worldSettingsCfg.getConfigurationSection("gamerules").get(val).toString());
-            });
-            ConfigurationSection spawn = settingsCfg.getConfigurationSection("spawn");
-            if(spawn != null) {
-                Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Setting spawnlocation... ");
-                world.setSpawnLocation(Functions.getLocationFromConfiguration(world, spawn));
-            }
-            world.save();
-        } else {
-            //Default values
-            world.setAutoSave(false);
-            world.setKeepSpawnInMemory(false);
-            world.setGameRuleValue("announceAdvancements", "false");
-            world.setGameRuleValue("doDaylightCycle", "false");
-            world.setGameRuleValue("doFireTick", "false");
-            world.setGameRuleValue("doMobLoot", "false");
-            world.setGameRuleValue("doWeatherCycle", "false");
-            world.setGameRuleValue("randomTickSpeed", "0");
-            world.setGameRuleValue("spectatorsGenerateChunks", "0");
-            world.setGameRuleValue("spawnRadius", "0");
+        if(world == null) {
+            return false;
         }
+        File worldSettings = new File(mxWorld.getDir() + "/worldsettings.yml");
+        if(!worldSettings.exists()) {
+            Functions.copyFileFromResources("worldsettings.yml", worldSettings);
+        }
+        Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Loading worldsettings.yml... ");
+        FileConfiguration worldSettingsCfg = YamlConfiguration.loadConfiguration(worldSettings);
+        world.setAutoSave(worldSettingsCfg.getBoolean("autosave"));
+        world.setKeepSpawnInMemory(worldSettingsCfg.getBoolean("keepSpawnInMemory"));
+
+        worldSettingsCfg.getConfigurationSection("gamerules").getKeys(false).forEach(val -> {
+           world.setGameRuleValue(val, worldSettingsCfg.getConfigurationSection("gamerules").get(val).toString());
+        });
+        ConfigurationSection spawn = worldSettingsCfg.getConfigurationSection("spawn");
+        if(spawn != null) {
+            Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Setting spawnlocation... ");
+            world.setSpawnLocation(Functions.getLocationFromConfiguration(world, spawn));
+        }
+        world.save();
 
         mxWorld.setWorldUID(world.getUID());
         mxWorld.setLoaded(true);
@@ -157,7 +148,7 @@ public class MxAtlas {
             e.printStackTrace();
             return Optional.empty();
         }
-        MxWorld mxWorld = new MxWorld(name, uuid, directoryToCloneTo);
+        MxWorld mxWorld = new MxWorld(name, uuid.toString(), directoryToCloneTo);
         worlds.add(mxWorld);
 
         return Optional.of(mxWorld);
@@ -175,13 +166,10 @@ public class MxAtlas {
             if(file.isDirectory()) {
                 File uidDat = new File(file.getAbsolutePath() + "/uid.dat");
                 if(uidDat.exists()) {
-                    File settings = new File(file.getAbsolutePath() + "/settings.yml");
-                    FileConfiguration cfg = YamlConfiguration.loadConfiguration(settings);
-                    String name = cfg.getString("name", "NameNotFound");
-                    MxWorld mxWorld = new MxWorld(name, UUID.fromString(file.getName()), file);
+                    MxWorld mxWorld = new MxWorld(file.getName(), file.getName(), file);
                     list.add(mxWorld);
                     worlds.add(mxWorld);
-                    Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Adding world to MxAtlas: " + name + " (" + file.getName() + ")");
+                    Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Adding world to MxAtlas: " + file.getName() + " (" + file.getAbsolutePath() + ")");
                 }
             }
         }

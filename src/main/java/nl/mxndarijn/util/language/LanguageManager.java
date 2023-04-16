@@ -75,6 +75,7 @@ public class LanguageManager {
                     e.printStackTrace();
                 }
             } else {
+                languageConfig.addDefault(text.getConfigValue(), "LANGUAGE_NOT_FOUND");
                 Logger.logMessage(LogLevel.Error, Prefix.LANGUAGE_MANAGER, text.getConfigValue() + " has no default value, please add one.");
             }
         }

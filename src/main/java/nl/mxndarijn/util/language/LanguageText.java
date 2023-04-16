@@ -12,7 +12,12 @@ public enum LanguageText {
     COMMAND_SKULLS_IS_SKULL_PLAYER_SKULL("command-skulls-is-skull-player-skull"),
     COMMAND_SKULLS_DEFAULT("command-skulls-default"),
     COMMAND_SKULLS_NOT_DELETED("command-skulls-not-deleted"),
-    COMMAND_SKULLS_DELETED("command-skulls-deleted");
+    COMMAND_SKULLS_DELETED("command-skulls-deleted"),
+
+    COMMAND_PRESETS_WORLD_NOT_FOUND_BUT_LOADED("command-presets-world-not-found-but-loaded"),
+    COMMAND_PRESETS_WORLD_COULD_NOT_BE_LOADED("command-presets-world-could-not-be-loaded"),
+    COMMAND_PRESETS_NOW_IN_PRESET("command-presets-now-in-preset"),
+    COMMAND_PRESETS_LOADING_WORLD("command-presets-loading-world");
 
     private final String configValue;
     LanguageText(String value) {

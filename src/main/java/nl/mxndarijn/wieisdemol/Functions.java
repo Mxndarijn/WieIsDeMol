@@ -32,13 +32,20 @@ public class Functions {
 
     public static void copyFileFromResources(String fileName, String path) {
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
+        File destFile = new File(plugin.getDataFolder() + File.separator + path);
+        destFile.getParentFile().mkdirs();
+
+        copyFileFromResources(fileName, destFile);
+    }
+
+    public static void copyFileFromResources(String fileName, File destFile) {
+        destFile.getParentFile().mkdirs();
+        JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
         InputStream inputStream = plugin.getResource(fileName);
         if(inputStream == null) {
             Logger.logMessage(LogLevel.Fatal, Prefix.CONFIG_FILES, "Could load resource: " + fileName);
             return;
         }
-        File destFile = new File(plugin.getDataFolder() + File.separator + path);
-        destFile.getParentFile().mkdirs();
 
         try (OutputStream outputStream = Files.newOutputStream(destFile.toPath())) {
             byte[] buffer = new byte[1024];

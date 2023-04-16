@@ -1,17 +1,37 @@
 package nl.mxndarijn.commands;
 
+import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.data.Permissions;
 import nl.mxndarijn.inventory.*;
 import nl.mxndarijn.inventory.heads.MxHeadsType;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
+import nl.mxndarijn.inventory.item.Pair;
 import nl.mxndarijn.inventory.menu.MxDefaultInventoryBuilder;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import nl.mxndarijn.inventory.menu.MxListInventoryBuilder;
+import nl.mxndarijn.util.language.LanguageManager;
+import nl.mxndarijn.util.language.LanguageText;
+import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.world.MxWorld;
+import nl.mxndarijn.world.presets.Preset;
+import nl.mxndarijn.world.presets.PresetsManager;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class PresetsCommand extends MxCommand {
 
@@ -50,6 +70,49 @@ public class PresetsCommand extends MxCommand {
                                 .build(),
                         14,
                         (clickedInv, e) -> {
+                            ArrayList<Preset> presets = PresetsManager.getInstance().getNonConfiguredPresets();
+                            MxItemClicked clickedOnNonConfiguredPreset = (mxInv, e1) -> {
+                            Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
+                                if(e1.getCurrentItem() != null) {
+                                    ItemStack is = e1.getCurrentItem();
+                                    ItemMeta im = is.getItemMeta();
+                                    PersistentDataContainer container = im.getPersistentDataContainer();
+                                    Optional<Preset> optionalPreset = PresetsManager.getInstance().getPresetById(container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), Preset.PRESET_ITEMMETA_TAG), PersistentDataType.STRING));
+                                    if(optionalPreset.isPresent()) {
+                                        Preset preset = optionalPreset.get();
+                                        e.getWhoClicked().closeInventory();
+                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_PRESETS_LOADING_WORLD, Collections.emptyList()));
+                                        if(preset.loadWorld()) {
+                                            MxWorld mxWorld = preset.getMxWorld().get();
+                                            World w = Bukkit.getWorld(mxWorld.getWorldUID());
+                                            if(w != null) {
+                                                p.teleport(w.getSpawnLocation());
+                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_PRESETS_NOW_IN_PRESET, Collections.emptyList()));
+                                            } else {
+                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_PRESETS_WORLD_NOT_FOUND_BUT_LOADED, Collections.emptyList()));
+                                            }
+                                        }
+                                    } else {
+                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_PRESETS_WORLD_COULD_NOT_BE_LOADED, Collections.emptyList()));
+                                    }
+                                }
+                            });
+                            };
+                            ArrayList<Pair<ItemStack, MxItemClicked>> list = presets.stream().map(preset -> new Pair<>(preset.getItemStack(), clickedOnNonConfiguredPreset)).collect(Collectors.toCollection(ArrayList::new));
+
+                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Configureer nieuwe preset", MxInventorySlots.SIX_ROWS)
+                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
+                                    .setPreviousItemStackSlot(46)
+                                    .setPrevious(clickedInv)
+                                    .setListItems(list)
+                                    .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
+                                            .setName(ChatColor.GRAY + "Info")
+                                            .addLore(" ")
+                                            .addLore(ChatColor.YELLOW + "Klik op een preset om deze te configuren.")
+                                            .build(), 49,null)
+                                    .build());
+
+
                             // Create Map
                         })
                 .build();

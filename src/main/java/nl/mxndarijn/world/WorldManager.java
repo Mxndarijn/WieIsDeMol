@@ -5,6 +5,7 @@ import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.world.presets.Preset;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,6 +16,7 @@ public class WorldManager {
     private static WorldManager instance;
     private final MxAtlas atlas;
     private HashMap<UUID, List<MxWorld>> playersMap;
+    private HashMap<String, MxWorld> presets;
 
     public static WorldManager getInstance() {
         if(instance == null) {
@@ -26,8 +28,10 @@ public class WorldManager {
     private WorldManager() {
         atlas = MxAtlas.getInstance();
         playersMap = new HashMap<>();
+        presets = new HashMap<>();
         deleteGameWorlds();
         loadMaps();
+        loadPresets();
 
     }
 
@@ -52,7 +56,18 @@ public class WorldManager {
         SpecialDirectories.GAMES_WORLDS.getDirectory().mkdirs();
     }
 
+    private void loadPresets() {
+        List<MxWorld> list = atlas.loadFolder(SpecialDirectories.PRESET_WORLDS.getDirectory());
+        list.forEach(mxWorld -> {
+            presets.put(mxWorld.getUUID(), mxWorld);
+        });
+    }
+
     public HashMap<UUID, List<MxWorld>> getPlayersMap() {
         return playersMap;
+    }
+
+    public Optional<MxWorld> getPresetById(String id) {
+        return presets.containsKey(id) ? Optional.of(presets.get(id)) : Optional.empty();
     }
 }

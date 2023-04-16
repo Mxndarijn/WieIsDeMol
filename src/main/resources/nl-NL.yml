@@ -14,3 +14,7 @@ command-skulls-skull-not-added: "&cEr ging iets mis met het toevoegen, de skull 
 command-skulls-skull-added: "&aSkull toegevoegd."
 command-skulls-not-deleted: "&7Skull is niet verwijderd."
 command-skulls-deleted: "&aSkull verwijderd!"
+command-presets-now-in-preset: "&aJe bent nu in een preset, hierin kan je alles aanpassen."
+command-presets-world-could-not-be-loaded: "&cWereld not niet worden geladen. Vraag een stafflid op hulp."
+command-presets-world-not-found-but-loaded: "&cWereld kon niet worden gevonden. Vraag een stafflid om hulp."
+command-presets-loading-world: "&7Wereld aan het inladen..."
