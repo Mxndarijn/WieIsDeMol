@@ -1,4 +1,4 @@
-package nl.mxndarijn.commands;
+package nl.mxndarijn.commands.util;
 
 import org.bukkit.entity.Player;
 

@@ -1,5 +1,7 @@
 package nl.mxndarijn.commands;
 
+import nl.mxndarijn.commands.util.MxCommand;
+import nl.mxndarijn.commands.util.MxWorldFilter;
 import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.data.Permissions;
 import nl.mxndarijn.inventory.*;
@@ -14,9 +16,6 @@ import nl.mxndarijn.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.util.chatinput.MxChatInputManager;
 import nl.mxndarijn.util.language.LanguageManager;
 import nl.mxndarijn.util.language.LanguageText;
-import nl.mxndarijn.util.logger.LogLevel;
-import nl.mxndarijn.util.logger.Logger;
-import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -25,10 +24,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.tags.ItemTagType;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,7 +42,7 @@ public class SkullsCommand extends MxCommand {
         super(permission, onlyPlayersCanExecute, canBeExecutedInGame);
     }
     @Override
-    void execute(CommandSender sender, Command command, String label, String[] args) {
+    public void execute(CommandSender sender, Command command, String label, String[] args) {
         Player p = (Player) sender;
 
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();

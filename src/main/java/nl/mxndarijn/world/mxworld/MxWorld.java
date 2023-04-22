@@ -1,4 +1,4 @@
-package nl.mxndarijn.world;
+package nl.mxndarijn.world.mxworld;
 
 import java.io.File;
 import java.util.UUID;

@@ -4,10 +4,9 @@ import nl.mxndarijn.data.SpecialDirectories;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.world.presets.Preset;
+import nl.mxndarijn.world.mxworld.MxAtlas;
+import nl.mxndarijn.world.mxworld.MxWorld;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
 import java.util.*;

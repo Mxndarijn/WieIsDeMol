@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 
 public class LanguageManager {
@@ -54,6 +55,10 @@ public class LanguageManager {
             languageString = languageString.replaceAll("%%" + i + "%%", v);
         }
         return languageString;
+    }
+
+    public String getLanguageString(LanguageText text) {
+        return getLanguageString(text, Collections.emptyList());
     }
 
     public String getLanguageString(LanguageText text, List<String> placeholders, ChatPrefix prefix) {

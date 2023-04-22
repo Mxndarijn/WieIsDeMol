@@ -21,3 +21,6 @@ commands:
       - head
       - heads
       - heads-database
+  spawn:
+    description: Spawn
+    usage: /spawn

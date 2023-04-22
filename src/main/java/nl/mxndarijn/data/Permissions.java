@@ -5,6 +5,7 @@ public enum Permissions {
     COMMAND_MAPS("widm.maps"),
     COMMAND_SKULLS("widm.skulls"),
     COMMAND_SKULLS_ADD_SKULL("widm.addskull"),
+    COMMAND_SPAWN("widm.spawn"),
     COMMAND_SKULLS_REMOVE_SKULL("widm.removeskull");
 
     private final String permission;

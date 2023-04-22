@@ -18,3 +18,6 @@ command-presets-now-in-preset: "&aJe bent nu in een preset, hierin kan je alles 
 command-presets-world-could-not-be-loaded: "&cWereld not niet worden geladen. Vraag een stafflid op hulp."
 command-presets-world-not-found-but-loaded: "&cWereld kon niet worden gevonden. Vraag een stafflid om hulp."
 command-presets-loading-world: "&7Wereld aan het inladen..."
+preset-loading-inventory: "&7Inventory aan het ophalen..."
+preset-loading-saved: "&7Inventory opgeslagen."
+preset-info-configure-tool: "&7Met de Preset Configure-Tool kun je veel instellingen aanpassen over de preset."

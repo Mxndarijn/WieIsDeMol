@@ -8,6 +8,7 @@ public enum Prefix {
     MXHEADMANAGER(ChatColor.DARK_BLUE + "MxHeadManager"),
     MXINVENTORY(ChatColor.DARK_GREEN + "MxInventory"),
     MXCHATINPUTMANAGER(ChatColor.DARK_PURPLE + "MxChatInputManager"),
+    CHANGEWORLDMANAGER(ChatColor.AQUA + "ChangeWorldmanager"),
     WORLD_MANAGER(ChatColor.AQUA + "World-Manager"),
     PRESETS_MANAGER(ChatColor.AQUA + "Presets-Manager"),
     MAPS_MANAGER(ChatColor.AQUA + "Maps-Manager"),

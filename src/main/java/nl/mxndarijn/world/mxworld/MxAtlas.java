@@ -1,4 +1,4 @@
-package nl.mxndarijn.world;
+package nl.mxndarijn.world.mxworld;
 
 import nl.mxndarijn.util.VoidGenerator;
 import nl.mxndarijn.util.logger.LogLevel;
@@ -92,7 +92,6 @@ public class MxAtlas {
             Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Setting spawnlocation... ");
             world.setSpawnLocation(Functions.getLocationFromConfiguration(world, spawn));
         }
-        world.save();
 
         mxWorld.setWorldUID(world.getUID());
         mxWorld.setLoaded(true);

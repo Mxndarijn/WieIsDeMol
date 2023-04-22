@@ -1,9 +1,10 @@
 package nl.mxndarijn.commands;
 
+import nl.mxndarijn.commands.util.MxCommand;
+import nl.mxndarijn.commands.util.MxWorldFilter;
 import nl.mxndarijn.data.Permissions;
 import nl.mxndarijn.inventory.*;
 import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
-import nl.mxndarijn.inventory.item.MxItemStackBuilder;
 import nl.mxndarijn.inventory.menu.MxDefaultInventoryBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -24,7 +25,7 @@ public class MapCommand extends MxCommand {
     }
 
     @Override
-    void execute(CommandSender sender, Command command, String label, String[] args) {
+    public void execute(CommandSender sender, Command command, String label, String[] args) {
         Player p = (Player) sender;
         MxInventory inv = MxDefaultInventoryBuilder.create(ChatColor.GRAY + "Mappen", MxInventorySlots.THREE_ROWS)
                 .setItem(MxDefaultItemStackBuilder.create(Material.BOOK)

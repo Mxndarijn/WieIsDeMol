@@ -1,29 +1,13 @@
 package nl.mxndarijn.commands;
 
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer;
-import nl.mxndarijn.inventory.*;
-import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
-import nl.mxndarijn.inventory.item.Pair;
-import nl.mxndarijn.inventory.menu.MxListInventoryBuilder;
-import nl.mxndarijn.util.logger.LogLevel;
-import nl.mxndarijn.util.logger.Logger;
-import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.world.MxAtlas;
-import nl.mxndarijn.world.MxWorld;
+import nl.mxndarijn.world.mxworld.MxAtlas;
+import nl.mxndarijn.world.mxworld.MxWorld;
 import nl.mxndarijn.world.WorldManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
 
 public class TestCommand implements CommandExecutor {
     @Override

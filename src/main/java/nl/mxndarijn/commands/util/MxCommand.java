@@ -1,4 +1,4 @@
-package nl.mxndarijn.commands;
+package nl.mxndarijn.commands.util;
 
 import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.data.Permissions;
@@ -61,5 +61,5 @@ public abstract class MxCommand implements CommandExecutor {
         return true;
     }
 
-    abstract void execute(CommandSender sender, Command command, String label, String[] args) throws Exception;
+    public abstract void execute(CommandSender sender, Command command, String label, String[] args) throws Exception;
 }

@@ -1,7 +1,5 @@
-package nl.mxndarijn.world;
+package nl.mxndarijn.world.mxworld;
 
-import nl.mxndarijn.util.logger.LogLevel;
-import nl.mxndarijn.util.logger.Logger;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;

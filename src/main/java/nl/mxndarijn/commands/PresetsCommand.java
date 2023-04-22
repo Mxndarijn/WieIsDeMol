@@ -1,10 +1,10 @@
 package nl.mxndarijn.commands;
 
+import nl.mxndarijn.commands.util.MxCommand;
+import nl.mxndarijn.commands.util.MxWorldFilter;
 import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.data.Permissions;
 import nl.mxndarijn.inventory.*;
-import nl.mxndarijn.inventory.heads.MxHeadsType;
-import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.inventory.item.Pair;
 import nl.mxndarijn.inventory.menu.MxDefaultInventoryBuilder;
@@ -12,14 +12,13 @@ import nl.mxndarijn.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.util.language.LanguageManager;
 import nl.mxndarijn.util.language.LanguageText;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.world.MxWorld;
+import nl.mxndarijn.world.mxworld.MxWorld;
 import nl.mxndarijn.world.presets.Preset;
 import nl.mxndarijn.world.presets.PresetsManager;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -29,7 +28,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,7 +43,7 @@ public class PresetsCommand extends MxCommand {
     }
 
     @Override
-    void execute(CommandSender sender, Command command, String label, String[] args) {
+    public void execute(CommandSender sender, Command command, String label, String[] args) {
         Player p = (Player) sender;
         MxInventory inv = MxDefaultInventoryBuilder.create(ChatColor.GRAY + "Presets", MxInventorySlots.THREE_ROWS)
                 .setItem(MxDefaultItemStackBuilder.create(Material.BOOK)

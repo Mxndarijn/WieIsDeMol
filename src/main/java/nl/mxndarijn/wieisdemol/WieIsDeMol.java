@@ -1,9 +1,6 @@
 package nl.mxndarijn.wieisdemol;
 
-import nl.mxndarijn.commands.MapCommand;
-import nl.mxndarijn.commands.PresetsCommand;
-import nl.mxndarijn.commands.SkullsCommand;
-import nl.mxndarijn.commands.TestCommand;
+import nl.mxndarijn.commands.*;
 import nl.mxndarijn.data.ConfigFiles;
 import nl.mxndarijn.data.Permissions;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
@@ -13,6 +10,7 @@ import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.world.WorldManager;
+import nl.mxndarijn.world.changeworld.ChangeWorldManager;
 import nl.mxndarijn.world.presets.PresetsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,6 +30,7 @@ public final class WieIsDeMol extends JavaPlugin {
         MxHeadManager.getInstance();
         MxChatInputManager.getInstance();
         PresetsManager.getInstance();
+        ChangeWorldManager.getInstance();
         registerCommands();
         configFilesSaver();
 
@@ -62,6 +61,7 @@ public final class WieIsDeMol extends JavaPlugin {
         getCommand("maps").setExecutor(new MapCommand(Permissions.COMMAND_MAPS, true, false));
         getCommand("presets").setExecutor(new PresetsCommand(Permissions.COMMAND_MAPS, true, false));
         getCommand("skulls").setExecutor(new SkullsCommand(Permissions.COMMAND_SKULLS, true, false));
+        getCommand("spawn").setExecutor(new SpawnCommand(Permissions.COMMAND_SPAWN, true, false));
     }
 
     private void configFilesSaver() {

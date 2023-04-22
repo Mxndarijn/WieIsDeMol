@@ -4,15 +4,12 @@ import nl.mxndarijn.game.Colors;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.world.MxLocation;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import nl.mxndarijn.world.mxworld.MxLocation;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;

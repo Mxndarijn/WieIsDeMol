@@ -5,12 +5,14 @@ import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.world.mxworld.MxWorld;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 
 public class PresetsManager {
     private static PresetsManager instance;
@@ -64,6 +66,20 @@ public class PresetsManager {
         for(Preset p : presets) {
             if(p.getDirectory().getName().equals(s)) {
                 return Optional.of(p);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Preset> getPresetByWorldUID(UUID uid) {
+        for(Preset p : presets) {
+            if(p.getMxWorld().isPresent()) {
+                MxWorld mxWorld = p.getMxWorld().get();
+                if(mxWorld.isLoaded()) {
+                    if(mxWorld.getWorldUID() == uid) {
+                        return Optional.of(p);
+                    }
+                }
             }
         }
         return Optional.empty();

@@ -49,7 +49,7 @@ public enum ConfigFiles {
 
     public void save() {
         try {
-            Logger.logMessage(LogLevel.Information, Prefix.CONFIG_FILES, "Saving file... " + path);
+            Logger.logMessage(LogLevel.Debug, Prefix.CONFIG_FILES, "Saving file... " + path);
             fileConfiguration.save(file);
         } catch (IOException e) {
             Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not save file... " + path);
