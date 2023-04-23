@@ -47,7 +47,8 @@ public class MxChatInputManager implements Listener {
         }
     }
 
-    public void addChatInputCallback(UUID uuid, MxChatInputCallback callback) {
+    public String addChatInputCallback(UUID uuid, MxChatInputCallback callback) {
         map.put(uuid, callback);
+        return null;
     }
 }

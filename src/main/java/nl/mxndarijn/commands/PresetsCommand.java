@@ -59,16 +59,14 @@ public class PresetsCommand extends MxCommand {
                             // Click on Book
                         })
                 .setItem(MxDefaultItemStackBuilder.create(Material.ANVIL)
-                                .setName(ChatColor.GREEN + "Configureer nieuwe preset")
-                                .addLore(ChatColor.GRAY + "Bekijk alle presets die nog niet")
-                                .addLore(ChatColor.GRAY + "zijn geconfigueerd.")
-                                .addLore(" ")
-                                .addLore(ChatColor.YELLOW + "Klik om te bekijken")
+                                .setName(ChatColor.GREEN + "Configureer preset")
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik om alle presets te bekijken.")
                                 .addItemFlag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS)
                                 .build(),
                         14,
                         (clickedInv, e) -> {
-                            ArrayList<Preset> presets = PresetsManager.getInstance().getNonConfiguredPresets();
+                            ArrayList<Preset> presets = PresetsManager.getInstance().getAllPresets();
                             MxItemClicked clickedOnNonConfiguredPreset = (mxInv, e1) -> {
                             Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
                                 if(e1.getCurrentItem() != null) {

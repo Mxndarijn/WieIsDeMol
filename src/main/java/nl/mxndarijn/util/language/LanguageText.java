@@ -19,7 +19,10 @@ public enum LanguageText {
     COMMAND_PRESETS_LOADING_WORLD("command-presets-loading-world"),
     PRESET_INVENTORY_LOADING("preset-loading-inventory"),
     PRESET_INVENTORY_SAVED("preset-loading-saved"),
-    PRESET_INFO_CONFIGURE_TOOL("preset-info-configure-tool");
+    PRESET_INFO_CONFIGURE_TOOL("preset-info-configure-tool"),
+    PRESET_CONFIGURE_TOOL_ENTER_NEW_NAME("preset-configure-tool-enter-new-name"),
+    PRESET_CONFIGURE_TOOL_NAME_CHANGED("preset-configure-tool-name-changed"),
+    PRESET_CONFIGURE_TOOL_SKULL_CHANGED("preset-configure-tool-skull-changed");
 
     private final String configValue;
     LanguageText(String value) {

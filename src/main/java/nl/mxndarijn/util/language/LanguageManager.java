@@ -52,7 +52,7 @@ public class LanguageManager {
         String languageString = ChatColor.translateAlternateColorCodes('&', languageConfig.getString(text.getConfigValue()));
         for (int i = 0; i < placeholders.size(); i++) {
             String v = placeholders.get(i);
-            languageString = languageString.replaceAll("%%" + i + "%%", v);
+            languageString = languageString.replace("%%" + (i+1) + "%%", v);
         }
         return languageString;
     }

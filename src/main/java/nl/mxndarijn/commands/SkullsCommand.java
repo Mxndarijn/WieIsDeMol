@@ -50,7 +50,7 @@ public class SkullsCommand extends MxCommand {
             if(e.getCurrentItem() != null) {
                 ItemStack skullItemStack = e.getCurrentItem().clone();
                 ItemMeta im = skullItemStack.getItemMeta();
-                im.setLore(Collections.emptyList());
+                im.lore(Collections.emptyList());
                 skullItemStack.setItemMeta(im);
                 if(p.hasPermission(Permissions.COMMAND_SKULLS_REMOVE_SKULL.getPermission())) {
                     if(e.getClick() == ClickType.SHIFT_LEFT) {

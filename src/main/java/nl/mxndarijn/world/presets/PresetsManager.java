@@ -84,4 +84,8 @@ public class PresetsManager {
         }
         return Optional.empty();
     }
+
+    public ArrayList<Preset> getAllPresets() {
+        return presets;
+    }
 }
