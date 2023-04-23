@@ -70,7 +70,7 @@ public class PresetConfig {
         });
     }
 
-    public void apply() {
+    public void save() {
         fc.set(PresetConfigValue.NAME.getConfigValue(),name);
         fc.set(PresetConfigValue.HOST_DIFFICULTY.getConfigValue(),hostDifficulty);
         fc.set(PresetConfigValue.PLAY_DIFFICULTY.getConfigValue(),playDifficulty);
@@ -164,4 +164,5 @@ public class PresetConfig {
     public HashMap<Colors, MxLocation> getColors() {
         return colors;
     }
+
 }

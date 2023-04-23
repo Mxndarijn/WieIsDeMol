@@ -16,9 +16,9 @@
 
 name: Niet ingesteld
 
-host-difficulty: 0
+host-difficulty: 1
 
-play-difficulty: 0
+play-difficulty: 1
 
 colors:
   red:

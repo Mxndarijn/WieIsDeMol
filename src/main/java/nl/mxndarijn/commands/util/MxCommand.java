@@ -49,7 +49,7 @@ public abstract class MxCommand implements CommandExecutor {
             return true;
         }
         if(sender instanceof Player) {
-            //TODO check ingame
+            // TODO check ingame
         }
         try {
             execute(sender, command, label, args);

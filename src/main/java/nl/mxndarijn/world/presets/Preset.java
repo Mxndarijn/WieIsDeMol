@@ -1,11 +1,11 @@
 package nl.mxndarijn.world.presets;
 
 import nl.mxndarijn.data.ChatPrefix;
-import nl.mxndarijn.data.SpecialItems;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.inventory.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.inventory.saver.InventoryManager;
+import nl.mxndarijn.items.Items;
 import nl.mxndarijn.util.language.LanguageManager;
 import nl.mxndarijn.util.language.LanguageText;
 import nl.mxndarijn.util.logger.LogLevel;
@@ -129,7 +129,7 @@ public class Preset {
         return f.exists();
     }
 
-    private String getStars(int stars) {
+    public String getStars(int stars) {
         StringBuilder hostStars = new StringBuilder();
         for(int i = 1; i <= 5; i++) {
             if(i <= stars) {
@@ -163,6 +163,7 @@ public class Preset {
             if(!this.mxWorld.get().isLoaded()) {
                 return;
             }
+            config.save();
             MxAtlas.getInstance().unloadMxWorld(this.mxWorld.get(), true);
         });
     }
@@ -183,8 +184,8 @@ public class Preset {
                 InventoryManager.loadInventoryForPlayer(fc, p.getUniqueId().toString(), p);
             }
             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INFO_CONFIGURE_TOOL));
-            if(!InventoryManager.containsItem(p.getInventory(), SpecialItems.PRESET_CONFIGURE_TOOL.getItemStack())) {
-                p.getInventory().addItem(SpecialItems.PRESET_CONFIGURE_TOOL.getItemStack());
+            if(!InventoryManager.containsItem(p.getInventory(), Items.PRESET_CONFIGURE_TOOL.getItemStack())) {
+                p.getInventory().addItem(Items.PRESET_CONFIGURE_TOOL.getItemStack());
             }
         }
 

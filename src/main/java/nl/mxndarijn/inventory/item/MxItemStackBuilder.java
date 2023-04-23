@@ -43,6 +43,10 @@ public class MxItemStackBuilder<T extends MxItemStackBuilder<T>> {
         lores.add(lore);
         return (T) this;
     }
+    public T addBlankLore() {
+        lores.add(" ");
+        return (T) this;
+    }
 
     public T addItemFlag(ItemFlag... flag) {
         itemMeta.addItemFlags(flag);
@@ -70,5 +74,11 @@ public class MxItemStackBuilder<T extends MxItemStackBuilder<T>> {
         itemStack.setItemMeta(itemMeta);
 
         return itemStack;
+    }
+
+    public T addCustomTagString(String tagName, int value) {
+        itemMeta.getPersistentDataContainer().set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), tagName), PersistentDataType.INTEGER, value);
+
+        return (T) this;
     }
 }

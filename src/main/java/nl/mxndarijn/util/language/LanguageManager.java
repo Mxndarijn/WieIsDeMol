@@ -66,6 +66,11 @@ public class LanguageManager {
         return prefix + getLanguageString(text, placeholders);
     }
 
+    public String getLanguageString(LanguageText text, ChatPrefix prefix) {
+
+        return prefix + getLanguageString(text, Collections.emptyList());
+    }
+
     private void checkAvailability(LanguageText text) {
         if(!languageConfig.contains(text.getConfigValue())) {
             JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);

@@ -4,6 +4,7 @@ import nl.mxndarijn.commands.*;
 import nl.mxndarijn.data.ConfigFiles;
 import nl.mxndarijn.data.Permissions;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
+import nl.mxndarijn.items.ItemManager;
 import nl.mxndarijn.util.chatinput.MxChatInputManager;
 import nl.mxndarijn.util.language.LanguageManager;
 import nl.mxndarijn.util.logger.LogLevel;
@@ -31,6 +32,7 @@ public final class WieIsDeMol extends JavaPlugin {
         MxChatInputManager.getInstance();
         PresetsManager.getInstance();
         ChangeWorldManager.getInstance();
+        ItemManager.getInstance();
         registerCommands();
         configFilesSaver();
 
