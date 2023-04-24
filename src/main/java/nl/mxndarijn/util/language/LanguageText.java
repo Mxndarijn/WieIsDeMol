@@ -22,7 +22,10 @@ public enum LanguageText {
     PRESET_INFO_CONFIGURE_TOOL("preset-info-configure-tool"),
     PRESET_CONFIGURE_TOOL_ENTER_NEW_NAME("preset-configure-tool-enter-new-name"),
     PRESET_CONFIGURE_TOOL_NAME_CHANGED("preset-configure-tool-name-changed"),
-    PRESET_CONFIGURE_TOOL_SKULL_CHANGED("preset-configure-tool-skull-changed");
+    PRESET_CONFIGURE_TOOL_SKULL_CHANGED("preset-configure-tool-skull-changed"),
+    PRESET_CONFIGURE_TOOL_WARPS_CHANGE_NAME("preset-configure-tool-warps-change-name"),
+    PRESET_CONFIGURE_TOOL_WARPS_WARP_CREATED("preset-configure-tool-warps-warp-created"),
+    PRESET_CONFIGURE_TOOL_WARPS_WARP_NAME_ALREADY_EXISTS("preset-configure-tool-warps-warp-name-already-exists");
 
     private final String configValue;
     LanguageText(String value) {

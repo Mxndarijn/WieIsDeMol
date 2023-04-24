@@ -20,14 +20,16 @@ import nl.mxndarijn.util.language.LanguageManager;
 import nl.mxndarijn.util.language.LanguageText;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
+import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.world.WarpManager;
+import nl.mxndarijn.world.mxworld.MxLocation;
 import nl.mxndarijn.world.presets.Preset;
 import nl.mxndarijn.world.presets.PresetConfig;
 import nl.mxndarijn.world.presets.PresetsManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import nl.mxndarijn.world.warps.Warp;
+import org.bukkit.*;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -39,8 +41,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.checkerframework.checker.units.qual.A;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class PresetConfigureTool extends MxItem  {
@@ -88,11 +93,8 @@ public class PresetConfigureTool extends MxItem  {
                                             .setSkinFromHeadsData(key)
                                             .setName(ChatColor.GRAY + mxHeadSection.getName().get())
                                             .addBlankLore()
-                                            .addLore(ChatColor.YELLOW + "Klik om dit item toe te voegen aan je inventory.")
+                                            .addLore(ChatColor.YELLOW + "Klik om de skull te selecteren.")
                                             .addCustomTagString("skull_key", mxHeadSection.getKey());
-                                    if(p.hasPermission(Permissions.COMMAND_SKULLS_REMOVE_SKULL.getPermission())) {
-                                        b.addLore(ChatColor.YELLOW + "Shift-klik op dit item om het te verwijderen.");
-                                    }
                                     list.add(new Pair<>(b.build(), clicked));
                                 });
                             });
@@ -131,7 +133,7 @@ public class PresetConfigureTool extends MxItem  {
                                 .build(),
                         12,
                         (mainInv, clickMain) -> {
-
+                            openWarpsMenu(p, mainInv, preset, config);
                         })
                 .setItem(MxDefaultItemStackBuilder.create(Material.LIGHT_BLUE_SHULKER_BOX)
                                 .setName(ChatColor.GRAY + "Kleuren")
@@ -279,5 +281,94 @@ public class PresetConfigureTool extends MxItem  {
                                 .build(),22,null)
                 .setPrevious(mainInv)
                 .build());
+    }
+
+    private void openWarpsMenu(Player p,MxInventory mainInv, Preset preset, PresetConfig config) {
+        List<Warp> warps = preset.getWarpManager().getWarps();
+        MxItemClicked clicked = (mxInv, e) -> {
+
+        };
+
+        ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+        warps.forEach(warp -> {
+            list.add(new Pair<>(
+                    MxSkullItemStackBuilder.create(1)
+                            .setSkinFromHeadsData(warp.getSkullId())
+                            .setName(ChatColor.GRAY + warp.getName())
+                            .addBlankLore()
+                            .addCustomTagString("warp-name", warp.getName())
+                            .addLore(ChatColor.YELLOW + "Klik op de warp om deze aan te passen.")
+                            .build(),
+                    clicked
+            ));
+        });
+
+        MxInventoryManager.getInstance().addAndOpenInventory(p,MxListInventoryBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
+                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                .addListItems(list)
+                .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
+                        .setName(ChatColor.GRAY + "Info")
+                        .addBlankLore()
+                        .addLore(ChatColor.YELLOW + "Hier staan alle warps, je kan er ook zelf toevoegen.")
+                        .build(), 22, null)
+                .setItem(MxDefaultItemStackBuilder.create(Material.CRAFTING_TABLE)
+                        .setName(ChatColor.GRAY + "Nieuwe warp")
+                        .addBlankLore()
+                        .addLore(ChatColor.YELLOW + "Klik hier om een nieuwe warp te te voegen.")
+                        .addLore(ChatColor.YELLOW + "De locatie zal je huidige locatie worden.")
+                        .build(), 26, (mxInv, e) -> {
+                    Location loc = p.getLocation();
+                    MxHeadManager mxHeadManager = MxHeadManager.getInstance();
+                    ArrayList<Pair<ItemStack, MxItemClicked>> listSkulls = new ArrayList<>();
+                    MxItemClicked clickedOnSkull = (skullInv, e1) -> {
+                        ItemStack is = e1.getCurrentItem();
+                        ItemMeta im = is.getItemMeta();
+                        PersistentDataContainer container = im.getPersistentDataContainer();
+                        String warpHeadKey = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "skull_key"), PersistentDataType.STRING);
+
+                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_CHANGE_NAME, ChatPrefix.WIDM));
+                        p.closeInventory();
+                        WarpManager warpManager = preset.getWarpManager();
+                        MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
+                            if(warps.stream().anyMatch(w -> w.getName().equalsIgnoreCase(message))) {
+                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_NAME_ALREADY_EXISTS, Collections.singletonList(message)));
+                                return;
+                            }
+                            Warp w = new Warp(message, warpHeadKey, MxLocation.getFromLocation(loc));
+                            warpManager.addWarp(w);
+                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_CREATED, Collections.singletonList(message)));
+                        });
+
+                    };
+
+                    MxHeadManager.getInstance().getAllHeadKeys().forEach(key -> {
+                        Optional<MxHeadSection> section = mxHeadManager.getHeadSection(key);
+                        section.ifPresent(mxHeadSection -> {
+                            MxSkullItemStackBuilder b = MxSkullItemStackBuilder.create(1)
+                                    .setSkinFromHeadsData(key)
+                                    .setName(ChatColor.GRAY + mxHeadSection.getName().get())
+                                    .addBlankLore()
+                                    .addLore(ChatColor.YELLOW + "Klik om te selecteren.")
+                                    .addCustomTagString("skull_key", mxHeadSection.getKey());
+                            listSkulls.add(new Pair<>(b.build(), clickedOnSkull));
+                        });
+                    });
+
+                    MxInventoryManager.getInstance().addAndOpenInventory(p,
+                            MxListInventoryBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.SIX_ROWS)
+                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
+                                    .addListItems(listSkulls)
+                                    .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
+                                            .setName(ChatColor.GRAY + "Info")
+                                            .addBlankLore()
+                                            .addLore(ChatColor.YELLOW + "Klik op een skull om dat de nieuwe skull van de preset te maken.")
+                                            .build(), 48, null)
+                                    .setPrevious(mxInv)
+                                    .build());
+                        })
+                .setPrevious(mainInv)
+                .build()
+        );
+
     }
 }

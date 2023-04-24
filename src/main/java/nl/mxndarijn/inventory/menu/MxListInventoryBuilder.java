@@ -100,6 +100,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
         Iterator<Pair<ItemStack, MxItemClicked>> iterator = itemStackList.iterator();
 
         int amountOfInventories = (int) Math.ceil((double) itemStackList.size() / availableItemsStackSlots.size());
+        if(amountOfInventories == 0) amountOfInventories = 1; // If no values preset, we want to show an inv;
         String nameWithoutSuffix = this.name;
         changeTitle(this.name + getSuffix(1, amountOfInventories));
         availableItemsStackSlots.forEach(i -> {

@@ -113,6 +113,5 @@ public class PresetsCommand extends MxCommand {
                         })
                 .build();
         MxInventoryManager.getInstance().addAndOpenInventory(p, inv);
-        //MxHeadManager.getInstance().storeSkullTexture(p.getInventory().getItemInMainHand(), "test", MxHeadsType.MANUALLY_ADDED);
     }
 }

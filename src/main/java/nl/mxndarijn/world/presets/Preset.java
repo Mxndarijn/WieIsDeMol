@@ -13,6 +13,7 @@ import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.wieisdemol.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.world.WarpManager;
 import nl.mxndarijn.world.changeworld.ChangeWorldManager;
 import nl.mxndarijn.world.changeworld.MxChangeWorld;
 import nl.mxndarijn.world.mxworld.MxAtlas;
@@ -41,6 +42,7 @@ public class Preset {
     private PresetConfig config;
 
     private Optional<MxWorld> mxWorld;
+    private WarpManager warpManager;
 
     public static final String PRESET_ITEMMETA_TAG = "preset_id";
     private Preset(File directory) {
@@ -62,6 +64,7 @@ public class Preset {
             }
             this.config = new PresetConfig(presetConfigFile, YamlConfiguration.loadConfiguration(presetConfigFile));
             this.mxWorld = WorldManager.getInstance().getPresetById(directory.getName());
+            this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
         }
 
     }
@@ -207,5 +210,12 @@ public class Preset {
         }
     }
 
+    public File getInventoriesFile() {
+        return inventoriesFile;
+    }
+
+    public WarpManager getWarpManager() {
+        return warpManager;
+    }
 }
 

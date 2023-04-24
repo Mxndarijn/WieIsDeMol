@@ -1,9 +1,15 @@
 package nl.mxndarijn.world.mxworld;
 
+import nl.mxndarijn.util.logger.LogLevel;
+import nl.mxndarijn.util.logger.Logger;
+import nl.mxndarijn.util.logger.Prefix;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Optional;
 
 public class MxLocation {
@@ -13,6 +19,17 @@ public class MxLocation {
     private double z = Double.MIN_VALUE;
     private int yaw = 0;
     private int pitch = 0;
+
+    public static MxLocation getFromLocation(Location loc) {
+        MxLocation mxLocation = new MxLocation();
+        mxLocation.setX(loc.getX());
+        mxLocation.setY(loc.getY());
+        mxLocation.setZ(loc.getZ());
+        mxLocation.setPitch((int) loc.getPitch());
+        mxLocation.setY(loc.getYaw());
+
+        return mxLocation;
+    }
 
     public double getX() {
         return x;
@@ -76,6 +93,21 @@ public class MxLocation {
                 ", yaw=" + yaw +
                 ", pitch=" + pitch +
                 '}';
+    }
+
+    public void save(File file, FileConfiguration fc, ConfigurationSection section) {
+        section.set("x", x);
+        section.set("y", y);
+        section.set("z", z);
+        section.set("yaw", yaw);
+        section.set("pitch", pitch);
+
+        try {
+            fc.save(file);
+        } catch (IOException e) {
+            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not write MxLocation (" + file.getAbsolutePath() + ")");
+            e.printStackTrace();
+        }
     }
 
     public static Optional<MxLocation> loadFromConfigurationSection(ConfigurationSection section) {

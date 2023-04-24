@@ -24,3 +24,6 @@ preset-info-configure-tool: "&7Met de Preset Configure-Tool kun je veel instelli
 preset-configure-tool-enter-new-name: "&7Voer de nieuwe naam van de preset in."
 preset-configure-tool-name-changed: "&aNaam verandert naar: %%1%%"
 preset-configure-tool-skull-changed: "&7Skull verandert naar: %%1%%"
+preset-configure-tool-warps-change-name: "&7Voer de naam van de warp in."
+preset-configure-tool-warps-warp-created: "&aWarp aangemaakt! (%%1%%)"
+preset-configure-tool-warps-warp-name-already-exists: "&cWarp bestaat al! (%%1%%)"
