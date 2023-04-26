@@ -25,7 +25,11 @@ public enum LanguageText {
     PRESET_CONFIGURE_TOOL_SKULL_CHANGED("preset-configure-tool-skull-changed"),
     PRESET_CONFIGURE_TOOL_WARPS_CHANGE_NAME("preset-configure-tool-warps-change-name"),
     PRESET_CONFIGURE_TOOL_WARPS_WARP_CREATED("preset-configure-tool-warps-warp-created"),
-    PRESET_CONFIGURE_TOOL_WARPS_WARP_NAME_ALREADY_EXISTS("preset-configure-tool-warps-warp-name-already-exists");
+    PRESET_CONFIGURE_TOOL_WARPS_WARP_NAME_ALREADY_EXISTS("preset-configure-tool-warps-warp-name-already-exists"),
+    PRESET_CONFIGURE_TOOL_WARPS_WARP_NAME_CHANGED("preset-configure-tool-warps-name-changed"),
+    PRESET_CONFIGURE_TOOL_WARPS_WARP_TELEPORTED("preset-configure-tool-warps-teleported"),
+    PRESET_CONFIGURE_TOOL_WARPS_WARP_DELETED("preset-configure-tool-warps-deleted"),
+    PRESET_CONFIGURE_TOOL_SPAWN_CHANGED("preset-configure-tool-spawn-changed");
 
     private final String configValue;
     LanguageText(String value) {

@@ -57,6 +57,9 @@ public class MxSkullItemStackBuilder extends MxItemStackBuilder<MxSkullItemStack
 
     public MxSkullItemStackBuilder setSkinFromHeadsData(String value) {
         Optional<String> dataOpt = MxHeadManager.getInstance().getTextureValue(value);
+        if(!dataOpt.isPresent()) {
+            dataOpt = MxHeadManager.getInstance().getTextureValue("question-mark");
+        }
         if(dataOpt.isPresent()) {
             String data = dataOpt.get();
             GameProfile profile = new GameProfile(UUID.randomUUID(), null);

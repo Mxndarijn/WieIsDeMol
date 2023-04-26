@@ -67,4 +67,16 @@ public class Warp {
     public String getSkullId() {
         return skullId;
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMxLocation(MxLocation mxLocation) {
+        this.mxLocation = mxLocation;
+    }
+
+    public void setSkullId(String skullId) {
+        this.skullId = skullId;
+    }
 }

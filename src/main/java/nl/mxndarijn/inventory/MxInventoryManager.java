@@ -43,7 +43,7 @@ public class MxInventoryManager implements Listener {
         List<MxInventory> get = inventories.get(uuid);
         for (int i = 0; i < get.size(); i++) {
             MxInventory mxInventory = get.get(i);
-            if (mxInventory.getName().equals(e.getView().getTitle())) {
+            if(e.getClickedInventory() == mxInventory.getInv()) {
                 if (mxInventory.isCancelEvent()) {
                     e.setCancelled(true);
                 }

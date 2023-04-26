@@ -169,6 +169,8 @@ public class MxAtlas {
                     list.add(mxWorld);
                     worlds.add(mxWorld);
                     Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Adding world to MxAtlas: " + file.getName() + " (" + file.getAbsolutePath() + ")");
+                } else {
+                    Logger.logMessage(LogLevel.Error, Prefix.MXATLAS, "Could not load folder because it does not have a uid.dat file. (" + file.getAbsolutePath() + ")");
                 }
             }
         }

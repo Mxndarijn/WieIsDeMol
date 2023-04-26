@@ -29,6 +29,8 @@ import nl.mxndarijn.world.presets.PresetConfig;
 import nl.mxndarijn.world.presets.PresetsManager;
 import nl.mxndarijn.world.warps.Warp;
 import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -64,6 +66,34 @@ public class PresetConfigureTool extends MxItem  {
         PresetConfig config = preset.getConfig();
 
         MxInventoryManager.getInstance().addAndOpenInventory(p,MxDefaultMenuBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
+                .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_PEARL)
+                                .setName(ChatColor.GRAY + "Verander spawn locatie")
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Verander de spawn locatie naar je huidige locatie.")
+                                .build(),
+                        0,
+                        (mxInv1, e12) -> {
+                            File settings = new File(preset.getDirectory(), "worldsettings.yml");
+                            if(settings.exists()) {
+                                FileConfiguration fc = YamlConfiguration.loadConfiguration(settings);
+                                Location l = p.getLocation();
+                                ConfigurationSection section = fc.createSection("spawn");
+                                section.set("x", l.getBlockX());
+                                section.set("y", l.getBlockY());
+                                section.set("z", l.getBlockZ());
+                                try {
+                                    fc.save(settings);
+                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_SPAWN_CHANGED));
+                                } catch (IOException ex) {
+                                    Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not save file. (" + settings.getAbsolutePath() + ")");
+                                    ex.printStackTrace();
+                                }
+                                p.closeInventory();
+                            } else {
+                                Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not find file. (" + settings.getAbsolutePath() + ")");
+                            }
+                        }
+                )
                 .setItem(getSkull(config),
                         9,
                         (mainInv, clickMain) -> {
@@ -286,6 +316,79 @@ public class PresetConfigureTool extends MxItem  {
     private void openWarpsMenu(Player p,MxInventory mainInv, Preset preset, PresetConfig config) {
         List<Warp> warps = preset.getWarpManager().getWarps();
         MxItemClicked clicked = (mxInv, e) -> {
+            ItemStack is = e.getCurrentItem();
+            ItemMeta im = is.getItemMeta();
+            PersistentDataContainer container = im.getPersistentDataContainer();
+            String warpName = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "warp-name"), PersistentDataType.STRING);
+
+            Optional<Warp> optW = preset.getWarpManager().getWarpByName(warpName);
+            if(optW.isPresent()) {
+                Warp w = optW.get();
+                MxLocation l = w.getMxLocation();
+                MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create("Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
+                        .setPrevious(mxInv)
+                        .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_PEARL)
+                                    .setName(ChatColor.GRAY + "Verander warp locatie")
+                                    .addBlankLore()
+                                    .addLore(ChatColor.YELLOW + "Verander de warp locatie naar je huidige locatie.")
+                                    .build(),
+                                12,
+                                (mxInv1, e12) -> {
+                                    preset.getWarpManager().removeWarp(w);
+                                    w.setMxLocation(MxLocation.getFromLocation(p.getLocation()));
+                                    preset.getWarpManager().addWarp(w);
+
+                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_NAME_CHANGED, ChatPrefix.WIDM));
+                                    p.closeInventory();
+                                }
+                        )
+                        .setItem(MxDefaultItemStackBuilder.create(Material.COMPASS)
+                                    .setName(ChatColor.GRAY + "Teleporteer")
+                                    .addBlankLore()
+                                    .addLore(ChatColor.YELLOW + "Teleporteer naar de warp.")
+                                    .build(),
+                                14,
+                                (mxInv1, e12) -> {
+                                    p.teleport(w.getMxLocation().getLocation(p.getWorld()));
+                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_TELEPORTED, ChatPrefix.WIDM));
+                                    p.closeInventory();
+                                }
+                        )
+
+                        .setItem(MxSkullItemStackBuilder.create(1)
+                                    .setSkinFromHeadsData("red-minus")
+                                    .setName(ChatColor.GRAY + "Verwijder")
+                                    .addBlankLore()
+                                    .addLore(ChatColor.YELLOW + "Verwijder de warp.")
+                                    .build(),
+                                26,
+                                (mxInv1, e12) -> {
+                                    preset.getWarpManager().removeWarp(w);
+                                    p.closeInventory();
+                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_DELETED));
+                                }
+                        )
+                        .setItem(MxSkullItemStackBuilder.create(1)
+                                    .setSkinFromHeadsData(w.getSkullId())
+                                    .setName(ChatColor.GRAY + "Info")
+                                    .addBlankLore()
+                                    .addLore(ChatColor.GRAY + "Naam: " + w.getName())
+                                    .addBlankLore()
+                                    .addLore(ChatColor.GRAY + "X: " + l.getX())
+                                    .addLore(ChatColor.GRAY + "Y: " + l.getY())
+                                    .addLore(ChatColor.GRAY + "Z: " + l.getZ())
+                                    .addLore(ChatColor.GRAY + "Pitch: " + l.getPitch())
+                                    .addLore(ChatColor.GRAY + "Yaw: " + l.getYaw())
+                                    .build(),
+                                22,
+                                (mxInv1, e12) -> {
+                                    p.teleport(w.getMxLocation().getLocation(p.getWorld()));
+                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_TELEPORTED, ChatPrefix.WIDM));
+                                    p.closeInventory();
+                                }
+                        )
+                        .build());
+            }
 
         };
 

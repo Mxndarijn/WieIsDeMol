@@ -26,7 +26,7 @@ public class MxLocation {
         mxLocation.setY(loc.getY());
         mxLocation.setZ(loc.getZ());
         mxLocation.setPitch((int) loc.getPitch());
-        mxLocation.setY(loc.getYaw());
+        mxLocation.setYaw((int) loc.getYaw());
 
         return mxLocation;
     }

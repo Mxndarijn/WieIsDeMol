@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class WarpManager {
 
@@ -67,5 +68,13 @@ public class WarpManager {
 
     public FileConfiguration getFc() {
         return fc;
+    }
+
+    public Optional<Warp> getWarpByName(String warpName) {
+        for (Warp warp : warps) {
+            if(warp.getName().equals(warpName))
+                return Optional.of(warp);
+        }
+        return Optional.empty();
     }
 }

@@ -21,7 +21,6 @@ import nl.mxndarijn.world.mxworld.MxWorld;
 import nl.mxndarijn.world.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -66,7 +65,6 @@ public class Preset {
             this.mxWorld = WorldManager.getInstance().getPresetById(directory.getName());
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
         }
-
     }
     public static Optional<Preset> create(File file) {
         Preset preset = new Preset(file);
@@ -74,8 +72,13 @@ public class Preset {
         if(preset.containsWorld() && preset.mxWorld.isPresent()) {
             return Optional.of(preset);
         } else {
+            if(!preset.containsWorld()) {
+                Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not find world. (" + preset.getDirectory() + ")");
+            }
+            if(!preset.getMxWorld().isPresent()) {
+                Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not find MxWorld. (" + preset.getDirectory() + ")");
+            }
             return Optional.empty();
-            //TODO does not contain world.
         }
 
     }
@@ -124,7 +127,7 @@ public class Preset {
 
 
     private boolean containsWorld() {
-        return containsFolder("region") && containsFolder("region");
+        return containsFolder("region");
     }
 
     private boolean containsFolder(String folderName) {
