@@ -3,7 +3,6 @@ package nl.mxndarijn.world.warps;
 import nl.mxndarijn.world.mxworld.MxLocation;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ public class Warp {
     public void save(File file, FileConfiguration fc) {
         ConfigurationSection section = fc.createSection(name);
         section.set("skull", skullId);
-        mxLocation.save(file, fc, section.createSection("location"));
+        mxLocation.write(section.createSection("location"));
     }
 
     public static Optional<Warp> create( ConfigurationSection section) {

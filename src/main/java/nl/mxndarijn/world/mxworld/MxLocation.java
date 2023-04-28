@@ -95,19 +95,19 @@ public class MxLocation {
                 '}';
     }
 
-    public void save(File file, FileConfiguration fc, ConfigurationSection section) {
+    public void write(ConfigurationSection section) {
         section.set("x", x);
         section.set("y", y);
         section.set("z", z);
         section.set("yaw", yaw);
         section.set("pitch", pitch);
 
-        try {
-            fc.save(file);
-        } catch (IOException e) {
-            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not write MxLocation (" + file.getAbsolutePath() + ")");
-            e.printStackTrace();
-        }
+//        try {
+//            fc.save(file);
+//        } catch (IOException e) {
+//            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not write MxLocation (" + file.getAbsolutePath() + ")");
+//            e.printStackTrace();
+//        }
     }
 
     public static Optional<MxLocation> loadFromConfigurationSection(ConfigurationSection section) {
@@ -124,5 +124,9 @@ public class MxLocation {
         }
 
         return mxLocation.validate() ? Optional.of(mxLocation) : Optional.empty();
+    }
+
+    public boolean equals(MxLocation l) {
+        return x == l.getX() && y == l.getY() && z == l.getZ();
     }
 }

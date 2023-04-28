@@ -1,4 +1,4 @@
-package nl.mxndarijn.world;
+package nl.mxndarijn.world.warps;
 
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;

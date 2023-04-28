@@ -78,7 +78,7 @@ public abstract class MxItem implements Listener {
         } catch (Exception ex) {
             Logger.logMessage(LogLevel.Error, Prefix.MXITEM, "Could not execute item: " + Functions.convertComponentToString(is.getItemMeta().displayName()));
             ex.printStackTrace();
-            p.sendMessage(languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_COMMAND, Collections.emptyList(),  ChatPrefix.WIDM));
+            p.sendMessage(languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_ITEM, Collections.emptyList(),  ChatPrefix.WIDM));
         }
 
     }

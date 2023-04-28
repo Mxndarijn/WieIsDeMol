@@ -17,7 +17,7 @@ public enum Items {
             MxDefaultItemStackBuilder.create(Material.NETHER_STAR, 1)
                 .setName(ChatColor.GRAY + "Preset Configure-Tool")
                 .addLore(" ")
-                .addLore(ChatColor.YELLOW + "Met item kan je instellingen in een preset aanpassen.")
+                .addLore(ChatColor.YELLOW + "Met dit item kan je instellingen in een preset aanpassen.")
                 .build(),
             p -> {
                 return true;
@@ -25,7 +25,50 @@ public enum Items {
             false,
             PresetConfigureTool.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
-    );
+    ),
+
+    CHEST_CONFIGURE_TOOL(
+            MxDefaultItemStackBuilder.create(Material.STICK, 1)
+                    .setName(ChatColor.GRAY + "Chest Configure-Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je kisten in een preset aanpassen.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            ChestConfigureTool.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+    SHULKER_CONFIGURE_TOOL(
+            MxDefaultItemStackBuilder.create(Material.BLAZE_ROD, 1)
+                    .setName(ChatColor.GRAY + "Shulker Configure-Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je shulkers in een preset aanpassen.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            ShulkerConfigureTool.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+    DOOR_CONFIGURE_TOOL(
+            MxDefaultItemStackBuilder.create(Material.BRICK, 1)
+                    .setName(ChatColor.GRAY + "Door Configure-Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je deuren in een preset aanpassen.")
+                    .addLore(ChatColor.YELLOW + "Gebruik in de lucht om deuren te maken.")
+                    .addLore(ChatColor.YELLOW + "Gebruik tegen een block om het block toe te voegen aan een deur.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            DoorConfigureTool.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    )
+    ;
 
 
 

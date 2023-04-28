@@ -80,6 +80,13 @@ public class PresetConfig {
         fc.set(PresetConfigValue.LOCK_REASON.getConfigValue(),lockReason);
         fc.set(PresetConfigValue.CONFIGURED.getConfigValue(),configured);
 
+        fc.set(PresetConfigValue.COLORS.getConfigValue(), null);
+
+        ConfigurationSection section = fc.createSection(PresetConfigValue.COLORS.getConfigValue());
+        for(Colors c : colors.keySet()) {
+            colors.get(c).write(section.createSection(c.getType()));
+        }
+
         try {
             fc.save(file);
         } catch (IOException e) {

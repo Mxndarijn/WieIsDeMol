@@ -1,10 +1,12 @@
 package nl.mxndarijn.util.language;
 
-public enum LanguageText {
+public enum
+LanguageText {
     NO_PERMISSION("no-permission"),
     NO_PLAYER("no-player"),
     NOT_CORRECT_WORLD("not-correct-world"),
     ERROR_WHILE_EXECUTING_COMMAND("error-while-executing-command"),
+    ERROR_WHILE_EXECUTING_ITEM("error-while-executing-item"),
     COMMAND_SKULLS_SKULL_ADDED("command-skulls-skull-added"),
     COMMAND_SKULLS_SKULL_NOT_ADDED("command-skulls-skull-not-added"),
     COMMAND_SKULLS_GET_CHAT_INPUT("command-skulls-get-chat-input"),
@@ -29,7 +31,29 @@ public enum LanguageText {
     PRESET_CONFIGURE_TOOL_WARPS_WARP_NAME_CHANGED("preset-configure-tool-warps-name-changed"),
     PRESET_CONFIGURE_TOOL_WARPS_WARP_TELEPORTED("preset-configure-tool-warps-teleported"),
     PRESET_CONFIGURE_TOOL_WARPS_WARP_DELETED("preset-configure-tool-warps-deleted"),
-    PRESET_CONFIGURE_TOOL_SPAWN_CHANGED("preset-configure-tool-spawn-changed");
+    PRESET_CONFIGURE_TOOL_SPAWN_CHANGED("preset-configure-tool-spawn-changed"),
+    PRESET_CONFIGURE_TOOL_COLOR_ADDED("preset-configure-tool-color-added"),
+    PRESET_CONFIGURE_TOOL_COLOR_REMOVED("preset-configure-tool-color-removed"),
+    PRESET_CONFIGURE_TOOL_COLOR_SPAWNPOINT_CHANGED("preset-configure-tool-spawnpoint-changed"),
+    PRESET_CONFIGURE_TOOL_COLOR_TELEPORTED("preset-configure-tool-teleported"),
+    CHEST_CONFIGURE_TOOL_CHEST_ADDED("chest-configure-tool-chest-added"),
+    CHEST_CONFIGURE_TOOL_INFO("chest-configure-tool-info"),
+    CHEST_CONFIGURE_TOOL_ENTER_NAME("chest-configure-tool-enter-name"),
+    CHEST_CONFIGURE_TOOL_CHEST_REMOVED("chest-configure-tool-chest-removed"),
+    SHULKER_CONFIGURE_TOOL_CHEST_ADDED("shulker-configure-tool-chest-added"),
+    SHULKER_CONFIGURE_TOOL_INFO("shulker-configure-tool-info"),
+    SHULKER_CONFIGURE_TOOL_ENTER_NAME("shulker-configure-tool-enter-name"),
+    SHULKER_CONFIGURE_TOOL_CHEST_REMOVED("shulker-configure-tool-chest-removed"),
+    DOOR_CONFIGURE_TOOL_SELECTED("door-configure-tool-selected"),
+    DOOR_CONFIGURE_TOOL_DOOR_CREATE_INPUT_NAME("door-configure-tool-door-create-input-name"),
+    DOOR_CONFIGURE_TOOL_DOOR_CREATED("door-configure-tool-door-created"),
+    DOOR_CONFIGURE_TOOL_NO_DOOR_SELECTED("door-configure-tool-no-door-selected"),
+    DOOR_CONFIGURE_TOOL_ALREADY_ADDED("door-configure-tool-already-added"),
+    DOOR_CONFIGURE_TOOL_ADDED("door-configure-tool-added"),
+    DOOR_CONFIGURE_TOOL_LOCATION_REMOVED("door-configure-tool-location-removed"),
+    DOOR_CONFIGURE_TOOL_INFO("door-configure-tool-info"),
+    DOOR_CONFIGURE_TOOL_LOCATION_NOT_FOUND("door-configure-tool-location-not-found"),
+    DOOR_CONFIGURE_TOOL_DOOR_REMOVED("door-configure-tool-door-removed");
 
     private final String configValue;
     LanguageText(String value) {

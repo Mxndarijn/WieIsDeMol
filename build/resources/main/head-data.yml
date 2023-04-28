@@ -66,3 +66,75 @@ red-minus:
   name: Rode min
   value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGU0YjhiOGQyMzYyYzg2NGUwNjIzMDE0ODdkOTRkMzI3MmE2YjU3MGFmYmY4MGMyYzViMTQ4Yzk1NDU3OWQ0NiJ9fX0=
   type: manually-added
+red-block:
+  name: Rode kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTQ4ZDdkMWUwM2UxYWYxNDViMDEyNWFiODQxMjg1NjcyYjQyMTI2NWRhMmFiOTE1MDE1ZjkwNTg0MzhiYTJkOCJ9fX0=
+  type: manually-added
+orange-block:
+  name: Oranje kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTI5MTYyMmM1MTA0ZjFjYzk0YTJiNGQzM2FkN2IyYzliMjE1ZmY5NDk1MDFlOGMyNTBjZmQ1YTg2MWU2YjkwNyJ9fX0=
+  type: manually-added
+yellow-block:
+  name: Gele kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmMxODNmMzYwMWY2NzI5M2E1MWUyNTc3ZGJlYTA1YTQ2MDJlZmE0MzNjYzM1NGU2M2ZjZjdmYmUwMjY0ODZiYyJ9fX0=
+  type: manually-added
+light-green-block:
+  name: Licht-Groene kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWMwMWY2Nzk2ZWI2M2QwZThhNzU5MjgxZDAzN2Y3YjM4NDMwOTBmOWE0NTZhNzRmNzg2ZDA0OTA2NWM5MTRjNyJ9fX0=
+  type: manually-added
+green-block:
+  name: Groene kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmZlYzNkMjVhZTBkMTQ3YzM0MmM0NTM3MGUwZTQzMzAwYTRlNDhhNWI0M2Y5YmI4NThiYWJmZjc1NjE0NGRhYyJ9fX0=
+  type: manually-added
+cyan-block:
+  name: Cyan kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmQwMjEyNjVkMDVmM2UzNTI0YzkwYTgwMGQ0ZDE3ZTY2ZjkzZGFiY2ZiZmFhMTNkYmJiNWIxNTczMGVlMmRkMyJ9fX0=
+  type: manually-added
+light-blue-block:
+  name: Licht-Blauwe kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDU0ODc4OWI5NjhjNzBlYzlkMWRlMjcyZDBiYjkzYTcwMTM0ZjJjMGU2MGFjYjc1ZThkNDU1YTE2NTBmMzk3NyJ9fX0=
+  type: manually-added
+blue-block:
+  name: Bluawe kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjIyMWVlMDAwZDc1Y2M0MGZmZTlhZTY5NDg0MTI5ZjIxZTIxYzliM2I0NGFkZWIyMDNjYTRmNmJiMGU4MzI1ZSJ9fX0=
+  type: manually-added
+purple-block:
+  name: Paarse kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNmY5N2I0YmY1MWNlMmIyMmQ2ZWI1ZWNjMTU0YTdhYjM5M2Y2YTRiMGIxNDJjODg0NjE1MzE3ZDAxOWQ4OTYzOSJ9fX0=
+  type: manually-added
+magenta-block:
+  name: Magenta kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmM4YjgxMmRjZDdiYmFiNGUyMzc5ZWQzNzk2MDI0YjNkYzgzYzEzYmRmZmUxZTFhMWNmZDQxYWI5ZjRmYjYzZCJ9fX0=
+  type: manually-added
+pink-block:
+  name: Roze kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzMxYzYxZGM3ZjJkMDljYTIwZDc1ZTU5NDU3NzdlNWYwNmQwNjI5MzE4Y2QyNTFhZDhkNGQ5ZTgxZjAwNTE4YyJ9fX0=
+  type: manually-added
+brown-block:
+  name: Bruine kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmIzYTk3MmZjNDkwMzZjM2RmZWMyZWEwZWNkODM5YThkY2RhZTc1ODQyMGJkNmYyMzNhZjk5ZjNhMGM2NzIwYSJ9fX0=
+  type: manually-added
+black-block:
+  name: Zwarte kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTE5ZDY0NjEyYmE4ZDFjMDJlZTI3MGQ4NDUxOWFkMGNkNzMxNzViYzQ1ZTdkZGEzZjYzOTY4NmIyY2U2NDU5NiJ9fX0=
+  type: manually-added
+gray-block:
+  name: Grijs kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjI1NTRkZGE4MGVhNjRiMThiYzM3NWI4MWNlMWVkMTkwN2ZjODFhZWE2YjFjZjNjNGY3YWQzMTQ0Mzg5ZjY0YyJ9fX0=
+  type: manually-added
+light-gray-block:
+  name: Licht-Grijze kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjIzZDdlNjU1ZGViZGQ1OTFkMDk5ZDc2ZmYwMDBkNzU1NWJlNGFlMTFiMWUyNmI5YWRmMjQ0YWUwMjJiMjljOCJ9fX0=
+  type: manually-added
+white-block:
+  name: Witte kleur
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTg4NGQ1ZGFiZTA3M2UyOGU2YjdlYjE2NmZmNjEyNDc5MDVjNzlmODM4YjZmNTc1MmU3YWQ0MDYwOTFlZWFmMyJ9fX0=
+  type: manually-added
+a5d51153-a58a-4b7b-9f3c-4ebd7f7e4bc7:
+  name: Appa
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmVkZmZiZjljZTg5MWM2MjdmZDcyYzhkYjI3N2RlNmU1YjcyOWQ4MzA3OGNlN2JhYmJmNGQxMDJmNWMxNjI0MCJ9fX0=
+  type: manually-added
+trapdoor:
+  name: Trapdoor
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDBlOTNhMTMxOTJkZTU2N2ExM2M5MmUxODNhY2RhYjE5NDg4ZGNhMGE0MmRiMzQxMmMyYzgxY2YyNzUzNCJ9fX0=
+  type: manually-added

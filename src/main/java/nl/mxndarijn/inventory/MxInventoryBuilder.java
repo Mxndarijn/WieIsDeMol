@@ -6,9 +6,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 
 public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
     protected Inventory inv;
@@ -30,8 +28,12 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
     }*/
 
     public T addItem(ItemStack is, MxItemClicked onClicked) {
-        inv.addItem(is);
-        onClickedMap.put(inv.first(is), onClicked);
+        int index = inv.firstEmpty();
+        if(index == -1) {
+            return (T) this;
+        }
+        inv.setItem(index, is);
+        onClickedMap.put(index, onClicked);
         return (T) this;
     }
 

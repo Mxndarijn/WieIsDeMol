@@ -2,7 +2,6 @@ package nl.mxndarijn.world.presets;
 
 import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
-import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.inventory.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.inventory.saver.InventoryManager;
 import nl.mxndarijn.items.Items;
@@ -13,7 +12,11 @@ import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.wieisdemol.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.world.WarpManager;
+import nl.mxndarijn.world.chests.ChestManager;
+import nl.mxndarijn.world.doors.DoorInformation;
+import nl.mxndarijn.world.doors.DoorManager;
+import nl.mxndarijn.world.shulkers.ShulkerManager;
+import nl.mxndarijn.world.warps.WarpManager;
 import nl.mxndarijn.world.changeworld.ChangeWorldManager;
 import nl.mxndarijn.world.changeworld.MxChangeWorld;
 import nl.mxndarijn.world.mxworld.MxAtlas;
@@ -42,6 +45,9 @@ public class Preset {
 
     private Optional<MxWorld> mxWorld;
     private WarpManager warpManager;
+    private ChestManager chestManager;
+    private ShulkerManager shulkerManager;
+    private DoorManager doorManager;
 
     public static final String PRESET_ITEMMETA_TAG = "preset_id";
     private Preset(File directory) {
@@ -64,6 +70,9 @@ public class Preset {
             this.config = new PresetConfig(presetConfigFile, YamlConfiguration.loadConfiguration(presetConfigFile));
             this.mxWorld = WorldManager.getInstance().getPresetById(directory.getName());
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
+            this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
+            this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
+            this.doorManager = new DoorManager(new File(getDirectory(), "doors.yml"));
         }
     }
     public static Optional<Preset> create(File file) {
@@ -177,6 +186,27 @@ public class Preset {
         return mxWorld;
     }
 
+
+    public File getInventoriesFile() {
+        return inventoriesFile;
+    }
+
+    public WarpManager getWarpManager() {
+        return warpManager;
+    }
+
+    public ChestManager getChestManager() {
+        return chestManager;
+    }
+
+    public ShulkerManager getShulkerManager() {
+        return shulkerManager;
+    }
+
+    public DoorManager getDoorManager() {
+        return doorManager;
+    }
+
     static class PresetChangeWorld implements MxChangeWorld {
 
         @Override
@@ -192,6 +222,21 @@ public class Preset {
             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INFO_CONFIGURE_TOOL));
             if(!InventoryManager.containsItem(p.getInventory(), Items.PRESET_CONFIGURE_TOOL.getItemStack())) {
                 p.getInventory().addItem(Items.PRESET_CONFIGURE_TOOL.getItemStack());
+            }
+
+            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_INFO));
+            if(!InventoryManager.containsItem(p.getInventory(), Items.CHEST_CONFIGURE_TOOL.getItemStack())) {
+                p.getInventory().addItem(Items.CHEST_CONFIGURE_TOOL.getItemStack());
+            }
+
+            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_INFO));
+            if(!InventoryManager.containsItem(p.getInventory(), Items.SHULKER_CONFIGURE_TOOL.getItemStack())) {
+                p.getInventory().addItem(Items.SHULKER_CONFIGURE_TOOL.getItemStack());
+            }
+
+            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_CONFIGURE_TOOL_INFO));
+            if(!InventoryManager.containsItem(p.getInventory(), Items.DOOR_CONFIGURE_TOOL.getItemStack())) {
+                p.getInventory().addItem(Items.DOOR_CONFIGURE_TOOL.getItemStack());
             }
         }
 
@@ -211,14 +256,6 @@ public class Preset {
                 }
             }
         }
-    }
-
-    public File getInventoriesFile() {
-        return inventoriesFile;
-    }
-
-    public WarpManager getWarpManager() {
-        return warpManager;
     }
 }
 
