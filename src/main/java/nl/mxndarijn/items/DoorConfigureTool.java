@@ -58,6 +58,8 @@ public class DoorConfigureTool extends MxItem {
                                 .setSkinFromHeadsData("trapdoor")
                                 .setName(ChatColor.GRAY + door.getName())
                                 .addBlankLore()
+                                .addLore(ChatColor.GRAY + "Aantal blocks: " + door.getLocations().size())
+                                .addBlankLore()
                                 .addLore(ChatColor.YELLOW + "Klik om de opties te bekijken voor deze deur.")
                                 .build(),
                         (mxInv, e12) -> {
@@ -104,6 +106,7 @@ public class DoorConfigureTool extends MxItem {
             MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Door Configure-Tool", MxInventorySlots.THREE_ROWS)
                     .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                     .setListItems(list)
+                    .setNextPageItemStackSlot(25)
                     .setItem(MxDefaultItemStackBuilder.create(Material.OAK_DOOR)
                                     .setName(ChatColor.GRAY + "Nieuwe deur")
                                     .addBlankLore()

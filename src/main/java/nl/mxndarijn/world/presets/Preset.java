@@ -1,6 +1,7 @@
 package nl.mxndarijn.world.presets;
 
 import nl.mxndarijn.data.ChatPrefix;
+import nl.mxndarijn.game.InteractionManager;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.inventory.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.inventory.saver.InventoryManager;
@@ -48,6 +49,7 @@ public class Preset {
     private ChestManager chestManager;
     private ShulkerManager shulkerManager;
     private DoorManager doorManager;
+    private InteractionManager interactionManager;
 
     public static final String PRESET_ITEMMETA_TAG = "preset_id";
     private Preset(File directory) {
@@ -73,6 +75,7 @@ public class Preset {
             this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
             this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
             this.doorManager = new DoorManager(new File(getDirectory(), "doors.yml"));
+            this.interactionManager = new InteractionManager(new File(getDirectory(), "interactions.yml"));
         }
     }
     public static Optional<Preset> create(File file) {
@@ -205,6 +208,10 @@ public class Preset {
 
     public DoorManager getDoorManager() {
         return doorManager;
+    }
+
+    public InteractionManager getInteractionManager() {
+        return interactionManager;
     }
 
     static class PresetChangeWorld implements MxChangeWorld {

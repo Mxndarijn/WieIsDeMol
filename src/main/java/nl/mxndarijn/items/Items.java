@@ -78,7 +78,6 @@ public enum Items {
     private final Class<? extends MxItem> classObject;
     private final Action[] actions;
     Items(ItemStack is, MxWorldFilter mxWorldFilter, boolean gameItem, Class<? extends MxItem> classObject, Action... actions) {
-        Logger.logMessage(LogLevel.DebugHighlight, Functions.convertComponentToString(is.getItemMeta().displayName()));
         this.itemStack = is;
         this.worldFilter = mxWorldFilter;
         this.gameItem = gameItem;

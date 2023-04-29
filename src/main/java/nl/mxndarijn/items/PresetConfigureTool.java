@@ -2,7 +2,9 @@ package nl.mxndarijn.items;
 
 import nl.mxndarijn.commands.util.MxWorldFilter;
 import nl.mxndarijn.data.ChatPrefix;
+import nl.mxndarijn.data.Interaction;
 import nl.mxndarijn.game.Colors;
+import nl.mxndarijn.game.InteractionManager;
 import nl.mxndarijn.inventory.*;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.inventory.heads.MxHeadSection;
@@ -18,6 +20,7 @@ import nl.mxndarijn.util.language.LanguageText;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
+import nl.mxndarijn.wieisdemol.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.world.warps.WarpManager;
 import nl.mxndarijn.world.mxworld.MxLocation;
@@ -38,6 +41,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
 import java.io.IOException;
@@ -166,6 +170,15 @@ public class PresetConfigureTool extends MxItem  {
                         14,
                         (mainInv, clickMain) -> {
                             openColorsMenu(p, mainInv, preset, config);
+                        })
+                .setItem(MxDefaultItemStackBuilder.create(Material.OAK_TRAPDOOR)
+                                .setName(ChatColor.GRAY + "Interactions")
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik hier om de interactions van de preset te bekijken en te veranderen.")
+                                .build(),
+                        0,
+                        (mainInv, clickMain) -> {
+                            openInteractionsMenu(p, mainInv, preset, config);
                         })
                 .setItem(getHostDifficulty(preset, config),
                         16,
@@ -544,6 +557,38 @@ public class PresetConfigureTool extends MxItem  {
         MxInventoryManager.getInstance().addAndOpenInventory(p, builder.build());
     }
 
+
+    private void openInteractionsMenu(Player p, MxInventory mainInv, Preset preset, PresetConfig config) {
+        ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+        InteractionManager manager = preset.getInteractionManager();
+        manager.getInteractions().forEach((i,b) -> {
+            list.add(new Pair<>(getInteractionItem(i, b),
+                    (mxInv, e) -> {
+                        manager.setInteraction(i, !manager.getInteractions().get(i));
+                        manager.save();
+                        mxInv.getInv().setItem(e.getSlot(), getInteractionItem(i, manager.getInteractions().get(i)));
+                    }
+            ));
+        });
+
+        list.sort(Comparator.comparing(o -> new StringBuilder(o.first.getType().toString()).reverse().toString()));
+
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.SIX_ROWS)
+                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
+                .setPrevious(mainInv)
+                .setListItems(list)
+                .build());
+    }
+
+    private ItemStack getInteractionItem(Interaction i, boolean b) {
+        return MxDefaultItemStackBuilder.create(i.getMat())
+                .setName(b ? ChatColor.GREEN + "Aan" : ChatColor.RED + "Uit")
+                .addBlankLore()
+                .addLore(ChatColor.GRAY + i.getMat().toString().replace("_", " ").toLowerCase())
+                .addBlankLore()
+                .addLore(ChatColor.YELLOW + "Klik hier om het block te togglen.")
+                .build();
+    }
     private ItemStack getColorItemStack(Colors c, PresetConfig config) {
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData(c.getHeadKey())

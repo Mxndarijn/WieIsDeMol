@@ -47,7 +47,6 @@ public class MxSkullItemStackBuilder extends MxItemStackBuilder<MxSkullItemStack
     public MxSkullItemStackBuilder setOwner(UUID id) {
         SkullMeta meta = (SkullMeta) itemMeta;
         OfflinePlayer p = Bukkit.getOfflinePlayer(id);
-        Logger.logMessage(LogLevel.DebugHighlight, Prefix.MXINVENTORY, "Setting owner: " + p.getName());
         boolean returnedValue = meta.setOwningPlayer(p);
         if(!returnedValue) {
             Logger.logMessage(LogLevel.Error, Prefix.MXINVENTORY, "Could not set owner of skull");

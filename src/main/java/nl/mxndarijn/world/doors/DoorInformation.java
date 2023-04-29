@@ -1,5 +1,7 @@
 package nl.mxndarijn.world.doors;
 
+import nl.mxndarijn.util.logger.LogLevel;
+import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.world.mxworld.MxLocation;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -34,7 +36,7 @@ public class DoorInformation {
                 location.setX((double) map.get("x"));
                 location.setY((double) map.get("y"));
                 location.setZ((double) map.get("z"));
-                Material mat = Material.matchMaterial(section.getString("material"));
+                Material mat = Material.matchMaterial((String) map.get("material"));
                 i.locations.put(location, mat);
             });
         }
