@@ -69,4 +69,29 @@ public class WorldManager {
     public Optional<MxWorld> getPresetById(String id) {
         return presets.containsKey(id) ? Optional.of(presets.get(id)) : Optional.empty();
     }
+
+    public void addPlayerMap(UUID playerUUID, MxWorld world) {
+
+        if(playersMap.containsKey(playerUUID)) {
+            List<MxWorld> list = playersMap.get(playerUUID);
+            list.add(world);
+            playersMap.put(playerUUID, list);
+        } else {
+            playersMap.put(playerUUID, new ArrayList<>(Collections.singletonList(world)));
+        }
+
+    }
+
+    public Optional<MxWorld> getPlayerMapById(String id) {
+        for (Map.Entry<UUID, List<MxWorld>> entry : playersMap.entrySet()) {
+            UUID uuid = entry.getKey();
+            List<MxWorld> list = entry.getValue();
+            for (MxWorld world : list) {
+                if (world.getUUID().toString().equalsIgnoreCase(id)) {
+                   return Optional.of(world);
+                }
+            }
+        }
+        return Optional.empty();
+    }
 }

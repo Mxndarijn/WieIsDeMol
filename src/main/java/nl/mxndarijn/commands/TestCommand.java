@@ -35,9 +35,11 @@ public class TestCommand implements CommandExecutor {
 
         Player p = (Player) sender;
         MxWorld world = WorldManager.getInstance().getPlayersMap().get(p.getUniqueId()).get(0);
-        if(MxAtlas.getInstance().loadMxWorld(world)) {
-            p.teleport(Bukkit.getWorld(world.getWorldUID()).getSpawnLocation());
-        }
+        MxAtlas.getInstance().loadMxWorld(world).thenAccept(loaded -> {
+            if(loaded) {
+                p.teleport(Bukkit.getWorld(world.getWorldUID()).getSpawnLocation());
+            }
+        });
 
 //        ArrayList<Pair<ItemStack, MxItemClicked>> items = new ArrayList<>();
 //        MxItemClicked clicked = (inv, e) -> {

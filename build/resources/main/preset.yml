@@ -20,20 +20,6 @@ host-difficulty: 1
 
 play-difficulty: 1
 
-colors:
-  red:
-    x: 1
-    y: 1
-    z: 1
-    yaw: 1
-    pitch: 0
-  light-green:
-    x: 1
-    y: 1
-    z: 1
-    yaw: 1
-    pitch: 0
-
 skull-id: question-mark
 
 locked: false

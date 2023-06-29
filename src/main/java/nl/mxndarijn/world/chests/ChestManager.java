@@ -79,6 +79,10 @@ public class ChestManager {
         return false;
     }
 
+    public List<ChestInformation> getChests() {
+        return chests;
+    }
+
 
     public Optional<ChestInformation> getChestByLocation(MxLocation location) {
         for (ChestInformation chest : chests) {

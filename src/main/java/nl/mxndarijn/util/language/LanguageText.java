@@ -53,7 +53,14 @@ LanguageText {
     DOOR_CONFIGURE_TOOL_LOCATION_REMOVED("door-configure-tool-location-removed"),
     DOOR_CONFIGURE_TOOL_INFO("door-configure-tool-info"),
     DOOR_CONFIGURE_TOOL_LOCATION_NOT_FOUND("door-configure-tool-location-not-found"),
-    DOOR_CONFIGURE_TOOL_DOOR_REMOVED("door-configure-tool-door-removed");
+    DOOR_CONFIGURE_TOOL_DOOR_REMOVED("door-configure-tool-door-removed"),
+
+    COMMAND_MAPS_COULD_NOT_FIND_PRESET("command-maps-could-not-find-preset"),
+
+    COMMAND_ENTER_MAP_NAME_FOR_PRESET("command-maps-enter-mapname-for-preset"),
+    COMMAND_MAPS_MAP_COULD_NOT_BE_CREATED("command-maps-map-could-not-be-created"),
+    COMMAND_MAPS_MAP_CREATED("command-maps-map-created"),
+    COMMAND_MAPS_MAP_COULD_NOT_BE_LOADED("command-maps-map-could-not-be-loaded");
 
     private final String configValue;
     LanguageText(String value) {

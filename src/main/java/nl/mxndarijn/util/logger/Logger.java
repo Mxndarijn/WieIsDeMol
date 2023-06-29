@@ -1,6 +1,9 @@
 package nl.mxndarijn.util.logger;
 
+import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class Logger {
     private static LogLevel logLevel = LogLevel.Debug;
@@ -14,13 +17,13 @@ public class Logger {
 
     public static void logMessage(LogLevel level, String message) {
         if(level.getLevel() <= logLevel.getLevel()) {
-            System.out.println(level.getPrefix() + message);
+            Bukkit.getConsoleSender().sendMessage(level.getPrefix() + message);
         }
     }
 
     public static void logMessage(LogLevel level, Prefix prefix, String message) {
         if(level.getLevel() <= logLevel.getLevel()) {
-            System.out.println(level.getPrefix() + prefix + message);
+            Bukkit.getConsoleSender().sendMessage(level.getPrefix() + prefix + message);
         }
     }
 }

@@ -35,7 +35,7 @@ public class PresetConfig {
         this.fc = fc;
         Arrays.stream(PresetConfigValue.values()).forEach(value -> {
             if(!fc.contains(value.getConfigValue())) {
-                Logger.logMessage(LogLevel.Debug, Prefix.PRESETS_MANAGER, "Could not find config value: " + value + " (" + file.getAbsolutePath() + ")");
+                Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not find config value: " + value + " (" + file.getAbsolutePath() + ")");
             }
         });
 

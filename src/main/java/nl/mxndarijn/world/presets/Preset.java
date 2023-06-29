@@ -4,6 +4,7 @@ import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.game.InteractionManager;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.inventory.item.MxSkullItemStackBuilder;
+import nl.mxndarijn.inventory.item.Pair;
 import nl.mxndarijn.inventory.saver.InventoryManager;
 import nl.mxndarijn.items.Items;
 import nl.mxndarijn.util.language.LanguageManager;
@@ -13,6 +14,8 @@ import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.wieisdemol.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.world.changeworld.SaveInventoryChangeWorld;
+import nl.mxndarijn.world.changeworld.WorldReachedZeroPlayersEvent;
 import nl.mxndarijn.world.chests.ChestManager;
 import nl.mxndarijn.world.doors.DoorInformation;
 import nl.mxndarijn.world.doors.DoorManager;
@@ -35,8 +38,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class Preset {
 
@@ -137,6 +140,43 @@ public class Preset {
         return builder.build();
     }
 
+    public ItemStack getItemStackForNewMap() {
+        MxSkullItemStackBuilder builder = MxSkullItemStackBuilder.create(1);
+        if(MxHeadManager.getInstance().getAllHeadKeys().contains(config.getSkullId())) {
+            builder.setSkinFromHeadsData(config.getSkullId());
+        } else {
+            builder.setSkinFromHeadsData("question-mark");
+        }
+
+        builder.addLore(" ")
+                .addLore(ChatColor.GRAY + "Aantal Spelers: " + config.getColors().size());
+        builder.setName(ChatColor.GRAY + config.getName())
+                .addLore(" ");
+        builder.addLore(ChatColor.GRAY + "Host-Moeilijkheid:")
+                .addLore(getStars(config.getHostDifficulty()))
+                .addLore(ChatColor.GRAY + "Speel-Moeilijkheid:")
+                .addLore(getStars(config.getPlayDifficulty()));
+
+
+        builder.addLore(" ")
+                .addLore(ChatColor.DARK_GRAY + "Extra Info:")
+                .addLore(ChatColor.GRAY + "Aantal Kisten: " + chestManager.getChests().size())
+                .addLore(ChatColor.GRAY + "Aantal deuren: " + doorManager.getDoors().size());
+
+        if(config.isLocked()) {
+            builder.addLore(ChatColor.GRAY + "Locked: " + (config.isLocked() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"))
+                    .addLore(ChatColor.GRAY + "Door: " + config.getLockedBy())
+                    .addLore(ChatColor.GRAY + "Reden: ")
+                    .addLore(ChatColor.RED + config.getLockReason());
+        }
+
+        builder.addCustomTagString(PRESET_ITEMMETA_TAG, directory.getName());
+
+
+        return builder.build();
+    }
+
+
 
     private boolean containsWorld() {
         return containsFolder("region");
@@ -159,21 +199,35 @@ public class Preset {
         return hostStars.toString();
     }
 
-    public boolean loadWorld() {
-        if(!this.mxWorld.isPresent()) {
-            return false;
+    public CompletableFuture<Boolean> loadWorld() {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        if(this.mxWorld.isEmpty()) {
+            future.complete(false);
+            return future;
         }
         if(this.mxWorld.get().isLoaded()) {
-            return true;
+            future.complete(false);
+            return future;
         }
-        boolean loaded = MxAtlas.getInstance().loadMxWorld(this.mxWorld.get());
-        if(loaded) {
-            ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(),new PresetChangeWorld());
-        }
-        return loaded;
+        MxAtlas.getInstance().loadMxWorld(this.mxWorld.get()).thenAccept(loaded -> {
+            if (loaded) {
+                ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new SaveInventoryChangeWorld(getInventoriesFile(), new ArrayList<>(
+                        Arrays.asList(
+                                new Pair<>(Items.PRESET_CONFIGURE_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INFO_CONFIGURE_TOOL)),
+                                new Pair<>(Items.CHEST_CONFIGURE_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_INFO)),
+                                new Pair<>(Items.SHULKER_CONFIGURE_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_INFO)),
+                                new Pair<>(Items.DOOR_CONFIGURE_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_CONFIGURE_TOOL_INFO))
+                        )),
+                        (p, w, e) -> {
+                            unloadWorld();
+                        }));
+            }
+            future.complete(loaded);
+        });
+        return future;
     }
 
-    private void unloadWorld() {
+    public void unloadWorld() {
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
             if(!this.mxWorld.isPresent()) {
                 return;
@@ -212,57 +266,6 @@ public class Preset {
 
     public InteractionManager getInteractionManager() {
         return interactionManager;
-    }
-
-    static class PresetChangeWorld implements MxChangeWorld {
-
-        @Override
-        public void enter(Player p, World w, PlayerChangedWorldEvent e) {
-            p.getInventory().clear();
-            Optional<Preset> optionalPreset = PresetsManager.getInstance().getPresetByWorldUID(w.getUID());
-            if(optionalPreset.isPresent()) {
-                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INVENTORY_LOADING));
-                Preset preset = optionalPreset.get();
-                FileConfiguration fc = YamlConfiguration.loadConfiguration(preset.inventoriesFile);
-                InventoryManager.loadInventoryForPlayer(fc, p.getUniqueId().toString(), p);
-            }
-            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INFO_CONFIGURE_TOOL));
-            if(!InventoryManager.containsItem(p.getInventory(), Items.PRESET_CONFIGURE_TOOL.getItemStack())) {
-                p.getInventory().addItem(Items.PRESET_CONFIGURE_TOOL.getItemStack());
-            }
-
-            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_INFO));
-            if(!InventoryManager.containsItem(p.getInventory(), Items.CHEST_CONFIGURE_TOOL.getItemStack())) {
-                p.getInventory().addItem(Items.CHEST_CONFIGURE_TOOL.getItemStack());
-            }
-
-            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_INFO));
-            if(!InventoryManager.containsItem(p.getInventory(), Items.SHULKER_CONFIGURE_TOOL.getItemStack())) {
-                p.getInventory().addItem(Items.SHULKER_CONFIGURE_TOOL.getItemStack());
-            }
-
-            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_CONFIGURE_TOOL_INFO));
-            if(!InventoryManager.containsItem(p.getInventory(), Items.DOOR_CONFIGURE_TOOL.getItemStack())) {
-                p.getInventory().addItem(Items.DOOR_CONFIGURE_TOOL.getItemStack());
-            }
-        }
-
-        @Override
-        public void leave(Player p, World w, PlayerChangedWorldEvent e) {
-            Optional<Preset> optionalPreset = PresetsManager.getInstance().getPresetByWorldUID(w.getUID());
-            if(optionalPreset.isPresent()) {
-                Preset preset = optionalPreset.get();
-                UUID uuid = p.getUniqueId();
-                FileConfiguration fc = YamlConfiguration.loadConfiguration(preset.inventoriesFile);
-                InventoryManager.saveInventory(preset.inventoriesFile, fc, uuid.toString(), p.getInventory());
-                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INVENTORY_SAVED));
-                p.getInventory().clear();
-                if (w.getPlayers().size() == 0) {
-                    Logger.logMessage(LogLevel.Information, Prefix.PRESETS_MANAGER, "Unloading preset... (" + preset.getDirectory().getAbsolutePath() + ")");
-                    preset.unloadWorld();
-                }
-            }
-        }
     }
 }
 

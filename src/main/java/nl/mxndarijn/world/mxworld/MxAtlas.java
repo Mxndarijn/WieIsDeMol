@@ -5,16 +5,21 @@ import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.wieisdemol.Functions;
+import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MxAtlas {
     private static MxAtlas instance;
@@ -43,7 +48,7 @@ public class MxAtlas {
 
     public Optional<MxWorld> getMxWorld(UUID uuid) {
         for (MxWorld w : worlds) {
-            if (w.getUUID().equals(uuid)) {
+            if (w.getUUID().equalsIgnoreCase(uuid.toString())) {
                 return Optional.of(w);
             }
         }
@@ -58,11 +63,14 @@ public class MxAtlas {
         return worlds.remove(world);
     }
 
-    public boolean loadMxWorld(MxWorld mxWorld) {
+    public CompletableFuture<Boolean> loadMxWorld(MxWorld mxWorld) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+
         Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Loading MxWorld: " + mxWorld.getName());
-        if(mxWorld.isLoaded()) {
-            Logger.logMessage(LogLevel.Warning, Prefix.MXATLAS,  mxWorld.getName() + " is already loaded.");
-            return true;
+        if (mxWorld.isLoaded()) {
+            Logger.logMessage(LogLevel.Warning, Prefix.MXATLAS, mxWorld.getName() + " is already loaded.");
+            future.complete(true);
+            return future;
         }
         String path = mxWorld.getDir().toString().replace("\\", "/");
         WorldCreator wc = new WorldCreator(path);
@@ -71,33 +79,39 @@ public class MxAtlas {
         wc.generator(new VoidGenerator());
         wc.generateStructures(false);
 
-        World world = wc.createWorld();
-        if(world == null) {
-            return false;
-        }
-        File worldSettings = new File(mxWorld.getDir() + "/worldsettings.yml");
-        if(!worldSettings.exists()) {
-            Functions.copyFileFromResources("worldsettings.yml", worldSettings);
-        }
-        Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Loading worldsettings.yml... ");
-        FileConfiguration worldSettingsCfg = YamlConfiguration.loadConfiguration(worldSettings);
-        world.setAutoSave(worldSettingsCfg.getBoolean("autosave"));
-        world.setKeepSpawnInMemory(worldSettingsCfg.getBoolean("keepSpawnInMemory"));
+        BukkitTask task = Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
+            World world = wc.createWorld();
+            if (world == null) {
+                future.complete(false);
+                return;
+            }
+            File worldSettings = new File(mxWorld.getDir() + File.separator + "worldsettings.yml");
+            if (!worldSettings.exists()) {
+                Functions.copyFileFromResources("worldsettings.yml", worldSettings);
+            }
+            Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Loading worldsettings.yml... ");
+            FileConfiguration worldSettingsCfg = YamlConfiguration.loadConfiguration(worldSettings);
+            world.setAutoSave(worldSettingsCfg.getBoolean("autosave"));
+            world.setKeepSpawnInMemory(worldSettingsCfg.getBoolean("keepSpawnInMemory"));
 
-        worldSettingsCfg.getConfigurationSection("gamerules").getKeys(false).forEach(val -> {
-           world.setGameRuleValue(val, worldSettingsCfg.getConfigurationSection("gamerules").get(val).toString());
+            worldSettingsCfg.getConfigurationSection("gamerules").getKeys(false).forEach(val -> {
+                world.setGameRuleValue(val, worldSettingsCfg.getConfigurationSection("gamerules").get(val).toString());
+            });
+            ConfigurationSection spawn = worldSettingsCfg.getConfigurationSection("spawn");
+            if (spawn != null) {
+                Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Setting spawnlocation... ");
+                world.setSpawnLocation(Functions.getLocationFromConfiguration(world, spawn));
+            }
+
+            mxWorld.setWorldUID(world.getUID());
+            mxWorld.setLoaded(true);
+
+            future.complete(true);
         });
-        ConfigurationSection spawn = worldSettingsCfg.getConfigurationSection("spawn");
-        if(spawn != null) {
-            Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Setting spawnlocation... ");
-            world.setSpawnLocation(Functions.getLocationFromConfiguration(world, spawn));
-        }
 
-        mxWorld.setWorldUID(world.getUID());
-        mxWorld.setLoaded(true);
-
-        return true;
+        return future;
     }
+
 
     public boolean unloadMxWorld(MxWorld mxWorld, boolean save) {
         if(!mxWorld.isLoaded())
@@ -133,13 +147,13 @@ public class MxAtlas {
         return true;
     }
 
-    public Optional<MxWorld> duplicateMxWorld(String name, MxWorld worldToClone, File dir) {
+    public Optional<MxWorld> duplicateMxWorld(MxWorld worldToClone, File dir) {
         UUID uuid = UUID.randomUUID();
 
-        File directoryToCloneTo = new File(dir + "/" + uuid);
+        File directoryToCloneTo = new File(dir + File.separator + uuid);
         try {
             FileUtils.copyDirectory(worldToClone.getDir(), directoryToCloneTo);
-            File uidDat = new File(directoryToCloneTo.getAbsoluteFile() + "/uid.dat");
+            File uidDat = new File(directoryToCloneTo.getAbsoluteFile() +File.separator +  "uid.dat");
             uidDat.delete();
 
         } catch (IOException e) {
@@ -147,7 +161,7 @@ public class MxAtlas {
             e.printStackTrace();
             return Optional.empty();
         }
-        MxWorld mxWorld = new MxWorld(name, uuid.toString(), directoryToCloneTo);
+        MxWorld mxWorld = new MxWorld(uuid.toString(), uuid.toString(), directoryToCloneTo);
         worlds.add(mxWorld);
 
         return Optional.of(mxWorld);

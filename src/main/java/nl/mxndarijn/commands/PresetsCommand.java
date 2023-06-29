@@ -78,16 +78,18 @@ public class PresetsCommand extends MxCommand {
                                         Preset preset = optionalPreset.get();
                                         e.getWhoClicked().closeInventory();
                                         p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_PRESETS_LOADING_WORLD, Collections.emptyList()));
-                                        if(preset.loadWorld()) {
-                                            MxWorld mxWorld = preset.getMxWorld().get();
-                                            World w = Bukkit.getWorld(mxWorld.getWorldUID());
-                                            if(w != null) {
-                                                p.teleport(w.getSpawnLocation());
-                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_PRESETS_NOW_IN_PRESET, Collections.emptyList()));
-                                            } else {
-                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_PRESETS_WORLD_NOT_FOUND_BUT_LOADED, Collections.emptyList()));
+                                        preset.loadWorld().thenAccept(loaded -> {
+                                            if(loaded) {
+                                                MxWorld mxWorld = preset.getMxWorld().get();
+                                                World w = Bukkit.getWorld(mxWorld.getWorldUID());
+                                                if(w != null) {
+                                                    p.teleport(w.getSpawnLocation());
+                                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_PRESETS_NOW_IN_PRESET, Collections.emptyList()));
+                                                } else {
+                                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_PRESETS_WORLD_NOT_FOUND_BUT_LOADED, Collections.emptyList()));
+                                                }
                                             }
-                                        }
+                                        });
                                     } else {
                                         p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_PRESETS_WORLD_COULD_NOT_BE_LOADED, Collections.emptyList()));
                                     }
