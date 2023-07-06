@@ -45,25 +45,6 @@ public class SaveInventoryChangeWorld  implements MxChangeWorld {
             }
             p.sendMessage(itemPair.second);
         });
-        /*p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INFO_CONFIGURE_TOOL));
-        if(!InventoryManager.containsItem(p.getInventory(), Items.PRESET_CONFIGURE_TOOL.getItemStack())) {
-            p.getInventory().addItem(Items.PRESET_CONFIGURE_TOOL.getItemStack());
-        }
-
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_INFO));
-        if(!InventoryManager.containsItem(p.getInventory(), Items.CHEST_CONFIGURE_TOOL.getItemStack())) {
-            p.getInventory().addItem(Items.CHEST_CONFIGURE_TOOL.getItemStack());
-        }
-
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_INFO));
-        if(!InventoryManager.containsItem(p.getInventory(), Items.SHULKER_CONFIGURE_TOOL.getItemStack())) {
-            p.getInventory().addItem(Items.SHULKER_CONFIGURE_TOOL.getItemStack());
-        }
-
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_CONFIGURE_TOOL_INFO));
-        if(!InventoryManager.containsItem(p.getInventory(), Items.DOOR_CONFIGURE_TOOL.getItemStack())) {
-            p.getInventory().addItem(Items.DOOR_CONFIGURE_TOOL.getItemStack());
-        }*/
     }
 
     @Override
@@ -78,8 +59,6 @@ public class SaveInventoryChangeWorld  implements MxChangeWorld {
             p.getInventory().clear();
             if (w.getPlayers().size() == 0) {
                 event.worldReachedZeroPlayers(p, w, e);
-                /*Logger.logMessage(LogLevel.Information, Prefix.PRESETS_MANAGER, "Unloading world... (" + preset.getDirectory().getAbsolutePath() + ")");
-                preset.unloadWorld();*/
             }
         }
     }

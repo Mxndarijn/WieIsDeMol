@@ -12,6 +12,7 @@ import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.world.WorldManager;
 import nl.mxndarijn.world.changeworld.ChangeWorldManager;
+import nl.mxndarijn.world.map.MapManager;
 import nl.mxndarijn.world.presets.PresetsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,6 +32,7 @@ public final class WieIsDeMol extends JavaPlugin {
         MxHeadManager.getInstance();
         MxChatInputManager.getInstance();
         PresetsManager.getInstance();
+        MapManager.getInstance();
         ChangeWorldManager.getInstance();
         ItemManager.getInstance();
         registerCommands();

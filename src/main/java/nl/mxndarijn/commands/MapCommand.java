@@ -17,6 +17,7 @@ import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.world.map.Map;
+import nl.mxndarijn.world.map.MapManager;
 import nl.mxndarijn.world.mxworld.MxWorld;
 import nl.mxndarijn.world.presets.Preset;
 import nl.mxndarijn.world.presets.PresetsManager;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class MapCommand extends MxCommand {
 
-
+    private static LanguageManager lang = LanguageManager.getInstance();
     public MapCommand(Permissions permission, boolean onlyPlayersCanExecute, boolean canBeExecutedInGame, MxWorldFilter worldFilter) {
         super(permission, onlyPlayersCanExecute, canBeExecutedInGame, worldFilter);
     }
@@ -86,7 +87,7 @@ public class MapCommand extends MxCommand {
                                     PersistentDataContainer container = im.getPersistentDataContainer();
                                     Optional<Preset> optionalPreset = PresetsManager.getInstance().getPresetById(container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), Preset.PRESET_ITEMMETA_TAG), PersistentDataType.STRING));
                                     if (optionalPreset.isEmpty()) {
-                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_PRESET, Collections.emptyList()));
+                                        p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_PRESET));
                                         p.closeInventory();
                                         return;
                                     }
@@ -95,30 +96,30 @@ public class MapCommand extends MxCommand {
                                         Optional<Map> map = Map.createFromPreset(message, optionalPreset.get(), p.getUniqueId());
                                         if(map.isPresent()) {
                                             if(map.get().getMxWorld().isEmpty()) {
-                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_CREATED, Collections.emptyList()));
+                                                p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_CREATED));
                                                 return;
                                             }
-                                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_MAPS_MAP_CREATED, Collections.emptyList()));
+                                            p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_MAP_CREATED));
                                             MxWorld mxWorld = map.get().getMxWorld().get();
                                             map.get().loadWorld().thenAccept(loaded -> {
                                                 if(loaded) {
                                                     World w = Bukkit.getWorld(mxWorld.getWorldUID());
                                                     if (w == null) {
-                                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_CREATED, Collections.emptyList()));
+                                                        p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_CREATED));
                                                         return;
                                                     }
                                                     p.teleport(w.getSpawnLocation());
                                                 } else {
-                                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_LOADED, Collections.emptyList()));
+                                                    p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_LOADED));
                                                     return;
                                                 }
 
                                             });
                                         } else {
-                                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_CREATED, Collections.emptyList()));
+                                            p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_CREATED));
                                         }
                                     });
-                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ENTER_MAP_NAME_FOR_PRESET, Collections.singletonList(optionalPreset.get().getConfig().getName())));
+                                    p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_ENTER_MAP_NAME_FOR_PRESET, Collections.singletonList(optionalPreset.get().getConfig().getName())));
                                     p.closeInventory();
                                 });
                             };

@@ -66,12 +66,28 @@ public class Map {
                     e.printStackTrace();
                 }
             }
-            this.mxWorld = WorldManager.getInstance().getPlayerMapById(directory.getName());
+            this.mxWorld = MxAtlas.getInstance().loadWorld(directory);
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
             this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
             this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
             this.doorManager = new DoorManager(new File(getDirectory(), "doors.yml"));
             this.interactionManager = new InteractionManager(new File(getDirectory(), "interactions.yml"));
+        }
+    }
+
+    public static Optional<Map> create(File file) {
+        Map map = new Map(file);
+
+        if(map.containsWorld() && map.mxWorld.isPresent()) {
+            return Optional.of(map);
+        } else {
+            if(!map.containsWorld()) {
+                Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Could not find world. (" + map.getDirectory() + ")");
+            }
+            if(map.getMxWorld().isEmpty()) {
+                Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Could not find MxWorld. (" + map.getDirectory() + ")");
+            }
+            return Optional.empty();
         }
     }
 
@@ -99,7 +115,7 @@ public class Map {
                     e.printStackTrace();
                 }
             }
-            this.mxWorld = WorldManager.getInstance().getPlayerMapById(directory.getName());
+            this.mxWorld = MxAtlas.getInstance().loadWorld(directory);
             Logger.logMessage(LogLevel.DebugHighlight, "Searching for MxWorld with id: " + directory.getName());
             Logger.logMessage(LogLevel.DebugHighlight, "Found mxworld: " + this.mxWorld.isPresent());
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
@@ -121,11 +137,10 @@ public class Map {
             return Optional.empty();
         }
         Logger.logMessage(LogLevel.DebugHighlight, "Player map adding: " + owner.toString() + " , " + optionalWorld.get().getDir().getAbsolutePath());
-        WorldManager.getInstance().addPlayerMap(owner, optionalWorld.get());
         Logger.logMessage(LogLevel.DebugHighlight, "UUID of mxworld: " + optionalWorld.get().getUUID());
 
         Map map = new Map(optionalWorld.get().getDir(), name, owner);
-
+        MapManager.getInstance().addMap(map);
         return Optional.of(map);
 
     }

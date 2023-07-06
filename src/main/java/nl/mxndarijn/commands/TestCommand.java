@@ -1,5 +1,6 @@
 package nl.mxndarijn.commands;
 
+import nl.mxndarijn.world.map.Map;
 import nl.mxndarijn.world.mxworld.MxAtlas;
 import nl.mxndarijn.world.mxworld.MxWorld;
 import nl.mxndarijn.world.WorldManager;
@@ -33,13 +34,16 @@ public class TestCommand implements CommandExecutor {
 //        MxInventoryManager.getInstance().addAndOpenInventory((Player) sender, inv);
 
 
-        Player p = (Player) sender;
-        MxWorld world = WorldManager.getInstance().getPlayersMap().get(p.getUniqueId()).get(0);
-        MxAtlas.getInstance().loadMxWorld(world).thenAccept(loaded -> {
+       /* Player p = (Player) sender;
+        Map world = WorldManager.getInstance().getPlayersMap().get(p.getUniqueId()).get(0);
+        if(world.getMxWorld().isEmpty()) {
+            return true;
+        }
+        MxAtlas.getInstance().loadMxWorld(world.getMxWorld().get()).thenAccept(loaded -> {
             if(loaded) {
-                p.teleport(Bukkit.getWorld(world.getWorldUID()).getSpawnLocation());
+                p.teleport(Bukkit.getWorld(world.getMxWorld().get().getWorldUID()).getSpawnLocation());
             }
-        });
+        });*/
 
 //        ArrayList<Pair<ItemStack, MxItemClicked>> items = new ArrayList<>();
 //        MxItemClicked clicked = (inv, e) -> {

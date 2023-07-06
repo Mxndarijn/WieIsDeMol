@@ -60,7 +60,10 @@ LanguageText {
     COMMAND_ENTER_MAP_NAME_FOR_PRESET("command-maps-enter-mapname-for-preset"),
     COMMAND_MAPS_MAP_COULD_NOT_BE_CREATED("command-maps-map-could-not-be-created"),
     COMMAND_MAPS_MAP_CREATED("command-maps-map-created"),
-    COMMAND_MAPS_MAP_COULD_NOT_BE_LOADED("command-maps-map-could-not-be-loaded");
+    COMMAND_MAPS_MAP_COULD_NOT_BE_LOADED("command-maps-map-could-not-be-loaded"),
+
+    MAP_AUTOMATED_CHEST_ADDED("map-automated-chest-added"),
+    MAP_AUTOMATED_CHEST_REMOVED("map-automated-chest-removed");
 
     private final String configValue;
     LanguageText(String value) {

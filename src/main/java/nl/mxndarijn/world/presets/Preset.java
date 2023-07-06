@@ -73,7 +73,7 @@ public class Preset {
                 }
             }
             this.config = new PresetConfig(presetConfigFile, YamlConfiguration.loadConfiguration(presetConfigFile));
-            this.mxWorld = WorldManager.getInstance().getPresetById(directory.getName());
+            this.mxWorld = MxAtlas.getInstance().loadWorld(directory);
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
             this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
             this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
@@ -90,12 +90,11 @@ public class Preset {
             if(!preset.containsWorld()) {
                 Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not find world. (" + preset.getDirectory() + ")");
             }
-            if(!preset.getMxWorld().isPresent()) {
+            if(preset.getMxWorld().isEmpty()) {
                 Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not find MxWorld. (" + preset.getDirectory() + ")");
             }
             return Optional.empty();
         }
-
     }
 
     public File getDirectory() {

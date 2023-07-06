@@ -1,4 +1,4 @@
-package nl.mxndarijn.items;
+package nl.mxndarijn.items.presets;
 
 import nl.mxndarijn.commands.util.MxWorldFilter;
 import nl.mxndarijn.data.ChatPrefix;

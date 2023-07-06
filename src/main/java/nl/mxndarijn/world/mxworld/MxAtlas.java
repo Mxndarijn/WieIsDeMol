@@ -190,4 +190,11 @@ public class MxAtlas {
         }
         return list;
     }
+
+    public Optional<MxWorld> loadWorld(File dir) {
+        MxWorld mxWorld = new MxWorld(dir.getName(), dir.getName(), dir);
+        worlds.add(mxWorld);
+        Logger.logMessage(LogLevel.Debug, Prefix.MXATLAS, "Adding world to MxAtlas: " + dir.getName() + " (" + dir.getAbsolutePath() + ")");
+        return Optional.of(mxWorld);
+    }
 }

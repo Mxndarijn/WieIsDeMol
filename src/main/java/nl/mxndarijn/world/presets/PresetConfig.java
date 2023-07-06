@@ -52,6 +52,9 @@ public class PresetConfig {
 
         colors = new HashMap<>();
         ConfigurationSection colorSection = fc.getConfigurationSection(PresetConfigValue.COLORS.getConfigValue());
+        if(colorSection == null) {
+            return;
+        }
         colorSection.getKeys(false).forEach(key -> {
             Optional<Colors> color = Colors.getColorByType(key);
             if(color.isPresent()) {

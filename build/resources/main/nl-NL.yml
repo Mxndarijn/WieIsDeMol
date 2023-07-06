@@ -59,3 +59,5 @@ command-maps-enter-mapname-for-preset: "&7Typ de naam van de nieuwe map (Preset:
 command-maps-map-could-not-be-created: "&cMap kon niet worden aangemaakt, vraag een stafflid om hulp of probeer het opnieuw."
 command-maps-map-created: "&aMap aangemaakt!"
 command-maps-map-could-not-be-loaded: "&cDe wereld van de map kon niet worden ingeladen, probeer het opnieuw of vraag een stafflid om hulp."
+map-automated-chest-added: "&aKist toegevoegd aan de kisten tool."
+map-automated-chest-removed: "&cKist verwijderd van de kisten tool."

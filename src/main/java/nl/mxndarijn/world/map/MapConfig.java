@@ -47,6 +47,8 @@ public class MapConfig {
         this.owner = owner;
         this.dateCreated = LocalDateTime.now();
         this.dateModified = LocalDateTime.now();
+        this.sharedPlayers = new ArrayList<>();
+        save();
     }
 
     public MapConfig(File file, FileConfiguration fc) {

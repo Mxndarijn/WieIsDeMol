@@ -2,17 +2,20 @@ package nl.mxndarijn.items;
 
 import nl.mxndarijn.commands.util.MxWorldFilter;
 import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
+import nl.mxndarijn.items.maps.ChestItem;
+import nl.mxndarijn.items.presets.ChestConfigureTool;
+import nl.mxndarijn.items.presets.DoorConfigureTool;
+import nl.mxndarijn.items.presets.PresetConfigureTool;
+import nl.mxndarijn.items.presets.ShulkerConfigureTool;
 import nl.mxndarijn.items.util.MxItem;
-import nl.mxndarijn.util.logger.LogLevel;
-import nl.mxndarijn.util.logger.Logger;
-import nl.mxndarijn.wieisdemol.Functions;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
 public enum Items {
+
+    // Preset Items
     PRESET_CONFIGURE_TOOL(
             MxDefaultItemStackBuilder.create(Material.NETHER_STAR, 1)
                 .setName(ChatColor.GRAY + "Preset Configure-Tool")
@@ -67,7 +70,23 @@ public enum Items {
             false,
             DoorConfigureTool.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
-    )
+    ),
+
+    // Map items
+
+    CHEST_TOOL(
+            MxDefaultItemStackBuilder.create(Material.STICK, 1)
+                    .setName(ChatColor.GRAY + "Chest Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je kisten op afstand openen.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            ChestItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
     ;
 
 

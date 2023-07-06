@@ -4,8 +4,12 @@ import nl.mxndarijn.data.SpecialDirectories;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
+import nl.mxndarijn.world.map.Map;
+import nl.mxndarijn.world.map.MapManager;
 import nl.mxndarijn.world.mxworld.MxAtlas;
 import nl.mxndarijn.world.mxworld.MxWorld;
+import nl.mxndarijn.world.presets.Preset;
+import nl.mxndarijn.world.presets.PresetsManager;
 import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
@@ -13,9 +17,6 @@ import java.util.*;
 
 public class WorldManager {
     private static WorldManager instance;
-    private final MxAtlas atlas;
-    private HashMap<UUID, List<MxWorld>> playersMap;
-    private HashMap<String, MxWorld> presets;
 
     public static WorldManager getInstance() {
         if(instance == null) {
@@ -25,23 +26,8 @@ public class WorldManager {
     }
 
     private WorldManager() {
-        atlas = MxAtlas.getInstance();
-        playersMap = new HashMap<>();
-        presets = new HashMap<>();
         deleteGameWorlds();
-        loadMaps();
-        loadPresets();
 
-    }
-
-    private void loadMaps() {
-        Logger.logMessage(LogLevel.Information, Prefix.WORLD_MANAGER, "Loading maps...");
-        Arrays.stream(Objects.requireNonNull(SpecialDirectories.MAP_WORLDS.getDirectory().listFiles())).forEach(file -> {
-            if(file.isDirectory()) {
-                List<MxWorld> list = atlas.loadFolder(file);
-                playersMap.put(UUID.fromString(file.getName()),list);
-            }
-        });
     }
 
     private void deleteGameWorlds() {
@@ -53,45 +39,5 @@ public class WorldManager {
             e.printStackTrace();
         }
         SpecialDirectories.GAMES_WORLDS.getDirectory().mkdirs();
-    }
-
-    private void loadPresets() {
-        List<MxWorld> list = atlas.loadFolder(SpecialDirectories.PRESET_WORLDS.getDirectory());
-        list.forEach(mxWorld -> {
-            presets.put(mxWorld.getUUID(), mxWorld);
-        });
-    }
-
-    public HashMap<UUID, List<MxWorld>> getPlayersMap() {
-        return playersMap;
-    }
-
-    public Optional<MxWorld> getPresetById(String id) {
-        return presets.containsKey(id) ? Optional.of(presets.get(id)) : Optional.empty();
-    }
-
-    public void addPlayerMap(UUID playerUUID, MxWorld world) {
-
-        if(playersMap.containsKey(playerUUID)) {
-            List<MxWorld> list = playersMap.get(playerUUID);
-            list.add(world);
-            playersMap.put(playerUUID, list);
-        } else {
-            playersMap.put(playerUUID, new ArrayList<>(Collections.singletonList(world)));
-        }
-
-    }
-
-    public Optional<MxWorld> getPlayerMapById(String id) {
-        for (Map.Entry<UUID, List<MxWorld>> entry : playersMap.entrySet()) {
-            UUID uuid = entry.getKey();
-            List<MxWorld> list = entry.getValue();
-            for (MxWorld world : list) {
-                if (world.getUUID().toString().equalsIgnoreCase(id)) {
-                   return Optional.of(world);
-                }
-            }
-        }
-        return Optional.empty();
     }
 }
