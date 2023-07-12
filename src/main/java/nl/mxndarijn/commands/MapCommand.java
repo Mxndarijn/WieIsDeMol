@@ -25,6 +25,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -34,6 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -63,6 +65,52 @@ public class MapCommand extends MxCommand {
                         10,
                         (clickedInv, e) -> {
                             // Click on Book
+                            List<Map> playerMaps = MapManager.getInstance().getAllMaps().stream().filter(m -> m.getMapConfig().getOwner().equals(p.getUniqueId())).toList();
+                            MxItemClicked clickedOnPlayerMap = (mxInv, e2) -> {
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
+                                    if (e2.getCurrentItem() == null) {
+                                        return;
+                                    }
+                                    ItemStack is = e2.getCurrentItem();
+                                    ItemMeta im = is.getItemMeta();
+                                    PersistentDataContainer container = im.getPersistentDataContainer();
+                                    Optional<Map> optionalMap = MapManager.getInstance().getMapById(container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), Map.MAP_ITEMMETA_TAG), PersistentDataType.STRING));
+                                    p.closeInventory();
+                                    if (optionalMap.isEmpty()) {
+                                        p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_MAP));
+                                        return;
+                                    }
+                                    Map map = optionalMap.get();
+                                    p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_LOADING_MAP));
+                                    map.loadWorld().thenAccept(loaded -> {
+                                        if(map.getMxWorld().isEmpty()) {
+                                            p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_MXWORLD));
+                                            return;
+                                        }
+                                        World w = Bukkit.getWorld(map.getMxWorld().get().getWorldUID());
+                                        if(w == null) {
+                                            p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_WORLD));
+                                            return;
+                                        }
+
+                                        p.teleport(w.getSpawnLocation());
+                                        p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_TELEPORTED_TO_SPAWN));
+                                    });
+                                });
+                            };
+                            ArrayList<Pair<ItemStack, MxItemClicked>> list = playerMaps.stream().map(map -> new Pair<>(map.getItemStack(), clickedOnPlayerMap)).collect(Collectors.toCollection(ArrayList::new));
+                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Eigen Mappen", MxInventorySlots.SIX_ROWS)
+                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
+                                    .setPreviousItemStackSlot(46)
+                                    .setPrevious(clickedInv)
+                                    .setListItems(list)
+                                    .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
+                                            .setName(ChatColor.GRAY + "Info")
+                                            .addLore(" ")
+                                            .addLore(ChatColor.YELLOW + "Klik op een map om deze aan te passen.")
+                                            .build(), 49,null)
+                                    .build());
+
                         })
                 .setItem(MxDefaultItemStackBuilder.create(Material.CRAFTING_TABLE)
                                 .setName(ChatColor.GREEN + "Nieuwe Map")

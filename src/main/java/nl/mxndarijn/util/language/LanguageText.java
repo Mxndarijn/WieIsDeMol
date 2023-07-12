@@ -63,7 +63,22 @@ LanguageText {
     COMMAND_MAPS_MAP_COULD_NOT_BE_LOADED("command-maps-map-could-not-be-loaded"),
 
     MAP_AUTOMATED_CHEST_ADDED("map-automated-chest-added"),
-    MAP_AUTOMATED_CHEST_REMOVED("map-automated-chest-removed");
+    MAP_AUTOMATED_CHEST_REMOVED("map-automated-chest-removed"),
+    MAP_CHEST_IS_NOT_A_CHEST("map-chest-is-not-a-chest"),
+    MAP_SHULKER_IS_NOT_A_SHULKER("map-shulker-is-not-a-shulker"),
+    CHEST_TOOL_INFO("chest-tool-info"),
+    SHULKER_TOOL_INFO("shulker-tool-info"),
+    DOOR_TOOL_INFO("door-tool-info"),
+    MAP_AUTOMATED_SHULKER_ADDED("map-automated-shulker-added"),
+    MAP_AUTOMATED_SHULKER_REMOVED("map-automated-shulker-removed"),
+    MAP_DOORITEM_DOOR_OPENED("map-dooritem-door-opened"),
+    MAP_DOORITEM_DOOR_IS_NOT_A_DOOR("map-dooritem-door-is-not-a-door"),
+    MAP_DOORITEM_DOOR_CLOSED("map-dooritem-door-closed"),
+    COMMAND_MAPS_COULD_NOT_FIND_MAP ("command-maps-could-not-find-map"),
+    COMMAND_MAPS_LOADING_MAP("command-maps-loading-map"),
+    COMMAND_MAPS_COULD_NOT_FIND_MXWORLD("command-maps-could-not-find-mxworld"),
+    COMMAND_MAPS_COULD_NOT_FIND_WORLD("command-maps-could-not-find-world"),
+    COMMAND_MAPS_TELEPORTED_TO_SPAWN("command-maps-teleported-to-spawn");
 
     private final String configValue;
     LanguageText(String value) {

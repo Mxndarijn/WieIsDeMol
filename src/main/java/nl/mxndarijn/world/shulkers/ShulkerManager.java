@@ -71,8 +71,8 @@ public class ShulkerManager {
     }
 
     public boolean containsLocation(MxLocation location) {
-        for (ShulkerInformation chest : shulkers) {
-            if(chest.getLocation().equals(location)) {
+        for (ShulkerInformation shulker : shulkers) {
+            if(shulker.getLocation().equals(location)) {
                 return true;
             }
         }
@@ -81,11 +81,15 @@ public class ShulkerManager {
 
 
     public Optional<ShulkerInformation> getShulkerByLocation(MxLocation location) {
-        for (ShulkerInformation chest : shulkers) {
-            if(chest.getLocation().equals(location)) {
-                return Optional.of(chest);
+        for (ShulkerInformation shulker : shulkers) {
+            if(shulker.getLocation().equals(location)) {
+                return Optional.of(shulker);
             }
         }
         return Optional.empty();
+    }
+
+    public List<ShulkerInformation> getShulkers() {
+        return shulkers;
     }
 }

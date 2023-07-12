@@ -3,6 +3,8 @@ package nl.mxndarijn.items;
 import nl.mxndarijn.commands.util.MxWorldFilter;
 import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.items.maps.ChestItem;
+import nl.mxndarijn.items.maps.DoorItem;
+import nl.mxndarijn.items.maps.ShulkerItem;
 import nl.mxndarijn.items.presets.ChestConfigureTool;
 import nl.mxndarijn.items.presets.DoorConfigureTool;
 import nl.mxndarijn.items.presets.PresetConfigureTool;
@@ -44,7 +46,7 @@ public enum Items {
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     SHULKER_CONFIGURE_TOOL(
-            MxDefaultItemStackBuilder.create(Material.BLAZE_ROD, 1)
+            MxDefaultItemStackBuilder.create(Material.SHULKER_SHELL, 1)
                     .setName(ChatColor.GRAY + "Shulker Configure-Tool")
                     .addLore(" ")
                     .addLore(ChatColor.YELLOW + "Met dit item kan je shulkers in een preset aanpassen.")
@@ -85,6 +87,32 @@ public enum Items {
             },
             false,
             ChestItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+    SHULKER_TOOL(
+            MxDefaultItemStackBuilder.create(Material.SHULKER_SHELL, 1)
+                    .setName(ChatColor.GRAY + "Shulker Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je shulkers op afstand openen.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            ShulkerItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+    DOOR_ITEM(
+            MxDefaultItemStackBuilder.create(Material.BRICK, 1)
+                    .setName(ChatColor.GRAY + "Door Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je deuren openen en sluiten.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            DoorItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     ;

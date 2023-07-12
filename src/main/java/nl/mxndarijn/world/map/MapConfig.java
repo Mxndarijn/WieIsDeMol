@@ -7,6 +7,7 @@ import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.world.mxworld.MxLocation;
 import nl.mxndarijn.world.presets.PresetConfig;
 import nl.mxndarijn.world.presets.PresetConfigValue;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -14,16 +15,13 @@ import java.io.File;
 import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class MapConfig {
     private FileConfiguration fc;
     private File file;
-    private HashMap<Colors, MxLocation> colors;
+    private ArrayList<MapPlayer> colors;
 
     private String name;
     private UUID owner;
@@ -48,6 +46,10 @@ public class MapConfig {
         this.dateCreated = LocalDateTime.now();
         this.dateModified = LocalDateTime.now();
         this.sharedPlayers = new ArrayList<>();
+        this.colors = new ArrayList<>();
+        presetConfig.getColors().forEach((c,l) -> {
+            this.colors.add(new MapPlayer(c, l));
+        });
         save();
     }
 
@@ -72,8 +74,21 @@ public class MapConfig {
                 .toList());
         this.dateModified = LocalDateTime.parse(fc.getString(MapConfigValue.DATE_MODIFIED.getConfigValue(), LocalDateTime.MIN.toString()));
         this.dateCreated = LocalDateTime.parse(fc.getString(MapConfigValue.DATE_CREATED.getConfigValue(), LocalDateTime.MIN.toString()));
-    }
 
+        this.colors = new ArrayList<>();
+        ConfigurationSection colorSection = fc.getConfigurationSection(MapConfigValue.COLORS.getConfigValue());
+        if(colorSection != null) {
+            colorSection.getKeys(false).forEach(key -> {
+                ConfigurationSection sec = colorSection.getConfigurationSection(key);
+                if(sec != null) {
+                    Optional<MapPlayer> mp = MapPlayer.loadMapPlayerFromConfigurationSection(sec);
+                    mp.ifPresent(mapPlayer -> {
+                        colors.add(mapPlayer);
+                    });
+                }
+            });
+        }
+    }
     public void save() {
         if (file == null || fc == null) {
             Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Cannot save MapConfig. File or FileConfiguration is null.");
@@ -85,6 +100,11 @@ public class MapConfig {
         fc.set(MapConfigValue.SHARED_PLAYERS.getConfigValue(), sharedPlayers.stream().map(UUID::toString).collect(Collectors.toList()));
         fc.set(MapConfigValue.DATE_CREATED.getConfigValue(), dateCreated.toString());
         fc.set(MapConfigValue.DATE_MODIFIED.getConfigValue(), dateModified.toString());
+        ConfigurationSection section = fc.createSection(MapConfigValue.COLORS.getConfigValue());
+        colors.forEach((color) -> {
+            // Save color
+            color.save(section);
+        });
 
         try {
             fc.save(file);
@@ -111,12 +131,8 @@ public class MapConfig {
         this.file = file;
     }
 
-    public HashMap<Colors, MxLocation> getColors() {
+    public ArrayList<MapPlayer> getColors() {
         return colors;
-    }
-
-    public void setColors(HashMap<Colors, MxLocation> colors) {
-        this.colors = colors;
     }
 
     public String getName() {

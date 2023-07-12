@@ -3,6 +3,8 @@ package nl.mxndarijn.world.map;
 import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.data.SpecialDirectories;
 import nl.mxndarijn.game.InteractionManager;
+import nl.mxndarijn.inventory.heads.MxHeadManager;
+import nl.mxndarijn.inventory.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.inventory.item.Pair;
 import nl.mxndarijn.items.Items;
 import nl.mxndarijn.util.language.LanguageManager;
@@ -10,9 +12,7 @@ import nl.mxndarijn.util.language.LanguageText;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.wieisdemol.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.world.WorldManager;
 import nl.mxndarijn.world.changeworld.ChangeWorldManager;
 import nl.mxndarijn.world.changeworld.SaveInventoryChangeWorld;
 import nl.mxndarijn.world.chests.ChestManager;
@@ -20,15 +20,17 @@ import nl.mxndarijn.world.doors.DoorManager;
 import nl.mxndarijn.world.mxworld.MxAtlas;
 import nl.mxndarijn.world.mxworld.MxWorld;
 import nl.mxndarijn.world.presets.Preset;
-import nl.mxndarijn.world.presets.PresetConfig;
 import nl.mxndarijn.world.shulkers.ShulkerManager;
 import nl.mxndarijn.world.warps.WarpManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -48,6 +50,8 @@ public class Map {
     private ShulkerManager shulkerManager;
     private DoorManager doorManager;
     private InteractionManager interactionManager;
+
+    public static final String  MAP_ITEMMETA_TAG = "map_id";
 
 
     public Map(File directory) {
@@ -83,6 +87,7 @@ public class Map {
         } else {
             if(!map.containsWorld()) {
                 Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Could not find world. (" + map.getDirectory() + ")");
+                return Optional.empty();
             }
             if(map.getMxWorld().isEmpty()) {
                 Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Could not find MxWorld. (" + map.getDirectory() + ")");
@@ -139,6 +144,9 @@ public class Map {
         Logger.logMessage(LogLevel.DebugHighlight, "Player map adding: " + owner.toString() + " , " + optionalWorld.get().getDir().getAbsolutePath());
         Logger.logMessage(LogLevel.DebugHighlight, "UUID of mxworld: " + optionalWorld.get().getUUID());
 
+        File inventoryFile = new File(optionalWorld.get().getDir() + File.separator + "inventories.yml");
+        inventoryFile.delete();
+
         Map map = new Map(optionalWorld.get().getDir(), name, owner);
         MapManager.getInstance().addMap(map);
         return Optional.of(map);
@@ -159,9 +167,9 @@ public class Map {
             if(loaded) {
                 ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(),new SaveInventoryChangeWorld(getInventoriesFile(), new ArrayList<>(
                         Arrays.asList(
-                                new Pair<>(Items.CHEST_CONFIGURE_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_INFO)),
-                                new Pair<>(Items.SHULKER_CONFIGURE_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_INFO)),
-                                new Pair<>(Items.DOOR_CONFIGURE_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_CONFIGURE_TOOL_INFO))
+                                new Pair<>(Items.CHEST_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_TOOL_INFO)),
+                                new Pair<>(Items.SHULKER_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_TOOL_INFO)),
+                                new Pair<>(Items.DOOR_ITEM.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_TOOL_INFO))
                         )),
                         (p, w, e) -> {
                             unloadWorld();
@@ -265,5 +273,56 @@ public class Map {
 
     public void setInteractionManager(InteractionManager interactionManager) {
         this.interactionManager = interactionManager;
+    }
+
+    public ItemStack getItemStack() {
+        MxSkullItemStackBuilder builder = MxSkullItemStackBuilder.create(1);
+
+        if(MxHeadManager.getInstance().getAllHeadKeys().contains(mapConfig.getPresetConfig().getSkullId())) {
+            builder.setSkinFromHeadsData(mapConfig.getPresetConfig().getSkullId());
+        } else {
+            builder.setSkinFromHeadsData("question-mark");
+        }
+
+        builder.setName(ChatColor.GRAY + mapConfig.getName());
+
+        builder.addBlankLore();
+        builder.addLore(ChatColor.GRAY + "Aantal spelers: " + mapConfig.getColors().size());
+        builder.addBlankLore();
+
+        builder.addLore(ChatColor.GRAY + "Host-Moeilijkheid:")
+                .addLore(getStars(mapConfig.getPresetConfig().getHostDifficulty()))
+                .addLore(ChatColor.GRAY + "Speel-Moeilijkheid:")
+                .addLore(getStars(mapConfig.getPresetConfig().getPlayDifficulty()));
+
+        builder.addBlankLore();
+        builder.addLore(ChatColor.GRAY + "Eigenaar: " + Bukkit.getOfflinePlayer(mapConfig.getOwner()).getName());
+        if(mapConfig.getSharedPlayers().size() > 0) {
+            builder.addLore(ChatColor.GRAY + "Gedeeld met:");
+        }
+        mapConfig.getSharedPlayers().forEach(u -> {
+            builder.addLore(ChatColor.GRAY + " - " + Bukkit.getOfflinePlayer(u).getName());
+        });
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        builder.addBlankLore()
+                        .addLore(ChatColor.GRAY + "Laatst aangepast: " + mapConfig.getDateModified().format(formatter))
+                        .addLore(ChatColor.GRAY + "Aangemaakt op: " + mapConfig.getDateCreated().format(formatter));
+
+        builder.addCustomTagString(MAP_ITEMMETA_TAG, directory.getName());
+
+        return builder.build();
+
+    }
+
+    public String getStars(int stars) {
+        StringBuilder hostStars = new StringBuilder();
+        for(int i = 1; i <= 5; i++) {
+            if(i <= stars) {
+                hostStars.append(ChatColor.YELLOW + "\u272B");
+            } else {
+                hostStars.append(ChatColor.GRAY + "\u272B");
+            }
+        }
+        return hostStars.toString();
     }
 }

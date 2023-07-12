@@ -4,6 +4,7 @@ import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.world.mxworld.MxLocation;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -95,5 +96,17 @@ public class DoorInformation {
             }
         }
         return Optional.empty();
+    }
+
+    public void open(World w) {
+        locations.forEach((loc, mat) -> {
+            loc.getLocation(w).getBlock().setType(Material.AIR);
+        });
+    }
+
+    public void close(World w) {
+        locations.forEach((loc, mat) -> {
+            loc.getLocation(w).getBlock().setType(mat);
+        });
     }
 }
