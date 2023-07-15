@@ -19,7 +19,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MapConfig {
-    private FileConfiguration fc;
     private File file;
     private ArrayList<MapPlayer> colors;
 
@@ -33,13 +32,12 @@ public class MapConfig {
 
     private PresetConfig presetConfig;
 
-    public MapConfig(File file, FileConfiguration fc, String name, UUID owner) {
+    public MapConfig(File file, String name, UUID owner) {
         this.file = file;
-        this.fc = fc;
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
 
         File presetConfigFile = new File(file.getParent(), "preset.yml");
-        FileConfiguration presetCf = YamlConfiguration.loadConfiguration(presetConfigFile);
-        this.presetConfig = new PresetConfig(presetConfigFile, presetCf);
+        this.presetConfig = new PresetConfig(presetConfigFile);
 
         this.name = name;
         this.owner = owner;
@@ -53,17 +51,16 @@ public class MapConfig {
         save();
     }
 
-    public MapConfig(File file, FileConfiguration fc) {
+    public MapConfig(File file) {
         this.file = file;
-        this.fc = fc;
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
         Arrays.stream(MapConfigValue.values()).forEach(value -> {
             if(!fc.contains(value.getConfigValue())) {
                 Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Could not find config value: " + value + " (" + file.getAbsolutePath() + ")");
             }
         });
         File presetConfigFile = new File(file.getParent(), "preset.yml");
-        FileConfiguration presetCf = YamlConfiguration.loadConfiguration(presetConfigFile);
-        this.presetConfig = new PresetConfig(presetConfigFile, presetCf);
+        this.presetConfig = new PresetConfig(presetConfigFile);
 
         this.name = fc.getString(MapConfigValue.NAME.getConfigValue());
         this.owner = UUID.fromString(fc.getString(MapConfigValue.OWNER.getConfigValue(), new File(file.getParent()).getName()));
@@ -90,6 +87,7 @@ public class MapConfig {
         }
     }
     public void save() {
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
         if (file == null || fc == null) {
             Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Cannot save MapConfig. File or FileConfiguration is null.");
             return;
@@ -111,16 +109,6 @@ public class MapConfig {
         } catch (IOException e) {
             Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Failed to save MapConfig: " + e.getMessage());
         }
-    }
-
-
-
-    public FileConfiguration getFc() {
-        return fc;
-    }
-
-    public void setFc(FileConfiguration fc) {
-        this.fc = fc;
     }
 
     public File getFile() {

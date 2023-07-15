@@ -32,6 +32,7 @@ LanguageText {
     PRESET_CONFIGURE_TOOL_WARPS_WARP_TELEPORTED("preset-configure-tool-warps-teleported"),
     PRESET_CONFIGURE_TOOL_WARPS_WARP_DELETED("preset-configure-tool-warps-deleted"),
     PRESET_CONFIGURE_TOOL_SPAWN_CHANGED("preset-configure-tool-spawn-changed"),
+    MAP_VUL_TOOL_SPAWN_CHANGED("map-vul-tool-spawn-changed"),
     PRESET_CONFIGURE_TOOL_COLOR_ADDED("preset-configure-tool-color-added"),
     PRESET_CONFIGURE_TOOL_COLOR_REMOVED("preset-configure-tool-color-removed"),
     PRESET_CONFIGURE_TOOL_COLOR_SPAWNPOINT_CHANGED("preset-configure-tool-spawnpoint-changed"),
@@ -78,7 +79,18 @@ LanguageText {
     COMMAND_MAPS_LOADING_MAP("command-maps-loading-map"),
     COMMAND_MAPS_COULD_NOT_FIND_MXWORLD("command-maps-could-not-find-mxworld"),
     COMMAND_MAPS_COULD_NOT_FIND_WORLD("command-maps-could-not-find-world"),
-    COMMAND_MAPS_TELEPORTED_TO_SPAWN("command-maps-teleported-to-spawn");
+    COMMAND_MAPS_TELEPORTED_TO_SPAWN("command-maps-teleported-to-spawn"),
+    MAP_VUL_TOOL_ENTER_NEW_NAME("map-vul-tool-enter-new-name"),
+    MAP_VUL_TOOL_NAME_CHANGED("map-vul-tool-name-changed"),
+    MAP_VUL_TOOL_NOT_OWNER_OF_MAP("map-vul-tool-not-owner-of-map"),
+    MAP_VUL_TOOL_ENTER_NAME_OF_VULLER("map-vul-tool-enter-name-of-vuller"),
+    MAP_VUL_TOOL_YOU_CANT_ADD_YOURSELF("map-vul-tool-you-cant-add-yourself"),
+    MAP_VUL_TOOL_PLAYER_NOT_FOUND("map-vul-tool-player-not-found"),
+    MAP_VUL_TOOL_PLAYER_ALREADY_ADDED("map-vul-tool-player-already-added"),
+    MAP_VUL_TOOL_PLAYER_ADDED("map-vul-tool-player-added"),
+    MAP_VUL_TOOL_PLAYER_REMOVED("map-vul-tool-player-removed"),
+    MAP_TELEPORTED_BECAUSE_WORLD_DELETED("map-teleported-because-world-deleted"),
+    VUL_TOOL_INFO("vul-tool-info");
 
     private final String configValue;
     LanguageText(String value) {

@@ -17,7 +17,6 @@ import java.util.Optional;
 public class DoorManager {
 
     private File doorFile;
-    private FileConfiguration fc;
     private List<DoorInformation> doors;
 
     public DoorManager(File f) {
@@ -30,13 +29,12 @@ public class DoorManager {
                 e.printStackTrace();
             }
         }
-        fc = YamlConfiguration.loadConfiguration(f);
         doors = loadFile();
     }
 
     private List<DoorInformation> loadFile() {
         ArrayList<DoorInformation> list = new ArrayList<>();
-
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(doorFile);
         fc.getKeys(false).forEach(key -> {
             Optional<DoorInformation> optionalChestInformation = DoorInformation.load(fc.getConfigurationSection(key));
             optionalChestInformation.ifPresent(list::add);
@@ -46,6 +44,7 @@ public class DoorManager {
     }
 
     public void save() {
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(doorFile);
         fc.getKeys(false).forEach(k -> {
             fc.set(k, null);
         });

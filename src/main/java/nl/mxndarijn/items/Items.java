@@ -5,6 +5,7 @@ import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.items.maps.ChestItem;
 import nl.mxndarijn.items.maps.DoorItem;
 import nl.mxndarijn.items.maps.ShulkerItem;
+import nl.mxndarijn.items.maps.VulTool;
 import nl.mxndarijn.items.presets.ChestConfigureTool;
 import nl.mxndarijn.items.presets.DoorConfigureTool;
 import nl.mxndarijn.items.presets.PresetConfigureTool;
@@ -113,6 +114,19 @@ public enum Items {
             },
             false,
             DoorItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+    VUL_TOOL(
+            MxDefaultItemStackBuilder.create(Material.NETHER_STAR, 1)
+                    .setName(ChatColor.GRAY + "Vul-Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je instellingen in een map aanpassen.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            VulTool.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     ;

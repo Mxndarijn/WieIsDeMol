@@ -5,10 +5,17 @@ import nl.mxndarijn.world.mxworld.MxAtlas;
 import nl.mxndarijn.world.mxworld.MxWorld;
 import nl.mxndarijn.world.WorldManager;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 public class TestCommand implements CommandExecutor {
     @Override
@@ -34,8 +41,8 @@ public class TestCommand implements CommandExecutor {
 //        MxInventoryManager.getInstance().addAndOpenInventory((Player) sender, inv);
 
 
-       /* Player p = (Player) sender;
-        Map world = WorldManager.getInstance().getPlayersMap().get(p.getUniqueId()).get(0);
+        Player p = (Player) sender;
+        /*Map world = WorldManager.getInstance().getPlayersMap().get(p.getUniqueId()).get(0);
         if(world.getMxWorld().isEmpty()) {
             return true;
         }
@@ -75,6 +82,14 @@ public class TestCommand implements CommandExecutor {
 //                    .build()
 //        );
 
+        Location location = p.getLocation();
+        ArmorStand armorStand = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
+
+        // Zet de aangepaste zichtbare naam
+        armorStand.setCustomNameVisible(false);
+       // armorStand.setCustomName(ChatColor.RESET + "\uE003");
+        armorStand.setSmall(true);
+        armorStand.getEquipment().setHelmet(new ItemStack(Material.APPLE));
 
 
         sender.sendMessage("done");

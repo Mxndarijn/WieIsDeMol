@@ -72,4 +72,12 @@ public class MapManager {
     public void addMap(Map map) {
         maps.add(map);
     }
+
+    public void removeMap(Map map) {
+        if(map.getDirectory().delete()) {
+            maps.remove(map);
+        } else {
+            Logger.logMessage(LogLevel.Error, "Could not delete map " + map.getDirectory().getAbsolutePath());
+        }
+    }
 }

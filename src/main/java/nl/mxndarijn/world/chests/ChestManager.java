@@ -17,7 +17,6 @@ import java.util.Optional;
 public class ChestManager {
 
     private File chestFile;
-    private FileConfiguration fc;
     private List<ChestInformation> chests;
 
     public ChestManager(File f) {
@@ -30,11 +29,11 @@ public class ChestManager {
                 e.printStackTrace();
             }
         }
-        fc = YamlConfiguration.loadConfiguration(f);
         chests = loadFile();
     }
 
     private List<ChestInformation> loadFile() {
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(chestFile);
         ArrayList<ChestInformation> list = new ArrayList<>();
 
         fc.getKeys(false).forEach(key -> {
@@ -46,6 +45,7 @@ public class ChestManager {
     }
 
     public void save() {
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(chestFile);
         fc.getKeys(false).forEach(k -> {
             fc.set(k, null);
         });

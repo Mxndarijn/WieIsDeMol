@@ -7,6 +7,7 @@ import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.world.mxworld.MxLocation;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public class PresetConfig {
-    private FileConfiguration fc;
     private File file;
 
     private String name;
@@ -30,9 +30,9 @@ public class PresetConfig {
     private boolean configured;
 
     private HashMap<Colors, MxLocation> colors;
-    public PresetConfig(File file, FileConfiguration fc) {
+    public PresetConfig(File file) {
         this.file = file;
-        this.fc = fc;
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
         Arrays.stream(PresetConfigValue.values()).forEach(value -> {
             if(!fc.contains(value.getConfigValue())) {
                 Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not find config value: " + value + " (" + file.getAbsolutePath() + ")");
@@ -74,6 +74,7 @@ public class PresetConfig {
     }
 
     public void save() {
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
         fc.set(PresetConfigValue.NAME.getConfigValue(),name);
         fc.set(PresetConfigValue.HOST_DIFFICULTY.getConfigValue(),hostDifficulty);
         fc.set(PresetConfigValue.PLAY_DIFFICULTY.getConfigValue(),playDifficulty);
@@ -97,10 +98,6 @@ public class PresetConfig {
             e.printStackTrace();
         }
 
-    }
-
-    public void setFc(FileConfiguration fc) {
-        this.fc = fc;
     }
 
     public void setFile(File file) {
@@ -174,5 +171,4 @@ public class PresetConfig {
     public HashMap<Colors, MxLocation> getColors() {
         return colors;
     }
-
 }

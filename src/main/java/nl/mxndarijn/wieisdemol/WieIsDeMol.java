@@ -6,6 +6,7 @@ import nl.mxndarijn.data.Permissions;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.items.ItemManager;
 import nl.mxndarijn.util.chatinput.MxChatInputManager;
+import nl.mxndarijn.util.events.PlayerJoinEventHeadManager;
 import nl.mxndarijn.util.language.LanguageManager;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
@@ -37,6 +38,8 @@ public final class WieIsDeMol extends JavaPlugin {
         ItemManager.getInstance();
         registerCommands();
         configFilesSaver();
+
+        getServer().getPluginManager().registerEvents(new PlayerJoinEventHeadManager(), this);
 
         Logger.logMessage(LogLevel.Information, "Started Wie Is De Mol...");
     }

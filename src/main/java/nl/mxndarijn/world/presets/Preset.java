@@ -72,7 +72,7 @@ public class Preset {
                     e.printStackTrace();
                 }
             }
-            this.config = new PresetConfig(presetConfigFile, YamlConfiguration.loadConfiguration(presetConfigFile));
+            this.config = new PresetConfig(presetConfigFile);
             this.mxWorld = MxAtlas.getInstance().loadWorld(directory);
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
             this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));

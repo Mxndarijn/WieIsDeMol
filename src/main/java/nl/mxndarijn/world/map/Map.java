@@ -30,6 +30,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +59,7 @@ public class Map {
         Logger.logMessage(LogLevel.DebugHighlight, "Created map");
         this.directory = directory;
         File mapConfigFile = new File(directory + File.separator + "map.yml");
-        this.mapConfig = new MapConfig(mapConfigFile, YamlConfiguration.loadConfiguration(mapConfigFile));
+        this.mapConfig = new MapConfig(mapConfigFile);
 
         inventoriesFile = new File(directory + File.separator + "inventories.yml");
         if(containsWorld()) {
@@ -108,7 +109,7 @@ public class Map {
             }
 
         }
-        this.mapConfig = new MapConfig(mapConfigFile, YamlConfiguration.loadConfiguration(mapConfigFile), name, owner);
+        this.mapConfig = new MapConfig(mapConfigFile, name, owner);
 
         inventoriesFile = new File(directory + File.separator + "inventories.yml");
         if(containsWorld()) {
@@ -167,12 +168,16 @@ public class Map {
             if(loaded) {
                 ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(),new SaveInventoryChangeWorld(getInventoriesFile(), new ArrayList<>(
                         Arrays.asList(
+                                new Pair<>(Items.VUL_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.VUL_TOOL_INFO)),
                                 new Pair<>(Items.CHEST_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_TOOL_INFO)),
                                 new Pair<>(Items.SHULKER_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_TOOL_INFO)),
                                 new Pair<>(Items.DOOR_ITEM.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_TOOL_INFO))
                         )),
                         (p, w, e) -> {
                             unloadWorld();
+                            mapConfig.setDateModified(LocalDateTime.now());
+                            mapConfig.save();
+                            mapConfig.getPresetConfig().save();
                         }));
 
             }
@@ -181,17 +186,22 @@ public class Map {
         return future;
     }
 
-    public void unloadWorld() {
+    public CompletableFuture<Boolean> unloadWorld() {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
-            if(!this.mxWorld.isPresent()) {
+            if (!Map.this.mxWorld.isPresent()) {
+                future.complete(true);
                 return;
             }
-            if(!this.mxWorld.get().isLoaded()) {
+            if (!Map.this.mxWorld.get().isLoaded()) {
+                future.complete(true);
                 return;
             }
             mapConfig.save();
-            MxAtlas.getInstance().unloadMxWorld(this.mxWorld.get(), true);
+            MxAtlas.getInstance().unloadMxWorld(Map.this.mxWorld.get(), true);
+            future.complete(true);
         });
+        return future;
     }
 
     private boolean containsWorld() {
@@ -324,5 +334,12 @@ public class Map {
             }
         }
         return hostStars.toString();
+    }
+
+    public void delete() {
+        unloadWorld().thenAccept(unloaded -> {
+            MapManager.getInstance().removeMap(this);
+        });
+
     }
 }

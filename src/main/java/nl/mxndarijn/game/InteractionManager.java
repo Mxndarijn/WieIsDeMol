@@ -17,12 +17,12 @@ import java.util.Optional;
 public class InteractionManager {
 
     private File interactionFile;
-    private FileConfiguration fc;
     private HashMap<Interaction, Boolean> interactions;
 
     public InteractionManager(File f) {
         this.interactionFile = f;
         interactions = new HashMap<>();
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(f);
         if(!this.interactionFile.exists()) {
             try {
                 this.interactionFile.createNewFile();
@@ -42,12 +42,19 @@ public class InteractionManager {
     }
 
     public void loadInteractions() {
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(interactionFile);
         fc.getKeys(false).forEach(key -> {
             interactions.put(Interaction.valueOf(key), fc.getBoolean(key));
         });
+        for (Interaction value : Interaction.values()) {
+            if(!interactions.containsKey(value)) {
+                interactions.put(value, value.isDefaultValue());
+            }
+        }
     }
 
     public void save() {
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(interactionFile);
         interactions.forEach((k,v) -> {
             fc.set(k.toString(),v);
         });
@@ -72,8 +79,5 @@ public class InteractionManager {
         return interactions;
     }
 
-    public FileConfiguration getFc() {
-        return fc;
-    }
 
 }

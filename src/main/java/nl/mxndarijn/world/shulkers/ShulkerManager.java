@@ -17,7 +17,6 @@ import java.util.Optional;
 public class ShulkerManager {
 
     private File shulkerFile;
-    private FileConfiguration fc;
     private List<ShulkerInformation> shulkers;
 
     public ShulkerManager(File f) {
@@ -30,13 +29,12 @@ public class ShulkerManager {
                 e.printStackTrace();
             }
         }
-        fc = YamlConfiguration.loadConfiguration(f);
         shulkers = loadFile();
     }
 
     private List<ShulkerInformation> loadFile() {
         ArrayList<ShulkerInformation> list = new ArrayList<>();
-
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(shulkerFile);
         fc.getKeys(false).forEach(key -> {
             Optional<ShulkerInformation> optionalShulkerInformation = ShulkerInformation.load(fc.getConfigurationSection(key));
             optionalShulkerInformation.ifPresent(list::add);
@@ -46,6 +44,7 @@ public class ShulkerManager {
     }
 
     public void save() {
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(shulkerFile);
         fc.getKeys(false).forEach(k -> {
             fc.set(k, null);
         });

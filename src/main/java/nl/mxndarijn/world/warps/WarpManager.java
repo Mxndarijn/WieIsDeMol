@@ -16,7 +16,6 @@ import java.util.Optional;
 public class WarpManager {
 
     private File warpFile;
-    private FileConfiguration fc;
     private List<Warp> warps;
 
     public WarpManager(File f) {
@@ -29,7 +28,7 @@ public class WarpManager {
                 e.printStackTrace();
             }
         }
-        fc = YamlConfiguration.loadConfiguration(f);
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(warpFile);
         warps = Warp.getWarpsFromFile(f, fc);
     }
 
@@ -38,6 +37,7 @@ public class WarpManager {
     }
 
     public void save() {
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(warpFile);
         fc.getKeys(false).forEach(k -> {
             fc.set(k, null);
         });
@@ -64,10 +64,6 @@ public class WarpManager {
 
     public File getWarpFile() {
         return warpFile;
-    }
-
-    public FileConfiguration getFc() {
-        return fc;
     }
 
     public Optional<Warp> getWarpByName(String warpName) {

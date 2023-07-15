@@ -49,17 +49,13 @@ public class SaveInventoryChangeWorld  implements MxChangeWorld {
 
     @Override
     public void leave(Player p, World w, PlayerChangedWorldEvent e) {
-        Optional<Preset> optionalPreset = PresetsManager.getInstance().getPresetByWorldUID(w.getUID());
-        if(optionalPreset.isPresent()) {
-            Preset preset = optionalPreset.get();
-            UUID uuid = p.getUniqueId();
-            FileConfiguration fc = YamlConfiguration.loadConfiguration(preset.getInventoriesFile());
-            InventoryManager.saveInventory(preset.getInventoriesFile(), fc, uuid.toString(), p.getInventory());
-            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INVENTORY_SAVED));
-            p.getInventory().clear();
-            if (w.getPlayers().size() == 0) {
-                event.worldReachedZeroPlayers(p, w, e);
-            }
+        UUID uuid = p.getUniqueId();
+        FileConfiguration fc = YamlConfiguration.loadConfiguration(inventoryFile);
+        InventoryManager.saveInventory(inventoryFile, fc, uuid.toString(), p.getInventory());
+        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INVENTORY_SAVED));
+        p.getInventory().clear();
+        if (w.getPlayers().size() == 0) {
+            event.worldReachedZeroPlayers(p, w, e);
         }
     }
 }
