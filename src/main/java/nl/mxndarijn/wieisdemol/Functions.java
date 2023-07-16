@@ -43,7 +43,7 @@ public class Functions {
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
         InputStream inputStream = plugin.getResource(fileName);
         if(inputStream == null) {
-            Logger.logMessage(LogLevel.Fatal, Prefix.CONFIG_FILES, "Could load resource: " + fileName);
+            Logger.logMessage(LogLevel.FATAL, Prefix.CONFIG_FILES, "Could load resource: " + fileName);
             return;
         }
 
@@ -54,12 +54,12 @@ public class Functions {
                 outputStream.write(buffer, 0, bytesRead);
             }
         } catch (IOException e) {
-            Logger.logMessage(LogLevel.Fatal, Prefix.CONFIG_FILES, "Could not create config file: " + fileName);
+            Logger.logMessage(LogLevel.FATAL, Prefix.CONFIG_FILES, "Could not create config file: " + fileName);
         } finally {
             try {
                 inputStream.close();
             } catch (IOException e) {
-                Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not close stream for config file: " + fileName);
+                Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not close stream for config file: " + fileName);
             }
         }
     }

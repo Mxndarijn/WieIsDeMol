@@ -3,13 +3,11 @@ package nl.mxndarijn.world.warps;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.world.warps.Warp;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +22,7 @@ public class WarpManager {
             try {
                 this.warpFile.createNewFile();
             } catch (IOException e) {
-                Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not create warp file (" + f.getAbsolutePath() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not create warp file (" + f.getAbsolutePath() + ")");
                 e.printStackTrace();
             }
         }
@@ -47,7 +45,7 @@ public class WarpManager {
         try {
             fc.save(warpFile);
         } catch (IOException e) {
-            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not save file. (" + warpFile.getAbsolutePath() + ")");
+            Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not save file. (" + warpFile.getAbsolutePath() + ")");
             e.printStackTrace();
         }
     }

@@ -8,10 +8,8 @@ import nl.mxndarijn.util.logger.Prefix;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class ItemManager {
 
@@ -27,12 +25,12 @@ public class ItemManager {
     }
 
     private ItemManager() {
-        Logger.logMessage(LogLevel.Information, Prefix.ITEMMANAGER, "Loading Item-Manager...");
+        Logger.logMessage(LogLevel.INFORMATION, Prefix.ITEM_MANAGER, "Loading Item-Manager...");
 
         items = new ArrayList<>();
         for (Items item : Items.values()) {
             try {
-                Logger.logMessage(LogLevel.Debug, Prefix.ITEMMANAGER, "Loading usable item " + item.getClassObject().getName() + "...");
+                Logger.logMessage(LogLevel.DEBUG, Prefix.ITEM_MANAGER, "Loading usable item " + item.getClassObject().getName() + "...");
                 MxItem mxItem = item.getClassObject().getDeclaredConstructor(
                         ItemStack.class,
                         MxWorldFilter.class,
@@ -42,7 +40,7 @@ public class ItemManager {
                 items.add(mxItem);
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                      NoSuchMethodException e) {
-                Logger.logMessage(LogLevel.Error, Prefix.ITEMMANAGER, "Could not load MxItem: " + item.getClassObject().getName());
+                Logger.logMessage(LogLevel.ERROR, Prefix.ITEM_MANAGER, "Could not load MxItem: " + item.getClassObject().getName());
                 e.printStackTrace();
             }
         }

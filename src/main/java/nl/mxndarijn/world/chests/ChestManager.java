@@ -4,7 +4,6 @@ import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.world.mxworld.MxLocation;
-import nl.mxndarijn.world.warps.Warp;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -25,7 +24,7 @@ public class ChestManager {
             try {
                 this.chestFile.createNewFile();
             } catch (IOException e) {
-                Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not create chest file (" + f.getAbsolutePath() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not create chest file (" + f.getAbsolutePath() + ")");
                 e.printStackTrace();
             }
         }
@@ -55,7 +54,7 @@ public class ChestManager {
         try {
             fc.save(chestFile);
         } catch (IOException e) {
-            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not save file. (" + chestFile.getAbsolutePath() + ")");
+            Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not save file. (" + chestFile.getAbsolutePath() + ")");
             e.printStackTrace();
         }
     }

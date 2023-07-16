@@ -5,7 +5,6 @@ import nl.mxndarijn.game.InteractionManager;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.inventory.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.inventory.item.Pair;
-import nl.mxndarijn.inventory.saver.InventoryManager;
 import nl.mxndarijn.items.Items;
 import nl.mxndarijn.util.language.LanguageManager;
 import nl.mxndarijn.util.language.LanguageText;
@@ -15,24 +14,15 @@ import nl.mxndarijn.util.logger.Prefix;
 import nl.mxndarijn.wieisdemol.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.world.changeworld.SaveInventoryChangeWorld;
-import nl.mxndarijn.world.changeworld.WorldReachedZeroPlayersEvent;
 import nl.mxndarijn.world.chests.ChestManager;
-import nl.mxndarijn.world.doors.DoorInformation;
 import nl.mxndarijn.world.doors.DoorManager;
 import nl.mxndarijn.world.shulkers.ShulkerManager;
 import nl.mxndarijn.world.warps.WarpManager;
 import nl.mxndarijn.world.changeworld.ChangeWorldManager;
-import nl.mxndarijn.world.changeworld.MxChangeWorld;
 import nl.mxndarijn.world.mxworld.MxAtlas;
 import nl.mxndarijn.world.mxworld.MxWorld;
-import nl.mxndarijn.world.WorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -68,7 +58,7 @@ public class Preset {
                 try {
                     inventoriesFile.createNewFile();
                 } catch (IOException e) {
-                    Logger.logMessage(LogLevel.Error, "Could not create file: " + inventoriesFile.getAbsolutePath());
+                    Logger.logMessage(LogLevel.ERROR, "Could not create file: " + inventoriesFile.getAbsolutePath());
                     e.printStackTrace();
                 }
             }
@@ -88,10 +78,10 @@ public class Preset {
             return Optional.of(preset);
         } else {
             if(!preset.containsWorld()) {
-                Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not find world. (" + preset.getDirectory() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.PRESETS_MANAGER, "Could not find world. (" + preset.getDirectory() + ")");
             }
             if(preset.getMxWorld().isEmpty()) {
-                Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not find MxWorld. (" + preset.getDirectory() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.PRESETS_MANAGER, "Could not find MxWorld. (" + preset.getDirectory() + ")");
             }
             return Optional.empty();
         }

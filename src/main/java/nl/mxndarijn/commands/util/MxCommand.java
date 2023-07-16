@@ -54,7 +54,7 @@ public abstract class MxCommand implements CommandExecutor {
         try {
             execute(sender, command, label, args);
         } catch (Exception e) {
-            Logger.logMessage(LogLevel.Error, Prefix.MXCOMMAND, "Could not execute command " + command.getName());
+            Logger.logMessage(LogLevel.ERROR, Prefix.MXCOMMAND, "Could not execute command " + command.getName());
             e.printStackTrace();
             sender.sendMessage(languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_COMMAND, Collections.emptyList(),  ChatPrefix.WIDM));
         }

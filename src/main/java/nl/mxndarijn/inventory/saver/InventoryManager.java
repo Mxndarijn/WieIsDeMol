@@ -5,7 +5,6 @@ import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.wieisdemol.Functions;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +22,7 @@ public class InventoryManager {
         try {
             fc.save(file);
         } catch (IOException e) {
-            Logger.logMessage(LogLevel.Error, "Could not save inventory to: " + file.getAbsolutePath());
+            Logger.logMessage(LogLevel.ERROR, "Could not save inventory to: " + file.getAbsolutePath());
             e.printStackTrace();
         }
     }

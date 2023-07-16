@@ -1,10 +1,9 @@
 package nl.mxndarijn.world.map.mapplayer;
 
-import nl.mxndarijn.world.map.MapPlayer;
-
 public enum MapPlayerConfigValue {
     LOCATION("location"),
-    ROLE("role");
+    ROLE("role"),
+    IS_PEACEKEEPER("is-peacekeeper");
     private final String configValue;
 
     MapPlayerConfigValue(String value) {

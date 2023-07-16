@@ -20,7 +20,6 @@ import nl.mxndarijn.util.language.LanguageText;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.wieisdemol.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.world.warps.WarpManager;
 import nl.mxndarijn.world.mxworld.MxLocation;
@@ -34,14 +33,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.checkerframework.checker.units.qual.A;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,12 +79,12 @@ public class PresetConfigureTool extends MxItem  {
                                     fc.save(settings);
                                     p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_SPAWN_CHANGED));
                                 } catch (IOException ex) {
-                                    Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not save file. (" + settings.getAbsolutePath() + ")");
+                                    Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not save file. (" + settings.getAbsolutePath() + ")");
                                     ex.printStackTrace();
                                 }
                                 p.closeInventory();
                             } else {
-                                Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not find file. (" + settings.getAbsolutePath() + ")");
+                                Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not find file. (" + settings.getAbsolutePath() + ")");
                             }
                         }
                 )

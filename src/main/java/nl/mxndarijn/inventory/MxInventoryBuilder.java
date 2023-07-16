@@ -16,6 +16,8 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
     protected boolean delete = true;
     protected boolean cancelEvent = true;
     protected boolean canBeClosed = true;
+
+    protected MxOnInventoryCloseEvent closeEvent = null;
     protected MxInventoryBuilder(String name, MxInventorySlots slotType) {
         this.slotType = slotType;
         this.name = getRandomPrefix() + name;
@@ -43,6 +45,11 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
         return (T) this;
     }
 
+    public T setOnInventoryCloseEvent(MxOnInventoryCloseEvent closeEvent) {
+        this.closeEvent = closeEvent;
+        return (T) this;
+    }
+
     public T deleteInventoryWhenClosed(boolean delete) {
         this.delete = delete;
         return (T) this;
@@ -55,7 +62,7 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
 
 
     public MxInventory build() {
-        return new MxInventory(inv, name, onClickedMap, delete, cancelEvent, canBeClosed);
+        return new MxInventory(inv, name, onClickedMap, delete, cancelEvent, canBeClosed, closeEvent);
     }
 
     public T defaultCancelEvent(boolean b) {

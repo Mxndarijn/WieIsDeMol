@@ -4,15 +4,12 @@ import nl.mxndarijn.data.Interaction;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.world.warps.Warp;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
 
 public class InteractionManager {
 
@@ -32,7 +29,7 @@ public class InteractionManager {
                     save();
                 }
             } catch (IOException e) {
-                Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not create interaction file (" + f.getAbsolutePath() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not create interaction file (" + f.getAbsolutePath() + ")");
                 e.printStackTrace();
             }
         } else {
@@ -61,7 +58,7 @@ public class InteractionManager {
         try {
             fc.save(interactionFile);
         } catch (IOException e) {
-            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not save file. (" + interactionFile.getAbsolutePath() + ")");
+            Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not save file. (" + interactionFile.getAbsolutePath() + ")");
             e.printStackTrace();
         }
     }

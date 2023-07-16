@@ -3,8 +3,6 @@ package nl.mxndarijn.world.doors;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.world.chests.ChestInformation;
-import nl.mxndarijn.world.mxworld.MxLocation;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -25,7 +23,7 @@ public class DoorManager {
             try {
                 this.doorFile.createNewFile();
             } catch (IOException e) {
-                Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not create door file (" + f.getAbsolutePath() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not create door file (" + f.getAbsolutePath() + ")");
                 e.printStackTrace();
             }
         }
@@ -54,7 +52,7 @@ public class DoorManager {
         try {
             fc.save(doorFile);
         } catch (IOException e) {
-            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not save file. (" + doorFile.getAbsolutePath() + ")");
+            Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not save file. (" + doorFile.getAbsolutePath() + ")");
             e.printStackTrace();
         }
     }

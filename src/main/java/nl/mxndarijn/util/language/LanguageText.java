@@ -90,7 +90,16 @@ LanguageText {
     MAP_VUL_TOOL_PLAYER_ADDED("map-vul-tool-player-added"),
     MAP_VUL_TOOL_PLAYER_REMOVED("map-vul-tool-player-removed"),
     MAP_TELEPORTED_BECAUSE_WORLD_DELETED("map-teleported-because-world-deleted"),
-    VUL_TOOL_INFO("vul-tool-info");
+    VUL_TOOL_INFO("vul-tool-info"),
+    COMMAND_ITEMS_ADDED_NEW_ITEMS("command-items-added-new-items"),
+    COMMAND_ITEMS_ENTER_NAME_FOR_CONTAINER("command-items-enter-name-for-containers"),
+    COMMAND_ITEMS_CONTAINER_ADDED("command-items-container-added"),
+    COMMAND_ITEMS_CONTAINER_DELETED("command-items-container-deleted"),
+    MAP_COLOR_ADDED("map-color-added"),
+    MAP_COLOR_SPAWN_CHANGED_TO_CURRENT("map-color-spawn-changed-to-current"),
+    MAP_COLOR_IS_NOW_PEACEKEEPER("map-color-is-now-peacekeeper"),
+    MAP_COLOR_IS_NOT_PEACEKEEPER("map-color-is-not-peacekeeper"),
+    MAP_ROLE_CHANGED("map-role-changed");
 
     private final String configValue;
     LanguageText(String value) {

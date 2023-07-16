@@ -36,15 +36,15 @@ public class LanguageManager {
         String path = ConfigFiles.MAIN_CONFIG.getFileConfiguration().getString("language-file");
         languageFile = new File(plugin.getDataFolder() + File.separator + "languages" + File.separator + path);
         if(!languageFile.exists()) {
-            Logger.logMessage(LogLevel.Information, Prefix.LANGUAGE_MANAGER, languageConfig.getString("language-name") + " has been created and loaded! (" + path + ")");
+            Logger.logMessage(LogLevel.INFORMATION, Prefix.LANGUAGE_MANAGER, languageConfig.getString("language-name") + " has been created and loaded! (" + path + ")");
             Functions.copyFileFromResources(path.split("/")[0],path);
         }
         if(!languageFile.exists()) {
-            Logger.logMessage(LogLevel.Fatal, Prefix.LANGUAGE_MANAGER, "Could not load language file... using default nl-NL.yml");
+            Logger.logMessage(LogLevel.FATAL, Prefix.LANGUAGE_MANAGER, "Could not load language file... using default nl-NL.yml");
             languageFile = new File(plugin.getDataFolder() + File.separator + "languages" + File.separator + "nl-NL.yml");
         }
         languageConfig = YamlConfiguration.loadConfiguration(languageFile);
-        Logger.logMessage(LogLevel.Information, Prefix.LANGUAGE_MANAGER, languageConfig.getString("language-name") + " has been loaded! (" + path + ")");
+        Logger.logMessage(LogLevel.INFORMATION, Prefix.LANGUAGE_MANAGER, languageConfig.getString("language-name") + " has been loaded! (" + path + ")");
     }
 
     public String getLanguageString(LanguageText text, List<String> placeholders) {
@@ -81,12 +81,12 @@ public class LanguageManager {
                 try {
                     languageConfig.save(languageFile);
                 } catch (IOException e) {
-                    Logger.logMessage(LogLevel.Error, Prefix.LANGUAGE_MANAGER, "Could not save language file.");
+                    Logger.logMessage(LogLevel.ERROR, Prefix.LANGUAGE_MANAGER, "Could not save language file.");
                     e.printStackTrace();
                 }
             } else {
                 languageConfig.addDefault(text.getConfigValue(), "LANGUAGE_NOT_FOUND");
-                Logger.logMessage(LogLevel.Error, Prefix.LANGUAGE_MANAGER, text.getConfigValue() + " has no default value, please add one.");
+                Logger.logMessage(LogLevel.ERROR, Prefix.LANGUAGE_MANAGER, text.getConfigValue() + " has no default value, please add one.");
             }
         }
     }

@@ -99,49 +99,10 @@ public class DoorItem extends MxItem  {
             ));
         });
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Shulker Hulp Tool", MxInventorySlots.SIX_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Door Hulp Tool", MxInventorySlots.SIX_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                 .setListItems(list)
                 .build());
 
-    }
-
-    @EventHandler
-    public void blockPlace(BlockPlaceEvent e) {
-        if (!(e.getBlockPlaced().getState() instanceof ShulkerBox)) {
-            return;
-        }
-        Player p = e.getPlayer();
-        Optional<Map> mapOptional = MapManager.getInstance().getMapByWorldUID(p.getWorld().getUID());
-
-        if(mapOptional.isEmpty()) {
-            return;
-        }
-
-        Map map = mapOptional.get();
-        map.getShulkerManager().addShulker(new ShulkerInformation("Automatisch toegevoegde shulker", MxLocation.getFromLocation(e.getBlockPlaced().getLocation()), e.getBlock().getType()));
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_SHULKER_ADDED));
-    }
-
-    @EventHandler
-    public void blockBreak(BlockBreakEvent e) {
-        if (e.getBlock().getState() instanceof ShulkerBox) {
-            return;
-        }
-        Player p = e.getPlayer();
-        Optional<Map> mapOptional = MapManager.getInstance().getMapByWorldUID(p.getWorld().getUID());
-
-        if(mapOptional.isEmpty()) {
-            return;
-        }
-
-        Map map = mapOptional.get();
-       Optional<ShulkerInformation>  info = map.getShulkerManager().getShulkerByLocation(MxLocation.getFromLocation(e.getBlock().getLocation()));
-       if(info.isEmpty()) {
-           return;
-       }
-
-        map.getShulkerManager().removeShulker(info.get());
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_SHULKER_REMOVED));
     }
 }

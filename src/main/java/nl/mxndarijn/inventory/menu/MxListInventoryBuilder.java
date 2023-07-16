@@ -6,7 +6,6 @@ import nl.mxndarijn.inventory.item.Pair;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
@@ -96,6 +95,9 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
 
     @Override
     public MxInventory build() {
+        if(availableItemsStackSlots.size() == 0) {
+            Logger.logMessage(LogLevel.FATAL, Prefix.MXINVENTORY, "No available item slots...");
+        }
         Collections.sort(availableItemsStackSlots);
         Iterator<Pair<ItemStack, MxItemClicked>> iterator = itemStackList.iterator();
 
@@ -140,7 +142,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
                 if(index + 1 < inventories.size()) {
                     MxInventoryManager.getInstance().addAndOpenInventory(e.getWhoClicked().getUniqueId(), inventories.get(index + 1));
                 } else {
-                    Logger.logMessage(LogLevel.Error, Prefix.MXINVENTORY, "Could not go next in inventory " + e.getView().getTitle());
+                    Logger.logMessage(LogLevel.ERROR, Prefix.MXINVENTORY, "Could not go next in inventory " + e.getView().getTitle());
                 }
             };
             MxItemClicked goPrevious = (inv, e) -> {
@@ -148,7 +150,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
                 if(index - 1 >= 0) {
                     MxInventoryManager.getInstance().addAndOpenInventory(e.getWhoClicked().getUniqueId(), inventories.get(index - 1));
                 } else {
-                    Logger.logMessage(LogLevel.Error, Prefix.MXINVENTORY, "Could not go previous in inventory " + e.getView().getTitle());
+                    Logger.logMessage(LogLevel.ERROR, Prefix.MXINVENTORY, "Could not go previous in inventory " + e.getView().getTitle());
                 }
             };
             setItem(nextPageItemStack.get(), nextPageItemStackSlot, goNext);

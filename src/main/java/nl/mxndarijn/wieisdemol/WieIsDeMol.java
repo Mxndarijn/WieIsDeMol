@@ -5,6 +5,7 @@ import nl.mxndarijn.data.ConfigFiles;
 import nl.mxndarijn.data.Permissions;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.items.ItemManager;
+import nl.mxndarijn.items.util.storage.StorageManager;
 import nl.mxndarijn.util.chatinput.MxChatInputManager;
 import nl.mxndarijn.util.events.PlayerJoinEventHeadManager;
 import nl.mxndarijn.util.language.LanguageManager;
@@ -26,7 +27,7 @@ public final class WieIsDeMol extends JavaPlugin {
     @Override
     public void onEnable() {
         setLogLevel();
-        Logger.logMessage(LogLevel.Information, "Starting Wie Is De Mol...");
+        Logger.logMessage(LogLevel.INFORMATION, "Starting Wie Is De Mol...");
         getCommand("test").setExecutor(new TestCommand());
         WorldManager.getInstance();
         LanguageManager.getInstance();
@@ -36,49 +37,52 @@ public final class WieIsDeMol extends JavaPlugin {
         MapManager.getInstance();
         ChangeWorldManager.getInstance();
         ItemManager.getInstance();
+        StorageManager.getInstance();
         registerCommands();
         configFilesSaver();
 
         getServer().getPluginManager().registerEvents(new PlayerJoinEventHeadManager(), this);
 
-        Logger.logMessage(LogLevel.Information, "Started Wie Is De Mol...");
+        Logger.logMessage(LogLevel.INFORMATION, "Started Wie Is De Mol...");
     }
 
 
     @Override
     public void onDisable() {
-        Logger.logMessage(LogLevel.Information, "Stopping Wie Is De Mol...");
+        Logger.logMessage(LogLevel.INFORMATION, "Stopping Wie Is De Mol...");
         ConfigFiles.saveAll();
-        Logger.logMessage(LogLevel.Information, "Stopped Wie Is De Mol...");
+        StorageManager.getInstance().save();
+        Logger.logMessage(LogLevel.INFORMATION, "Stopped Wie Is De Mol...");
     }
     private void setLogLevel() {
-        Logger.setLogLevel(LogLevel.Debug);
+        Logger.setLogLevel(LogLevel.DEBUG);
         Optional<LogLevel> level = LogLevel.getLevelByInt(ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("log-level"));
         if(level.isPresent()) {
             Logger.setLogLevel(level.get());
-            Logger.logMessage(LogLevel.Information, Prefix.LOGGER, "Log-level has been set to " + level.get().getName() + ChatColor.DARK_GRAY + " (Found in config)");
+            Logger.logMessage(LogLevel.INFORMATION, Prefix.LOGGER, "Log-level has been set to " + level.get().getName() + ChatColor.DARK_GRAY + " (Found in config)");
         } else {
-            Logger.setLogLevel(LogLevel.Debug);
-            Logger.logMessage(LogLevel.Information, Prefix.LOGGER, "Log-level has been set to " + LogLevel.Debug.getName() + ChatColor.DARK_GRAY + " (default, not found in config)");
+            Logger.setLogLevel(LogLevel.DEBUG);
+            Logger.logMessage(LogLevel.INFORMATION, Prefix.LOGGER, "Log-level has been set to " + LogLevel.DEBUG.getName() + ChatColor.DARK_GRAY + " (default, not found in config)");
         }
     }
 
     private void registerCommands() {
-        Logger.logMessage(LogLevel.Information,"Registering commands...");
+        Logger.logMessage(LogLevel.INFORMATION,"Registering commands...");
         getCommand("maps").setExecutor(new MapCommand(Permissions.COMMAND_MAPS, true, false));
-        getCommand("presets").setExecutor(new PresetsCommand(Permissions.COMMAND_MAPS, true, false));
+        getCommand("presets").setExecutor(new PresetsCommand(Permissions.COMMAND_PRESETS, true, false));
         getCommand("skulls").setExecutor(new SkullsCommand(Permissions.COMMAND_SKULLS, true, false));
         getCommand("spawn").setExecutor(new SpawnCommand(Permissions.COMMAND_SPAWN, true, false));
+        getCommand("items").setExecutor(new ItemsCommand());
     }
 
     private void configFilesSaver() {
         int interval = ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("auto-save-configs-interval");
         if(interval == 0) {
             interval = 5;
-            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Interval for auto-save is 0, autosetting it to 5.. (Needs to be higher than 0)");
+            Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Interval for auto-save is 0, autosetting it to 5.. (Needs to be higher than 0)");
             ConfigFiles.MAIN_CONFIG.getFileConfiguration().set("auto-save-configs-interval", 5);
         }
-        Logger.logMessage(LogLevel.Information, Prefix.CONFIG_FILES, "Saving interval for config files is " + interval + " minutes.");
+        Logger.logMessage(LogLevel.INFORMATION, Prefix.CONFIG_FILES, "Saving interval for config files is " + interval + " minutes.");
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             ConfigFiles.saveAll();
         },20L * 60L * interval,20L * 60L * interval);

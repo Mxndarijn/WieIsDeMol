@@ -4,9 +4,7 @@ import nl.mxndarijn.data.SpecialDirectories;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.world.mxworld.MxAtlas;
 import nl.mxndarijn.world.mxworld.MxWorld;
-import nl.mxndarijn.world.presets.Preset;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,10 +30,10 @@ public class MapManager {
                 Arrays.stream(file.listFiles()).forEach(mapFile -> {
                     Optional<Map> optionalMap = Map.create(mapFile);
                     if(optionalMap.isPresent()) {
-                        Logger.logMessage(LogLevel.Information, Prefix.MAPS_MANAGER, "Map Added: " + mapFile.getName());
+                        Logger.logMessage(LogLevel.INFORMATION, Prefix.MAPS_MANAGER, "Map Added: " + mapFile.getName());
                         maps.add(optionalMap.get());
                     } else {
-                        Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Could not load map: " + mapFile.getName());
+                        Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not load map: " + mapFile.getName());
                     }
                 });
             }
@@ -77,7 +75,7 @@ public class MapManager {
         if(map.getDirectory().delete()) {
             maps.remove(map);
         } else {
-            Logger.logMessage(LogLevel.Error, "Could not delete map " + map.getDirectory().getAbsolutePath());
+            Logger.logMessage(LogLevel.ERROR, "Could not delete map " + map.getDirectory().getAbsolutePath());
         }
     }
 }

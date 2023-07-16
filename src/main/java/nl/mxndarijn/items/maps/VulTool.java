@@ -3,6 +3,7 @@ package nl.mxndarijn.items.maps;
 import nl.mxndarijn.commands.util.MxWorldFilter;
 import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.data.Interaction;
+import nl.mxndarijn.data.Role;
 import nl.mxndarijn.game.Colors;
 import nl.mxndarijn.game.InteractionManager;
 import nl.mxndarijn.inventory.*;
@@ -11,10 +12,10 @@ import nl.mxndarijn.inventory.heads.MxHeadSection;
 import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.inventory.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.inventory.item.Pair;
+import nl.mxndarijn.inventory.menu.MxDefaultInventoryBuilder;
 import nl.mxndarijn.inventory.menu.MxDefaultMenuBuilder;
 import nl.mxndarijn.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.items.util.MxItem;
-import nl.mxndarijn.util.chatinput.MxChatInputCallback;
 import nl.mxndarijn.util.chatinput.MxChatInputManager;
 import nl.mxndarijn.util.language.LanguageManager;
 import nl.mxndarijn.util.language.LanguageText;
@@ -26,12 +27,14 @@ import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.world.map.Map;
 import nl.mxndarijn.world.map.MapConfig;
 import nl.mxndarijn.world.map.MapManager;
+import nl.mxndarijn.world.map.mapplayer.MapPlayer;
 import nl.mxndarijn.world.mxworld.MxLocation;
-import nl.mxndarijn.world.presets.Preset;
 import nl.mxndarijn.world.presets.PresetConfig;
 import nl.mxndarijn.world.warps.Warp;
 import nl.mxndarijn.world.warps.WarpManager;
 import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -47,6 +50,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class VulTool extends MxItem {
@@ -76,10 +80,10 @@ public class VulTool extends MxItem {
 
                 })
                 .setItem(getColorsItemStack(), 12, (mxInv, e1) -> {
-                    //TODO
+                    openColorsMenu(p, mxInv, map);
                 })
                 .setItem(getItems(), 13, (mxInv, e1) -> {
-                    //TODO
+                    p.performCommand("items");
                 })
                 .setItem(getWarpItemStack(), 14, (mxInv, e1) -> {
                     openWarpsMenu(p, mxInv, map);
@@ -431,7 +435,7 @@ public class VulTool extends MxItem {
                         .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
                                 .setName(ChatColor.GRAY + "Info")
                                 .addBlankLore()
-                                .addLore(ChatColor.YELLOW + "Klik op de skull om dat de nieuwe skull van de preset te maken.")
+                                .addLore(ChatColor.YELLOW + "Klik op de skull om dat de nieuwe skull van de map te maken.")
                                 .build(), 48, null)
                         .setPrevious(mainInv)
                         .build());
@@ -549,12 +553,12 @@ public class VulTool extends MxItem {
                 fc.save(settings);
                 p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_SPAWN_CHANGED));
             } catch (IOException ex) {
-                Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not save file. (" + settings.getAbsolutePath() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not save file. (" + settings.getAbsolutePath() + ")");
                 ex.printStackTrace();
             }
             p.closeInventory();
         } else {
-            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not find file. (" + settings.getAbsolutePath() + ")");
+            Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not find file. (" + settings.getAbsolutePath() + ")");
         }
     }
 
@@ -591,5 +595,221 @@ public class VulTool extends MxItem {
                                     });
                                 }
                         ).build());
+    }
+
+    private void openColorsMenu(Player p, MxInventory mainInv, Map map) {
+        ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+        MapConfig config = map.getMapConfig();
+        config.getColors().forEach(mapPlayer -> {
+            Colors color = mapPlayer.getColor();
+            list.add(new Pair<>(
+                    MxSkullItemStackBuilder.create(1)
+                            .setSkinFromHeadsData(color.getHeadKey())
+                            .setName(color.getDisplayName())
+                            .addBlankLore()
+                            .addLore(ChatColor.GRAY + "Rol: " + mapPlayer.getRoleDisplayString())
+                            .addBlankLore()
+                            .addLore(ChatColor.YELLOW + "Klik hier om de kleur aan te passen.")
+                            .build(),
+                    (mxInv, e) -> {
+                        openSpecificColorMenu(p, mapPlayer, map, mainInv, mxInv);
+                    }
+            ));
+        });
+
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Kleuren", MxInventorySlots.THREE_ROWS)
+                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                .setPrevious(mainInv)
+                .setListItems(list)
+                        .setItem(MxSkullItemStackBuilder.create(1)
+                                        .setSkinFromHeadsData("wooden-plus")
+                                        .setName(ChatColor.GRAY + "Voeg een kleur toe")
+                                        .addBlankLore()
+                                        .addLore(ChatColor.YELLOW + "Klik hier om een kleur toe te voegen.")
+                                        .build(),
+                                25,
+                                (mxInv, e) -> {
+                                    // TODO add color
+                                    addColorMenu(p, map, mainInv);
+                                }
+                        )
+                .build()
+        );
+    }
+
+
+    private void addColorMenu(Player p, Map map, MxInventory mainInv) {
+        ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+        ArrayList<Colors> existingColors = new ArrayList<>();
+        MapConfig config = map.getMapConfig();
+        config.getColors().forEach(mapPlayer -> {
+            existingColors.add(mapPlayer.getColor());
+        });
+
+        for (Colors color : Colors.values()) {
+            if(existingColors.contains(color))
+                continue;
+            list.add(new Pair<>(
+                    MxSkullItemStackBuilder.create(1)
+                            .setSkinFromHeadsData(color.getHeadKey())
+                            .setName(color.getDisplayName())
+                            .addBlankLore()
+                            .addLore(ChatColor.YELLOW + "Klik hier om de kleur toe te voegen.")
+                            .build(),
+                    (mxInv, e) -> {
+                        MapPlayer mapPlayer = new MapPlayer(color, MxLocation.getFromLocation(p.getLocation()));
+                        config.getColors().add(mapPlayer);
+                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_ADDED, Collections.singletonList(color.getDisplayName())));
+                        openColorsMenu(p, mainInv,  map);
+                    }
+            ));
+        }
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Kleur toevoegen", MxInventorySlots.THREE_ROWS)
+                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                .setPrevious(mainInv)
+                .setListItems(list)
+                .build()
+        );
+    }
+
+    private void openSpecificColorMenu(Player p, MapPlayer mapPlayer, Map map, MxInventory mainInv, MxInventory colorInv) {
+        Colors color = mapPlayer.getColor();
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Kleur " + mapPlayer.getColor().getDisplayName(), MxInventorySlots.THREE_ROWS)
+                .setPrevious(mainInv)
+                        .setPreviousItemStackSlot(21)
+                        .setItem(MxSkullItemStackBuilder.create(1)
+                                        .setSkinFromHeadsData(color.getHeadKey())
+                                        .setName(color.getDisplayName())
+                                        .addBlankLore()
+                                        .addLore(ChatColor.GRAY + "Rol: " + mapPlayer.getRoleDisplayString())
+                                        .build(),
+                                23,
+                                (mxInv, e) -> {})
+                .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_PEARL)
+                                .setName(ChatColor.GRAY + "Verander spawnpoint")
+                                .addBlankLore()
+                                .addLore(ChatColor.GRAY + "Status: " + decimalFormat.format(mapPlayer.getLocation().getX()) + ", " + decimalFormat.format(mapPlayer.getLocation().getY()) + ", " + decimalFormat.format(mapPlayer.getLocation().getZ()))
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik hier om de spawnpoint van de kleur naar je huidige locatie te zetten.")
+                                .build(),
+                        10,
+                        (mxInv, e) -> {
+                            mapPlayer.setLocation(MxLocation.getFromLocation(p.getLocation()));
+                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_SPAWN_CHANGED_TO_CURRENT));
+                            p.closeInventory();
+                        })
+                .setItem(MxSkullItemStackBuilder.create(1)
+                                .setSkinFromHeadsData("red-minus")
+                                .setName(ChatColor.RED + "Verwijder kleur")
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik hier om de kleur te verwijderen")
+                                .build(),
+                        18,
+                        (mxInv, e) -> {
+                            map.getMapConfig().getColors().remove(mapPlayer);
+                            openColorsMenu(p, colorInv, map);
+                        })
+                .setItem(MxDefaultItemStackBuilder.create(mapPlayer.getColor().getShulkerBlock())
+                                .setName(ChatColor.GRAY + "Bekijk shulkers")
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik hier om de shulkers van " + mapPlayer.getColor().getDisplayName() + ChatColor.YELLOW + "te bekijken.")
+                                .build(),
+                        16,
+                        (mxInv, e) -> {
+                        ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+                            map.getShulkerManager().getShulkers().forEach(shulkerInformation -> {
+                                if(shulkerInformation.getMaterial() == mapPlayer.getColor().getShulkerBlock()) {
+                                    list.add(new Pair<>(
+                                            MxDefaultItemStackBuilder.create(shulkerInformation.getMaterial())
+                                                    .setName(ChatColor.GRAY + shulkerInformation.getName())
+                                                    .addBlankLore()
+                                                    .addLore(ChatColor.GRAY + "Location: " + shulkerInformation.getLocation().getX() + " " + shulkerInformation.getLocation().getY() + " " + shulkerInformation.getLocation().getZ())
+                                                    .addBlankLore()
+                                                    .addLore(ChatColor.YELLOW + "Klik om de shulker op afstand te openen.")
+                                                    .build(),
+                                            (mxInv1, e12) -> {
+                                                if(map.getMxWorld().isEmpty()) {
+                                                    return;
+                                                }
+                                                World w = Bukkit.getWorld(map.getMxWorld().get().getWorldUID());
+                                                Location loc = shulkerInformation.getLocation().getLocation(w);
+                                                Block block = loc.getBlock();
+                                                if(block.getState() instanceof ShulkerBox) {
+                                                    ShulkerBox shulkerBox = (ShulkerBox) block.getState();
+                                                    p.openInventory(shulkerBox.getInventory());
+                                                } else {
+                                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_SHULKER_IS_NOT_A_SHULKER));
+                                                }
+                                            }
+                                    ));
+                                }
+                            });
+                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + " Shulkers - " + mapPlayer.getColor().getDisplayName(), MxInventorySlots.THREE_ROWS)
+                                    .setPrevious(mxInv)
+                                            .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                                    .setListItems(list)
+                                    .build());
+                        })
+                .setItem(MxDefaultItemStackBuilder.create(Material.BOOK)
+                                .setName(ChatColor.GRAY + "Verander Rol")
+                                .addBlankLore()
+                                .addLore(ChatColor.GRAY + "Status: " + mapPlayer.getRoleDisplayString())
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik hier om de rol aan te passen.")
+                                .build(),
+                        12,
+                        (mxInv, e) -> {
+                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Rol aannpassen " + mapPlayer.getColor().getDisplayName(), MxInventorySlots.THREE_ROWS)
+                                            .setPrevious(mxInv)
+                                            .setItem(getItemForRole(Role.SPELER), 11, getClickForRole(p, mapPlayer, Role.SPELER, colorInv))
+                                            .setItem(getItemForRole(Role.MOL), 13, getClickForRole(p, mapPlayer, Role.MOL, colorInv))
+                                            .setItem(getItemForRole(Role.EGO), 15, getClickForRole(p, mapPlayer, Role.EGO, colorInv))
+                                    .build());
+                        })
+                .setItem(MxDefaultItemStackBuilder.create(Material.DIAMOND_SWORD)
+                                .setName(ChatColor.GRAY + "Toggle peacekeeper")
+                                .addBlankLore()
+                                .addLore(ChatColor.GRAY + "Status: " + (mapPlayer.isPeacekeeper() ? "Is Peacekeeper" : "Is geen Peacekeeper"))
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik hier om peacekeeper te togglen.")
+                                .build(),
+                        14,
+                        (mxInv, e) -> {
+                            mapPlayer.setPeacekeeper(!mapPlayer.isPeacekeeper());
+                            if(mapPlayer.isPeacekeeper()) {
+                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_IS_NOW_PEACEKEEPER, Collections.singletonList(color.getDisplayName())));
+                            } else {
+                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_IS_NOT_PEACEKEEPER, Collections.singletonList(color.getDisplayName())));
+                            }
+                            for (MapPlayer mapPlayer1 : map.getMapConfig().getColors()) {
+                                if (mapPlayer1.getColor() == mapPlayer.getColor()) {
+                                    continue;
+                                }
+                                if (mapPlayer1.isPeacekeeper()) {
+                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_IS_NOT_PEACEKEEPER, Collections.singletonList(mapPlayer1.getColor().getDisplayName())));
+                                }
+                            }
+                            openSpecificColorMenu(p, mapPlayer, map, mainInv, colorInv);
+                        })
+
+                .build());
+    }
+
+    private ItemStack getItemForRole(Role role) {
+        return MxSkullItemStackBuilder.create(1)
+                .setSkinFromHeadsData(role.getHeadKey())
+                .setName(role.getRolName())
+                .addBlankLore()
+                .addLore(ChatColor.YELLOW + "Klik om de rol te veranderen naar " + role.getRolName() + ChatColor.YELLOW + ".")
+                .build();
+    }
+
+    private MxItemClicked getClickForRole(Player p, MapPlayer player, Role role, MxInventory colorInv) {
+        return (mxInv, e) -> {
+            player.setRole(role);
+            MxInventoryManager.getInstance().addAndOpenInventory(p, colorInv);
+            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_ROLE_CHANGED, new ArrayList<>(Arrays.asList(player.getColor().getDisplayName(), role.getRolName()))));
+        };
     }
 }

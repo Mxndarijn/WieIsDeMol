@@ -3,7 +3,6 @@ package nl.mxndarijn.world.shulkers;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.world.chests.ChestInformation;
 import nl.mxndarijn.world.mxworld.MxLocation;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -25,7 +24,7 @@ public class ShulkerManager {
             try {
                 this.shulkerFile.createNewFile();
             } catch (IOException e) {
-                Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not create shulker file (" + f.getAbsolutePath() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not create shulker file (" + f.getAbsolutePath() + ")");
                 e.printStackTrace();
             }
         }
@@ -54,7 +53,7 @@ public class ShulkerManager {
         try {
             fc.save(shulkerFile);
         } catch (IOException e) {
-            Logger.logMessage(LogLevel.Error, Prefix.CONFIG_FILES, "Could not save file. (" + shulkerFile.getAbsolutePath() + ")");
+            Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not save file. (" + shulkerFile.getAbsolutePath() + ")");
             e.printStackTrace();
         }
     }

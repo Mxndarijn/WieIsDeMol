@@ -1,19 +1,16 @@
 package nl.mxndarijn.world.map;
 
-import nl.mxndarijn.game.Colors;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.world.mxworld.MxLocation;
+import nl.mxndarijn.world.map.mapplayer.MapPlayer;
 import nl.mxndarijn.world.presets.PresetConfig;
-import nl.mxndarijn.world.presets.PresetConfigValue;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,7 +53,7 @@ public class MapConfig {
         FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
         Arrays.stream(MapConfigValue.values()).forEach(value -> {
             if(!fc.contains(value.getConfigValue())) {
-                Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Could not find config value: " + value + " (" + file.getAbsolutePath() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not find config value: " + value + " (" + file.getAbsolutePath() + ")");
             }
         });
         File presetConfigFile = new File(file.getParent(), "preset.yml");
@@ -89,7 +86,7 @@ public class MapConfig {
     public void save() {
         FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
         if (file == null || fc == null) {
-            Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Cannot save MapConfig. File or FileConfiguration is null.");
+            Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Cannot save MapConfig. File or FileConfiguration is null.");
             return;
         }
 
@@ -107,7 +104,7 @@ public class MapConfig {
         try {
             fc.save(file);
         } catch (IOException e) {
-            Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Failed to save MapConfig: " + e.getMessage());
+            Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Failed to save MapConfig: " + e.getMessage());
         }
     }
 

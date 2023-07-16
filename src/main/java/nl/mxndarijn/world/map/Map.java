@@ -24,7 +24,6 @@ import nl.mxndarijn.world.shulkers.ShulkerManager;
 import nl.mxndarijn.world.warps.WarpManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -56,7 +55,7 @@ public class Map {
 
 
     public Map(File directory) {
-        Logger.logMessage(LogLevel.DebugHighlight, "Created map");
+        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Created map");
         this.directory = directory;
         File mapConfigFile = new File(directory + File.separator + "map.yml");
         this.mapConfig = new MapConfig(mapConfigFile);
@@ -67,7 +66,7 @@ public class Map {
                 try {
                     inventoriesFile.createNewFile();
                 } catch (IOException e) {
-                    Logger.logMessage(LogLevel.Error, "Could not create file: " + inventoriesFile.getAbsolutePath());
+                    Logger.logMessage(LogLevel.ERROR, "Could not create file: " + inventoriesFile.getAbsolutePath());
                     e.printStackTrace();
                 }
             }
@@ -87,25 +86,25 @@ public class Map {
             return Optional.of(map);
         } else {
             if(!map.containsWorld()) {
-                Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Could not find world. (" + map.getDirectory() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not find world. (" + map.getDirectory() + ")");
                 return Optional.empty();
             }
             if(map.getMxWorld().isEmpty()) {
-                Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Could not find MxWorld. (" + map.getDirectory() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not find MxWorld. (" + map.getDirectory() + ")");
             }
             return Optional.empty();
         }
     }
 
     public Map(File directory, String name, UUID owner) {
-        Logger.logMessage(LogLevel.DebugHighlight, "Created map1");
+        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Created map1");
         this.directory = directory;
         File mapConfigFile = new File(directory + File.separator + "map.yml");
         if(!mapConfigFile.exists()) {
             try {
                 mapConfigFile.createNewFile();
             } catch (IOException e) {
-                Logger.logMessage(LogLevel.Error, Prefix.MAPS_MANAGER, "Failed to create map configuration file: " + e.getMessage());
+                Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Failed to create map configuration file: " + e.getMessage());
             }
 
         }
@@ -117,13 +116,13 @@ public class Map {
                 try {
                     inventoriesFile.createNewFile();
                 } catch (IOException e) {
-                    Logger.logMessage(LogLevel.Error, "Could not create file: " + inventoriesFile.getAbsolutePath());
+                    Logger.logMessage(LogLevel.ERROR, "Could not create file: " + inventoriesFile.getAbsolutePath());
                     e.printStackTrace();
                 }
             }
             this.mxWorld = MxAtlas.getInstance().loadWorld(directory);
-            Logger.logMessage(LogLevel.DebugHighlight, "Searching for MxWorld with id: " + directory.getName());
-            Logger.logMessage(LogLevel.DebugHighlight, "Found mxworld: " + this.mxWorld.isPresent());
+            Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Searching for MxWorld with id: " + directory.getName());
+            Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Found mxworld: " + this.mxWorld.isPresent());
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
             this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
             this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
@@ -142,8 +141,8 @@ public class Map {
         if(optionalWorld.isEmpty()) {
             return Optional.empty();
         }
-        Logger.logMessage(LogLevel.DebugHighlight, "Player map adding: " + owner.toString() + " , " + optionalWorld.get().getDir().getAbsolutePath());
-        Logger.logMessage(LogLevel.DebugHighlight, "UUID of mxworld: " + optionalWorld.get().getUUID());
+        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Player map adding: " + owner.toString() + " , " + optionalWorld.get().getDir().getAbsolutePath());
+        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "UUID of mxworld: " + optionalWorld.get().getUUID());
 
         File inventoryFile = new File(optionalWorld.get().getDir() + File.separator + "inventories.yml");
         inventoryFile.delete();

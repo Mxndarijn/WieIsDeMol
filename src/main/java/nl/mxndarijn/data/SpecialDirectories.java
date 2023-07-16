@@ -12,7 +12,8 @@ public enum SpecialDirectories {
     PRESET_WORLDS("presets"),
     MAP_WORLDS("maps"),
     GAMES_WORLDS("games"),
-    LANGUAGE_FILES("languages");
+    LANGUAGE_FILES("languages"),
+    STORAGE_FILES("storages");
 
     private final File directory;
     private final String folderName;

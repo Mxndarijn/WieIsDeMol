@@ -7,7 +7,6 @@ import nl.mxndarijn.util.logger.Prefix;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -90,7 +89,7 @@ public class MxHeadSection {
     public static Optional<MxHeadSection> loadHead(String key) {
         ConfigurationSection section = ConfigFiles.HEAD_DATA.getFileConfiguration().getConfigurationSection(key);
         if(section == null) {
-            Logger.logMessage(LogLevel.Error, Prefix.MXHEADMANAGER, "Could not load head: " + key);
+            Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not load head: " + key);
             return Optional.empty();
         }
         MxHeadSection mxHeadSection = new MxHeadSection();
@@ -108,9 +107,9 @@ public class MxHeadSection {
     }
 
     public void apply() {
-        Logger.logMessage(LogLevel.Debug, Prefix.MXHEADMANAGER, "Saving MxHeadSection " + key + "...");
+        Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Saving MxHeadSection " + key + "...");
         if(!validate()) {
-            Logger.logMessage(LogLevel.Error, Prefix.MXHEADMANAGER, "Could not save MxHeadSection " + key + " because it was not valid.");
+            Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not save MxHeadSection " + key + " because it was not valid.");
             return;
         }
         FileConfiguration cf = ConfigFiles.HEAD_DATA.getFileConfiguration();

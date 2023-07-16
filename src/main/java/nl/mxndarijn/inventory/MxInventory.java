@@ -12,13 +12,16 @@ public class MxInventory {
     private final boolean cancelEvent;
     private final boolean canBeClosed;
 
-    public MxInventory(Inventory inv, String invName, HashMap<Integer, MxItemClicked> onClickedMap, boolean delete, boolean cancelEvent, boolean closed) {
+    private final MxOnInventoryCloseEvent closeEvent;
+
+    public MxInventory(Inventory inv, String invName, HashMap<Integer, MxItemClicked> onClickedMap, boolean delete, boolean cancelEvent, boolean closed, MxOnInventoryCloseEvent closeEvent) {
         this.inv = inv;
         this.onClickedMap = onClickedMap;
         this.name = invName;
         this.delete = delete;
         this.cancelEvent = cancelEvent;
         this.canBeClosed = closed;
+        this.closeEvent = closeEvent;
     }
 
     public Inventory getInv() {
@@ -43,5 +46,9 @@ public class MxInventory {
 
     public boolean isCanBeClosed() {
         return canBeClosed;
+    }
+
+    public MxOnInventoryCloseEvent getCloseEvent() {
+        return closeEvent;
     }
 }

@@ -1,7 +1,6 @@
 package nl.mxndarijn.util.events;
 
 
-import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.inventory.heads.MxHeadManager;
 import nl.mxndarijn.inventory.heads.MxHeadSection;
 import nl.mxndarijn.inventory.heads.MxHeadsType;
@@ -34,7 +33,7 @@ public class PlayerJoinEventHeadManager implements Listener {
             headItem.setItemMeta(skullMeta);
 
             MxHeadManager.getInstance().storeSkullTexture(headItem, e.getPlayer().getUniqueId().toString(),  e.getPlayer().getName(), MxHeadsType.PLAYER);
-            Logger.logMessage(LogLevel.Debug, Prefix.MXHEADMANAGER, "Added skull of " + e.getPlayer().getName() + " (" + e.getPlayer().getUniqueId() + ")");
+            Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Added skull of " + e.getPlayer().getName() + " (" + e.getPlayer().getUniqueId() + ")");
         }
     }
 }

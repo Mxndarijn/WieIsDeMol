@@ -31,7 +31,7 @@ public class MxChatInputManager implements Listener {
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
 
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
-        Logger.logMessage(LogLevel.Information, Prefix.MXCHATINPUTMANAGER, "MxChatInputManager loaded...");
+        Logger.logMessage(LogLevel.INFORMATION, Prefix.MXCHATINPUT_MANAGER, "MxChatInputManager loaded...");
 
     }
 

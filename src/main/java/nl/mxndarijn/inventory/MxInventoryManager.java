@@ -71,6 +71,10 @@ public class MxInventoryManager implements Listener {
                         e.getPlayer().openInventory(mxInventory.getInv());
                     }, 1);
                 } else {
+                    if(mxInventory.getCloseEvent() != null) {
+                        Player p = (Player) e.getPlayer();
+                        mxInventory.getCloseEvent().onClose(p, mxInventory, e);
+                    }
                     if(mxInventory.isDelete()) {
                         list.remove(mxInventory);
                         break;
@@ -92,7 +96,9 @@ public class MxInventoryManager implements Listener {
             return;
         }
         addInventory(p.getUniqueId(), inv);
-        p.openInventory(inv.getInv());
+        Bukkit.getScheduler().runTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
+            p.openInventory(inv.getInv());
+        });
 
     }
 

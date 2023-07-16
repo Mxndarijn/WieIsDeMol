@@ -104,7 +104,7 @@ public class ShulkerItem extends MxItem  {
 
     @EventHandler
     public void blockBreak(BlockBreakEvent e) {
-        if (e.getBlock().getState() instanceof ShulkerBox) {
+        if (!(e.getBlock().getState() instanceof ShulkerBox)) {
             return;
         }
         Player p = e.getPlayer();

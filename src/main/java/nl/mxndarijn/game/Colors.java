@@ -27,12 +27,14 @@ public enum Colors {
     private final String type;
     private final ChatColor color;
     private final String displayName;
+    private final String displayNameWithoutColor;
     private final Material shulkerBlock;
     private final String headKey;
     Colors(String type, ChatColor color, String displayName, Material shulkerBlock, String headKey) {
         this.type = type;
         this.color = color;
-        this.displayName = displayName;
+        this.displayName = this.color + displayName;
+        this.displayNameWithoutColor = displayName;
         this.shulkerBlock = shulkerBlock;
         this.headKey = headKey;
     }
@@ -65,5 +67,9 @@ public enum Colors {
 
     public String getHeadKey() {
         return headKey;
+    }
+
+    public String getDisplayNameWithoutColor() {
+        return displayNameWithoutColor;
     }
 }

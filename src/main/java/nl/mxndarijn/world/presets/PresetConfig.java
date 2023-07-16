@@ -35,7 +35,7 @@ public class PresetConfig {
         FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
         Arrays.stream(PresetConfigValue.values()).forEach(value -> {
             if(!fc.contains(value.getConfigValue())) {
-                Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not find config value: " + value + " (" + file.getAbsolutePath() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.PRESETS_MANAGER, "Could not find config value: " + value + " (" + file.getAbsolutePath() + ")");
             }
         });
 
@@ -63,11 +63,11 @@ public class PresetConfig {
                     MxLocation mxLocation = optionalMxLocation.get();
                     colors.put(color.get(), mxLocation);
                 } else {
-                    Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not load spawnpoint for color: " + key + " (" + file.getAbsolutePath() + ")");
+                    Logger.logMessage(LogLevel.ERROR, Prefix.PRESETS_MANAGER, "Could not load spawnpoint for color: " + key + " (" + file.getAbsolutePath() + ")");
                 }
 
             } else {
-                Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not load color: " + key + " (" + file.getAbsolutePath() + ")");
+                Logger.logMessage(LogLevel.ERROR, Prefix.PRESETS_MANAGER, "Could not load color: " + key + " (" + file.getAbsolutePath() + ")");
             }
 
         });
@@ -94,7 +94,7 @@ public class PresetConfig {
         try {
             fc.save(file);
         } catch (IOException e) {
-            Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not save preset config: " + file.getAbsolutePath());
+            Logger.logMessage(LogLevel.ERROR, Prefix.PRESETS_MANAGER, "Could not save preset config: " + file.getAbsolutePath());
             e.printStackTrace();
         }
 

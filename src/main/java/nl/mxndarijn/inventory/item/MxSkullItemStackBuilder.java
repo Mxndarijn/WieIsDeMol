@@ -49,7 +49,7 @@ public class MxSkullItemStackBuilder extends MxItemStackBuilder<MxSkullItemStack
         OfflinePlayer p = Bukkit.getOfflinePlayer(id);
         boolean returnedValue = meta.setOwningPlayer(p);
         if(!returnedValue) {
-            Logger.logMessage(LogLevel.Error, Prefix.MXINVENTORY, "Could not set owner of skull");
+            Logger.logMessage(LogLevel.ERROR, Prefix.MXINVENTORY, "Could not set owner of skull");
         }
         return this;
     }
@@ -71,11 +71,11 @@ public class MxSkullItemStackBuilder extends MxItemStackBuilder<MxSkullItemStack
             }
             catch (IllegalArgumentException|NoSuchFieldException|SecurityException | IllegalAccessException error)
             {
-                Logger.logMessage(LogLevel.Error, Prefix.MXINVENTORY, "Could not load skull: " + value);
+                Logger.logMessage(LogLevel.ERROR, Prefix.MXINVENTORY, "Could not load skull: " + value);
                 error.printStackTrace();
             }
         } else {
-            Logger.logMessage(LogLevel.Error, Prefix.MXINVENTORY, "Could not find skull: " + value + " in heads-data.yml");
+            Logger.logMessage(LogLevel.ERROR, Prefix.MXINVENTORY, "Could not find skull: " + value + " in heads-data.yml");
         }
 
         return this;

@@ -4,11 +4,8 @@ import nl.mxndarijn.data.SpecialDirectories;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.world.mxworld.MxWorld;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -32,10 +29,10 @@ public class PresetsManager {
             if(file.isDirectory()) {
                 Optional<Preset> optionalPreset = Preset.create(file);
                 if(optionalPreset.isPresent()) {
-                    Logger.logMessage(LogLevel.Information, Prefix.PRESETS_MANAGER, "Preset Added: " + file.getName());
+                    Logger.logMessage(LogLevel.INFORMATION, Prefix.PRESETS_MANAGER, "Preset Added: " + file.getName());
                     presets.add(optionalPreset.get());
                 } else {
-                    Logger.logMessage(LogLevel.Error, Prefix.PRESETS_MANAGER, "Could not load preset: " + file.getName());
+                    Logger.logMessage(LogLevel.ERROR, Prefix.PRESETS_MANAGER, "Could not load preset: " + file.getName());
                 }
             }
         });

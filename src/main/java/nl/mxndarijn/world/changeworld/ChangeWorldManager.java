@@ -27,7 +27,7 @@ public class ChangeWorldManager implements Listener {
     }
     
     private ChangeWorldManager() {
-        Logger.logMessage(LogLevel.Debug, Prefix.CHANGEWORLDMANAGER, "Loading...");
+        Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "Loading...");
         worlds = new HashMap<>();
 
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
@@ -43,12 +43,12 @@ public class ChangeWorldManager implements Listener {
         if(worlds.containsKey(from)) {
             worlds.get(from).leave(e.getPlayer(),e.getFrom(), e);
         } else {
-            Logger.logMessage(LogLevel.Debug, Prefix.CHANGEWORLDMANAGER, "World: " + e.getFrom().getName() + " not found (leaving this world). (" + e.getPlayer().getName() + ")");
+            Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "World: " + e.getFrom().getName() + " not found (leaving this world). (" + e.getPlayer().getName() + ")");
         }
         if(worlds.containsKey(to)) {
             worlds.get(to).enter(e.getPlayer(),e.getPlayer().getWorld(), e);
         } else {
-            Logger.logMessage(LogLevel.Debug, Prefix.CHANGEWORLDMANAGER, "World: " + e.getPlayer().getWorld().getName() + " not found (going to this world). (" + e.getPlayer().getName() + ")");
+            Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "World: " + e.getPlayer().getWorld().getName() + " not found (going to this world). (" + e.getPlayer().getName() + ")");
         }
     }
 
@@ -56,7 +56,7 @@ public class ChangeWorldManager implements Listener {
     public void worldUnload(WorldUnloadEvent e) {
         UUID worldUID = e.getWorld().getUID();
         if(worlds.containsKey(worldUID)) {
-            Logger.logMessage(LogLevel.Debug, Prefix.CHANGEWORLDMANAGER, "World: " + e.getWorld().getName() + " has been unloaded.");
+            Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "World: " + e.getWorld().getName() + " has been unloaded.");
             worlds.remove(worldUID);
 
         }

@@ -5,12 +5,12 @@ import org.bukkit.ChatColor;
 import java.util.Optional;
 
 public enum LogLevel {
-    Fatal("Fatal", 1, ChatColor.DARK_RED),
-    DebugHighlight("Debug-Highlight", 1, ChatColor.LIGHT_PURPLE),
-    Error("Error", 2, ChatColor.RED),
-    Warning("Warning", 3, ChatColor.GOLD),
-    Information("Information", 4, ChatColor.DARK_AQUA),
-    Debug("Debug", 5, ChatColor.DARK_GREEN);
+    FATAL("Fatal", 1, ChatColor.DARK_RED),
+    DEBUG_HIGHLIGHT("Debug-Highlight", 1, ChatColor.LIGHT_PURPLE),
+    ERROR("Error", 2, ChatColor.RED),
+    WARNING("Warning", 3, ChatColor.GOLD),
+    INFORMATION("Information", 4, ChatColor.DARK_AQUA),
+    DEBUG("Debug", 5, ChatColor.DARK_GREEN);
 
     private final String prefix;
     private final int level;

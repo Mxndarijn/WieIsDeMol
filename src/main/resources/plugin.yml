@@ -12,6 +12,9 @@ commands:
   presets:
     description: presets
     usage: /presets
+  items:
+    description: Items
+    usage: /items
   skulls:
     description: Custom heads
     usage: /skulls

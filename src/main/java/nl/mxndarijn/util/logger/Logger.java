@@ -1,12 +1,10 @@
 package nl.mxndarijn.util.logger;
 
-import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class Logger {
-    private static LogLevel logLevel = LogLevel.Debug;
+    private static LogLevel logLevel = LogLevel.DEBUG;
 
     public static void setLogLevel(LogLevel newLogLevel) {
         logLevel = newLogLevel;

@@ -9,7 +9,6 @@ import nl.mxndarijn.inventory.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.inventory.item.Pair;
 import nl.mxndarijn.inventory.menu.MxDefaultInventoryBuilder;
 import nl.mxndarijn.inventory.menu.MxListInventoryBuilder;
-import nl.mxndarijn.util.chatinput.MxChatInputCallback;
 import nl.mxndarijn.util.chatinput.MxChatInputManager;
 import nl.mxndarijn.util.language.LanguageManager;
 import nl.mxndarijn.util.language.LanguageText;
@@ -25,7 +24,6 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -139,7 +137,7 @@ public class MapCommand extends MxCommand {
                                         p.closeInventory();
                                         return;
                                     }
-                                    Logger.logMessage(LogLevel.DebugHighlight, "Making...");
+                                    Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Making...");
                                     MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                                         Optional<Map> map = Map.createFromPreset(message, optionalPreset.get(), p.getUniqueId());
                                         if(map.isPresent()) {
