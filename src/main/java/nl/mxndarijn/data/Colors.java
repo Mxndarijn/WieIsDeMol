@@ -1,9 +1,8 @@
-package nl.mxndarijn.game;
+package nl.mxndarijn.data;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 public enum Colors {

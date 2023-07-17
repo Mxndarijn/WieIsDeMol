@@ -3,7 +3,7 @@ package nl.mxndarijn.items.presets;
 import nl.mxndarijn.commands.util.MxWorldFilter;
 import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.data.Interaction;
-import nl.mxndarijn.game.Colors;
+import nl.mxndarijn.data.Colors;
 import nl.mxndarijn.game.InteractionManager;
 import nl.mxndarijn.inventory.*;
 import nl.mxndarijn.inventory.heads.MxHeadManager;

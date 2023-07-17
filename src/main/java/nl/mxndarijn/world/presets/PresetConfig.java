@@ -1,6 +1,6 @@
 package nl.mxndarijn.world.presets;
 
-import nl.mxndarijn.game.Colors;
+import nl.mxndarijn.data.Colors;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;

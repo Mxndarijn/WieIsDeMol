@@ -1,7 +1,7 @@
 package nl.mxndarijn.world.map.mapplayer;
 
 import nl.mxndarijn.data.Role;
-import nl.mxndarijn.game.Colors;
+import nl.mxndarijn.data.Colors;
 import nl.mxndarijn.util.logger.LogLevel;
 import nl.mxndarijn.util.logger.Logger;
 import nl.mxndarijn.util.logger.Prefix;
