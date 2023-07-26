@@ -57,6 +57,11 @@ public class ChestItem extends MxItem  {
 
         Map map = mapOptional.get();
 
+        if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+            return;
+        }
+
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
         map.getChestManager().getChests().forEach(chest -> {
             list.add(new Pair<>(
