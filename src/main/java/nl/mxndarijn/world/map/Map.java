@@ -196,11 +196,20 @@ public class Map {
                 future.complete(true);
                 return;
             }
-            mapConfig.save();
+            saveAllData();
             MxAtlas.getInstance().unloadMxWorld(Map.this.mxWorld.get(), true);
             future.complete(true);
         });
         return future;
+    }
+
+    private void saveAllData() {
+        mapConfig.save();
+        chestManager.save();
+        doorManager.save();
+        interactionManager.save();
+        shulkerManager.save();
+        warpManager.save();
     }
 
     private boolean containsWorld() {

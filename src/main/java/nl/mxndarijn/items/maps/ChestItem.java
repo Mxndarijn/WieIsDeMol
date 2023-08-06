@@ -58,7 +58,16 @@ public class ChestItem extends MxItem  {
         Map map = mapOptional.get();
 
         if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
+            assert e.getClickedBlock() != null;
+            if(e.getClickedBlock().getType() != Material.CHEST) {
+                return;
+            }
+            Optional<ChestInformation> inf = map.getChestManager().getChestByLocation(MxLocation.getFromLocation(e.getClickedBlock().getLocation()));
+            if(inf.isPresent()) {
+                inf.get().openAttachmentsInventory(e.getPlayer());
+            } else {
+                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_COULD_NOT_BE_FOUND));
+            }
             return;
         }
 

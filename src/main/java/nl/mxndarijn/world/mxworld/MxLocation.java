@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 
 public class MxLocation {
@@ -29,6 +30,22 @@ public class MxLocation {
         mxLocation.setYaw((int) loc.getYaw());
 
         return mxLocation;
+    }
+
+    public static Optional<MxLocation> loadFromMap(Map<String, Object> section) {
+        if(section == null) {
+            return Optional.empty();
+        }
+        MxLocation mxLocation = new MxLocation();
+        mxLocation.setX((double)section.get("x"));
+        mxLocation.setY((double)section.get("y"));
+        mxLocation.setZ((double)section.get("z"));
+        if(section.containsKey("yaw") && section.containsKey("pitch")) {
+            mxLocation.setYaw((int) section.get("yaw"));
+            mxLocation.setPitch((int) section.get("pitch"));
+        }
+
+        return mxLocation.validate() ? Optional.of(mxLocation) : Optional.empty();
     }
 
     public double getX() {

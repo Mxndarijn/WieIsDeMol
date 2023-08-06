@@ -97,3 +97,8 @@ map-color-spawn-changed-to-current: "&aDe spawn van de kleur is aangepast naar j
 map-color-is-now-peacekeeper: "%%1%%&a is nu peacekeeper."
 map-color-is-not-peacekeeper: "%%1%%&7 is nu geen peacekeeper meer."
 map-role-changed: "&aDe rol van %%1%%&a is aangepast naar %%2%%&a."
+map-chest-attachment-added: "&aChest attachment toegevoegd: %%1%%."
+map-chest-attachment-removed: "&aChest attachment verwijderdt: %%1%%."
+map-chest-attachment-could-not-add: "&cKon %%1%% niet toevoegen als chest attachment."
+map-chest-attachment-could-not-remove: "&cKon %%1%% niet verwijderen als chest attachment."
+map-chest-could-not-be-found: "&cKan de kist informatie niet ophalen, probeer de kist te slopen en dan weer te plaatsen."

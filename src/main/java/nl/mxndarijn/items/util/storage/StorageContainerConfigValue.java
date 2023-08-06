@@ -5,7 +5,7 @@ public enum StorageContainerConfigValue {
     ITEMS("items"),
     NAME("name"),
     SKULL("skull"),
-    OWNER(" owner"),
+    OWNER("owner"),
     IS_PUBLIC("is-public");
 
     private final String configValue;

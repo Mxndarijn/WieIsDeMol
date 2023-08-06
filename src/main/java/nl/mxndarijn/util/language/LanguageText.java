@@ -99,11 +99,19 @@ LanguageText {
     MAP_COLOR_SPAWN_CHANGED_TO_CURRENT("map-color-spawn-changed-to-current"),
     MAP_COLOR_IS_NOW_PEACEKEEPER("map-color-is-now-peacekeeper"),
     MAP_COLOR_IS_NOT_PEACEKEEPER("map-color-is-not-peacekeeper"),
-    MAP_ROLE_CHANGED("map-role-changed");
+    MAP_ROLE_CHANGED("map-role-changed"),
+    MAP_CHEST_ATTACHMENT_ADDED("map-chest-attachment-added"),
+    MAP_CHEST_ATTACHMENT_COULD_NOT_ADD("map-chest-attachment-could-not-add"),
+    MAP_CHEST_ATTACHMENT_COULD_NOT_REMOVE("map-chest-attachment-could-not-remove"),
+    MAP_CHEST_ATTACHMENT_REMOVED("map-chest-attachment-removed"),
+    MAP_CHEST_COULD_NOT_BE_FOUND("map-chest-could-not-be-found");
 
     private final String configValue;
     LanguageText(String value) {
         this.configValue = value;
+    }
+    LanguageText() {
+        this.configValue = name().toLowerCase().replaceAll("_", "-");
     }
 
     public String getConfigValue() {
