@@ -1,15 +1,9 @@
 package nl.mxndarijn.world.mxworld;
 
-import nl.mxndarijn.util.logger.LogLevel;
-import nl.mxndarijn.util.logger.Logger;
-import nl.mxndarijn.util.logger.Prefix;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 

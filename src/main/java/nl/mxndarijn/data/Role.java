@@ -5,26 +5,23 @@ import org.bukkit.ChatColor;
 import java.util.Optional;
 
 public enum Role {
-    SPELER("player", ChatColor.GOLD + "Speler", ChatColor.GOLD + "Speler-Peacekeeper", "gold-block", CustomInventoryScreens.GAME_YOU_ARE_SPELER),
-    MOL("mol", ChatColor.DARK_AQUA + "Mol", ChatColor.DARK_AQUA + "Mol-Peacekeeper", "diamond-block", CustomInventoryScreens.GAME_YOU_ARE_MOLE),
-    EGO("ego",ChatColor.GRAY + "Ego", ChatColor.GRAY + "Ego-Peacekeeper", "emerald-block", CustomInventoryScreens.GAME_YOU_ARE_EGO);
+    SPELER("player", ChatColor.GOLD + "Speler", ChatColor.GOLD + "Speler-Peacekeeper", "gold-block", CustomInventoryOverlay.ROLES_PLAYER.getUnicodeCharacter()),
+    MOL("mol", ChatColor.DARK_AQUA + "Mol", ChatColor.DARK_AQUA + "Mol-Peacekeeper", "diamond-block", CustomInventoryOverlay.ROLES_MOLE.getUnicodeCharacter()),
+    EGO("ego",ChatColor.GRAY + "Ego", ChatColor.GRAY + "Ego-Peacekeeper", "emerald-block", CustomInventoryOverlay.ROLES_EGO.getUnicodeCharacter());
 
     private final String rolName;
     private final String peacekeeperName;
     private final String roleType;
     private final String headKey;
-    private final CustomInventoryScreens screen;
-    Role(String rolType, String normalName, String peacekeeperName, String headKey, CustomInventoryScreens screen) {
+    private final String unicode;
+    Role(String rolType, String normalName, String peacekeeperName, String headKey, String unicode) {
         this.roleType = rolType;
         this.rolName = normalName;
         this.peacekeeperName = peacekeeperName;
         this.headKey = headKey;
-        this.screen = screen;
+        this.unicode = unicode;
     }
 
-    public CustomInventoryScreens getScreen() {
-        return screen;
-    }
 
     public String getRolName() {
         return rolName;
@@ -48,5 +45,9 @@ public enum Role {
 
     public String getHeadKey() {
         return headKey;
+    }
+
+    public String getUnicode() {
+        return unicode;
     }
 }

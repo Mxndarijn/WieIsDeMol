@@ -2,11 +2,11 @@ package nl.mxndarijn.commands.util;
 
 import nl.mxndarijn.data.ChatPrefix;
 import nl.mxndarijn.data.Permissions;
-import nl.mxndarijn.util.language.LanguageManager;
-import nl.mxndarijn.util.language.LanguageText;
-import nl.mxndarijn.util.logger.LogLevel;
-import nl.mxndarijn.util.logger.Logger;
-import nl.mxndarijn.util.logger.Prefix;
+import nl.mxndarijn.managers.language.LanguageManager;
+import nl.mxndarijn.managers.language.LanguageText;
+import nl.mxndarijn.logic.util.logger.LogLevel;
+import nl.mxndarijn.logic.util.logger.Logger;
+import nl.mxndarijn.logic.util.logger.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

@@ -48,6 +48,16 @@ public enum Colors {
         return Optional.empty();
     }
 
+    public static Optional<Colors> getColorByMaterial(Material type) {
+        for(Colors color : values()) {
+            if(color.shulkerBlock.equals(type)) {
+                return Optional.of(color);
+            }
+        }
+
+        return Optional.empty();
+    }
+
     public String getType() {
         return type;
     }

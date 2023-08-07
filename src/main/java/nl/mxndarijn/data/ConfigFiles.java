@@ -1,9 +1,9 @@
 package nl.mxndarijn.data;
 
-import nl.mxndarijn.util.logger.LogLevel;
-import nl.mxndarijn.util.logger.Logger;
-import nl.mxndarijn.util.logger.Prefix;
-import nl.mxndarijn.wieisdemol.Functions;
+import nl.mxndarijn.logic.util.logger.LogLevel;
+import nl.mxndarijn.logic.util.logger.Logger;
+import nl.mxndarijn.logic.util.logger.Prefix;
+import nl.mxndarijn.logic.util.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

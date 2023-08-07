@@ -1,11 +1,5 @@
 package nl.mxndarijn.commands;
 
-import nl.mxndarijn.world.map.Map;
-import nl.mxndarijn.world.mxworld.MxAtlas;
-import nl.mxndarijn.world.mxworld.MxWorld;
-import nl.mxndarijn.world.WorldManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -14,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 public class TestCommand implements CommandExecutor {
