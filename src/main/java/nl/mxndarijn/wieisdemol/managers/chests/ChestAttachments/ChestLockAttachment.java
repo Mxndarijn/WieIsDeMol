@@ -50,7 +50,7 @@ public class ChestLockAttachment extends ChestAttachment {
         return Optional.of(attachment);
     }
 
-    public static ChestAttachment createNewInstance(String type,ChestInformation information, MxLocation location) {
+    public static ChestAttachment createNewInstance(String type,ChestInformation information) {
         ChestLockAttachment attachment = new ChestLockAttachment();
         attachment.setDefaults(type, information);
         attachment.locked = true;

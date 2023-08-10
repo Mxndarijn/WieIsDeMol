@@ -110,7 +110,10 @@ LanguageText {
     MAP_CHEST_ATTACHMENT_LIMITED_CHANGED_TO("map-chest-attachment-limited-changed-to"),
     MAP_CHEST_ATTACHMENT_APPEARANCE_CHANGED_TO("map-chest-attachment-appearance-changed-to"),
     MAP_CHEST_ATTACHMENT_LOCK_NO_ITEM_IN_HAND("map-chest-attachment-lock-no-item-in-hand"),
-    MAP_CHEST_ATTACHMENT_LOCK_ITEM_SET("map-chest-attachment-lock-item-set");
+    MAP_CHEST_ATTACHMENT_LOCK_ITEM_SET("map-chest-attachment-lock-item-set"),
+    GAMES_ITEM_DATE_SELECTED("games-item-date-selected"),
+    GAMES_ITEM_ENTER_TIME("games-item-enter-time"),
+    GAMES_ITEM_COULD_NOT_PARSE_TIME("games-items-could-not-parse-time");
 
     private final String configValue;
     LanguageText(String value) {

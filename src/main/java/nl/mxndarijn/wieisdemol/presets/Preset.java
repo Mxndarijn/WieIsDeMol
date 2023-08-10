@@ -1,11 +1,15 @@
 package nl.mxndarijn.wieisdemol.presets;
 
+import nl.mxndarijn.api.mxscoreboard.MxScoreBoard;
+import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
+import nl.mxndarijn.wieisdemol.ChangeScoreboardOnChangeWorld;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.ScoreBoard;
 import nl.mxndarijn.wieisdemol.managers.InteractionManager;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
-import nl.mxndarijn.wieisdemol.items.Items;
+import nl.mxndarijn.wieisdemol.managers.items.Items;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.api.logger.LogLevel;
@@ -43,6 +47,8 @@ public class Preset {
     private ShulkerManager shulkerManager;
     private DoorManager doorManager;
     private InteractionManager interactionManager;
+
+    private MxScoreBoard scoreboard;
 
     public static final String PRESET_ITEMMETA_TAG = "preset_id";
     private Preset(File directory) {
@@ -158,14 +164,10 @@ public class Preset {
                     .addLore(ChatColor.GRAY + "Reden: ")
                     .addLore(ChatColor.RED + config.getLockReason());
         }
-
         builder.addCustomTagString(PRESET_ITEMMETA_TAG, directory.getName());
-
 
         return builder.build();
     }
-
-
 
     private boolean containsWorld() {
         return containsFolder("region");
@@ -198,8 +200,23 @@ public class Preset {
             future.complete(false);
             return future;
         }
+
+
         MxAtlas.getInstance().loadMxWorld(this.mxWorld.get()).thenAccept(loaded -> {
             if (loaded) {
+                this.scoreboard = new MxSupplierScoreBoard(JavaPlugin.getPlugin(WieIsDeMol.class), () -> ScoreBoard.PRESET.getTitle(new HashMap<>() {{
+                    put("%%preset_name%%", config.getName());
+                }}), () -> ScoreBoard.PRESET.getLines(new HashMap<>() {{
+                    put("%%colors_amount%%", config.getColors().size() + "");
+                    put("%%total_chests%%", chestManager.getChests().size() + "");
+                    put("%%total_shulkers%%", shulkerManager.getShulkers().size() + "");
+                    put("%%total_doors%%", doorManager.getDoors().size() + "");
+                    put("%%total_warps%%", warpManager.getWarps().size() + "");
+                    put("%%host_dif%%", getStars(config.getHostDifficulty()));
+                    put("%%play_dif%%", getStars(config.getPlayDifficulty()));
+                    put("%%configured%%", (config.isConfigured() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"));
+                }}));
+                scoreboard.setUpdateTimer(20L);
                 ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new SaveInventoryChangeWorld(getInventoriesFile(), new ArrayList<>(
                         Arrays.asList(
                                 new Pair<>(Items.PRESET_CONFIGURE_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INFO_CONFIGURE_TOOL)),
@@ -210,6 +227,7 @@ public class Preset {
                         (p, w, e) -> {
                             unloadWorld();
                         }));
+                ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new ChangeScoreboardOnChangeWorld(scoreboard));
             }
             future.complete(loaded);
         });

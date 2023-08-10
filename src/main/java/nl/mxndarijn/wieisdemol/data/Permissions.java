@@ -9,7 +9,8 @@ public enum Permissions {
     COMMAND_SKULLS_REMOVE_SKULL("widm.removeskull"),
     ITEM_ITEMS_EDIT_SERVER_CONTAINERS("widm.servercontainers.edit"),
     COMMAND_MAPS_ITEMS("widm.items"),
-    COMMAND_PRESETS("widm.presets");
+    COMMAND_PRESETS("widm.presets"),
+    ITEM_GAMES_CREATE_GAME("widm.creategame");
 
     private final String permission;
     Permissions(String permission) {

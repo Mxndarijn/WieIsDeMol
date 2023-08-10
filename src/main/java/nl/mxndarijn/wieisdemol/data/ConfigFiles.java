@@ -12,16 +12,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.*;
 
 public enum ConfigFiles {
-    MAIN_CONFIG("config.yml", "config.yml"),
-    HEAD_DATA("head-data.yml", "head-data.yml"),
-    DEFAULT_LANGUAGE("nl-NL.yml", "languages/nl-NL.yml");
+    MAIN_CONFIG("config.yml", "config.yml", false),
+    HEAD_DATA("head-data.yml", "head-data.yml", true),
+    DEFAULT_LANGUAGE("nl-NL.yml", "languages/nl-NL.yml", false),
+    SCOREBOARD_MAP("scoreboard_map.yml", "scoreboards/scoreboard_map.yml", false),
+    SCOREBOARD_PRESET("scoreboard_preset.yml", "scoreboards/scoreboard_preset.yml", false);
 
     private final FileConfiguration fileConfiguration;
     private final File file;
     private final String fileName;
 
     private final String path;
-    ConfigFiles(String fileName, String path) {
+
+    private final boolean autoSave;
+
+    ConfigFiles(String fileName, String path, boolean autoSave) {
         this.fileName = fileName;
         this.path = path;
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
@@ -31,6 +36,7 @@ public enum ConfigFiles {
             Functions.copyFileFromResources(fileName, path);
         }
         fileConfiguration =  YamlConfiguration.loadConfiguration(file);
+        this.autoSave = autoSave;
     }
 
 
@@ -58,7 +64,8 @@ public enum ConfigFiles {
     public static void saveAll() {
         Logger.logMessage(LogLevel.INFORMATION, Prefix.CONFIG_FILES, "Saving all files... ");
         for(ConfigFiles value : values()) {
-            value.save();
+            if(value.autoSave)
+                value.save();
         }
     }
 }

@@ -3,6 +3,11 @@ package nl.mxndarijn.wieisdemol.managers.doors;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.mxworld.MxWorld;
+import nl.mxndarijn.wieisdemol.map.Map;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -79,5 +84,25 @@ public class DoorManager {
 
     public List<DoorInformation> getDoors() {
         return doors;
+    }
+
+    public boolean areAllDoorsClosed(Map map) {
+        Optional<MxWorld> world = map.getMxWorld();
+        if(world.isEmpty())
+            return false;
+        MxWorld m = world.get();
+        World w = Bukkit.getWorld(m.getWorldUID());
+        for (DoorInformation door : doors) {
+            boolean foundDoor = !door.getLocations().isEmpty();
+            if (foundDoor) {
+                MxLocation inf = door.getLocations().keySet().iterator().next();
+                Location loc = inf.getLocation(w);
+                Block placedBlock = loc.getBlock();
+                if (placedBlock.getType() == Material.AIR) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

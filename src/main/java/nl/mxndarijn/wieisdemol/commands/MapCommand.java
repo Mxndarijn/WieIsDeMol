@@ -64,38 +64,8 @@ public class MapCommand extends MxCommand {
                         (clickedInv, e) -> {
                             // Click on Book
                             List<Map> playerMaps = MapManager.getInstance().getAllMaps().stream().filter(m -> m.getMapConfig().getOwner().equals(p.getUniqueId())).toList();
-                            MxItemClicked clickedOnPlayerMap = (mxInv, e2) -> {
-                                Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
-                                    if (e2.getCurrentItem() == null) {
-                                        return;
-                                    }
-                                    ItemStack is = e2.getCurrentItem();
-                                    ItemMeta im = is.getItemMeta();
-                                    PersistentDataContainer container = im.getPersistentDataContainer();
-                                    Optional<Map> optionalMap = MapManager.getInstance().getMapById(container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), Map.MAP_ITEMMETA_TAG), PersistentDataType.STRING));
-                                    p.closeInventory();
-                                    if (optionalMap.isEmpty()) {
-                                        p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_MAP));
-                                        return;
-                                    }
-                                    Map map = optionalMap.get();
-                                    p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_LOADING_MAP));
-                                    map.loadWorld().thenAccept(loaded -> {
-                                        if(map.getMxWorld().isEmpty()) {
-                                            p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_MXWORLD));
-                                            return;
-                                        }
-                                        World w = Bukkit.getWorld(map.getMxWorld().get().getWorldUID());
-                                        if(w == null) {
-                                            p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_WORLD));
-                                            return;
-                                        }
+                            MxItemClicked clickedOnPlayerMap = getClickedOnPlayerMap(p);
 
-                                        p.teleport(w.getSpawnLocation());
-                                        p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_TELEPORTED_TO_SPAWN));
-                                    });
-                                });
-                            };
                             ArrayList<Pair<ItemStack, MxItemClicked>> list = playerMaps.stream().map(map -> new Pair<>(map.getItemStack(), clickedOnPlayerMap)).collect(Collectors.toCollection(ArrayList::new));
                             MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Eigen Mappen", MxInventorySlots.SIX_ROWS)
                                     .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
@@ -197,8 +167,59 @@ public class MapCommand extends MxCommand {
                         16,
                         (clickedInv, e) -> {
                         // Bookshelf
+                            List<Map> playerMaps = MapManager.getInstance().getAllMaps().stream().filter(m -> m.getMapConfig().getSharedPlayers().contains(p.getUniqueId())).toList();
+                            MxItemClicked clickedOnPlayerMap = getClickedOnPlayerMap(p);
+
+                            ArrayList<Pair<ItemStack, MxItemClicked>> list = playerMaps.stream().map(map -> new Pair<>(map.getItemStack(), clickedOnPlayerMap)).collect(Collectors.toCollection(ArrayList::new));
+                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Gedeelde Mappen", MxInventorySlots.SIX_ROWS)
+                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
+                                    .setPreviousItemStackSlot(46)
+                                    .setPrevious(clickedInv)
+                                    .setListItems(list)
+                                    .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
+                                            .setName(ChatColor.GRAY + "Info")
+                                            .addLore(" ")
+                                            .addLore(ChatColor.YELLOW + "Klik op een map om deze aan te passen.")
+                                            .build(), 49,null)
+                                    .build());
+
                         })
                 .build();
         MxInventoryManager.getInstance().addAndOpenInventory(p, inv);
+    }
+
+    private MxItemClicked getClickedOnPlayerMap(Player p) {
+        return (mxInv, e2) -> {
+            Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
+                if (e2.getCurrentItem() == null) {
+                    return;
+                }
+                ItemStack is = e2.getCurrentItem();
+                ItemMeta im = is.getItemMeta();
+                PersistentDataContainer container = im.getPersistentDataContainer();
+                Optional<Map> optionalMap = MapManager.getInstance().getMapById(container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), Map.MAP_ITEMMETA_TAG), PersistentDataType.STRING));
+                p.closeInventory();
+                if (optionalMap.isEmpty()) {
+                    p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_MAP));
+                    return;
+                }
+                Map map = optionalMap.get();
+                p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_LOADING_MAP));
+                map.loadWorld().thenAccept(loaded -> {
+                    if(map.getMxWorld().isEmpty()) {
+                        p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_MXWORLD));
+                        return;
+                    }
+                    World w = Bukkit.getWorld(map.getMxWorld().get().getWorldUID());
+                    if(w == null) {
+                        p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_WORLD));
+                        return;
+                    }
+
+                    p.teleport(w.getSpawnLocation());
+                    p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_TELEPORTED_TO_SPAWN));
+                });
+            });
+        };
     }
 }

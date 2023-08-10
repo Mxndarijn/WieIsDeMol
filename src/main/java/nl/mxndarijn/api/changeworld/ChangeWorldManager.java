@@ -10,14 +10,16 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class ChangeWorldManager implements Listener {
 
     private static ChangeWorldManager instance;
 
-    private HashMap<UUID, MxChangeWorld> worlds;
+    private HashMap<UUID, List<MxChangeWorld>> worlds;
 
     public static ChangeWorldManager getInstance() {
         if(instance == null) {
@@ -41,12 +43,12 @@ public class ChangeWorldManager implements Listener {
         UUID from = e.getFrom().getUID();
         UUID to = e.getPlayer().getWorld().getUID();
         if(worlds.containsKey(from)) {
-            worlds.get(from).leave(e.getPlayer(),e.getFrom(), e);
+            worlds.get(from).forEach(mxChangeWorld -> mxChangeWorld.leave(e.getPlayer(),e.getFrom(), e));
         } else {
             Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "World: " + e.getFrom().getName() + " not found (leaving this world). (" + e.getPlayer().getName() + ")");
         }
         if(worlds.containsKey(to)) {
-            worlds.get(to).enter(e.getPlayer(),e.getPlayer().getWorld(), e);
+            worlds.get(to).forEach(mxChangeWorld -> mxChangeWorld.enter(e.getPlayer(),e.getFrom(), e));
         } else {
             Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "World: " + e.getPlayer().getWorld().getName() + " not found (going to this world). (" + e.getPlayer().getName() + ")");
         }
@@ -63,7 +65,9 @@ public class ChangeWorldManager implements Listener {
     }
 
     public void addWorld(UUID uid, MxChangeWorld changeWorld) {
-        worlds.put(uid, changeWorld);
+        List<MxChangeWorld> list = worlds.containsKey(uid) ? worlds.get(uid) : new ArrayList<>();
+        list.add(changeWorld);
+        worlds.put(uid, list);
     }
 
     public void removeWorld(UUID uid) {

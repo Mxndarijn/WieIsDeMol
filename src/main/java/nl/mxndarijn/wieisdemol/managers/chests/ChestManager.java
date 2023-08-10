@@ -4,14 +4,24 @@ import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.mxworld.MxWorld;
+import nl.mxndarijn.wieisdemol.map.Map;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChestManager {
 
@@ -90,5 +100,24 @@ public class ChestManager {
             }
         }
         return Optional.empty();
+    }
+
+    public int getAmountOfChestsFilled(Map map) {
+        int filled = 0;
+        Optional<MxWorld> world = map.getMxWorld();
+        if(world.isEmpty())
+            return -1;
+        MxWorld m = world.get();
+        World w = Bukkit.getWorld(m.getWorldUID());
+        for (ChestInformation chestInformation : chests) {
+            Block b = chestInformation.getLocation().getLocation(w).getBlock();
+            if (b.getType() == Material.CHEST) {
+                Chest c = (Chest) b.getState();
+                if (!c.getBlockInventory().isEmpty()) {
+                    filled++;
+                }
+            }
+        }
+        return filled;
     }
 }

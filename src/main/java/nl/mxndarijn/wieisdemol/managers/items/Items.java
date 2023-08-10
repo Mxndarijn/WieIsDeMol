@@ -1,5 +1,6 @@
-package nl.mxndarijn.wieisdemol.items;
+package nl.mxndarijn.wieisdemol.managers.items;
 
+import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.wieisdemol.items.maps.ChestItem;
@@ -11,6 +12,7 @@ import nl.mxndarijn.wieisdemol.items.presets.DoorConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.PresetConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.ShulkerConfigureTool;
 import nl.mxndarijn.api.mxitem.MxItem;
+import nl.mxndarijn.wieisdemol.items.spawn.GamesItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
@@ -118,7 +120,7 @@ public enum Items {
     ),
     VUL_TOOL(
             MxDefaultItemStackBuilder.create(Material.NETHER_STAR, 1)
-                    .setName(ChatColor.GRAY + "Vul-Tool")
+                    .setName(ChatColor.GRAY + "Vul Tool")
                     .addLore(" ")
                     .addLore(ChatColor.YELLOW + "Met dit item kan je instellingen in een map aanpassen.")
                     .build(),
@@ -127,6 +129,21 @@ public enum Items {
             },
             false,
             VulTool.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+
+    GAMES_ITEM(
+            MxDefaultItemStackBuilder.create(Material.COMPASS, 1)
+                    .setName(ChatColor.GRAY + "Game Menu")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je games joinen,")
+                    .addLore(ChatColor.YELLOW + "en games aanmaken als je een host bent.")
+                    .build(),
+            p -> {
+                return p.getWorld().getUID().equals(Functions.getSpawnLocation().getWorld().getUID());
+            },
+            false,
+            GamesItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     ;

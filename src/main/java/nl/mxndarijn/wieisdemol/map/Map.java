@@ -1,12 +1,15 @@
 package nl.mxndarijn.wieisdemol.map;
 
+import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
+import nl.mxndarijn.wieisdemol.ChangeScoreboardOnChangeWorld;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.ScoreBoard;
 import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 import nl.mxndarijn.wieisdemol.managers.InteractionManager;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
-import nl.mxndarijn.wieisdemol.items.Items;
+import nl.mxndarijn.wieisdemol.managers.items.Items;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
@@ -25,6 +28,7 @@ import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerManager;
 import nl.mxndarijn.wieisdemol.managers.warps.WarpManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -32,10 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Map {
@@ -53,6 +54,8 @@ public class Map {
     private InteractionManager interactionManager;
 
     public static final String  MAP_ITEMMETA_TAG = "map_id";
+
+    private MxSupplierScoreBoard scoreboard;
 
 
     public Map(File directory) {
@@ -166,6 +169,28 @@ public class Map {
         }
         MxAtlas.getInstance().loadMxWorld(this.mxWorld.get()).thenAccept(loaded -> {
             if(loaded) {
+                OfflinePlayer player = Bukkit.getOfflinePlayer(mapConfig.getOwner());
+                scoreboard = new MxSupplierScoreBoard(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
+                    return ScoreBoard.MAP.getTitle(new HashMap<>() {{
+                        put("%%map_name%%", mapConfig.getName());
+                    }});
+                }, () -> {
+                    int chestsFilled = chestManager.getAmountOfChestsFilled(this);
+                    int shulkersFilled = shulkerManager.getAmountOfShulkersFilled(this);
+                    Map m = this;
+                    return ScoreBoard.MAP.getLines(new HashMap<>() {{
+                        put("%%preset_name%%", mapConfig.getPresetConfig().getName());
+                        put("%%map_owner%%", player.getName());
+                        put("%%colors_amount%%", mapConfig.getColors().size() + "");
+                        put("%%vullers_amount%%", scoreboard.getPlayersUsingScoreboard().size() + "");
+                        put("%%chests_filled%%", (chestsFilled == chestManager.getChests().size() ? ChatColor.GREEN : ChatColor.RED ).toString() + chestsFilled);
+                        put("%%total_chests%%", chestManager.getChests().size() + "");
+                        put("%%shulkers_filled%%", (shulkersFilled == shulkerManager.getShulkers().size() ? ChatColor.GREEN : ChatColor.RED ).toString() + shulkersFilled);
+                        put("%%total_shulkers%%", shulkerManager.getShulkers().size() + "");
+                        put("%%all_doors_closed%%", (doorManager.areAllDoorsClosed(m) ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"));
+                    }});
+                });
+                scoreboard.setUpdateTimer(60L);
                 ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(),new SaveInventoryChangeWorld(getInventoriesFile(), new ArrayList<>(
                         Arrays.asList(
                                 new Pair<>(Items.VUL_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.VUL_TOOL_INFO)),
@@ -179,6 +204,8 @@ public class Map {
                             mapConfig.save();
                             mapConfig.getPresetConfig().save();
                         }));
+
+                ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new ChangeScoreboardOnChangeWorld(scoreboard));
 
             }
             future.complete(loaded);

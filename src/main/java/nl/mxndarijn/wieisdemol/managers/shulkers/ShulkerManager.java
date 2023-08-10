@@ -4,6 +4,14 @@ import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.mxworld.MxWorld;
+import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
+import nl.mxndarijn.wieisdemol.map.Map;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -89,5 +97,25 @@ public class ShulkerManager {
 
     public List<ShulkerInformation> getShulkers() {
         return shulkers;
+    }
+
+    public int getAmountOfShulkersFilled(Map map) {
+        int filled = 0;
+        Optional<MxWorld> world = map.getMxWorld();
+        if(world.isEmpty())
+            return filled;
+        MxWorld m = world.get();
+        World w = Bukkit.getWorld(m.getWorldUID());
+        for (ShulkerInformation chestInformation : shulkers) {
+            Block b = chestInformation.getLocation().getLocation(w).getBlock();
+            if (b.getState() instanceof ShulkerBox) {
+                ShulkerBox c = (ShulkerBox) b.getState();
+                if (!c.getInventory().isEmpty()) {
+                    filled++;
+                }
+            }
+        }
+
+        return filled;
     }
 }

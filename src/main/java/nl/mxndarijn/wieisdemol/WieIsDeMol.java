@@ -4,7 +4,7 @@ import nl.mxndarijn.wieisdemol.commands.*;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
-import nl.mxndarijn.wieisdemol.items.ItemManager;
+import nl.mxndarijn.wieisdemol.managers.items.ItemManager;
 import nl.mxndarijn.wieisdemol.items.util.storage.StorageManager;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.util.events.PlayerJoinEventHeadManager;
