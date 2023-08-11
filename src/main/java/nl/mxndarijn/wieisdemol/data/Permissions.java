@@ -10,7 +10,14 @@ public enum Permissions {
     ITEM_ITEMS_EDIT_SERVER_CONTAINERS("widm.servercontainers.edit"),
     COMMAND_MAPS_ITEMS("widm.items"),
     COMMAND_PRESETS("widm.presets"),
-    ITEM_GAMES_CREATE_GAME("widm.creategame");
+    ITEM_GAMES_CREATE_GAME("widm.creategame"),
+    ITEM_GAMES_MANAGE_OTHER_GAMES("widm.managegames"),
+
+    SPAWN_BLOCK_BREAK("widm.blockbreakspawn"),
+    SPAWN_BLOCK_PLACE("widm.blockplacespawn"),
+    SPAWN_DROP_ITEM("widm.dropitemspawn"),
+    SPAWN_PICKUP_ITEM("widm.pickupitemspawn"),
+    SPAWN_CHANGE_INVENTORY("widm.changeinventoryspawn");
 
     private final String permission;
     Permissions(String permission) {

@@ -46,6 +46,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -602,14 +604,7 @@ public class VulTool extends MxItem {
         config.getColors().forEach(mapPlayer -> {
             Colors color = mapPlayer.getColor();
             list.add(new Pair<>(
-                    MxSkullItemStackBuilder.create(1)
-                            .setSkinFromHeadsData(color.getHeadKey())
-                            .setName(color.getDisplayName())
-                            .addBlankLore()
-                            .addLore(ChatColor.GRAY + "Rol: " + mapPlayer.getRoleDisplayString())
-                            .addBlankLore()
-                            .addLore(ChatColor.YELLOW + "Klik hier om de kleur aan te passen.")
-                            .build(),
+                    getColor(mapPlayer, color),
                     (mxInv, e) -> {
                         openSpecificColorMenu(p, mapPlayer, map, mainInv, mxInv);
                     }
@@ -634,6 +629,17 @@ public class VulTool extends MxItem {
                         )
                 .build()
         );
+    }
+
+    private ItemStack getColor(MapPlayer mapPlayer, Colors color) {
+        return MxSkullItemStackBuilder.create(1)
+                .setSkinFromHeadsData(color.getHeadKey())
+                .setName(color.getDisplayName())
+                .addBlankLore()
+                .addLore(ChatColor.GRAY + "Rol: " + mapPlayer.getRoleDisplayString())
+                .addBlankLore()
+                .addLore(ChatColor.YELLOW + "Klik hier om de kleur aan te passen.")
+                .build();
     }
 
 
@@ -807,6 +813,15 @@ public class VulTool extends MxItem {
     private MxItemClicked getClickForRole(Player p, MapPlayer player, Role role, MxInventory colorInv) {
         return (mxInv, e) -> {
             player.setRole(role);
+            @Nullable ItemStack @NotNull [] contents = colorInv.getInv().getContents();
+            for (int i = 0; i < contents.length; i++) {
+                ItemStack content = contents[i];
+                if (content == null || !content.hasItemMeta() || !content.getItemMeta().hasDisplayName())
+                    continue;
+                if (Functions.convertComponentToString(content.displayName()).contains((player.getColor().getDisplayNameWithoutColor()))) {
+                    colorInv.getInv().setItem(i, getColor(player, player.getColor()));
+                }
+            }
             MxInventoryManager.getInstance().addAndOpenInventory(p, colorInv);
             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_ROLE_CHANGED, new ArrayList<>(Arrays.asList(player.getColor().getDisplayName(), role.getRolName()))));
         };

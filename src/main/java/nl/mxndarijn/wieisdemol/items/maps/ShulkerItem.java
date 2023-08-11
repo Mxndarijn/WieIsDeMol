@@ -12,6 +12,7 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.mxitem.MxItem;
+import nl.mxndarijn.wieisdemol.data.CustomInventoryOverlay;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
@@ -33,7 +34,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ShulkerItem extends MxItem  {
 
@@ -60,9 +63,19 @@ public class ShulkerItem extends MxItem  {
                             .addBlankLore()
                             .addLore(ChatColor.GRAY + "Location: " + shulker.getLocation().getX() + " " + shulker.getLocation().getY() + " " + shulker.getLocation().getZ())
                             .addBlankLore()
+                            .addLore(ChatColor.GRAY + "Beginkist: " + (shulker.isStartingRoom() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"))
+                            .addBlankLore()
                             .addLore(ChatColor.YELLOW + "Klik om de shulker op afstand te openen.")
+                            .addLore(ChatColor.YELLOW + "Shift-Klik om de shulker wel of geen beginkist te maken (togglen).")
                             .build(),
                     (mxInv, e12) -> {
+                        if(e12.isShiftClick()) {
+                            shulker.setStartingRoom(!shulker.isStartingRoom());
+                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_TOOL_TOGGLED_BEGINKIST, Collections.singletonList(shulker.isStartingRoom() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee")));
+                            p.closeInventory();
+                            return;
+                        }
+
                         World w = Bukkit.getWorld(map.getMxWorld().get().getWorldUID());
                         Location loc = shulker.getLocation().getLocation(w);
                         if(map.getMxWorld().isEmpty()) {
@@ -101,8 +114,14 @@ public class ShulkerItem extends MxItem  {
         }
 
         Map map = mapOptional.get();
-        map.getShulkerManager().addShulker(new ShulkerInformation("Automatisch toegevoegde shulker", MxLocation.getFromLocation(e.getBlockPlaced().getLocation()), e.getBlock().getType()));
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_SHULKER_ADDED));
+        AtomicBoolean bool = new AtomicBoolean(true);
+        map.getShulkerManager().getShulkers().forEach(shulker -> {
+            if(shulker.getMaterial() == e.getBlock().getType()) {
+                bool.set(false);
+            }
+        });
+        map.getShulkerManager().addShulker(new ShulkerInformation("Automatisch toegevoegde shulker", MxLocation.getFromLocation(e.getBlockPlaced().getLocation()), e.getBlock().getType(), bool.get()));
+        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_SHULKER_ADDED, Collections.singletonList(bool.get() ? "Ja" : "Nee")));
     }
 
     @EventHandler
@@ -161,10 +180,16 @@ public class ShulkerItem extends MxItem  {
             return;
 
         String title = mp.get().getRole().getUnicode();
-
-        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Changing shulker name...");
         ShulkerBox shulkerBox = (ShulkerBox) e.getClickedBlock().getState();
-        shulkerBox.customName(Component.text(title));
+        if(shulkerInformation.isStartingRoom()) {
+            shulkerBox.customName(Component.text(title));
+        } else {
+            if(mp.get().isPeacekeeper()) {
+                shulkerBox.customName(Component.text(CustomInventoryOverlay.ROLES_PEACEKEEPER.getUnicodeCharacter()));
+            } else {
+                shulkerBox.customName(null);
+            }
+        }
         shulkerBox.update();
         // change name of shulker inventory
     }

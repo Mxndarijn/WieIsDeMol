@@ -20,7 +20,7 @@ import java.nio.file.Files;
 
 public class Functions {
     public static Location getSpawnLocation() {
-        return new Location(Bukkit.getWorld("world"),-1317, 56, 101, -180, 0);
+        return Bukkit.getWorld("world").getSpawnLocation();
     }
 
     public static Location getLocationFromConfiguration(World w, ConfigurationSection section) {

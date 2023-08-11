@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.presets;
 
+import nl.mxndarijn.api.changeworld.MxChangeWorld;
 import nl.mxndarijn.api.mxscoreboard.MxScoreBoard;
 import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
 import nl.mxndarijn.wieisdemol.ChangeScoreboardOnChangeWorld;
@@ -9,7 +10,7 @@ import nl.mxndarijn.wieisdemol.managers.InteractionManager;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
-import nl.mxndarijn.wieisdemol.managers.items.Items;
+import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.api.logger.LogLevel;
@@ -27,6 +28,10 @@ import nl.mxndarijn.api.mxworld.MxAtlas;
 import nl.mxndarijn.api.mxworld.MxWorld;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -228,6 +233,17 @@ public class Preset {
                             unloadWorld();
                         }));
                 ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new ChangeScoreboardOnChangeWorld(scoreboard));
+                ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new MxChangeWorld() {
+                    @Override
+                    public void enter(Player p, World w, PlayerChangedWorldEvent e) {
+                        p.setGameMode(GameMode.CREATIVE);
+                    }
+
+                    @Override
+                    public void leave(Player p, World w, PlayerChangedWorldEvent e) {
+                        p.setGameMode(GameMode.ADVENTURE);
+                    }
+                });
             }
             future.complete(loaded);
         });

@@ -113,7 +113,11 @@ LanguageText {
     MAP_CHEST_ATTACHMENT_LOCK_ITEM_SET("map-chest-attachment-lock-item-set"),
     GAMES_ITEM_DATE_SELECTED("games-item-date-selected"),
     GAMES_ITEM_ENTER_TIME("games-item-enter-time"),
-    GAMES_ITEM_COULD_NOT_PARSE_TIME("games-items-could-not-parse-time");
+    GAMES_ITEM_COULD_NOT_PARSE_TIME("games-items-could-not-parse-time"),
+    GAMES_ITEM_UPCOMING_GAME_ADDED("games-item-upcoming-game-added"),
+    GAMES_ITEM_UPCOMING_GAME_TIME_IS_PAST("game-item-upcoming-game-item-time-is-past"),
+    SHULKER_CONFIGURE_TOOL_TOGGLED_SHULKER("shulker-configure-tool-toggled-shulker"),
+    SHULKER_TOOL_TOGGLED_BEGINKIST("shulker-tool-toggled-beginkist");
 
     private final String configValue;
     LanguageText(String value) {

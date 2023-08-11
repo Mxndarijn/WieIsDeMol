@@ -1,4 +1,4 @@
-package nl.mxndarijn.wieisdemol.managers.items;
+package nl.mxndarijn.wieisdemol.items;
 
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;

@@ -77,7 +77,7 @@ public class PresetsCommand extends MxCommand {
             });
         };
         ArrayList<Pair<ItemStack, MxItemClicked>> list = presets.stream().map(preset -> new Pair<>(preset.getItemStack(), clickedOnNonConfiguredPreset)).collect(Collectors.toCollection(ArrayList::new));
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Configureer nieuwe preset", MxInventorySlots.SIX_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Configureer presets", MxInventorySlots.SIX_ROWS)
                                     .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                                     .setPreviousItemStackSlot(46)
                                     .setListItems(list)

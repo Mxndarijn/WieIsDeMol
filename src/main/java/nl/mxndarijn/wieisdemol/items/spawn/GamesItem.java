@@ -1,9 +1,7 @@
 package nl.mxndarijn.wieisdemol.items.spawn;
 
-import nl.mxndarijn.api.chatinput.MxChatInputCallback;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
-import nl.mxndarijn.api.inventory.menu.MxDefaultInventoryBuilder;
 import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
@@ -15,6 +13,7 @@ import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
+import nl.mxndarijn.wieisdemol.managers.gamemanager.GameManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.map.Map;
@@ -48,8 +47,15 @@ public class GamesItem extends MxItem {
 
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
+        ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+        GameManager.getInstance().getUpcomingGamesItemStacks(p).forEach(item -> {
+            list.add(new Pair<>(item, (mxInv, ee) -> {
+
+            }));
+        });
         MxListInventoryBuilder builder = MxListInventoryBuilder.create(ChatColor.GRAY + "Games", MxInventorySlots.THREE_ROWS)
-                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO);
+                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                .setListItems(list);
         if(p.hasPermission(Permissions.ITEM_GAMES_CREATE_GAME.getPermission())) {
             builder.setItem(MxSkullItemStackBuilder.create(1)
                             .setName(ChatColor.GRAY + "Plan Game")
@@ -61,7 +67,7 @@ public class GamesItem extends MxItem {
                             .build(),
                     22,
                     (mxInv, e1) -> {
-                        LocalDateTime plannedTime = getTime(p);
+                        getMap(mxInv, p);
                     }
             );
         }
@@ -130,7 +136,6 @@ public class GamesItem extends MxItem {
     }
     
     private void getTime(MxInventory prevInv,  Player p, Map map) {
-        CompletableFuture<LocalDateTime> future = new CompletableFuture<>();
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
         LocalDate now = LocalDate.now();
         for(int i = 0; i < 16; i++) {
@@ -155,11 +160,29 @@ public class GamesItem extends MxItem {
                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ITEM_DATE_SELECTED, Collections.singletonList(finalFormattedDate)));
                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ITEM_ENTER_TIME));
                 MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
-                    DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("HH:mm");
-                    try {
-                        LocalTime localTime = LocalTime.parse(message, formatter1);
-                        LocalDateTime localDateTime = LocalDateTime.of(date, localTime);
-                    } catch (DateTimeParseException ex) {
+                    String[] patterns = {"H:mm", "HH:mm"};
+                    DateTimeFormatter formatter1 = null;
+                    LocalTime t = null;
+                    for (String pattern : patterns) {
+                        try {
+                            formatter1 = DateTimeFormatter.ofPattern(pattern);
+                            t = LocalTime.parse(message, formatter1);
+                            LocalDateTime localDateTime = LocalDateTime.of(date, t);
+
+                            if(localDateTime.isAfter(LocalDateTime.now())) {
+                                GameManager.getInstance().addUpcomingGame(p.getUniqueId(), map, localDateTime);
+                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ITEM_UPCOMING_GAME_ADDED));
+                            } else {
+                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ITEM_UPCOMING_GAME_TIME_IS_PAST));
+                            }
+
+                            break; // Stop het zoeken zodra parsing gelukt is
+                        } catch (DateTimeParseException ex) {
+                            // Ga door met volgend patroon als parsing niet lukt
+                        }
+                    }
+
+                    if (t == null) {
                         p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ITEM_COULD_NOT_PARSE_TIME));
                     }
                 });

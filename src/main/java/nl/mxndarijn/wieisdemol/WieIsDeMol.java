@@ -4,6 +4,8 @@ import nl.mxndarijn.wieisdemol.commands.*;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
+import nl.mxndarijn.wieisdemol.managers.SpawnManager;
+import nl.mxndarijn.wieisdemol.managers.gamemanager.GameManager;
 import nl.mxndarijn.wieisdemol.managers.items.ItemManager;
 import nl.mxndarijn.wieisdemol.items.util.storage.StorageManager;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
@@ -30,6 +32,7 @@ public final class WieIsDeMol extends JavaPlugin {
         Logger.logMessage(LogLevel.INFORMATION, "Starting Wie Is De Mol...");
         getCommand("test").setExecutor(new TestCommand());
         WorldManager.getInstance();
+        SpawnManager.getInstance();
         LanguageManager.getInstance();
         MxHeadManager.getInstance();
         MxChatInputManager.getInstance();
@@ -38,6 +41,7 @@ public final class WieIsDeMol extends JavaPlugin {
         ChangeWorldManager.getInstance();
         ItemManager.getInstance();
         StorageManager.getInstance();
+        GameManager.getInstance();
         registerCommands();
         configFilesSaver();
 
@@ -50,6 +54,7 @@ public final class WieIsDeMol extends JavaPlugin {
     @Override
     public void onDisable() {
         Logger.logMessage(LogLevel.INFORMATION, "Stopping Wie Is De Mol...");
+        GameManager.getInstance().save();
         ConfigFiles.saveAll();
         StorageManager.getInstance().save();
         Logger.logMessage(LogLevel.INFORMATION, "Stopped Wie Is De Mol...");

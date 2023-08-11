@@ -13,11 +13,13 @@ public class ShulkerInformation {
     private String name;
     private MxLocation location;
     private Material material;
-    public ShulkerInformation(String name, MxLocation location, Material material) {
+    private boolean isStartingRoom;
+    public ShulkerInformation(String name, MxLocation location, Material material, boolean isStartingRoom) {
         this.uuid = UUID.randomUUID().toString();
         this.name = name;
         this.location = location;
         this.material = material;
+        this.isStartingRoom = isStartingRoom;
     }
 
     private ShulkerInformation() {
@@ -32,6 +34,7 @@ public class ShulkerInformation {
         i.uuid = section.getName();
         i.name = section.getString("name");
         i.material = Material.matchMaterial(section.getString("material"));
+        i.isStartingRoom = section.getBoolean("isStartingRoom", false);
         Optional<MxLocation> optionalMxLocation = MxLocation.loadFromConfigurationSection(section.getConfigurationSection("location"));
         optionalMxLocation.ifPresent(location -> i.location = location);
 
@@ -45,6 +48,7 @@ public class ShulkerInformation {
         ConfigurationSection section = fc.createSection(uuid);
         section.set("name", name);
         section.set("material", material.toString());
+        section.set("isStartingRoom", isStartingRoom);
         location.write(section.createSection("location"));
     }
 
@@ -62,5 +66,13 @@ public class ShulkerInformation {
 
     public Material getMaterial() {
         return material;
+    }
+
+    public boolean isStartingRoom() {
+        return isStartingRoom;
+    }
+
+    public void setStartingRoom(boolean startingRoom) {
+        isStartingRoom = startingRoom;
     }
 }

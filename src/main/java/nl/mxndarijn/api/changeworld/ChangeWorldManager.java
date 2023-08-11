@@ -42,10 +42,12 @@ public class ChangeWorldManager implements Listener {
     public void changeWorld(PlayerChangedWorldEvent e) {
         UUID from = e.getFrom().getUID();
         UUID to = e.getPlayer().getWorld().getUID();
-        if(worlds.containsKey(from)) {
-            worlds.get(from).forEach(mxChangeWorld -> mxChangeWorld.leave(e.getPlayer(),e.getFrom(), e));
-        } else {
-            Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "World: " + e.getFrom().getName() + " not found (leaving this world). (" + e.getPlayer().getName() + ")");
+        if(from != to) {
+            if(worlds.containsKey(from)) {
+                worlds.get(from).forEach(mxChangeWorld -> mxChangeWorld.leave(e.getPlayer(),e.getFrom(), e));
+            } else {
+                Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "World: " + e.getFrom().getName() + " not found (leaving this world). (" + e.getPlayer().getName() + ")");
+            }
         }
         if(worlds.containsKey(to)) {
             worlds.get(to).forEach(mxChangeWorld -> mxChangeWorld.enter(e.getPlayer(),e.getFrom(), e));
