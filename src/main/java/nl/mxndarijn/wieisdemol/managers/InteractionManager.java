@@ -13,8 +13,8 @@ import java.util.HashMap;
 
 public class InteractionManager {
 
-    private File interactionFile;
-    private HashMap<Interaction, Boolean> interactions;
+    private final File interactionFile;
+    private final HashMap<Interaction, Boolean> interactions;
 
     public InteractionManager(File f) {
         this.interactionFile = f;

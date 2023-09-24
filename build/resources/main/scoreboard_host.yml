@@ -1,0 +1,11 @@
+title: "&7%%map_name%%"
+lines:
+  - " &7%%game_status%%"
+  - " "
+  - " &7Speedtijd: %%game_time%%"
+  - " "
+  - " &7Spelers levend: %%players_alive%%"
+  - " &7Mollen levend: %%mollen_alive%%"
+  - " &7Ego levend: %%ego_alive%%"
+  - " "
+  - " &eplay.eenipadrestest.nl"

@@ -17,7 +17,8 @@ public enum Permissions {
     SPAWN_BLOCK_PLACE("widm.blockplacespawn"),
     SPAWN_DROP_ITEM("widm.dropitemspawn"),
     SPAWN_PICKUP_ITEM("widm.pickupitemspawn"),
-    SPAWN_CHANGE_INVENTORY("widm.changeinventoryspawn");
+    SPAWN_CHANGE_INVENTORY("widm.changeinventoryspawn"),
+    VANISH("widm.vanish");
 
     private final String permission;
     Permissions(String permission) {

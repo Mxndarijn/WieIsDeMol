@@ -13,8 +13,8 @@ import java.util.*;
 
 public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder> {
 
-    private ArrayList<Pair<ItemStack, MxItemClicked>> itemStackList;
-    private ArrayList<Integer> availableItemsStackSlots;
+    private final List<Pair<ItemStack, MxItemClicked>> itemStackList;
+    private final List<Integer> availableItemsStackSlots;
     private Optional<ItemStack> nextPageItemStack;
     private Optional<ItemStack> previousPageItemStack;
     private int previousPageItemStackSlot;
@@ -52,7 +52,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
         return this;
     }
 
-    public MxListInventoryBuilder setListItems(ArrayList<Pair<ItemStack, MxItemClicked>> list) {
+    public MxListInventoryBuilder setListItems(List<Pair<ItemStack, MxItemClicked>> list) {
         itemStackList.clear();
         itemStackList.addAll(list);
         return this;

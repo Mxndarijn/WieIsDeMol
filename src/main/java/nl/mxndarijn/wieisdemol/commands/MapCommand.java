@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 
 public class MapCommand extends MxCommand {
 
-    private static LanguageManager lang = LanguageManager.getInstance();
+    private static final LanguageManager lang = LanguageManager.getInstance();
     public MapCommand(Permissions permission, boolean onlyPlayersCanExecute, boolean canBeExecutedInGame, MxWorldFilter worldFilter) {
         super(permission, onlyPlayersCanExecute, canBeExecutedInGame, worldFilter);
     }
@@ -107,7 +107,6 @@ public class MapCommand extends MxCommand {
                                         p.closeInventory();
                                         return;
                                     }
-                                    Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Making...");
                                     MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                                         Optional<Map> map = Map.createFromPreset(message, optionalPreset.get(), p.getUniqueId());
                                         if(map.isPresent()) {
@@ -127,7 +126,6 @@ public class MapCommand extends MxCommand {
                                                     p.teleport(w.getSpawnLocation());
                                                 } else {
                                                     p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_LOADED));
-                                                    return;
                                                 }
 
                                             });

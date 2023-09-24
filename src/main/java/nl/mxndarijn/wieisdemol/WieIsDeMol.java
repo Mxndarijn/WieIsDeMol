@@ -5,6 +5,7 @@ import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.wieisdemol.managers.SpawnManager;
+import nl.mxndarijn.wieisdemol.managers.VanishManager;
 import nl.mxndarijn.wieisdemol.managers.gamemanager.GameManager;
 import nl.mxndarijn.wieisdemol.managers.items.ItemManager;
 import nl.mxndarijn.wieisdemol.items.util.storage.StorageManager;
@@ -14,7 +15,7 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import nl.mxndarijn.wieisdemol.managers.world.WorldManager;
+import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.managers.PresetsManager;
@@ -31,7 +32,7 @@ public final class WieIsDeMol extends JavaPlugin {
         setLogLevel();
         Logger.logMessage(LogLevel.INFORMATION, "Starting Wie Is De Mol...");
         getCommand("test").setExecutor(new TestCommand());
-        WorldManager.getInstance();
+        GameWorldManager.getInstance();
         SpawnManager.getInstance();
         LanguageManager.getInstance();
         MxHeadManager.getInstance();
@@ -42,6 +43,7 @@ public final class WieIsDeMol extends JavaPlugin {
         ItemManager.getInstance();
         StorageManager.getInstance();
         GameManager.getInstance();
+        VanishManager.getInstance();
         registerCommands();
         configFilesSaver();
 
@@ -78,6 +80,7 @@ public final class WieIsDeMol extends JavaPlugin {
         getCommand("skulls").setExecutor(new SkullsCommand(Permissions.COMMAND_SKULLS, true, false));
         getCommand("spawn").setExecutor(new SpawnCommand(Permissions.COMMAND_SPAWN, true, false));
         getCommand("items").setExecutor(new ItemsCommand());
+        getCommand("vanish").setExecutor(new VanishCommand(Permissions.VANISH, true, false));
     }
 
     private void configFilesSaver() {

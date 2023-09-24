@@ -135,9 +135,8 @@ public class ChestAppearanceAttachment extends ChestAttachment {
                                                 information.removeChestAttachment(p, this, ChestAttachments.CHEST_COLOR_BIND);
                                                 p.closeInventory();
                                                 Block b = p.getWorld().getBlockAt(information.getLocation().getLocation(p.getWorld()));
-                                                if(!(b.getState() instanceof Chest))
+                                                if(!(b.getState() instanceof Chest c))
                                                     return;
-                                                Chest c = (Chest) b.getState();
                                                 c.customName(null);
                                                 c.update();
                                             }

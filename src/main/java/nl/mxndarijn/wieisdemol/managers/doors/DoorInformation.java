@@ -11,7 +11,7 @@ import java.util.*;
 public class DoorInformation {
     private String uuid;
     private String name;
-    private HashMap<MxLocation, Material> locations;
+    private final HashMap<MxLocation, Material> locations;
     public DoorInformation(String name) {
         this.uuid = UUID.randomUUID().toString();
         this.name = name;

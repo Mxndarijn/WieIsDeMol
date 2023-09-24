@@ -39,7 +39,7 @@ public class SpawnManager implements Listener {
 
     private final World spawn;
 
-    private JavaPlugin plugin;
+    private final JavaPlugin plugin;
 
     private final Location spawnPoint;
 

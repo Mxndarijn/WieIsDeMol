@@ -82,8 +82,7 @@ public class ShulkerItem extends MxItem  {
                             return;
                         }
                         Block block = loc.getBlock();
-                        if(block.getState() instanceof ShulkerBox) {
-                            ShulkerBox shulkerBox = (ShulkerBox) block.getState();
+                        if(block.getState() instanceof ShulkerBox shulkerBox) {
                             p.openInventory(shulkerBox.getInventory());
                         } else {
                             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_SHULKER_IS_NOT_A_SHULKER));
@@ -152,7 +151,7 @@ public class ShulkerItem extends MxItem  {
             return;
         }
         assert e.getClickedBlock() != null;
-        if (!(e.getClickedBlock().getState() instanceof ShulkerBox)) {
+        if (!(e.getClickedBlock().getState() instanceof ShulkerBox shulkerBox)) {
             return;
         }
 
@@ -180,7 +179,6 @@ public class ShulkerItem extends MxItem  {
             return;
 
         String title = mp.get().getRole().getUnicode();
-        ShulkerBox shulkerBox = (ShulkerBox) e.getClickedBlock().getState();
         if(shulkerInformation.isStartingRoom()) {
             shulkerBox.customName(Component.text(title));
         } else {

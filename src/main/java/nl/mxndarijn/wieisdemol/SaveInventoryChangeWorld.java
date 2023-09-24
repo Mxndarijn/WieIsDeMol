@@ -20,9 +20,9 @@ import java.util.UUID;
 
 public class SaveInventoryChangeWorld  implements MxChangeWorld {
 
-    private ArrayList<Pair<ItemStack, String>> defaultItems;
-    private File inventoryFile;
-    private WorldReachedZeroPlayersEvent event;
+    private final ArrayList<Pair<ItemStack, String>> defaultItems;
+    private final File inventoryFile;
+    private final WorldReachedZeroPlayersEvent event;
     public SaveInventoryChangeWorld(File inventoryFile, ArrayList<Pair<ItemStack, String>> items, WorldReachedZeroPlayersEvent event) {
         defaultItems = items;
         this.inventoryFile = inventoryFile;

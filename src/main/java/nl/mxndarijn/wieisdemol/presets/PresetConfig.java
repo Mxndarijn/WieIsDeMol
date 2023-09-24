@@ -29,7 +29,7 @@ public class PresetConfig {
 
     private boolean configured;
 
-    private HashMap<Colors, MxLocation> colors;
+    private final HashMap<Colors, MxLocation> colors;
     public PresetConfig(File file) {
         this.file = file;
         FileConfiguration fc = YamlConfiguration.loadConfiguration(file);

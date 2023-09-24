@@ -7,12 +7,12 @@ import org.bukkit.scoreboard.Team;
 import java.util.*;
 
 public class MxScoreBoardTeam {
-    private String id;
-    private String line;
+    private final String id;
+    private final String line;
 
-    private Team team;
+    private final Team team;
     private final String entry;
-    private MxScoreBoard scoreboard;
+    private final MxScoreBoard scoreboard;
 
 
     protected MxScoreBoardTeam(MxScoreBoard scoreboard) {
@@ -36,7 +36,7 @@ public class MxScoreBoardTeam {
 
     public void setLine(String line) {
         if(line.length() > scoreboard.MAX_LINE_LENGTH) {
-            throw new ScoreboardNameToLong(line, scoreboard.MAX_LINE_LENGTH);
+            throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
         }
         int lineLength = line.length();
         if(lineLength <= scoreboard.MAX_LINE_LENGTH / 2) {
@@ -46,7 +46,7 @@ public class MxScoreBoardTeam {
             String prefix = line.substring(0, scoreboard.MAX_LINE_LENGTH / 2);
             String suffix = getLatestChatColor(prefix) + line.substring(scoreboard.MAX_LINE_LENGTH / 2);
             if((prefix + suffix).length() > scoreboard.MAX_LINE_LENGTH)
-                throw new ScoreboardNameToLong(line, scoreboard.MAX_LINE_LENGTH);
+                throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
             team.prefix(Component.text(prefix));
             team.suffix(Component.text(suffix));
 

@@ -487,7 +487,6 @@ public class VulTool extends MxItem {
                             config.getSharedPlayers().remove(sharedPlayer);
                             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_PLAYER_REMOVED, Collections.singletonList(player.getName())));
                             openManageSharedPlayers(p, mainInv, map);
-                            return;
                         }
                     }
             ));
@@ -740,8 +739,7 @@ public class VulTool extends MxItem {
                                                 World w = Bukkit.getWorld(map.getMxWorld().get().getWorldUID());
                                                 Location loc = shulkerInformation.getLocation().getLocation(w);
                                                 Block block = loc.getBlock();
-                                                if(block.getState() instanceof ShulkerBox) {
-                                                    ShulkerBox shulkerBox = (ShulkerBox) block.getState();
+                                                if(block.getState() instanceof ShulkerBox shulkerBox) {
                                                     p.openInventory(shulkerBox.getInventory());
                                                 } else {
                                                     p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_SHULKER_IS_NOT_A_SHULKER));

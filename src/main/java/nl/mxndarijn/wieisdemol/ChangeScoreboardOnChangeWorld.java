@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 
 public class ChangeScoreboardOnChangeWorld implements MxChangeWorld {
-    private MxScoreBoard scoreboard;
+    private final MxScoreBoard scoreboard;
     public ChangeScoreboardOnChangeWorld(MxScoreBoard scoreBoard) {
         this.scoreboard = scoreBoard;
     }

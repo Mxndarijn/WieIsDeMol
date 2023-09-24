@@ -53,9 +53,7 @@ public class InventoryManager {
 
     public static boolean validateItem(ItemStack itemStack, ItemStack is) {
         if(itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta().hasDisplayName()) {
-            if(itemStack.getType() == is.getType() && Functions.convertComponentToString(itemStack.getItemMeta().displayName()).equals(Functions.convertComponentToString(is.getItemMeta().displayName()))) {
-                return true;
-            }
+            return itemStack.getType() == is.getType() && Functions.convertComponentToString(itemStack.getItemMeta().displayName()).equals(Functions.convertComponentToString(is.getItemMeta().displayName()));
         }
 
         return false;

@@ -23,8 +23,8 @@ import java.util.Optional;
 
 public class ShulkerManager {
 
-    private File shulkerFile;
-    private List<ShulkerInformation> shulkers;
+    private final File shulkerFile;
+    private final List<ShulkerInformation> shulkers;
 
     public ShulkerManager(File f) {
         this.shulkerFile = f;
@@ -108,8 +108,7 @@ public class ShulkerManager {
         World w = Bukkit.getWorld(m.getWorldUID());
         for (ShulkerInformation chestInformation : shulkers) {
             Block b = chestInformation.getLocation().getLocation(w).getBlock();
-            if (b.getState() instanceof ShulkerBox) {
-                ShulkerBox c = (ShulkerBox) b.getState();
+            if (b.getState() instanceof ShulkerBox c) {
                 if (!c.getInventory().isEmpty()) {
                     filled++;
                 }

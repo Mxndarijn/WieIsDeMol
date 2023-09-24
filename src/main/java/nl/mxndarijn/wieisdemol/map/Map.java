@@ -146,8 +146,6 @@ public class Map {
         if(optionalWorld.isEmpty()) {
             return Optional.empty();
         }
-        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Player map adding: " + owner.toString() + " , " + optionalWorld.get().getDir().getAbsolutePath());
-        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "UUID of mxworld: " + optionalWorld.get().getUUID());
 
         File inventoryFile = new File(optionalWorld.get().getDir() + File.separator + "inventories.yml");
         inventoryFile.delete();

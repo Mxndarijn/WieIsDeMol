@@ -24,7 +24,7 @@ public class ScoreBoardManager implements Listener {
     }
 
 
-    private HashMap<UUID, MxScoreBoard> playerList;
+    private final HashMap<UUID, MxScoreBoard> playerList;
     private ScoreBoardManager() {
         playerList = new HashMap<>();
 

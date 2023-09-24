@@ -29,7 +29,7 @@ public class MxAtlas {
         return instance;
     }
 
-    private ArrayList<MxWorld> worlds;
+    private final ArrayList<MxWorld> worlds;
 
     private MxAtlas() {
         Logger.logMessage(LogLevel.INFORMATION, Prefix.MXATLAS, "Started MxAtlas... (World-Manager)");

@@ -9,10 +9,13 @@ import java.util.Map;
 
 public enum ScoreBoard {
     MAP(ConfigFiles.SCOREBOARD_MAP),
-    PRESET(ConfigFiles.SCOREBOARD_PRESET);
+    PRESET(ConfigFiles.SCOREBOARD_PRESET),
+    GAME_HOST(ConfigFiles.SCOREBOARD_HOST),
+    GAME_PLAYER(ConfigFiles.SCOREBOARD_PLAYER),
+    GAME_SPECTATOR(ConfigFiles.SCOREBOARD_HOST);
 
-    private List<String> uneditedLines;
-    private String title;
+    private final List<String> uneditedLines;
+    private final String title;
 
     ScoreBoard(ConfigFiles configFile) {
         this.uneditedLines = new ArrayList<>();
@@ -23,7 +26,7 @@ public enum ScoreBoard {
     }
 
     public String getTitle(HashMap<String, String> placeholders) {
-        String newTitle = new String(title);
+        String newTitle = title;
 
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             String k = entry.getKey();

@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.UUID;
 
 public class MxWorld {
-    private String name;
+    private final String name;
     private UUID worldUID;
-    private String uuid;
-    private File dir;
+    private final String uuid;
+    private final File dir;
     private boolean loaded;
 
     public MxWorld(String name, String uuid, File dir) {

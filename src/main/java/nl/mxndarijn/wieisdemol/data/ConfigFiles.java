@@ -17,6 +17,9 @@ public enum ConfigFiles {
     DEFAULT_LANGUAGE("nl-NL.yml", "languages/nl-NL.yml", false),
     SCOREBOARD_MAP("scoreboard_map.yml", "scoreboards/scoreboard_map.yml", false),
     SCOREBOARD_PRESET("scoreboard_preset.yml", "scoreboards/scoreboard_preset.yml", false),
+    SCOREBOARD_HOST("scoreboard_host.yml", "scoreboards/scoreboard_host.yml", false),
+    SCOREBOARD_PLAYER("scoreboard_player.yml", "scoreboards/scoreboard_player.yml", false),
+    SCOREBOARD_SPECTATOR("scoreboard_spectator.yml", "scoreboards/scoreboard_spectator.yml", false),
     UPCOMING_GAMES("upcoming-games.yml", "upcoming-games.yml", true);
 
     private final FileConfiguration fileConfiguration;

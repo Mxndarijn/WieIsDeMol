@@ -5,7 +5,6 @@ import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -22,7 +21,11 @@ public class GameManager {
     }
 
 
-    private List<UpcomingGame> upcomingGameList;
+    public List<GameInfo> getUpcomingGameList() {
+        return upcomingGameList;
+    }
+
+    private List<GameInfo> upcomingGameList;
     private final ConfigFiles config;
     private GameManager() {
         config = ConfigFiles.UPCOMING_GAMES;
@@ -30,9 +33,9 @@ public class GameManager {
     }
 
     public void removeAllGamesWithMap(Map map) {
-        List<UpcomingGame> gamesToRemove = new ArrayList<>();
+        List<GameInfo> gamesToRemove = new ArrayList<>();
 
-        for (UpcomingGame game : upcomingGameList) {
+        for (GameInfo game : upcomingGameList) {
             if (game.getMapId().equals(map.getDirectory().getName())) {
                 gamesToRemove.add(game);
             }
@@ -46,13 +49,13 @@ public class GameManager {
         List<java.util.Map<?, ?>> list = section.getMapList("upcoming-games");
         list.forEach(map -> {
             java.util.Map<String, Object> convertedMap = (java.util.Map<String, Object>) map;
-            Optional<UpcomingGame> game = UpcomingGame.loadFromFile(convertedMap);
+            Optional<GameInfo> game = GameInfo.loadFromFile(convertedMap);
             game.ifPresent(upcomingGameList::add);
         });
     }
 
     public void addUpcomingGame(UUID host, Map map, LocalDateTime date) {
-        UpcomingGame upcomingGame = UpcomingGame.create(map, host, date);
+        GameInfo upcomingGame = GameInfo.create(map, host, date);
             upcomingGameList.add(upcomingGame);
     }
 
@@ -72,7 +75,7 @@ public class GameManager {
                 .collect(Collectors.toList());
     }
 
-    public void removeUpcomingGame(UpcomingGame upcomingGame) {
+    public void removeUpcomingGame(GameInfo upcomingGame) {
         upcomingGameList.remove(upcomingGame);
     }
 }

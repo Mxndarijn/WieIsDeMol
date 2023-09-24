@@ -20,8 +20,8 @@ public class MxInventoryManager implements Listener {
         }
         return instance;
     }
-    private HashMap<UUID, List<MxInventory>> inventories;
-    private JavaPlugin plugin;
+    private final HashMap<UUID, List<MxInventory>> inventories;
+    private final JavaPlugin plugin;
     private MxInventoryManager() {
         inventories = new HashMap<>();
         plugin = JavaPlugin.getPlugin(WieIsDeMol.class);

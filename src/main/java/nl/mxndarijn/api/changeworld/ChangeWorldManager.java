@@ -19,7 +19,7 @@ public class ChangeWorldManager implements Listener {
 
     private static ChangeWorldManager instance;
 
-    private HashMap<UUID, List<MxChangeWorld>> worlds;
+    private final HashMap<UUID, List<MxChangeWorld>> worlds;
 
     public static ChangeWorldManager getInstance() {
         if(instance == null) {

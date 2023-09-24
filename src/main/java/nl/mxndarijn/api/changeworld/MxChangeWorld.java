@@ -6,7 +6,7 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 
 public interface MxChangeWorld {
 
-    public void enter(Player p, World w, PlayerChangedWorldEvent e);
+    void enter(Player p, World w, PlayerChangedWorldEvent e);
 
-    public void leave(Player p, World w, PlayerChangedWorldEvent e);
+    void leave(Player p, World w, PlayerChangedWorldEvent e);
 }

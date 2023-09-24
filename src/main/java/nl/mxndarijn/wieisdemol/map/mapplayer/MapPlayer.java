@@ -11,7 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.Optional;
 
 public class MapPlayer {
-    private Colors color;
+    private final Colors color;
     private MxLocation location;
     private Role role;
     private boolean isPeacekeeper;
@@ -97,6 +97,10 @@ public class MapPlayer {
 
     public String getRoleDisplayString() {
         return isPeacekeeper ? role.getPeacekeeperName() : role.getRolName();
+    }
+
+    public String getRoleDisplayWithoutPeacekeeper() {
+        return role.getRolName();
     }
 
     public void setLocation(MxLocation location) {

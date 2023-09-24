@@ -1,8 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.gamemanager;
 
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
-import nl.mxndarijn.api.logger.LogLevel;
-import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
@@ -17,22 +15,22 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class UpcomingGame {
+public class GameInfo {
 
     private String mapId;
     private UUID host;
     private LocalDateTime time;
 
-    private List<UUID> queue;
+    private final List<UUID> queue;
     private UpcomingGameStatus status;
 
-    private UpcomingGame() {
+    private GameInfo() {
         queue = new ArrayList<>();
         status = UpcomingGameStatus.WAITING;
     }
 
-    public static UpcomingGame create(Map map, UUID host, LocalDateTime time) {
-        UpcomingGame game = new UpcomingGame();
+    public static GameInfo create(Map map, UUID host, LocalDateTime time) {
+        GameInfo game = new GameInfo();
         game.host = host;
         game.mapId = map.getDirectory().getName();
         game.time = time;
@@ -40,8 +38,8 @@ public class UpcomingGame {
         return game;
     }
 
-    public static Optional<UpcomingGame> loadFromFile(java.util.Map<String, Object> map) {
-        UpcomingGame game = new UpcomingGame();
+    public static Optional<GameInfo> loadFromFile(java.util.Map<String, Object> map) {
+        GameInfo game = new GameInfo();
         game.host = UUID.fromString((String) map.get("host"));
         game.mapId = (String) map.get("mapId");
         game.time = LocalDateTime.parse((String) map.get("time"));
@@ -98,10 +96,10 @@ public class UpcomingGame {
 
         Duration duration = Duration.between(time, LocalDateTime.now());
         Long minutes = Math.abs(duration.toMinutes());
-        if(status == UpcomingGameStatus.WAITING) {
+        if(status.isCanJoinQueue()) {
             if(minutes < ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("time-before-queue-is-open-in-hours") * 60L) {
                 builder.addBlankLore()
-                        .addLore(ChatColor.GRAY + "Begint om: " + formattedTime + " (Over " + minutes.toString() + (minutes > 1 ? " minuten)" : " minuut)"))
+                        .addLore(ChatColor.GRAY + "Begint om: " + formattedTime + " (Over " + minutes + (minutes > 1 ? " minuten)" : " minuut)"))
                         .addLore(ChatColor.GRAY + "Aantal wachtend: " + queue.size());
 
                 builder.addLore(ChatColor.YELLOW + "Klik hier om in de wachtrij te komen.");
@@ -128,5 +126,9 @@ public class UpcomingGame {
 
     public UpcomingGameStatus getStatus() {
         return status;
+    }
+
+    public void setStatus(UpcomingGameStatus status) {
+        this.status = status;
     }
 }

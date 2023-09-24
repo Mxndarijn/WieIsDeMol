@@ -117,7 +117,16 @@ LanguageText {
     GAMES_ITEM_UPCOMING_GAME_ADDED("games-item-upcoming-game-added"),
     GAMES_ITEM_UPCOMING_GAME_TIME_IS_PAST("game-item-upcoming-game-item-time-is-past"),
     SHULKER_CONFIGURE_TOOL_TOGGLED_SHULKER("shulker-configure-tool-toggled-shulker"),
-    SHULKER_TOOL_TOGGLED_BEGINKIST("shulker-tool-toggled-beginkist");
+    SHULKER_TOOL_TOGGLED_BEGINKIST("shulker-tool-toggled-beginkist"),
+    GAMES_ITEM_TO_EARLY_TO_JOIN("games-item-to-early-to-join"),
+    GAMES_ENTERED_QUEUE("games-entered-queue"),
+    GAMES_LEFT_QUEUE("games-left-queue"),
+    GAMES_COULD_NOT_FIND_GAME(),
+    GAMES_GAME_DELETED(),
+    GAME_YOU_ARE_NOW_HOST,
+    GAMES_COULD_NOT_CREATE_GAME,
+    VANISH_ON,
+    VANISH_OFF;
 
     private final String configValue;
     LanguageText(String value) {

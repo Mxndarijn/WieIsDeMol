@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class PresetsManager {
     private static PresetsManager instance;
-    private ArrayList<Preset> presets;
+    private final ArrayList<Preset> presets;
 
     public static PresetsManager getInstance() {
         if(instance == null) {

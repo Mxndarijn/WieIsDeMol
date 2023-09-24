@@ -42,8 +42,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class Preset {
 
-    private File directory;
-    private File inventoriesFile;
+    private final File directory;
+    private final File inventoriesFile;
     private PresetConfig config;
 
     private Optional<MxWorld> mxWorld;

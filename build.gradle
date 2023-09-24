@@ -16,13 +16,18 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        name ="Protocollib"
+        url = "https://repo.dmulloy2.net/repository/public/" }
 }
 
 dependencies {
    // implementation 'org.projectlombok:lombok:1.18.22'
     compileOnly "io.papermc.paper:paper-api:1.19.1-R0.1-SNAPSHOT"
+    compileOnly 'com.comphenix.protocol:ProtocolLib:VERSION_HERE'
     compileOnly 'com.mojang:authlib:1.5.21'
-   // compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
+    compileOnly 'com.comphenix.protocol:ProtocolLib:5.1.0'
+   // compileOnly("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")vvb
     implementation 'commons-io:commons-io:2.11.0'
 }
 

@@ -25,8 +25,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChestManager {
 
-    private File chestFile;
-    private List<ChestInformation> chests;
+    private final File chestFile;
+    private final List<ChestInformation> chests;
 
     public ChestManager(File f) {
         this.chestFile = f;

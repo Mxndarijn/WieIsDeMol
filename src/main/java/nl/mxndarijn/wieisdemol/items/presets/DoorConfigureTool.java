@@ -29,7 +29,7 @@ import java.util.*;
 
 public class DoorConfigureTool extends MxItem {
 
-    private HashMap<UUID, DoorInformation> players;
+    private final HashMap<UUID, DoorInformation> players;
     public DoorConfigureTool(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
         super(is, worldFilter, gameItem, actions);
 

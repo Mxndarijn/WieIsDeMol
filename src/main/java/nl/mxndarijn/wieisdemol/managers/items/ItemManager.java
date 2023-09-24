@@ -16,7 +16,7 @@ public class ItemManager {
 
     private static ItemManager instance;
 
-    private ArrayList<MxItem> items;
+    private final ArrayList<MxItem> items;
 
     public static ItemManager getInstance() {
         if(instance == null) {

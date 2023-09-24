@@ -13,8 +13,8 @@ import java.util.Optional;
 
 public class WarpManager {
 
-    private File warpFile;
-    private List<Warp> warps;
+    private final File warpFile;
+    private final List<Warp> warps;
 
     public WarpManager(File f) {
         this.warpFile = f;

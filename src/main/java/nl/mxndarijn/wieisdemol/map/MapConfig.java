@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class MapConfig {
     private File file;
-    private ArrayList<MapPlayer> colors;
+    private final ArrayList<MapPlayer> colors;
 
     private String name;
     private UUID owner;

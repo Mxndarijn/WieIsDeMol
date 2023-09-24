@@ -3,6 +3,8 @@ package nl.mxndarijn.wieisdemol.items;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
+import nl.mxndarijn.wieisdemol.items.game.PlayerManagementItem;
+import nl.mxndarijn.wieisdemol.items.game.VanishItem;
 import nl.mxndarijn.wieisdemol.items.maps.ChestItem;
 import nl.mxndarijn.wieisdemol.items.maps.DoorItem;
 import nl.mxndarijn.wieisdemol.items.maps.ShulkerItem;
@@ -146,6 +148,28 @@ public enum Items {
             GamesItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
+    VANISH_ITEM(MxDefaultItemStackBuilder.create(Material.ENDER_EYE)
+            .setName(ChatColor.GRAY + "Vanish")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item kan je ontzichtbaar worden.")
+            .build(),
+            p -> {
+                return true;
+            },
+            false,
+            VanishItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    PLAYER_MANAGEMENT_ITEM(MxDefaultItemStackBuilder.create(Material.CYAN_DYE)
+            .setName(ChatColor.GRAY + "Kleuren tool")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item kan je kleuren beheren.")
+            .build(),
+            p -> {
+                return true;
+            },
+            false,
+            PlayerManagementItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     ;
 
 

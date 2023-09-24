@@ -5,5 +5,5 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 
 public interface WorldReachedZeroPlayersEvent {
-    public void worldReachedZeroPlayers(Player p, World w, PlayerChangedWorldEvent e);
+    void worldReachedZeroPlayers(Player p, World w, PlayerChangedWorldEvent e);
 }

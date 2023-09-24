@@ -32,7 +32,7 @@ public class MxHeadManager {
         }
         return instance;
     }
-    private FileConfiguration fileConfiguration;
+    private final FileConfiguration fileConfiguration;
     public MxHeadManager() {
         fileConfiguration = ConfigFiles.HEAD_DATA.getFileConfiguration();
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {

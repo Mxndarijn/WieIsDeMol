@@ -15,7 +15,7 @@ import java.util.UUID;
 public class MapManager {
     private static MapManager instance;
 
-    private ArrayList<Map> maps;
+    private final ArrayList<Map> maps;
 
     public static MapManager getInstance() {
         if(instance == null) {

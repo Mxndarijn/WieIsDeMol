@@ -19,13 +19,13 @@ import java.util.List;
 
 public class StorageContainer {
 
-    private ArrayList<ItemStack> contents;
-    private String skull;
-    private String name;
+    private final ArrayList<ItemStack> contents;
+    private final String skull;
+    private final String name;
     private boolean isPublic;
-    private String owner;
+    private final String owner;
 
-    private File file;
+    private final File file;
     public StorageContainer(File file) {
         this.file = file;
         contents = new ArrayList<>();

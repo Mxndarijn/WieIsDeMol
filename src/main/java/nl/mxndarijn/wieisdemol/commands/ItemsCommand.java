@@ -99,7 +99,8 @@ public class ItemsCommand extends MxCommand {
 
         MxListInventoryBuilder builder = MxListInventoryBuilder.create("Server Opslagen", MxInventorySlots.THREE_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
-                .setListItems(containers);
+                .setListItems(containers)
+                .setPrevious(mainInv);
 
         if(p.hasPermission(Permissions.ITEM_ITEMS_EDIT_SERVER_CONTAINERS.getPermission())) {
             builder.setItem(MxSkullItemStackBuilder.create(1)
@@ -177,6 +178,7 @@ public class ItemsCommand extends MxCommand {
 
         MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("Prive Opslagen", MxInventorySlots.THREE_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                .setPrevious(mainInv)
                 .setListItems(containers)
                         .setItem(MxSkullItemStackBuilder.create(1)
                                         .setSkinFromHeadsData("wooden-plus")
@@ -251,6 +253,7 @@ public class ItemsCommand extends MxCommand {
         MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("Publieke opslagen", MxInventorySlots.THREE_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                 .setListItems(containers)
+                .setPrevious(mainInv)
                 .build());
     }
 

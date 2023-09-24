@@ -22,13 +22,13 @@ public abstract class MxScoreBoard {
     private Scoreboard scoreboard;
     public List<UUID> playersUsingScoreboard;
 
-    private List<MxScoreBoardTeam> teams;
+    private final List<MxScoreBoardTeam> teams;
 
     private Objective objective;
 
     private long updateTimer = -1;
 
-    private JavaPlugin plugin;
+    private final JavaPlugin plugin;
 
     private BukkitTask task;
 

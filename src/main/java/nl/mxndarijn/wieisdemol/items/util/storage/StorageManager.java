@@ -14,9 +14,9 @@ public class StorageManager {
 
     private static StorageManager instance;
 
-    private List<StorageContainer> serverContainers;
+    private final List<StorageContainer> serverContainers;
 
-    private HashMap<String, List<StorageContainer>> playerContainers;
+    private final HashMap<String, List<StorageContainer>> playerContainers;
 
     public static StorageManager getInstance() {
         if(instance == null) {

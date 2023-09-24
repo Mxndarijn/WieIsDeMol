@@ -17,7 +17,7 @@ import java.util.UUID;
 public class MxChatInputManager implements Listener {
 
     private static MxChatInputManager instance;
-    private HashMap<UUID, MxChatInputCallback> map;
+    private final HashMap<UUID, MxChatInputCallback> map;
 
     public static MxChatInputManager getInstance() {
         if(instance == null) {

@@ -19,6 +19,10 @@ public class Logger {
         }
     }
 
+    public static void logMessage(String message) {
+        logMessage(LogLevel.DEBUG_HIGHLIGHT, message);
+    }
+
     public static void logMessage(LogLevel level, Prefix prefix, String message) {
         if(level.getLevel() <= logLevel.getLevel()) {
             Bukkit.getConsoleSender().sendMessage(level.getPrefix() + prefix + message);

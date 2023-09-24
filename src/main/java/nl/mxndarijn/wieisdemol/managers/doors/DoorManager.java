@@ -19,8 +19,8 @@ import java.util.Optional;
 
 public class DoorManager {
 
-    private File doorFile;
-    private List<DoorInformation> doors;
+    private final File doorFile;
+    private final List<DoorInformation> doors;
 
     public DoorManager(File f) {
         this.doorFile = f;
