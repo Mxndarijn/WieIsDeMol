@@ -5,6 +5,7 @@ import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.mxworld.MxWorld;
+import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -119,5 +120,13 @@ public class ChestManager {
             }
         }
         return filled;
+    }
+
+    public void onGameStart(Game game) {
+        chests.forEach(c -> {
+            c.getChestAttachmentList().forEach(a -> {
+                a.onGameStart(game);
+            });
+        });
     }
 }

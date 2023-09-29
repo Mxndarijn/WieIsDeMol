@@ -1,6 +1,7 @@
-package nl.mxndarijn.wieisdemol.managers.gamemanager;
+package nl.mxndarijn.wieisdemol.managers;
 
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
+import nl.mxndarijn.wieisdemol.game.GameInfo;
 import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

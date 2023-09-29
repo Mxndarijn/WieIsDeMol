@@ -3,11 +3,10 @@ package nl.mxndarijn.wieisdemol.items;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
-import nl.mxndarijn.wieisdemol.items.game.PlayerManagementItem;
-import nl.mxndarijn.wieisdemol.items.game.VanishItem;
-import nl.mxndarijn.wieisdemol.items.maps.ChestItem;
-import nl.mxndarijn.wieisdemol.items.maps.DoorItem;
-import nl.mxndarijn.wieisdemol.items.maps.ShulkerItem;
+import nl.mxndarijn.wieisdemol.items.game.*;
+import nl.mxndarijn.wieisdemol.items.maps.MapChestItem;
+import nl.mxndarijn.wieisdemol.items.maps.MapDoorItem;
+import nl.mxndarijn.wieisdemol.items.maps.MapShulkerItem;
 import nl.mxndarijn.wieisdemol.items.maps.VulTool;
 import nl.mxndarijn.wieisdemol.items.presets.ChestConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.DoorConfigureTool;
@@ -91,7 +90,21 @@ public enum Items {
                 return true;
             },
             false,
-            ChestItem.class,
+            MapChestItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+    GAME_CHEST_TOOL(
+            MxDefaultItemStackBuilder.create(Material.STICK, 1)
+                    .setName(ChatColor.GRAY + "Chest Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je kisten op afstand openen tijdens een game.")
+                    .addLore(ChatColor.YELLOW + "Daarnaast merkt niemand dat je de kist opent.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            GameChestItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     SHULKER_TOOL(
@@ -104,7 +117,20 @@ public enum Items {
                 return true;
             },
             false,
-            ShulkerItem.class,
+            MapShulkerItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+    GAME_SHULKER_TOOL(
+            MxDefaultItemStackBuilder.create(Material.SHULKER_SHELL, 1)
+                    .setName(ChatColor.GRAY + "Shulker Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je shulkers op afstand openen tijdens een game.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            GameShulkerItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     DOOR_ITEM(
@@ -117,7 +143,20 @@ public enum Items {
                 return true;
             },
             false,
-            DoorItem.class,
+            MapDoorItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+    GAME_DOOR_ITEM(
+            MxDefaultItemStackBuilder.create(Material.BRICK, 1)
+                    .setName(ChatColor.GRAY + "Door Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je deuren openen en sluiten tijdens de game.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            GameDoorItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     VUL_TOOL(
@@ -133,7 +172,19 @@ public enum Items {
             VulTool.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
-
+    HOST_TOOL(
+            MxDefaultItemStackBuilder.create(Material.NETHER_STAR, 1)
+                    .setName(ChatColor.GRAY + "Host Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je een game beheren.")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            GameHostItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
     GAMES_ITEM(
             MxDefaultItemStackBuilder.create(Material.COMPASS, 1)
                     .setName(ChatColor.GRAY + "Game Menu")

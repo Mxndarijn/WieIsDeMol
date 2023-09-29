@@ -4,7 +4,7 @@ import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import nl.mxndarijn.wieisdemol.managers.gamemanager.Game;
+import nl.mxndarijn.wieisdemol.game.Game;
 import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;

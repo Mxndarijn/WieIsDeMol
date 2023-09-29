@@ -33,10 +33,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class ChestItem extends MxItem  {
+public class MapChestItem extends MxItem  {
 
 
-    public ChestItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
+    public MapChestItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
         super(is, worldFilter, gameItem, actions);
     }
 

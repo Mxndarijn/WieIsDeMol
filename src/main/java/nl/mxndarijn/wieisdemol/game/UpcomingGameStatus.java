@@ -1,11 +1,13 @@
-package nl.mxndarijn.wieisdemol.managers.gamemanager;
+package nl.mxndarijn.wieisdemol.game;
 
 import org.bukkit.ChatColor;
 
 public enum UpcomingGameStatus {
     WAITING(ChatColor.YELLOW + "Wachtend", true),
-    CHOOSING_PLAYERS(ChatColor.YELLOW + "Spelers worden gekozen", true),
-    PLAYING(ChatColor.GREEN + "Bezig", false);
+    CHOOSING_PLAYERS(ChatColor.YELLOW + "Spelers kiezen", true),
+    PLAYING(ChatColor.GREEN + "Bezig", false),
+    FREEZE(ChatColor.AQUA + "Freezed", false),
+    FINISHED(ChatColor.RED + "Afgelopen", false);
 
     private final String status;
     private final boolean canJoinQueue;

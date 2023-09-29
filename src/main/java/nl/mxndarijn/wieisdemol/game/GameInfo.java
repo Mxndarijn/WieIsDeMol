@@ -1,9 +1,10 @@
-package nl.mxndarijn.wieisdemol.managers.gamemanager;
+package nl.mxndarijn.wieisdemol.game;
 
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
+import nl.mxndarijn.wieisdemol.managers.GameManager;
 import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

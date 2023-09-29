@@ -1,4 +1,4 @@
-package nl.mxndarijn.wieisdemol.managers.gamemanager;
+package nl.mxndarijn.wieisdemol.game;
 
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 

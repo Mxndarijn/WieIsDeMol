@@ -14,8 +14,6 @@ import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.wieisdemol.data.CustomInventoryOverlay;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
-import nl.mxndarijn.api.logger.LogLevel;
-import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.map.Map;
@@ -38,10 +36,10 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ShulkerItem extends MxItem  {
+public class MapShulkerItem extends MxItem  {
 
 
-    public ShulkerItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
+    public MapShulkerItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
         super(is, worldFilter, gameItem, actions);
     }
 

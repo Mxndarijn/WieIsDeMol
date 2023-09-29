@@ -25,10 +25,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class DoorItem extends MxItem  {
+public class MapDoorItem extends MxItem  {
 
 
-    public DoorItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
+    public MapDoorItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
         super(is, worldFilter, gameItem, actions);
     }
 

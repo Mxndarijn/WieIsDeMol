@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public enum ChestAttachments {
-    CHEST_APPEARANCE("CHEST_APPEARANCE", ChestAppearanceAttachment.class, "Kist-uiterlijk",
+    CHEST_APPEARANCE("CHEST_APPEARANCE", ChestAppearanceAttachment.class, "Kist-uiterlijk", "rainbow-chest",
             MxSkullItemStackBuilder.create(1)
                     .setSkinFromHeadsData("rainbow-chest")
                     .setName(ChatColor.RED + "Kist uiterlijk")
@@ -26,7 +26,7 @@ public enum ChestAttachments {
                     .addBlankLore()
                     .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment toe te voegen.")
                     .build()),
-    CHEST_COLOR_BIND("CHEST_COLOR_BIND", ChestColorBindAttachment.class, "Kist-color-bind",
+    CHEST_COLOR_BIND("CHEST_COLOR_BIND", ChestColorBindAttachment.class, "Kist-color-bind", "wool-chest",
             MxSkullItemStackBuilder.create(1)
                     .setSkinFromHeadsData("wool-chest")
                     .setName(ChatColor.RED + "Colorbind kist")
@@ -36,7 +36,7 @@ public enum ChestAttachments {
                     .addBlankLore()
                     .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment toe te voegen.")
                     .build()),
-    CHEST_LIMITED_CHOICE("CHEST_LIMITED_CHOICE", ChestLimitedChoiceAttachment.class, "Kist-limited-items",
+    CHEST_LIMITED_CHOICE("CHEST_LIMITED_CHOICE", ChestLimitedChoiceAttachment.class, "Kist-limited-items", "open-chest",
             MxSkullItemStackBuilder.create(1)
                     .setSkinFromHeadsData("open-chest")
                     .setName(ChatColor.RED + "Keuze Kist")
@@ -46,7 +46,7 @@ public enum ChestAttachments {
                     .addBlankLore()
                     .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment toe te voegen.")
                     .build()),
-    CHEST_LOCK("CHEST_LOCK", ChestLockAttachment.class, "Kist-lock",
+    CHEST_LOCK("CHEST_LOCK", ChestLockAttachment.class, "Kist-lock", "locked-chest",
             MxSkullItemStackBuilder.create(1)
                     .setSkinFromHeadsData("locked-chest")
                     .setName(ChatColor.RED + "Kist slot")
@@ -63,11 +63,13 @@ public enum ChestAttachments {
 
     private final String displayName;
     private final ItemStack is;
-    ChestAttachments(String name, Class<? extends ChestAttachment> attachment, String displayName, ItemStack is) {
+    private final String skullName;
+    ChestAttachments(String name, Class<? extends ChestAttachment> attachment, String displayName, String skullName, ItemStack is) {
         this.attachmentClass = attachment;
         this.name = name;
         this.displayName = displayName;
         this.is = is;
+        this.skullName = skullName;
     }
 
     public static Optional<ChestAttachments> getAttachmentByType(String type) {
@@ -126,4 +128,7 @@ public enum ChestAttachments {
         return is;
     }
 
+    public String getSkullName() {
+        return skullName;
+    }
 }

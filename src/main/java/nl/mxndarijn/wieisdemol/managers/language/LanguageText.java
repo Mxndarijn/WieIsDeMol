@@ -126,7 +126,13 @@ LanguageText {
     GAME_YOU_ARE_NOW_HOST,
     GAMES_COULD_NOT_CREATE_GAME,
     VANISH_ON,
-    VANISH_OFF;
+    VANISH_OFF,
+    GAME_PLAYER_JOINED,
+    GAME_PLAYER_LEAVED,
+    GAME_ENTER_NAME,
+    GAME_ENTER_NAME_NOT_FOUND,
+    GAME_ENTER_NAME_NOT_IN_QUEUE(),
+    GAME_STATUS_CHANGED;
 
     private final String configValue;
     LanguageText(String value) {

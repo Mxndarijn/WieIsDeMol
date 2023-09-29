@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.items.game;
 
+import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
@@ -7,13 +8,11 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxitem.MxItem;
-import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Colors;
 import nl.mxndarijn.wieisdemol.data.Role;
-import nl.mxndarijn.wieisdemol.managers.VanishManager;
-import nl.mxndarijn.wieisdemol.managers.gamemanager.Game;
+import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
@@ -24,13 +23,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class PlayerManagementItem extends MxItem  {
@@ -48,7 +47,7 @@ public class PlayerManagementItem extends MxItem  {
         Game game = optionalGame.get();
 
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
-        game.getColors().forEach(((gamePlayer, uuid) -> {
+        game.getColors().forEach(((gamePlayer) -> {
             MapPlayer mapPlayer = gamePlayer.getMapPlayer();
             list.add(new Pair<>(
                     MxSkullItemStackBuilder.create(1)
@@ -69,7 +68,7 @@ public class PlayerManagementItem extends MxItem  {
                                                 .addBlankLore()
                                                 .addLore(ChatColor.YELLOW + "Klik hier om de rol aan te passen.")
                                                 .build(),
-                                        11,
+                                        10,
                                         (mxInv1, e2) -> {
                                             MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Rol aannpassen " + mapPlayer.getColor().getDisplayName(), MxInventorySlots.THREE_ROWS)
                                                     .setPrevious(mxInv)
@@ -93,9 +92,57 @@ public class PlayerManagementItem extends MxItem  {
                                                 .addBlankLore()
                                                 .addLore(ChatColor.YELLOW + "Klik hier om de speler aan te passen.")
                                                 .build(),
-                                        14,
+                                        13,
                                         (mxInv1, e2) -> {
+                                    List<Pair<ItemStack, MxItemClicked>> players = new ArrayList<>();
+                                    AtomicInteger queueAmount = new AtomicInteger(1);
+                                    game.getGameInfo().getQueue().forEach(playerUUID -> {
+                                        players.add(new Pair<>(
+                                                MxSkullItemStackBuilder.create(1)
+                                                        .setSkinFromHeadsData(playerUUID.toString())
+                                                        .setName(ChatColor.GRAY + Bukkit.getPlayer(playerUUID).getName())
+                                                        .addBlankLore()
+                                                        .addLore(ChatColor.GRAY + "Nummer in wachtrij: " + queueAmount)
+                                                        .addBlankLore()
+                                                        .addLore(ChatColor.YELLOW + "Klik hier om deze speler te selecteren.")
+                                                        .build(),
+                                                (mxInv22, e32) -> {
+                                                    game.addPlayer(playerUUID, gamePlayer);
+                                                    p.closeInventory();
+                                                }
+                                        ));
+                                        queueAmount.getAndIncrement();
+                                    });
+                                            MxInventoryManager.getInstance().addAndOpenInventory(p, new MxListInventoryBuilder(ChatColor.GRAY + "Kies speler (" + gamePlayer.getMapPlayer().getColor().getDisplayName() + ChatColor.GRAY + ")" , MxInventorySlots.FOUR_ROWS)
+                                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_THREE)
+                                                    .setPrevious(mxInv1)
+                                                            .setListItems(players)
+                                                    .setItem(MxDefaultItemStackBuilder.create(Material.NAME_TAG)
+                                                                    .setName(ChatColor.GRAY + "Typ naam")
+                                                                    .addBlankLore()
+                                                                    .addLore(ChatColor.YELLOW + "Klik hier om de naam te typen ipv te selecteren.")
+                                                                    .build(),
+                                                            27,
+                                                            (mxInv2, e3) -> {
+                                                        p.closeInventory();
+                                                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ENTER_NAME, ChatPrefix.WIDM));
+                                                                MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
+                                                                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                                                                        Player enteredPlayer = Bukkit.getPlayer(message);
+                                                                        if(enteredPlayer == null) {
+                                                                            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ENTER_NAME_NOT_FOUND, ChatPrefix.WIDM));
+                                                                            return;
+                                                                        }
+                                                                        if(!game.getGameInfo().getQueue().contains(enteredPlayer.getUniqueId())) {
+                                                                            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ENTER_NAME_NOT_IN_QUEUE, ChatPrefix.WIDM));
+                                                                            return;
+                                                                        }
+                                                                        game.addPlayer(enteredPlayer.getUniqueId(), gamePlayer);
+                                                                    }, 1);
+                                                                });
 
+                                                            })
+                                                    .build());
                                         })
                                 .setItem(MxDefaultItemStackBuilder.create(Material.GOLDEN_SWORD)
                                                 .setName(ChatColor.GRAY + "Kill / Reborn")
@@ -106,7 +153,7 @@ public class PlayerManagementItem extends MxItem  {
                                                 .addBlankLore()
                                                 .addLore(ChatColor.YELLOW + "Klik hier om de speler te killen / rebornen.")
                                                 .build(),
-                                        17,
+                                        16,
                                         (mxInv1, e2) -> {
                                             //TODO
                                         })
