@@ -1,4 +1,4 @@
-package nl.mxndarijn.wieisdemol.managers.chests.ChestAttachments;
+package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
 import net.kyori.adventure.text.Component;
 import nl.mxndarijn.api.inventory.MxItemClicked;
@@ -7,22 +7,22 @@ import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.wieisdemol.game.Game;
+import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Directional;
 import org.bukkit.util.EulerAngle;
 
 import java.util.*;
@@ -50,8 +50,6 @@ public abstract class ChestAttachment {
     }
     public void onGameStart(Game game) {
         this.game = Optional.of(game);
-
-        spawnArmorStand();
     }
 
     public void setDefaults(String type, ChestInformation information) {
@@ -68,7 +66,7 @@ public abstract class ChestAttachment {
 
         public abstract Pair<ItemStack, MxItemClicked> getEditAttachmentItem();
 
-    public boolean canOpenChest() {
+    public boolean canOpenChest(GamePlayer gamePlayer) {
         return true;
     }
 
@@ -109,7 +107,6 @@ public abstract class ChestAttachment {
         if(blockLocation.getBlock().getBlockData() instanceof org.bukkit.block.data.type.Chest) {
             org.bukkit.block.data.type.Chest di = (org.bukkit.block.data.type.Chest) blockLocation.getBlock().getBlockData();
             BlockFace bf = di.getFacing();
-            Logger.logMessage(bf.toString());
             float val = switch (bf) {
                 case NORTH -> 180f;
                 case EAST -> -90f;
@@ -135,5 +132,13 @@ public abstract class ChestAttachment {
                 // Zorg ervoor dat de ArmorStand wordt bijgewerkt om de wijzigingen door te voeren
             }
         }
+    }
+
+    public void onChestInteract(GamePlayer gamePlayer, PlayerInteractEvent e, Game game, Player p) {
+
+    }
+
+    public void onChestInventoryClick(GamePlayer gamePlayer, InventoryClickEvent e, Game game, Player p) {
+
     }
 }

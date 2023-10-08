@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.commands;
 
+import net.kyori.adventure.text.Component;
 import nl.mxndarijn.api.mxcommand.MxCommand;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Permissions;
@@ -262,14 +263,16 @@ public class ItemsCommand extends MxCommand {
         container.getContents().forEach(item -> {
             ItemStack is = item.clone();
             ItemMeta im = is.getItemMeta();
-            List<String> lores = im.hasLore() ? im.getLore() : new ArrayList<>();
-            lores.add(" ");
-            lores.add(ChatColor.YELLOW + "Linker-muisknop om het item in je inventory te krijgen");
+            List<Component> lores = im.hasLore() ? im.lore() : new ArrayList<>();
+            if(lores == null)
+                lores = new ArrayList<>();
+            lores.add(Component.text(" "));
+            lores.add(Component.text(ChatColor.YELLOW + "Linker-muisknop om het item in je inventory te krijgen"));
             if(container.hasPermissionToEdit(p)) {
-                lores.add(ChatColor.YELLOW + "Shift + Rechter-muisknop om het item te verwijderen");
+                lores.add(Component.text(ChatColor.YELLOW + "Shift + Rechter-muisknop om het item te verwijderen"));
             }
 
-            im.setLore(lores);
+            im.lore(lores);
             is.setItemMeta(im);
             items.add(new Pair<>(is, (mxInv, e) -> {
                 if(e.isLeftClick() && !e.isShiftClick()) {

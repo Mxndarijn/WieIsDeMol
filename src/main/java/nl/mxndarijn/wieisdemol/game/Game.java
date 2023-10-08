@@ -2,7 +2,6 @@ package nl.mxndarijn.wieisdemol.game;
 
 import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
-import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
 import nl.mxndarijn.api.mxworld.MxAtlas;
 import nl.mxndarijn.api.mxworld.MxWorld;
@@ -11,14 +10,10 @@ import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.ScoreBoard;
 import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
+import nl.mxndarijn.wieisdemol.game.events.*;
 import nl.mxndarijn.wieisdemol.game.events.GameEvent;
-import nl.mxndarijn.wieisdemol.game.events.GameFreezeEvents;
-import nl.mxndarijn.wieisdemol.game.events.GamePlayingEvents;
-import nl.mxndarijn.wieisdemol.game.events.GamePreStartEvents;
 import nl.mxndarijn.wieisdemol.items.Items;
-import nl.mxndarijn.wieisdemol.managers.InteractionManager;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
-import nl.mxndarijn.wieisdemol.managers.ScoreBoardManager;
+import nl.mxndarijn.wieisdemol.managers.*;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestManager;
 import nl.mxndarijn.wieisdemol.managers.doors.DoorManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
@@ -39,17 +34,18 @@ import org.bukkit.scheduler.BukkitTask;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Game {
 
     private GameInfo gameInfo;
-    private UUID mainHost;
+    private final UUID mainHost;
     private Optional<MxWorld> mxWorld;
 
-    private WarpManager warpManager;
-    private ChestManager chestManager;
-    private ShulkerManager shulkerManager;
+    private final WarpManager warpManager;
+    private final ChestManager chestManager;
+    private final ShulkerManager shulkerManager;
     private DoorManager doorManager;
     private InteractionManager interactionManager;
     private File directory;
@@ -61,10 +57,16 @@ public class Game {
     private List<GamePlayer> colors;
 
     private MxSupplierScoreBoard hostScoreboard;
+    private MxSupplierScoreBoard spectatorScoreboard;
 
     private boolean firstStart = false;
 
-    private JavaPlugin plugin;
+    private long gameTime = 0;
+    private int peacekeeperKills;
+    private List<UUID> spectators;
+    private HashMap<UUID, Location> respawnLocations;
+
+    private final JavaPlugin plugin;
     public Game(UUID mainHost, GameInfo gameInfo, MapConfig mapConfig, MxWorld mxWorld) {
         this.gameInfo = gameInfo;
         this.mainHost = mainHost;
@@ -73,6 +75,7 @@ public class Game {
         this.directory = mxWorld.getDir();
 
         this.hosts = new ArrayList<>();
+        this.respawnLocations = new HashMap<>();
 
         this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
         this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
@@ -81,10 +84,11 @@ public class Game {
         this.interactionManager = new InteractionManager(new File(getDirectory(), "interactions.yml"));
 
         this.plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
-
+        this.peacekeeperKills = mapConfig.getPeacekeeperKills();
+        this.spectators = new ArrayList<>();
         this.colors = new ArrayList<>();
         mapConfig.getColors().forEach(mapPlayer -> {
-            colors.add(new GamePlayer(mapPlayer));
+            colors.add(new GamePlayer(mapPlayer, plugin, this));
         });
 
         this.hostScoreboard = new MxSupplierScoreBoard(plugin, () -> {
@@ -92,20 +96,68 @@ public class Game {
                 put("%%map_name%%", mapConfig.getPresetConfig().getName());
             }});
         }, () -> {
+
+            AtomicInteger alivePlayers = new AtomicInteger();
+            AtomicInteger deadPlayers = new AtomicInteger();
+            colors.forEach(g -> {
+                if(g.isAlive())
+                    alivePlayers.getAndIncrement();
+                else
+                    deadPlayers.getAndIncrement();
+            });
             return ScoreBoard.GAME_HOST.getLines(new HashMap<>() {{
                 put("%%map_name%%", mapConfig.getPresetConfig().getName());
                 put("%%game_status%%", gameInfo.getStatus().getStatus());
-                put("%%game_time%%", "00:00");
-                put("%%players_alive%%", "0");
+                put("%%game_time%%", formatGameTime(gameTime));
+                put("%%players_alive%%", colors.size() + "");
                 put("%%mollen_alive%%", "0");
                 put("%%ego_alive%%", "0");
+                put("%%alive_players%%", alivePlayers.get() + "");
+                put("%%dead_players%%", deadPlayers.get() + "");
+                put("%%spectator_count%%", "0");
 
             }});
         });
         this.hostScoreboard.setUpdateTimer(10);
 
+        this.spectatorScoreboard = new MxSupplierScoreBoard(plugin, () -> {
+            return ScoreBoard.GAME_SPECTATOR.getTitle(new HashMap<>() {{
+                put("%%map_name%%", mapConfig.getPresetConfig().getName());
+            }});
+        }, () -> {
+            String host = Bukkit.getOfflinePlayer(getMainHost()).getName();
+            return ScoreBoard.GAME_SPECTATOR.getLines(new HashMap<>() {{
+                put("%%map_name%%", mapConfig.getPresetConfig().getName());
+                put("%%game_status%%", gameInfo.getStatus().getStatus());
+                put("%%game_time%%", formatGameTime(gameTime));
+                put("%%players_alive%%", colors.size() + "");
+                put("%%mollen_alive%%", "0");
+                put("%%ego_alive%%", "0");
+                put("%%spectator_count%%", "0");
+                put("%%host%%", host);
+
+            }});
+        });
+        this.spectatorScoreboard.setUpdateTimer(10);
+
         GameWorldManager.getInstance().addGame(this);
     }
+
+    public String getGameTime() {
+        return formatGameTime(gameTime);
+    }
+    private String formatGameTime(long timeInMillis) {
+        // Converteer milliseconden naar seconden
+        long timeInSeconds = timeInMillis / 1000;
+
+        // Bereken het aantal minuten en seconden van de gegeven tijd
+        long minutes = timeInSeconds / 60;
+        long seconds = timeInSeconds % 60;
+
+        // Gebruik String.format om de tijd in het juiste formaat weer te geven
+        return String.format("%02d:%02d", minutes, seconds);
+    }
+
 
     private File getDirectory() {
         return directory;
@@ -145,6 +197,7 @@ public class Game {
             if(loaded) {
                 registerEvents();
                 updateChestAttachments();
+                updateGame();
             }
         });
 
@@ -167,7 +220,8 @@ public class Game {
         events = new ArrayList<>(Arrays.asList(
                 new GamePreStartEvents(this, plugin),
                 new GameFreezeEvents(this, plugin),
-                new GamePlayingEvents(this, plugin)
+                new GamePlayingEvents(this, plugin),
+                new GameSpectatorEvents(this, plugin)
         ));
     }
 
@@ -199,6 +253,7 @@ public class Game {
         Player p = Bukkit.getPlayer(uuid);
         if(p != null) {
             hosts.add(uuid);
+            gameInfo.getQueue().remove(uuid);
             loadWorld().thenAccept(loaded -> {
                 if(loaded) {
                     World w = Bukkit.getWorld(mxWorld.get().getWorldUID());
@@ -213,6 +268,27 @@ public class Game {
                     p.getInventory().addItem(Items.GAME_SHULKER_TOOL.getItemStack());
                     p.getInventory().addItem(Items.GAME_DOOR_ITEM.getItemStack());
                     p.getInventory().addItem(Items.VANISH_ITEM.getItemStack());
+
+
+                    ChangeWorldManager.getInstance().addWorld(w.getUID(), new MxChangeWorld() {
+                        @Override
+                        public void enter(Player p, World w, PlayerChangedWorldEvent e) {
+
+                        }
+
+                        @Override
+                        public void leave(Player p, World w, PlayerChangedWorldEvent e) {
+                            hosts.remove(p.getUniqueId());
+                            removePlayer(p.getUniqueId());
+
+                            hostScoreboard.removePlayer(p.getUniqueId());
+
+                            if(hosts.isEmpty() && getPlayerCount() == 0) {
+                                setGameStatus(UpcomingGameStatus.FINISHED);
+                            }
+
+                        }
+                    });
                 }
             });
         }
@@ -281,11 +357,14 @@ public class Game {
         }
 
         gamePlayer.setPlayingPlayer(playerUUID);
+        gameInfo.getQueue().remove(playerUUID);
         MapPlayer mp = gamePlayer.getMapPlayer();
 
         p.teleport(mp.getLocation().getLocation(Bukkit.getWorld(mxWorld.get().getWorldUID())));
         p.setHealth(20);
         p.setFoodLevel(20);
+        p.setExp(0);
+        p.setGameMode(GameMode.SURVIVAL);
         sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_JOINED, new ArrayList<>(Arrays.asList(p.getName(), mp.getColor().getDisplayName()))));
         //Add Scoreboard
 
@@ -358,6 +437,10 @@ public class Game {
             firstStart = true;
             chestManager.onGameStart(this);
         }
+        if(upcomingGameStatus == UpcomingGameStatus.FINISHED) {
+            stopGame();
+            GameManager.getInstance().removeUpcomingGame(gameInfo);
+        }
         sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_STATUS_CHANGED, Collections.singletonList(upcomingGameStatus.getStatus())));
     }
 
@@ -371,13 +454,174 @@ public class Game {
                 chestAttachmentUpdater.cancel();
             if(gameInfo.getStatus() != UpcomingGameStatus.PLAYING)
                 return;
+            long l = System.currentTimeMillis();
             chestManager.getChests().forEach(chestInformation -> {
                 chestInformation.getChestAttachmentList().forEach(chestAttachment -> {
-                    long l = System.currentTimeMillis();
                     chestAttachment.onGameUpdate(l - lastUpdateTime.get());
-                    lastUpdateTime.set(l);
                 });
             });
+            lastUpdateTime.set(l);
         }, 0L, 20L);
+    }
+
+    private BukkitTask updateGameUpdater;
+    public void updateGame() {
+        if(updateGameUpdater != null)
+            return;
+        final AtomicLong[] lastUpdateTime = {null};
+        updateGameUpdater = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            if(this.mxWorld.isEmpty())
+                updateGameUpdater.cancel();
+            if(lastUpdateTime[0] != null && gameInfo.getStatus() == UpcomingGameStatus.FREEZE)
+                lastUpdateTime[0].set(System.currentTimeMillis());
+            if(gameInfo.getStatus() != UpcomingGameStatus.PLAYING)
+                return;
+            if(lastUpdateTime[0] == null)
+                 lastUpdateTime[0] = new AtomicLong(System.currentTimeMillis());
+            long l = System.currentTimeMillis();
+            long delta = l - lastUpdateTime[0].get();
+            gameTime += delta;
+
+            lastUpdateTime[0].set(l);
+        }, 0L, 10L);
+    }
+
+    public void stopGame() {
+        sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_GAME_STOPPED));
+        hosts.forEach( u-> {
+            Player p = Bukkit.getPlayer(u);
+            if(p != null) {
+                VanishManager.getInstance().showPlayerForAll(p);
+                p.setHealth(20);
+                p.getActivePotionEffects().clear();
+                p.setFoodLevel(20);
+            }
+        });
+        spectators.forEach( u-> {
+            Player p = Bukkit.getPlayer(u);
+            if(p != null) {
+                VanishManager.getInstance().showPlayerForAll(p);
+                ScoreBoardManager.getInstance().removePlayerScoreboard(u, spectatorScoreboard);
+                p.setHealth(20);
+                p.getActivePotionEffects().clear();
+                p.setFoodLevel(20);
+            }
+        });
+        colors.forEach(g -> {
+            if(g.getPlayer().isPresent()) {
+                Player p = Bukkit.getPlayer(g.getPlayer().get());
+                if(p != null) {
+                    VanishManager.getInstance().showPlayerForAll(p);
+                    p.setHealth(20);
+                    p.getActivePotionEffects().clear();
+                    p.setFoodLevel(20);
+                }
+            }
+        });
+        Bukkit.getWorld(this.mxWorld.get().getWorldUID()).getPlayers().forEach(p -> {
+            p.teleport(Functions.getSpawnLocation());
+        });
+        unloadWorld();
+        this.mxWorld = Optional.empty();
+    }
+
+    public int getPlayerCount() {
+        AtomicInteger i = new AtomicInteger();
+        colors.forEach( c -> {
+            if(c.getPlayer().isPresent())
+                i.getAndIncrement();
+        });
+
+        return i.get();
+    }
+
+    public void addSpectator(UUID uuid) {
+        spectators.add(uuid);
+        Player player = Bukkit.getPlayer(uuid);
+        if(player != null) {
+            player.getInventory().clear();
+            ScoreBoardManager.getInstance().setPlayerScoreboard(uuid, spectatorScoreboard);
+            player.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_JOIN));
+            sendMessageToHosts(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_JOINED, Collections.singletonList(player.getName())));
+        }
+        addSpectatorSettings(uuid);
+    }
+
+
+    public void addSpectatorSettings(UUID uuid) {
+        if(mxWorld.isEmpty())
+            return;
+        addSpectatorSettings(uuid, Bukkit.getWorld(mxWorld.get().getWorldUID()).getSpawnLocation());
+    }
+
+    public void addSpectatorSettings(UUID uuid, Location loc) {
+        Player p = Bukkit.getPlayer(uuid);
+        if(p != null) {
+            if(!p.isDead()) {
+                p.teleport(loc);
+            } else {
+                respawnLocations.put(uuid, loc);
+            }
+            p.getInventory().clear();
+            p.getInventory().setItem(0, Items.GAME_SPECTATOR_TELEPORT_ITEM.getItemStack());
+            if(spectators.contains(p.getUniqueId())) {
+                p.getInventory().setItem(8, Items.GAME_SPECTATOR_LEAVE_ITEM.getItemStack());
+            }
+            p.setHealth(20);
+            p.setFoodLevel(20);
+            p.setAllowFlight(true);
+            VanishManager.getInstance().hidePlayerForAll(p);
+        }
+    }
+
+
+
+    public boolean isFirstStart() {
+        return firstStart;
+    }
+
+    public int getPeacekeeperKills() {
+        return peacekeeperKills;
+    }
+
+    public List<GameEvent> getEvents() {
+        return events;
+    }
+
+    public BukkitTask getChestAttachmentUpdater() {
+        return chestAttachmentUpdater;
+    }
+
+    public BukkitTask getUpdateGameUpdater() {
+        return updateGameUpdater;
+    }
+
+    public List<UUID> getSpectators() {
+        return spectators;
+    }
+
+    public HashMap<UUID, Location> getRespawnLocations() {
+        return respawnLocations;
+    }
+
+    public void setPeacekeeperKills(int peacekeeperKills) {
+        this.peacekeeperKills = peacekeeperKills;
+    }
+
+    public void removeSpectator(UUID uniqueId, boolean teleport) {
+        Player p = Bukkit.getPlayer(uniqueId);
+        if(p != null) {
+            VanishManager.getInstance().showPlayerForAll(p);
+            ScoreBoardManager.getInstance().removePlayerScoreboard(uniqueId, spectatorScoreboard);
+            p.setHealth(20);
+            p.getActivePotionEffects().clear();
+            p.setFoodLevel(20);
+        }
+        if(teleport)
+            p.teleport(Functions.getSpawnLocation());
+    }
+
+    public void removeSpectator(UUID uniqueId) {
+        removeSpectator(uniqueId, true);
     }
 }

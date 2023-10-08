@@ -29,6 +29,7 @@ public class MapConfig {
     private LocalDateTime dateModified;
 
     private PresetConfig presetConfig;
+    private int peacekeeperKills;
 
     public MapConfig(File file, String name, UUID owner) {
         this.file = file;
@@ -41,6 +42,7 @@ public class MapConfig {
         this.owner = owner;
         this.dateCreated = LocalDateTime.now();
         this.dateModified = LocalDateTime.now();
+        this.peacekeeperKills = 1;
         this.sharedPlayers = new ArrayList<>();
         this.colors = new ArrayList<>();
         presetConfig.getColors().forEach((c,l) -> {
@@ -69,6 +71,7 @@ public class MapConfig {
                 .toList());
         this.dateModified = LocalDateTime.parse(fc.getString(MapConfigValue.DATE_MODIFIED.getConfigValue(), LocalDateTime.MIN.toString()));
         this.dateCreated = LocalDateTime.parse(fc.getString(MapConfigValue.DATE_CREATED.getConfigValue(), LocalDateTime.MIN.toString()));
+        this.peacekeeperKills = fc.getInt(MapConfigValue.PEACEKEEPER_KILLS.getConfigValue(), 1);
 
         this.colors = new ArrayList<>();
         ConfigurationSection colorSection = fc.getConfigurationSection(MapConfigValue.COLORS.getConfigValue());
@@ -96,6 +99,7 @@ public class MapConfig {
         fc.set(MapConfigValue.SHARED_PLAYERS.getConfigValue(), sharedPlayers.stream().map(UUID::toString).collect(Collectors.toList()));
         fc.set(MapConfigValue.DATE_CREATED.getConfigValue(), dateCreated.toString());
         fc.set(MapConfigValue.DATE_MODIFIED.getConfigValue(), dateModified.toString());
+        fc.set(MapConfigValue.PEACEKEEPER_KILLS.getConfigValue(), peacekeeperKills);
         ConfigurationSection section = fc.createSection(MapConfigValue.COLORS.getConfigValue());
         colors.forEach((color) -> {
             // Save color
@@ -175,5 +179,13 @@ public class MapConfig {
                 return Optional.of(mapPlayer);
         }
         return Optional.empty();
+    }
+
+    public int getPeacekeeperKills() {
+        return peacekeeperKills;
+    }
+
+    public void setPeacekeeperKills(int peacekeeperKills) {
+        this.peacekeeperKills = peacekeeperKills;
     }
 }

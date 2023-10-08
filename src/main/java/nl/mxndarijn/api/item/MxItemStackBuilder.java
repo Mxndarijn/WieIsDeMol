@@ -63,7 +63,6 @@ public class MxItemStackBuilder<T extends MxItemStackBuilder<T>> {
 
     public T addCustomTagString(String tagName, String value) {
         itemMeta.getPersistentDataContainer().set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), tagName), PersistentDataType.STRING, value);
-
         return (T) this;
     }
 

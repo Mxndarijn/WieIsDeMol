@@ -117,6 +117,10 @@ public class MxAtlas {
             return true;
         Logger.logMessage(LogLevel.DEBUG, Prefix.MXATLAS, "Unloading MxWorld: " + mxWorld.getName());
         World w = Bukkit.getWorld(mxWorld.getWorldUID());
+        if(w == null) {
+            Logger.logMessage(LogLevel.WARNING, Prefix.MXATLAS, "Could not unload MxWorld (World is null): " + mxWorld.getName());
+            return false;
+        }
         for(Player p : w.getPlayers()) {
             p.teleport(Functions.getSpawnLocation());
         }

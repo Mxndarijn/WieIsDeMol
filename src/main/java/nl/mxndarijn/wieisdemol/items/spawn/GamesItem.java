@@ -19,6 +19,7 @@ import nl.mxndarijn.wieisdemol.managers.GameManager;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
+import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -71,6 +72,10 @@ public class GamesItem extends MxItem {
                             }
                             if(upcomingGame.getStatus() == UpcomingGameStatus.PLAYING) {
                                 // Spectate
+                                Optional<Game> game = GameWorldManager.getInstance().getGameByGameInfo(upcomingGame);
+                                if(game.isPresent()) {
+                                    game.get().addSpectator(p.getUniqueId());
+                                }
                                 return;
                             }
                             if(upcomingGame.getStatus().isCanJoinQueue() && !e.isShiftClick()) {

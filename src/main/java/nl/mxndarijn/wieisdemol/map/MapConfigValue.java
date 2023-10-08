@@ -6,7 +6,8 @@ public enum MapConfigValue {
     DATE_MODIFIED("date-modified"),
     SHARED_PLAYERS("shared-players"),
     OWNER("owner"),
-    COLORS("colors");
+    COLORS("colors"),
+    PEACEKEEPER_KILLS("peacekeeperKills");
     private final String configValue;
 
     MapConfigValue(String value) {

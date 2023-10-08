@@ -7,18 +7,22 @@ import nl.mxndarijn.api.inventory.MxInventorySlots;
 import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
+import nl.mxndarijn.wieisdemol.game.Game;
+import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestAttachments.ChestAttachment;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestAttachments.ChestAttachments;
+import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachment;
+import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachments;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -163,5 +167,36 @@ public class ChestInformation {
     public void removeChestAttachment(Player p, ChestAttachment at, ChestAttachments chestAttachments) {
         getChestAttachmentList().remove(at);
         p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_REMOVED, Collections.singletonList(chestAttachments.getDisplayName())));
+    }
+
+    public boolean canOpenChest(GamePlayer gamePlayer) {
+        for (ChestAttachment c : chestAttachmentList) {
+            if (!c.canOpenChest(gamePlayer)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void onChestInteract(GamePlayer gamePlayer, PlayerInteractEvent e, Game game, Player p) {
+        for (ChestAttachment c : chestAttachmentList) {
+            c.onChestInteract(gamePlayer, e, game, p);
+        }
+    }
+
+    public void onChestInventoryClick(GamePlayer gamePlayer, InventoryClickEvent e, Game game, Player p) {
+        for (ChestAttachment c : chestAttachmentList) {
+            c.onChestInventoryClick(gamePlayer, e, game, p);
+        }
+
+    }
+
+    public boolean containsChestAttachment(ChestAttachments chestAttachments) {
+        for (ChestAttachment chestAttachment : chestAttachmentList) {
+            if(chestAttachment.getClass().equals(chestAttachments.getAttachmentClass())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

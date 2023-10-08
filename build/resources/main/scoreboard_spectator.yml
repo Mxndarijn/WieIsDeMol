@@ -1,0 +1,9 @@
+title: "&7%%map_name%%"
+lines:
+  - " "
+  - " &7Status:"
+  - "  %%game_status%% &8(&7%%game_time%%&8)"
+  - " &7Host:"
+  - "   &7%%host%%"
+  - " "
+  - " &eplay.eenipadrestest.nl"

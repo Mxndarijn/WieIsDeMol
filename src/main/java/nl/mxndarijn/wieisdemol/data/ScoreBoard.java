@@ -12,7 +12,7 @@ public enum ScoreBoard {
     PRESET(ConfigFiles.SCOREBOARD_PRESET),
     GAME_HOST(ConfigFiles.SCOREBOARD_HOST),
     GAME_PLAYER(ConfigFiles.SCOREBOARD_PLAYER),
-    GAME_SPECTATOR(ConfigFiles.SCOREBOARD_HOST);
+    GAME_SPECTATOR(ConfigFiles.SCOREBOARD_SPECTATOR);
 
     private final List<String> uneditedLines;
     private final String title;

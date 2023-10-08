@@ -1,13 +1,20 @@
 package nl.mxndarijn.wieisdemol.managers;
 
+import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.ListenerPriority;
+import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.PlayerInfoData;
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -44,8 +51,17 @@ public class VanishManager implements Listener {
 
         protocolManager = ProtocolLibrary.getProtocolManager();
         hiddenPlayers = new HashSet<>();
-    }
 
+        protocolManager.addPacketListener(
+                new PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.NAMED_SOUND_EFFECT,
+                        PacketType.Play.Server.ENTITY_SOUND) {
+                    @Override
+                    public void onPacketSending(PacketEvent event) {
+
+                    }
+                }
+        );
+    }
 
     private void hidePlayer(Player viewer, Player targetToHide) {
         if(!hiddenPlayers.contains(targetToHide.getUniqueId())) {
@@ -121,5 +137,9 @@ public class VanishManager implements Listener {
                 hidePlayer(p, Objects.requireNonNull(Bukkit.getPlayer(uuid)));
             }
         });
+    }
+
+    public void showPlayerForAll(Player p) {
+        showPlayer(p);
     }
 }

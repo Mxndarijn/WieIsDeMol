@@ -4,12 +4,14 @@ import nl.mxndarijn.wieisdemol.data.Interaction;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class InteractionManager {
 
@@ -19,11 +21,9 @@ public class InteractionManager {
     public InteractionManager(File f) {
         this.interactionFile = f;
         interactions = new HashMap<>();
-        FileConfiguration fc = YamlConfiguration.loadConfiguration(f);
         if(!this.interactionFile.exists()) {
             try {
                 this.interactionFile.createNewFile();
-                fc = YamlConfiguration.loadConfiguration(f);
                 for (Interaction value : Interaction.values()) {
                     interactions.put(value, value.isDefaultValue());
                     save();
@@ -33,7 +33,6 @@ public class InteractionManager {
                 e.printStackTrace();
             }
         } else {
-            fc = YamlConfiguration.loadConfiguration(f);
             loadInteractions();
         }
     }
@@ -77,4 +76,14 @@ public class InteractionManager {
     }
 
 
+    public boolean isInteractionWithTypeAllowed(Material type) {
+        for (Map.Entry<Interaction, Boolean> entry : interactions.entrySet()) {
+            Interaction interaction = entry.getKey();
+            Boolean value = entry.getValue();
+            if (interaction.getMat() == type) {
+                return value;
+            }
+        }
+        return true;
+    }
 }

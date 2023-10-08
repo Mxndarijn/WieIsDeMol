@@ -1,4 +1,4 @@
-package nl.mxndarijn.wieisdemol.managers.chests.ChestAttachments;
+package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
 import net.kyori.adventure.text.Component;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
@@ -12,15 +12,17 @@ import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.wieisdemol.game.Game;
+import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.api.mxworld.MxLocation;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -89,7 +91,7 @@ public class ChestLockAttachment extends ChestAttachment {
                                                     .setSkinFromHeadsData("locked-chest")
                                                     .setName(ChatColor.GRAY + "Krijg sleutel")
                                                     .addBlankLore()
-                                                    .addLore(ChatColor.YELLOW + "Klik hier om het item in je hand de sleutel te maken.")
+                                                    .addLore(ChatColor.YELLOW + "Klik hier om het item in je off-hand de sleutel te maken.")
                                                     .build(),
                                             13,
                                             (mxInv1, e1) -> {
@@ -105,8 +107,8 @@ public class ChestLockAttachment extends ChestAttachment {
                                                     p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LOCK_NO_ITEM_IN_HAND));
                                                     return;
                                                 }
-                                                NamespacedKey nbtKey = new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), lockTag);
-                                                im.getPersistentDataContainer().set(nbtKey, PersistentDataType.STRING, "YourValue");
+                                                NamespacedKey nbtKey = new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "lockTag");
+                                                im.getPersistentDataContainer().set(nbtKey, PersistentDataType.STRING, lockTag);
 
                                                 List<Component> list = im.lore();
                                                 if(list == null) {
@@ -146,5 +148,58 @@ public class ChestLockAttachment extends ChestAttachment {
                 }
 
         );
+    }
+
+    @Override
+    public void onGameStart(Game game) {
+        super.onGameStart(game);
+        spawnArmorStand();
+    }
+
+    String currentHead = "";
+    private static HashMap<Boolean, String> map = new HashMap<>() {{
+        put(true, "locked-chest");
+        put(false, "open-chest");
+    }};
+    @Override
+    public void onGameUpdate(long delta) {
+        super.onGameUpdate(delta);
+        if(armorStand.isEmpty())
+            return;
+
+        String h = map.get(locked);
+        if(!h.equals(currentHead)) {
+            armorStand.get().getEquipment().setHelmet(MxSkullItemStackBuilder.create(1).setSkinFromHeadsData(h).build());
+            currentHead = h;
+        }
+
+    }
+
+    @Override
+    public boolean canOpenChest(GamePlayer gamePlayer) {
+        return !locked;
+    }
+
+    @Override
+    public void onChestInteract(GamePlayer gamePlayer, PlayerInteractEvent e, Game game, Player p) {
+        if(!locked)
+            return;
+        ItemStack is = p.getInventory().getItemInMainHand();
+        if(is.getType() == Material.AIR) {
+            return;
+        }
+
+        ItemMeta im = is.getItemMeta();
+        if(im == null) {
+            return;
+        }
+        NamespacedKey nbtKey = new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "lockTag");
+        String s = im.getPersistentDataContainer().get(nbtKey, PersistentDataType.STRING);
+        if(s != null) {
+            if (s.equals(lockTag)) {
+                locked = false;
+                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_CHEST_ATTACHMENTS_CHEST_UNLOCKED));
+            }
+        }
     }
 }

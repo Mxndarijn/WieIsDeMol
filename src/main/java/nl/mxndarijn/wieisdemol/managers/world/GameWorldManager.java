@@ -5,6 +5,7 @@ import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.wieisdemol.game.Game;
+import nl.mxndarijn.wieisdemol.game.GameInfo;
 import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
@@ -49,6 +50,15 @@ public class GameWorldManager {
                 if (game.getMxWorld().get().getWorldUID().equals(uid)) {
                     return Optional.of(game);
                 }
+            }
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Game> getGameByGameInfo(GameInfo upcomingGame) {
+        for (Game game : games) {
+            if (game.getGameInfo() == upcomingGame) {
+                return Optional.of(game);
             }
         }
         return Optional.empty();

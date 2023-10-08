@@ -155,6 +155,20 @@ public class PlayerManagementItem extends MxItem  {
                                                 .build(),
                                         16,
                                         (mxInv1, e2) -> {
+                                    gamePlayer.setAlive(!gamePlayer.isAlive());
+                                    p.closeInventory();
+                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYERSTATE_CHANGED, Arrays.asList(gamePlayer.getMapPlayer().getColor().getDisplayName(), gamePlayer.isAlive() ? ChatColor.GREEN + "Levend" : ChatColor.RED + "Dood")));
+                                    if(gamePlayer.getPlayer().isEmpty())
+                                        return;
+                                    Player player = Bukkit.getPlayer(gamePlayer.getPlayer().get());
+                                    if(gamePlayer.isAlive()) {
+                                        game.removeSpectator(player.getUniqueId(), false);
+                                        player.getInventory().clear();
+                                        player.teleport(p);
+                                    }
+                                    else {
+                                        player.setHealth(0);
+                                    }
                                             //TODO
                                         })
                                 .setPrevious(mxInv)

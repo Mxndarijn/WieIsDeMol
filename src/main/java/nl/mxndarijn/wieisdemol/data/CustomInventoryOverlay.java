@@ -10,7 +10,9 @@ public enum CustomInventoryOverlay {
     ROLES_PEACEKEEPER("\uE007"),
     CHEST_APPEARANCE_2_OPTIONS("\uE008"),
     CHEST_APPEARANCE_3_OPTIONS("\uE009"),
-    CHEST_APPEARANCE_4_OPTIONS("\uE010");
+    CHEST_APPEARANCE_4_OPTIONS("\uE010"),
+    GAME_DEATHNOTE("\uE043"),
+    GAME_INVCLEAR("\uE044");
 
     private final String PREFIX = ChatColor.WHITE + "\uE001\uE001\uE001\uE001\uE001\uE001\uE001\uE001";
     private final String unicodeCharacter;

@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.items.maps;
 
+import nl.mxndarijn.api.chatinput.MxChatInputCallback;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Interaction;
@@ -72,6 +73,26 @@ public class VulTool extends MxItem {
         PresetConfig presetConfig = mapConfig.getPresetConfig();
 
         MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Vul Tool", MxInventorySlots.THREE_ROWS)
+                        .setItem(MxDefaultItemStackBuilder.create(Material.DIAMOND_SWORD)
+                                .setName(ChatColor.GRAY + "Peacekeeper-Kills")
+                                .addBlankLore()
+                                .addLore(ChatColor.GRAY + "Huidig: " + map.getMapConfig().getPeacekeeperKills())
+                                .addLore(ChatColor.YELLOW + "Klik hier om het aantal peacekeeper kills te veranderen.")
+                                .build(),
+                25,
+                        (mxInv, e12) -> {
+                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_ENTER_PEACEKEEPER_KILLS));
+                            p.closeInventory();
+                            MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
+                                try {
+                                    int i = Integer.parseInt(message);
+                                    map.getMapConfig().setPeacekeeperKills(i);
+                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_PEACEKEEPER_KILLS_CHANGED, Collections.singletonList(i + "")));
+                                } catch (NumberFormatException a) {
+                                     p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_PEACEKEEPER_KILLS_CHANGED_ERROR));
+                                }
+                            });
+                        })
                 .setItem(getNameItemStack(mapConfig), 4, (mxInv, e1) -> {
                     changeName(p, mapConfig, mxInv);
                 })

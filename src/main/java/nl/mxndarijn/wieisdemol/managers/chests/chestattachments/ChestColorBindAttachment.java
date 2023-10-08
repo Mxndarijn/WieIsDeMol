@@ -1,11 +1,14 @@
-package nl.mxndarijn.wieisdemol.managers.chests.ChestAttachments;
+package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
+import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.wieisdemol.data.Colors;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
+import nl.mxndarijn.wieisdemol.game.Game;
+import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
@@ -142,5 +145,46 @@ public class ChestColorBindAttachment extends ChestAttachment {
 
                 .build();
 
+    }
+
+    private long time;
+    private int changeTime = 2000;
+    private Colors currentColor;
+    @Override
+    public void onGameStart(Game game) {
+        super.onGameStart(game);
+        spawnArmorStand();
+        Logger.logMessage("start");
+        if(armorStand.isPresent() && !colors.isEmpty()) {
+            armorStand.get().getEquipment().setHelmet(MxSkullItemStackBuilder.create(1).setSkinFromHeadsData(colors.get(0).getHeadKey()).build());
+            this.currentColor = colors.get(0);
+        }
+        time = changeTime;
+
+    }
+
+    @Override
+    public void onGameUpdate(long delta) {
+        super.onGameUpdate(delta);
+        if(colors.isEmpty())
+            return;
+        if(armorStand.isEmpty())
+            return;
+
+        time -= delta;
+        if(time <= 0) {
+            int index = colors.indexOf(currentColor) + 1;
+            if(index >= colors.size()) {
+                index = 0;
+            }
+            currentColor = colors.get(index);
+            armorStand.get().getEquipment().setHelmet(MxSkullItemStackBuilder.create(1).setSkinFromHeadsData(currentColor.getHeadKey()).build());
+            time = changeTime;
+        }
+
+    }
+    @Override
+    public boolean canOpenChest(GamePlayer gamePlayer) {
+        return colors.contains(gamePlayer.getMapPlayer().getColor());
     }
 }

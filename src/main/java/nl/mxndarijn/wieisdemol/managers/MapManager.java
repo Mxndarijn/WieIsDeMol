@@ -6,7 +6,9 @@ import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.wieisdemol.map.Map;
 import nl.mxndarijn.api.mxworld.MxWorld;
+import org.apache.commons.io.FileUtils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
@@ -73,10 +75,15 @@ public class MapManager {
     }
 
     public void removeMap(Map map) {
-        if(map.getDirectory().delete()) {
+        try {
+            FileUtils.deleteDirectory(map.getDirectory());
+            if(map.getDirectory().exists())
+                FileUtils.forceDelete(map.getDirectory());
             maps.remove(map);
-        } else {
+
+        } catch (IOException e) {
             Logger.logMessage(LogLevel.ERROR, "Could not delete map " + map.getDirectory().getAbsolutePath());
+            e.printStackTrace();
         }
     }
 }

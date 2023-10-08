@@ -1,19 +1,45 @@
 package nl.mxndarijn.wieisdemol.game.events;
 
+import de.Herbystar.TTA.TTA_Methods;
+import net.kyori.adventure.text.Component;
+import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.wieisdemol.data.Role;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
+import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
+import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachments;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
+import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.*;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
+import org.json.simple.JSONArray;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class GamePlayingEvents extends GameEvent {
     public GamePlayingEvents(Game g, JavaPlugin plugin) {
@@ -29,5 +55,299 @@ public class GamePlayingEvents extends GameEvent {
             e.setCancelled(true);
         }
     }
+
+    @EventHandler
+    public void interactShulkerBox(PlayerInteractEvent e) {
+        if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if(!validateWorld(e.getPlayer().getWorld()))
+            return;
+
+        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        assert e.getClickedBlock() != null;
+        if (!(e.getClickedBlock().getState() instanceof ShulkerBox shulkerBox)) {
+            return;
+        }
+        Player p = e.getPlayer();
+        Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
+        if(optionalGamePlayer.isEmpty())
+            return;
+
+        if(!e.getClickedBlock().getType().equals(optionalGamePlayer.get().getMapPlayer().getColor().getShulkerBlock())) {
+            e.setCancelled(true);
+            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ONLY_OPEN_OWN_SHULKER));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void changePlayerStateOnShulkerOpen(PlayerInteractEvent e) {
+        if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if(!validateWorld(e.getPlayer().getWorld()))
+            return;
+
+        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        assert e.getClickedBlock() != null;
+        if (!(e.getClickedBlock().getState() instanceof ShulkerBox shulkerBox)) {
+            return;
+        }
+        Player p = e.getPlayer();
+        Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
+        if(optionalGamePlayer.isEmpty())
+            return;
+        if(e.getClickedBlock().getType().equals(optionalGamePlayer.get().getMapPlayer().getColor().getShulkerBlock())) {
+            if(e.useInteractedBlock() == Event.Result.ALLOW) {
+                Optional<ShulkerInformation> inf = game.getShulkerManager().getShulkerByLocation(MxLocation.getFromLocation(e.getClickedBlock().getLocation()));
+                if(inf.isPresent()) {
+                    if(inf.get().isStartingRoom()) {
+                        optionalGamePlayer.get().setBeginChestOpened(true);
+                    }
+                    if(!inf.get().isStartingRoom() && !optionalGamePlayer.get().isPeacekeeperChestOpened()) {
+                        // Peacekeeper LOOT
+                        optionalGamePlayer.get().setPeacekeeperChestOpened(true);
+                        if(optionalGamePlayer.get().getMapPlayer().isPeacekeeper()) {
+                            optionalGamePlayer.get().givePeacekeeperLoot();
+                        }
+                        game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_IS_PEACEKEEPER, Collections.singletonList(optionalGamePlayer.get().getMapPlayer().getColor().getColor() + p.getName())));
+                        game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PEACEKEEPER_KILLS, Collections.singletonList(game.getPeacekeeperKills() + "")));
+                    }
+                }
+            }
+        }
+    }
+    @EventHandler
+    public void chestAttachmentCanOpenChest(PlayerInteractEvent e) {
+        if(e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            assert e.getClickedBlock() != null;
+            if(e.getClickedBlock().getType() != Material.CHEST) {
+                return;
+            }
+            Optional<ChestInformation> inf = game.getChestManager().getChestByLocation(MxLocation.getFromLocation(e.getClickedBlock().getLocation()));
+            Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
+            if(optionalGamePlayer.isPresent()) {
+                if(inf.isPresent()) {
+                    inf.get().onChestInteract(optionalGamePlayer.get(), e, game, e.getPlayer());
+
+                    if(!inf.get().canOpenChest(optionalGamePlayer.get())) {
+                        e.setCancelled(true);
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClickChest(InventoryClickEvent e) {
+        if(e.getClickedInventory() == null)
+            return;
+        Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getWhoClicked().getUniqueId());
+        if(gamePlayer.isEmpty())
+            return;
+        game.getChestManager().getChests().forEach( chestInformation-> {
+            Location l = chestInformation.getLocation().getLocation(e.getWhoClicked().getWorld());
+            if(l.getBlock().getState() instanceof Chest) {
+                Chest c = (Chest) l.getBlock().getState();
+                if(c.getInventory().equals(e.getClickedInventory())) {
+                    chestInformation.onChestInventoryClick(gamePlayer.get(), e, game, (Player) e.getWhoClicked());
+                }
+                if (e.getWhoClicked().getOpenInventory().getTopInventory().equals(c.getInventory()) && chestInformation.containsChestAttachment(ChestAttachments.CHEST_LIMITED_CHOICE)) {
+                    if(e.getAction() == InventoryAction.HOTBAR_SWAP || e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY || e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
+                        e.setCancelled(true);
+                    }
+                }
+            }
+        });
+    }
+
+    @EventHandler
+    public void peacekeeperOpenChest(PlayerInteractEvent e) {
+        if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if(!validateWorld(e.getPlayer().getWorld()))
+            return;
+
+        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+        assert e.getClickedBlock() != null;
+        if (!(e.getClickedBlock().getState() instanceof Chest) && !(e.getClickedBlock().getState() instanceof Dropper) && !(e.getClickedBlock().getState() instanceof Dispenser) && !(e.getClickedBlock().getState() instanceof Hopper)) {
+            return;
+        }
+        Player p = e.getPlayer();
+        Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
+        if(optionalGamePlayer.isEmpty())
+            return;
+        if(optionalGamePlayer.get().isPeacekeeperChestOpened() && optionalGamePlayer.get().getMapPlayer().isPeacekeeper())
+            e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void itemDropPeacekeeper(PlayerDropItemEvent e) {
+        Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
+        if(gamePlayer.isEmpty())
+            return;
+        if(e.getItemDrop().getItemStack().getItemMeta() == null || e.getItemDrop().getItemStack().lore() == null) {
+            return;
+        }
+        e.getItemDrop().getItemStack().lore().forEach(l -> {
+            if(Functions.convertComponentToString(l).equalsIgnoreCase((ChatColor.GOLD + "Peacekeeper-Item"))) {
+                e.setCancelled(true);
+            }
+        });
+    }
+    @EventHandler
+    public void playerKilled(PlayerDeathEvent e) {
+        Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
+        if(gamePlayer.isEmpty())
+            return;
+        gamePlayer.get().setAlive(false);
+        game.addSpectatorSettings(e.getPlayer().getUniqueId(), e.getPlayer().getLocation());
+
+        e.deathMessage(Component.text(""));
+        if(e.getEntity().getKiller() != null) {
+            Player killer = e.getEntity().getKiller();
+            Optional<GamePlayer> optionalKiller = game.getGamePlayerOfPlayer(killer.getUniqueId());
+            if(optionalKiller.isPresent()) {
+                if(optionalKiller.get().getMapPlayer().isPeacekeeper()) {
+                    game.setPeacekeeperKills(game.getPeacekeeperKills()-1);
+                    if(game.getPeacekeeperKills() == 0) {
+                        optionalKiller.get().setAlive(false);
+                        game.addSpectatorSettings(killer.getUniqueId(), killer.getLocation());
+                        game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PEACEKEEPER_DISAPPEARED));
+                    }
+                }
+            }
+            game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_KILLED_BY_PLAYER, new ArrayList<>(Arrays.asList(e.getPlayer().getName(), killer.getName()))));
+        } else {
+            game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_DIED, Collections.singletonList(e.getPlayer().getName())));
+        }
+    }
+
+    @EventHandler
+    public void breakBlock(BlockBreakEvent e) {
+        if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if(!validateWorld(e.getPlayer().getWorld()))
+            return;
+
+        Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
+        if(gamePlayer.isEmpty())
+            return;
+
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void place(BlockPlaceEvent e) {
+        if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if(!validateWorld(e.getPlayer().getWorld()))
+            return;
+
+        Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
+        if(gamePlayer.isEmpty())
+            return;
+
+        Location location = e.getBlock().getLocation().clone().add(0,-1,0);
+        Material type = location.getBlock().getType();
+        Material t = e.getBlock().getType();
+        if(type == Material.END_STONE) {
+            if(t != Material.GOLD_BLOCK && t != Material.DIAMOND_BLOCK) {
+                e.setCancelled(true);
+                return;
+            }
+            if(t != gamePlayer.get().getMapPlayer().getRole().getType()) {
+                e.setCancelled(true);
+                return;
+            }
+            List<UUID> list = new ArrayList<>();
+            list.addAll(game.getSpectators());
+            list.addAll(game.getHosts());
+            game.getColors().forEach(c -> {
+                if(c.getPlayer().isPresent())
+                    list.add(c.getPlayer().get());
+            });
+
+            Role role = gamePlayer.get().getMapPlayer().getRole();
+            list.forEach(uuid -> {
+                Player p = Bukkit.getPlayer(uuid);
+                if(p != null) {
+                    TTA_Methods.sendTitle(p, role.getTitle(), 10, 100, 10, role.getSubTitle(), 20, 90, 10);
+                }
+            });
+
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                game.stopGame();
+            }, 20L * 10L);
+            return;
+        }
+
+        if(e.getBlock().getType() == Material.EMERALD_BLOCK) {
+            Location loc = e.getBlock().getLocation().clone().add(0.5, -0.1, 0.5);;
+            AtomicLong timer = new AtomicLong(5 * 60 * 1000);
+            AtomicLong currentMillis = new AtomicLong(System.currentTimeMillis());
+
+            ArmorStand ar = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
+
+
+            ar.setCustomNameVisible(true);
+            ar.setSmall(true);
+            ar.setArms(false);
+            ar.setBasePlate(false);
+            ar.setInvisible(true);
+            ar.setInvulnerable(true);
+            ar.setGravity(false);
+            ar.customName(Component.text("attachment"));
+            ar.setCollidable(false);
+            AtomicInteger taskID = new AtomicInteger(Integer.MAX_VALUE);
+            taskID.set(Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                long now = System.currentTimeMillis();
+                long delta = now - currentMillis.get();
+
+                timer.addAndGet(-delta);
+                ar.customName(Component.text(ChatColor.AQUA + Functions.formatGameTime(timer.get())));
+
+                if(timer.get() <= 0) {
+                    e.getBlock().setType(Material.AIR);
+                    ar.remove();
+                    Bukkit.getScheduler().cancelTask(taskID.get());
+                }
+
+                currentMillis.set(now);
+
+
+
+            }, 0L, 10L).getTaskId());
+        }
+
+
+    }
+
+    @EventHandler
+    public void interactSettings(PlayerInteractEvent e) {
+        if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if(!validateWorld(e.getPlayer().getWorld()))
+            return;
+
+        Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
+        if(gamePlayer.isEmpty())
+            return;
+        if(e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.PHYSICAL)
+            return;
+        Material type = e.getClickedBlock().getType();
+
+        if(!game.getInteractionManager().isInteractionWithTypeAllowed(type)) {
+            e.setCancelled(true);
+        }
+    }
+
+
+
+
 
 }

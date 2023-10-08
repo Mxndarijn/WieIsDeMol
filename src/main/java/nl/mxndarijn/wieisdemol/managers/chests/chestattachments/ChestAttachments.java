@@ -1,4 +1,4 @@
-package nl.mxndarijn.wieisdemol.managers.chests.ChestAttachments;
+package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
 import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;

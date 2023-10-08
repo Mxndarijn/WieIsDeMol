@@ -4,6 +4,9 @@ import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.wieisdemol.items.game.*;
+import nl.mxndarijn.wieisdemol.items.game.books.*;
+import nl.mxndarijn.wieisdemol.items.game.spectate.LeaveGameItem;
+import nl.mxndarijn.wieisdemol.items.game.spectate.TeleportItem;
 import nl.mxndarijn.wieisdemol.items.maps.MapChestItem;
 import nl.mxndarijn.wieisdemol.items.maps.MapDoorItem;
 import nl.mxndarijn.wieisdemol.items.maps.MapShulkerItem;
@@ -220,6 +223,127 @@ public enum Items {
             },
             false,
             PlayerManagementItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+
+    GAME_SPECTATOR_LEAVE_ITEM(MxDefaultItemStackBuilder.create(Material.RED_BED)
+            .setName(ChatColor.GRAY + "Verlaat Game")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Gebruik dit item om te stoppen met spectaten.")
+            .build(),
+            p -> {
+                return true;
+            },
+            false,
+            LeaveGameItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_SPECTATOR_TELEPORT_ITEM(MxDefaultItemStackBuilder.create(Material.COMPASS)
+            .setName(ChatColor.GRAY + "Teleporteer naar speler")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Gebruik dit item om te teleporteren naar spelers.")
+            .build(),
+            p -> {
+                return true;
+            },
+            false,
+            TeleportItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_DEATHNOTE(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Deathnote")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item kan je iemand")
+            .addLore(ChatColor.YELLOW + "deathnoten (vermoorden).")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            DeathnoteBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_INVCLEAR(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Inv-Clear")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item kan je iemand zijn")
+            .addLore(ChatColor.YELLOW + "inventory clearen. (leegmaken)")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            InvClearBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_SWITCH(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Switch")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item kan je met iemand")
+            .addLore(ChatColor.YELLOW + "switchen (verwisellen)")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            SwitchBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_SPELERCOUNT(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Speler-Count")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item krijg je te horen")
+            .addLore(ChatColor.YELLOW + "hoeveel spelers er nog zijn.")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            SpelerCountBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+
+    GAME_MOLCOUNT(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Mol-Count")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item krijg je te horen")
+            .addLore(ChatColor.YELLOW + "hoeveel spelers er nog zijn.")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            MolCountBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+
+    GAME_EGOCOUNT(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Ego-Count")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item krijg je te horen")
+            .addLore(ChatColor.YELLOW + "hoeveel spelers er nog zijn.")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            EgoCountBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_PEACEKEEPER_CHECKER(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Peacekeeper-Check")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item krijgt iedereen te ")
+            .addLore(ChatColor.YELLOW + "zien of iemand de peacekeeper is.")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            PeacekeeperCheckBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_REBORN_BOOK(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Reborn")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item kan je iemand ")
+            .addLore(ChatColor.YELLOW + "rebornen. (genezen)")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            RebornBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     ;
 

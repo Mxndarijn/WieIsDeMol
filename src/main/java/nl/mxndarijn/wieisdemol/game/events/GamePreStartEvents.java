@@ -8,6 +8,7 @@ import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -80,6 +81,20 @@ public class GamePreStartEvents extends GameEvent {
             return;
         if(!validateWorld(e.getEntity().getWorld()))
             return;
+        e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void breakBlock(BlockBreakEvent e) {
+        if(game.getGameInfo().getStatus() != UpcomingGameStatus.CHOOSING_PLAYERS)
+            return;
+        if(!validateWorld(e.getPlayer().getWorld()))
+            return;
+
+        Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
+        if(gamePlayer.isEmpty())
+            return;
+
         e.setCancelled(true);
     }
 

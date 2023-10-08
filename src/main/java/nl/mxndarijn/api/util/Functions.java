@@ -69,4 +69,16 @@ public class Functions {
         PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
         return  plainSerializer.serialize(c);
     }
+
+    public static String formatGameTime(long timeInMillis) {
+        // Converteer milliseconden naar seconden
+        long timeInSeconds = timeInMillis / 1000;
+
+        // Bereken het aantal minuten en seconden van de gegeven tijd
+        long minutes = timeInSeconds / 60;
+        long seconds = timeInSeconds % 60;
+
+        // Gebruik String.format om de tijd in het juiste formaat weer te geven
+        return String.format("%02d:%02d", minutes, seconds);
+    }
 }

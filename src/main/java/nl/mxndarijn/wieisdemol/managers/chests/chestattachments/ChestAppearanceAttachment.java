@@ -1,4 +1,4 @@
-package nl.mxndarijn.wieisdemol.managers.chests.ChestAttachments;
+package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
 import net.kyori.adventure.text.Component;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;

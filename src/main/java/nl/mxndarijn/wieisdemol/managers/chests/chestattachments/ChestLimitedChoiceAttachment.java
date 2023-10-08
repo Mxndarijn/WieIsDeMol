@@ -1,4 +1,4 @@
-package nl.mxndarijn.wieisdemol.managers.chests.ChestAttachments;
+package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.api.inventory.*;
@@ -7,6 +7,8 @@ import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
+import nl.mxndarijn.wieisdemol.game.Game;
+import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.api.logger.LogLevel;
@@ -16,12 +18,29 @@ import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
 public class ChestLimitedChoiceAttachment extends ChestAttachment {
     private int choices;
+    private static final HashMap<Integer, String> map = new HashMap<>() {{
+       put(0, "number-zero");
+       put(1, "number-one");
+       put(2, "number-two");
+       put(3, "number-three");
+       put(4, "number-four");
+       put(5, "number-five");
+       put(6, "number-six");
+       put(7, "number-seven");
+       put(8, "number-eight");
+       put(9, "number-nine");
+    }};
+    private static final String moreThan9 = "wooden-plus";
 
     public static Optional<ChestAttachment> createFromSection(Map<String, Object> section, ChestInformation inf) {
         ChestLimitedChoiceAttachment attachment = new ChestLimitedChoiceAttachment();
@@ -130,5 +149,43 @@ public class ChestLimitedChoiceAttachment extends ChestAttachment {
                 }
 
         );
+    }
+
+    private String currentHead = "";
+    @Override
+    public void onGameStart(Game game) {
+        super.onGameStart(game);
+        spawnArmorStand();
+    }
+
+    @Override
+    public void onGameUpdate(long delta) {
+        super.onGameUpdate(delta);
+        if(armorStand.isEmpty())
+            return;
+        String head  = map.getOrDefault(choices, moreThan9);
+        if(!currentHead.equals(head)) {
+            armorStand.get().getEquipment().setHelmet(MxSkullItemStackBuilder.create(1).setSkinFromHeadsData(head).build());
+            currentHead = head;
+        }
+
+    }
+
+    @Override
+    public void onChestInventoryClick(GamePlayer gamePlayer, InventoryClickEvent e, Game game, Player p) {
+        if(choices == 0) {
+            e.setCancelled(true);
+            return;
+        }
+        Inventory inv = e.getClickedInventory();
+        InventoryAction a = e.getAction();
+        if(a == InventoryAction.COLLECT_TO_CURSOR || a == InventoryAction.PICKUP_ALL) {
+            if(e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR)
+                return;
+            choices--;
+        } else {
+            e.setCancelled(true);
+            return;
+        }
     }
 }

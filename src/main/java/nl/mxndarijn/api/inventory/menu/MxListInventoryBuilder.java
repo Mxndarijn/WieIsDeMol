@@ -69,6 +69,15 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
         return this;
     }
 
+    public MxListInventoryBuilder setAvailableSlots(int... indexes) {
+        Arrays.stream(indexes).forEach(index -> {
+            if(!availableItemsStackSlots.contains(index)) {
+                availableItemsStackSlots.add(index);
+            }
+        });
+        return this;
+    }
+
     public MxListInventoryBuilder setNextItemStack(ItemStack nextItemStack) {
         this.nextPageItemStack = Optional.of(nextItemStack);
 
@@ -95,8 +104,9 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
 
     @Override
     public MxInventory build() {
-        if(availableItemsStackSlots.size() == 0) {
+        if(availableItemsStackSlots.isEmpty()) {
             Logger.logMessage(LogLevel.FATAL, Prefix.MXINVENTORY, "No available item slots...");
+            itemStackList.clear();
         }
         Collections.sort(availableItemsStackSlots);
         Iterator<Pair<ItemStack, MxItemClicked>> iterator = itemStackList.iterator();
@@ -172,6 +182,15 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
     }
 
     private String getSuffix(int a, int b) {
+        if(!showPageNumbers)
+            return "";
         return ChatColor.DARK_GRAY + " (" + ChatColor.GRAY + a + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + b + ChatColor.DARK_GRAY + ")";
+    }
+
+    private boolean showPageNumbers = true;
+    public MxListInventoryBuilder setShowPageNumbers(boolean b) {
+        showPageNumbers = false;
+
+        return this;
     }
 }
