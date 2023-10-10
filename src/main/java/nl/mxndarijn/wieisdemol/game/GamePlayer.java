@@ -29,6 +29,7 @@ public class GamePlayer {
     private Game game;
     private JavaPlugin plugin;
     private boolean canReborn;
+    private Optional<GamePlayer> votedOn;
 
     public GamePlayer(MapPlayer mapPlayer, JavaPlugin plugin, Game game) {
         this.mapPlayer = mapPlayer;
@@ -38,6 +39,7 @@ public class GamePlayer {
         alive = true;
         this.beginChestOpened = false;
         this.peacekeeperChestOpened = false;
+        this.votedOn = Optional.empty();
         this.canReborn = !mapPlayer.isPeacekeeper();
          String host = Bukkit.getOfflinePlayer(game.getMainHost()).getName();
         scoreboard = new MxSupplierScoreBoard(plugin, () -> {
@@ -145,5 +147,13 @@ public class GamePlayer {
                 }
             }
         }
+    }
+
+    public void setVotedOn(Optional<GamePlayer> votedOn) {
+        this.votedOn = votedOn;
+    }
+
+    public Optional<GamePlayer> getVotedOn() {
+        return votedOn;
     }
 }

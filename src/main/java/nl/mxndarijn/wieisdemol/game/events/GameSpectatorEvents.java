@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -168,6 +169,19 @@ public class GameSpectatorEvents extends GameEvent {
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getDamager().getUniqueId());
         if(gp.isPresent() && !gp.get().isAlive()) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void drop(PlayerDropItemEvent e) {
+        if(!validateWorld(e.getPlayer().getWorld()))
+            return;
+        if(game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+            e.setCancelled(true);
+            return;
+        }
+        if(game.getSpectators().contains(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
         }
     }

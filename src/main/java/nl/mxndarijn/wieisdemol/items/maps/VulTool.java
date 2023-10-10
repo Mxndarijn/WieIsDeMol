@@ -811,6 +811,7 @@ public class VulTool extends MxItem {
                                     continue;
                                 }
                                 if (mapPlayer1.isPeacekeeper()) {
+                                    mapPlayer1.setPeacekeeper(!mapPlayer1.isPeacekeeper());
                                     p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_IS_NOT_PEACEKEEPER, Collections.singletonList(mapPlayer1.getColor().getDisplayName())));
                                 }
                             }

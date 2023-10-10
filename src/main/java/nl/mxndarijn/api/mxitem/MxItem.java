@@ -1,5 +1,6 @@
 package nl.mxndarijn.api.mxitem;
 
+import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.api.inventory.saver.InventoryManager;
@@ -10,6 +11,7 @@ import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -62,7 +64,9 @@ public abstract class MxItem implements Listener {
 
         Player p = e.getPlayer();
         if(gameItem) {
-
+            if(!GameWorldManager.getInstance().isPlayerPLayingInAGame(p.getUniqueId())) {
+                return;
+            }
             // TODO check ingame
         }
 

@@ -58,6 +58,9 @@ public class GameShulkerItem extends MxItem  {
 
         Game game = mapOptional.get();
 
+        if(!game.getHosts().contains(p.getUniqueId()))
+            return;
+
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
         game.getShulkerManager().getShulkers().forEach(shulker -> {
             list.add(new Pair<>(

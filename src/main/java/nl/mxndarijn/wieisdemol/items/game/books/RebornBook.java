@@ -81,6 +81,7 @@ public class RebornBook extends Book {
                                     game.removeSpectator(player.getUniqueId(), false);
                                     player.getInventory().clear();
                                     player.closeInventory();
+                                    player.setAllowFlight(false);
                                     player.teleport(p.getLocation());
                                     sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_REBORN_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor()  +  p.getName(), gamePlayer.getMapPlayer().getColor().getColor()+ player.getName())));
                                     break;

@@ -44,6 +44,9 @@ public class GameDoorItem extends MxItem  {
 
         Game game = mapOptional.get();
 
+        if(!game.getHosts().contains(p.getUniqueId()))
+            return;
+
         World w = Bukkit.getWorld(game.getMxWorld().get().getWorldUID());
         if(w == null) {
             return;
@@ -53,7 +56,7 @@ public class GameDoorItem extends MxItem  {
         game.getDoorManager().getDoors().forEach(door -> {
             String status = ChatColor.RED + "Lege deur";
             boolean opened;
-            boolean foundDoor =door.getLocations().size() > 0;
+            boolean foundDoor = !door.getLocations().isEmpty();
             if(foundDoor) {
                 MxLocation inf = door.getLocations().keySet().iterator().next();
                 Location loc = inf.getLocation(w);

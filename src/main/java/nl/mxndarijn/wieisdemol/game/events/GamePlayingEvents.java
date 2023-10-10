@@ -2,6 +2,7 @@ package nl.mxndarijn.wieisdemol.game.events;
 
 import de.Herbystar.TTA.TTA_Methods;
 import net.kyori.adventure.text.Component;
+import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.wieisdemol.data.Role;
@@ -20,6 +21,7 @@ import org.bukkit.Material;
 import org.bukkit.block.*;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -28,6 +30,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
@@ -111,9 +114,9 @@ public class GamePlayingEvents extends GameEvent {
                         optionalGamePlayer.get().setPeacekeeperChestOpened(true);
                         if(optionalGamePlayer.get().getMapPlayer().isPeacekeeper()) {
                             optionalGamePlayer.get().givePeacekeeperLoot();
+                            game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_IS_PEACEKEEPER, Collections.singletonList(optionalGamePlayer.get().getMapPlayer().getColor().getColor() + p.getName())));
+                            game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PEACEKEEPER_KILLS, Collections.singletonList(game.getPeacekeeperKills() + "")));
                         }
-                        game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_IS_PEACEKEEPER, Collections.singletonList(optionalGamePlayer.get().getMapPlayer().getColor().getColor() + p.getName())));
-                        game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PEACEKEEPER_KILLS, Collections.singletonList(game.getPeacekeeperKills() + "")));
                     }
                 }
             }
@@ -162,43 +165,6 @@ public class GamePlayingEvents extends GameEvent {
             }
         });
     }
-
-    @EventHandler
-    public void peacekeeperOpenChest(PlayerInteractEvent e) {
-        if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
-            return;
-        if(!validateWorld(e.getPlayer().getWorld()))
-            return;
-
-        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
-        }
-        assert e.getClickedBlock() != null;
-        if (!(e.getClickedBlock().getState() instanceof Chest) && !(e.getClickedBlock().getState() instanceof Dropper) && !(e.getClickedBlock().getState() instanceof Dispenser) && !(e.getClickedBlock().getState() instanceof Hopper)) {
-            return;
-        }
-        Player p = e.getPlayer();
-        Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
-        if(optionalGamePlayer.isEmpty())
-            return;
-        if(optionalGamePlayer.get().isPeacekeeperChestOpened() && optionalGamePlayer.get().getMapPlayer().isPeacekeeper())
-            e.setCancelled(true);
-    }
-
-    @EventHandler
-    public void itemDropPeacekeeper(PlayerDropItemEvent e) {
-        Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
-        if(gamePlayer.isEmpty())
-            return;
-        if(e.getItemDrop().getItemStack().getItemMeta() == null || e.getItemDrop().getItemStack().lore() == null) {
-            return;
-        }
-        e.getItemDrop().getItemStack().lore().forEach(l -> {
-            if(Functions.convertComponentToString(l).equalsIgnoreCase((ChatColor.GOLD + "Peacekeeper-Item"))) {
-                e.setCancelled(true);
-            }
-        });
-    }
     @EventHandler
     public void playerKilled(PlayerDeathEvent e) {
         Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
@@ -212,7 +178,7 @@ public class GamePlayingEvents extends GameEvent {
             Player killer = e.getEntity().getKiller();
             Optional<GamePlayer> optionalKiller = game.getGamePlayerOfPlayer(killer.getUniqueId());
             if(optionalKiller.isPresent()) {
-                if(optionalKiller.get().getMapPlayer().isPeacekeeper()) {
+                if(optionalKiller.get().getMapPlayer().isPeacekeeper() && optionalKiller.get().isPeacekeeperChestOpened()) {
                     game.setPeacekeeperKills(game.getPeacekeeperKills()-1);
                     if(game.getPeacekeeperKills() == 0) {
                         optionalKiller.get().setAlive(false);
@@ -241,6 +207,19 @@ public class GamePlayingEvents extends GameEvent {
         e.setCancelled(true);
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void breakBlockCorrector(BlockBreakEvent e) {
+        if(!validateWorld(e.getPlayer().getWorld()))
+            return;
+        if(e.isCancelled())
+            return;
+        if(blocks.containsKey(e.getBlock().getLocation())) {
+            blocks.get(e.getBlock().getLocation()).remove();
+            blocks.remove(e.getBlock().getLocation());
+        }
+    }
+
+    private final HashMap<Location, ArmorStand> blocks = new HashMap<>();
     @EventHandler
     public void place(BlockPlaceEvent e) {
         if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
@@ -279,18 +258,19 @@ public class GamePlayingEvents extends GameEvent {
                     TTA_Methods.sendTitle(p, role.getTitle(), 10, 100, 10, role.getSubTitle(), 20, 90, 10);
                 }
             });
-
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
                 game.stopGame();
             }, 20L * 10L);
             return;
         }
 
-        if(e.getBlock().getType() == Material.EMERALD_BLOCK) {
+        if(e.getBlock().getType() == Material.EMERALD_BLOCK || e.getBlock().getType() == Material.DIAMOND_BLOCK || e.getBlock().getType() == Material.GOLD_BLOCK) {
             Location loc = e.getBlock().getLocation().clone().add(0.5, -0.1, 0.5);;
             AtomicLong timer = new AtomicLong(5 * 60 * 1000);
+            if(e.getBlock().getType() == Material.DIAMOND_BLOCK || e.getBlock().getType() == Material.GOLD_BLOCK) {
+                timer.set(60 * 1000);
+            }
             AtomicLong currentMillis = new AtomicLong(System.currentTimeMillis());
-
             ArmorStand ar = (ArmorStand) loc.getWorld().spawnEntity(loc, EntityType.ARMOR_STAND);
 
 
@@ -301,26 +281,24 @@ public class GamePlayingEvents extends GameEvent {
             ar.setInvisible(true);
             ar.setInvulnerable(true);
             ar.setGravity(false);
-            ar.customName(Component.text("attachment"));
+            ar.customName(Component.text("removeableBlock"));
             ar.setCollidable(false);
             AtomicInteger taskID = new AtomicInteger(Integer.MAX_VALUE);
+            blocks.put(loc, ar);
             taskID.set(Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                if(!blocks.containsKey(loc)) {
+                    Bukkit.getScheduler().cancelTask(taskID.get());
+                }
                 long now = System.currentTimeMillis();
                 long delta = now - currentMillis.get();
-
                 timer.addAndGet(-delta);
                 ar.customName(Component.text(ChatColor.AQUA + Functions.formatGameTime(timer.get())));
-
                 if(timer.get() <= 0) {
                     e.getBlock().setType(Material.AIR);
                     ar.remove();
                     Bukkit.getScheduler().cancelTask(taskID.get());
                 }
-
                 currentMillis.set(now);
-
-
-
             }, 0L, 10L).getTaskId());
         }
 
@@ -345,6 +323,7 @@ public class GamePlayingEvents extends GameEvent {
             e.setCancelled(true);
         }
     }
+
 
 
 

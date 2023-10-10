@@ -35,3 +35,10 @@ commands:
       - vanish
       - v
       - laatmenuonzichtbaarzijn
+  ms:
+    description: Message Speler
+    usage: /ms [Speler] [Bericht]
+    aliases:
+      - ms
+      - messagespeler
+      - messageplayer

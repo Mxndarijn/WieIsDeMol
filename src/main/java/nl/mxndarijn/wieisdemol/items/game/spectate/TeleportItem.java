@@ -40,7 +40,9 @@ public class TeleportItem extends MxItem {
                         if(pl != null) {
                         list.add(new Pair<>(MxSkullItemStackBuilder.create(1)
                                 .setSkinFromHeadsData(gp.getPlayer().get().toString())
-                                .setName(pl.getName())
+                                .setName(ChatColor.GRAY + pl.getName())
+                                        .addBlankLore()
+                                        .addLore(ChatColor.GRAY + "Kleur: " + gp.getMapPlayer().getColor().getDisplayName())
                                 .build(),
                                 (mxInv, e1) -> {
                                     p.teleport(pl.getLocation());

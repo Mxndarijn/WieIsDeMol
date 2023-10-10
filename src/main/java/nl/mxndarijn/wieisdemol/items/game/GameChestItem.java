@@ -50,6 +50,9 @@ public class GameChestItem extends MxItem  {
 
         Game game = mapOptional.get();
 
+        if(!game.getHosts().contains(p.getUniqueId()))
+            return;
+
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
         game.getChestManager().getChests().forEach(chest -> {
             list.add(new Pair<>(

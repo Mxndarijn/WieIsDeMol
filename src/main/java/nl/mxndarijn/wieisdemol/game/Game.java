@@ -1,7 +1,9 @@
 package nl.mxndarijn.wieisdemol.game;
 
+import it.unimi.dsi.fastutil.Hash;
 import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
+import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
 import nl.mxndarijn.api.mxworld.MxAtlas;
 import nl.mxndarijn.api.mxworld.MxWorld;
@@ -36,6 +38,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Collectors;
 
 public class Game {
 
@@ -63,6 +66,7 @@ public class Game {
 
     private long gameTime = 0;
     private int peacekeeperKills;
+    private boolean playersCanEndVote = true;
     private List<UUID> spectators;
     private HashMap<UUID, Location> respawnLocations;
 
@@ -138,6 +142,11 @@ public class Game {
 
             }});
         });
+        loadWorld().thenAccept(loaded -> {
+            if(!loaded) {
+                stopGame();
+            }
+        });
         this.spectatorScoreboard.setUpdateTimer(10);
 
         GameWorldManager.getInstance().addGame(this);
@@ -189,7 +198,7 @@ public class Game {
             return future;
         }
         if(this.mxWorld.get().isLoaded()) {
-            future.complete(false);
+            future.complete(true);
             return future;
         }
         MxAtlas.getInstance().loadMxWorld(this.mxWorld.get()).thenAccept(loaded -> {
@@ -198,17 +207,25 @@ public class Game {
                 registerEvents();
                 updateChestAttachments();
                 updateGame();
-            }
-        });
 
-        ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new MxChangeWorld() {
-            @Override
-            public void enter(Player p, World w, PlayerChangedWorldEvent e) {
-            }
+                ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new MxChangeWorld() {
+                    @Override
+                    public void enter(Player p, World w, PlayerChangedWorldEvent e) {
 
-            @Override
-            public void leave(Player p, World w, PlayerChangedWorldEvent e) {
-                ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), hostScoreboard);
+                    }
+
+                    @Override
+                    public void leave(Player p, World w, PlayerChangedWorldEvent e) {
+                        hosts.remove(p.getUniqueId());
+                        removePlayer(p.getUniqueId());
+                        ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), hostScoreboard);
+
+                        if(hosts.isEmpty()) {
+                            setGameStatus(UpcomingGameStatus.FINISHED);
+                        }
+
+                    }
+                });
             }
         });
         return future;
@@ -221,7 +238,9 @@ public class Game {
                 new GamePreStartEvents(this, plugin),
                 new GameFreezeEvents(this, plugin),
                 new GamePlayingEvents(this, plugin),
-                new GameSpectatorEvents(this, plugin)
+                new GameSpectatorEvents(this, plugin),
+                new GamePlayingPeacekeeperEvents(this, plugin),
+                new GameDefaultEvents(this, plugin)
         ));
     }
 
@@ -250,48 +269,53 @@ public class Game {
         return future;
     }
     public void addHost(UUID uuid) {
-        Player p = Bukkit.getPlayer(uuid);
-        if(p != null) {
-            hosts.add(uuid);
-            gameInfo.getQueue().remove(uuid);
-            loadWorld().thenAccept(loaded -> {
-                if(loaded) {
-                    World w = Bukkit.getWorld(mxWorld.get().getWorldUID());
-                    p.teleport(w.getSpawnLocation());
-                    ScoreBoardManager.getInstance().setPlayerScoreboard(uuid, hostScoreboard);
-                    p.setGameMode(GameMode.CREATIVE);
-                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAME_YOU_ARE_NOW_HOST));
-                    p.getInventory().clear();
-                    p.getInventory().addItem(Items.PLAYER_MANAGEMENT_ITEM.getItemStack());
-                    p.getInventory().addItem(Items.HOST_TOOL.getItemStack());
-                    p.getInventory().addItem(Items.GAME_CHEST_TOOL.getItemStack());
-                    p.getInventory().addItem(Items.GAME_SHULKER_TOOL.getItemStack());
-                    p.getInventory().addItem(Items.GAME_DOOR_ITEM.getItemStack());
-                    p.getInventory().addItem(Items.VANISH_ITEM.getItemStack());
-
-
-                    ChangeWorldManager.getInstance().addWorld(w.getUID(), new MxChangeWorld() {
-                        @Override
-                        public void enter(Player p, World w, PlayerChangedWorldEvent e) {
-
-                        }
-
-                        @Override
-                        public void leave(Player p, World w, PlayerChangedWorldEvent e) {
-                            hosts.remove(p.getUniqueId());
-                            removePlayer(p.getUniqueId());
-
-                            hostScoreboard.removePlayer(p.getUniqueId());
-
-                            if(hosts.isEmpty() && getPlayerCount() == 0) {
-                                setGameStatus(UpcomingGameStatus.FINISHED);
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            Player p = Bukkit.getPlayer(uuid);
+            if(p != null) {
+                hosts.add(uuid);
+                gameInfo.getQueue().remove(uuid);
+                if(this.mxWorld.isEmpty() || !this.mxWorld.get().isLoaded()) {
+                    AtomicInteger i = new AtomicInteger();
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                        if(this.mxWorld.isPresent() && this.mxWorld.get().isLoaded()) {
+                            addHostItems(p);
+                        } else {
+                            if(i.get() < 100) {
+                                i.getAndIncrement();
+                                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                                    if(this.mxWorld.isPresent() && this.mxWorld.get().isLoaded()) {
+                                        addHostItems(p);
+                                    } else {
+                                        if(i.get() < 100) {
+                                            i.getAndIncrement();
+                                        }
+                                    }
+                                }, 5L);
                             }
-
                         }
-                    });
+                    }, 10L);
+                } else {
+                    addHostItems(p);
                 }
-            });
-        }
+            }
+        });
+    }
+
+    public void addHostItems(Player p) {
+        if(this.mxWorld.isEmpty())
+            return;
+        World w = Bukkit.getWorld(mxWorld.get().getWorldUID());
+        p.teleport(w.getSpawnLocation());
+        ScoreBoardManager.getInstance().setPlayerScoreboard(p.getUniqueId(), hostScoreboard);
+        p.setGameMode(GameMode.CREATIVE);
+        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAME_YOU_ARE_NOW_HOST));
+        p.getInventory().clear();
+        p.getInventory().addItem(Items.PLAYER_MANAGEMENT_ITEM.getItemStack());
+        p.getInventory().addItem(Items.HOST_TOOL.getItemStack());
+        p.getInventory().addItem(Items.GAME_CHEST_TOOL.getItemStack());
+        p.getInventory().addItem(Items.GAME_SHULKER_TOOL.getItemStack());
+        p.getInventory().addItem(Items.GAME_DOOR_ITEM.getItemStack());
+        p.getInventory().addItem(Items.VANISH_ITEM.getItemStack());
     }
 
     public GameInfo getGameInfo() {
@@ -359,11 +383,12 @@ public class Game {
         gamePlayer.setPlayingPlayer(playerUUID);
         gameInfo.getQueue().remove(playerUUID);
         MapPlayer mp = gamePlayer.getMapPlayer();
-
+        p.getInventory().clear();
         p.teleport(mp.getLocation().getLocation(Bukkit.getWorld(mxWorld.get().getWorldUID())));
         p.setHealth(20);
         p.setFoodLevel(20);
         p.setExp(0);
+        p.getInventory().addItem(Items.GAME_PLAYER_TOOL.getItemStack());
         p.setGameMode(GameMode.SURVIVAL);
         sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_JOINED, new ArrayList<>(Arrays.asList(p.getName(), mp.getColor().getDisplayName()))));
         //Add Scoreboard
@@ -491,6 +516,8 @@ public class Game {
         hosts.forEach( u-> {
             Player p = Bukkit.getPlayer(u);
             if(p != null) {
+                ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), hostScoreboard);
+                p.teleport(Functions.getSpawnLocation());
                 VanishManager.getInstance().showPlayerForAll(p);
                 p.setHealth(20);
                 p.getActivePotionEffects().clear();
@@ -500,6 +527,7 @@ public class Game {
         spectators.forEach( u-> {
             Player p = Bukkit.getPlayer(u);
             if(p != null) {
+                p.teleport(Functions.getSpawnLocation());
                 VanishManager.getInstance().showPlayerForAll(p);
                 ScoreBoardManager.getInstance().removePlayerScoreboard(u, spectatorScoreboard);
                 p.setHealth(20);
@@ -511,15 +539,14 @@ public class Game {
             if(g.getPlayer().isPresent()) {
                 Player p = Bukkit.getPlayer(g.getPlayer().get());
                 if(p != null) {
+                    ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), g.getScoreboard());
+                    p.teleport(Functions.getSpawnLocation());
                     VanishManager.getInstance().showPlayerForAll(p);
                     p.setHealth(20);
                     p.getActivePotionEffects().clear();
                     p.setFoodLevel(20);
                 }
             }
-        });
-        Bukkit.getWorld(this.mxWorld.get().getWorldUID()).getPlayers().forEach(p -> {
-            p.teleport(Functions.getSpawnLocation());
         });
         unloadWorld();
         this.mxWorld = Optional.empty();
@@ -609,6 +636,7 @@ public class Game {
     }
 
     public void removeSpectator(UUID uniqueId, boolean teleport) {
+        spectators.remove(uniqueId);
         Player p = Bukkit.getPlayer(uniqueId);
         if(p != null) {
             VanishManager.getInstance().showPlayerForAll(p);
@@ -616,6 +644,8 @@ public class Game {
             p.setHealth(20);
             p.getActivePotionEffects().clear();
             p.setFoodLevel(20);
+            p.setAllowFlight(false);
+            p.getInventory().clear();
         }
         if(teleport)
             p.teleport(Functions.getSpawnLocation());
@@ -623,5 +653,58 @@ public class Game {
 
     public void removeSpectator(UUID uniqueId) {
         removeSpectator(uniqueId, true);
+    }
+
+    public void showVotingResults(String name) {
+        HashMap<GamePlayer, Integer> votes = new HashMap<>();
+        colors.forEach(gp -> {
+            votes.put(gp, 0);
+        });
+
+
+        colors.forEach(gp -> {
+            if(gp.getPlayer().isPresent()) {
+                if(gp.getVotedOn().isPresent()) {
+                    votes.put(gp.getVotedOn().get(), 1 + votes.get(gp.getVotedOn().get()));
+                }
+            }
+        });
+
+        votes.entrySet().removeIf(entry -> entry.getValue() == 0);
+
+        List<GamePlayer> playerList = new ArrayList<>(votes.keySet());
+
+        // Sorteer de lijst op basis van het aantal stemmen (van meest gestemd naar minst gestemd)
+        playerList.sort(Comparator.comparingInt(votes::get).reversed());
+
+        sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTES, Collections.singletonList(name)));
+        if(playerList.isEmpty()) {
+            sendMessageToAll(ChatColor.RED + "Geen stemmen.");
+        }
+        playerList.forEach(p -> {
+            if(p.getPlayer().isEmpty())
+                return;
+            OfflinePlayer player = Bukkit.getOfflinePlayer(p.getPlayer().get());
+            sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTES_SUBJECT, Arrays.asList(player.getName(), p.getMapPlayer().getColor().getDisplayName(), votes.get(p) + "")));
+        });
+
+        clearVotingResults();
+
+
+
+
+    }
+    public void clearVotingResults() {
+        colors.forEach(gamePlayer -> {
+            gamePlayer.setVotedOn(Optional.empty());
+        });
+    }
+
+    public boolean isPlayersCanEndVote() {
+        return playersCanEndVote;
+    }
+
+    public void setPlayersCanEndVote(boolean playersCanEndVote) {
+        this.playersCanEndVote = playersCanEndVote;
     }
 }

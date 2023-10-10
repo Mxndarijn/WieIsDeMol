@@ -17,11 +17,13 @@ import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.managers.VanishManager;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
+import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -59,6 +61,18 @@ public class VanishItem extends MxItem  {
 
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
+
+        Optional<Game> mapOptional = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
+
+        if(mapOptional.isEmpty()) {
+            return;
+        }
+
+        Game game = mapOptional.get();
+
+        if(!game.getHosts().contains(p.getUniqueId()))
+            return;
+
         VanishManager.getInstance().toggleVanish(p);
         if(VanishManager.getInstance().isPlayerHidden(p)) {
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_ON, ChatPrefix.WIDM));

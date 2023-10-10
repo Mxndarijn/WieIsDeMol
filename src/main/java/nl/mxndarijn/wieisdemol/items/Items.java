@@ -345,6 +345,19 @@ public enum Items {
             true,
             RebornBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_PLAYER_TOOL(MxDefaultItemStackBuilder.create(Material.NETHER_STAR)
+            .setName(ChatColor.GRAY + "Speler Tool")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item kan je stemmen,")
+            .addLore(ChatColor.YELLOW + "hosts een vraag stellen,")
+            .addLore(ChatColor.YELLOW + "of alle kleuren zien.")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            GameSpelerTool.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     ;
 
 

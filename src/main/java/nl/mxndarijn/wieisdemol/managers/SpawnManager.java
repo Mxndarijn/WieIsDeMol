@@ -6,6 +6,7 @@ import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.items.Items;
+import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -74,6 +75,9 @@ public class SpawnManager implements Listener {
 
     @EventHandler
     public void join(PlayerJoinEvent e) {
+        if(GameWorldManager.getInstance().isPlayerInAGame(e.getPlayer().getUniqueId())) {
+            return;
+        }
         e.getPlayer().teleport(spawnPoint);
         if(e.getPlayer().getWorld() == spawn) {
             plugin.getServer().getPluginManager().callEvent(new PlayerChangedWorldEvent(e.getPlayer(), e.getPlayer().getWorld()));

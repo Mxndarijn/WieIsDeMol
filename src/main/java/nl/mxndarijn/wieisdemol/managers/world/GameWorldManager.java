@@ -63,4 +63,20 @@ public class GameWorldManager {
         }
         return Optional.empty();
     }
+
+    public boolean isPlayerInAGame(UUID uniqueId) {
+        for (Game game : games) {
+            if (game.getHosts().contains(uniqueId) || game.getGamePlayerOfPlayer(uniqueId).isPresent())
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isPlayerPLayingInAGame(UUID uniqueId) {
+        for (Game game : games) {
+            if ( game.getGamePlayerOfPlayer(uniqueId).isPresent())
+                return true;
+        }
+        return false;
+    }
 }
