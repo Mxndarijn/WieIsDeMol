@@ -22,26 +22,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.net.http.WebSocket;
 
 public class SpawnManager implements Listener {
 
     private static SpawnManager instance;
-
-    public static SpawnManager getInstance() {
-        if(instance == null)
-            instance = new SpawnManager();
-        return instance;
-    }
-
     private final World spawn;
-
     private final JavaPlugin plugin;
-
     private final Location spawnPoint;
 
     private SpawnManager() {
@@ -73,75 +61,81 @@ public class SpawnManager implements Listener {
 
     }
 
+    public static SpawnManager getInstance() {
+        if (instance == null)
+            instance = new SpawnManager();
+        return instance;
+    }
+
     @EventHandler
     public void join(PlayerJoinEvent e) {
-        if(GameWorldManager.getInstance().isPlayerInAGame(e.getPlayer().getUniqueId())) {
+        if (GameWorldManager.getInstance().isPlayerInAGame(e.getPlayer().getUniqueId())) {
             return;
         }
         e.getPlayer().teleport(spawnPoint);
-        if(e.getPlayer().getWorld() == spawn) {
+        if (e.getPlayer().getWorld() == spawn) {
             plugin.getServer().getPluginManager().callEvent(new PlayerChangedWorldEvent(e.getPlayer(), e.getPlayer().getWorld()));
         }
     }
 
     @EventHandler
     public void breakEvent(BlockBreakEvent e) {
-        if(!e.getBlock().getWorld().equals(spawn))
+        if (!e.getBlock().getWorld().equals(spawn))
             return;
 
-        if(!e.getPlayer().hasPermission(Permissions.SPAWN_BLOCK_BREAK.getPermission()))
+        if (!e.getPlayer().hasPermission(Permissions.SPAWN_BLOCK_BREAK.getPermission()))
             e.setCancelled(true);
     }
 
     @EventHandler
     public void blockPlace(BlockPlaceEvent e) {
-        if(!e.getBlock().getWorld().equals(spawn))
+        if (!e.getBlock().getWorld().equals(spawn))
             return;
 
-        if(!e.getPlayer().hasPermission(Permissions.SPAWN_BLOCK_PLACE.getPermission()))
+        if (!e.getPlayer().hasPermission(Permissions.SPAWN_BLOCK_PLACE.getPermission()))
             e.setCancelled(true);
     }
 
     @EventHandler
     public void damage(EntityDamageEvent e) {
-        if(!e.getEntity().getWorld().equals(spawn))
+        if (!e.getEntity().getWorld().equals(spawn))
             return;
         e.setCancelled(true);
     }
 
     @EventHandler
     public void dropItem(PlayerDropItemEvent e) {
-        if(!e.getPlayer().getWorld().equals(spawn))
+        if (!e.getPlayer().getWorld().equals(spawn))
             return;
 
-        if(!e.getPlayer().hasPermission(Permissions.SPAWN_DROP_ITEM.getPermission()))
+        if (!e.getPlayer().hasPermission(Permissions.SPAWN_DROP_ITEM.getPermission()))
             e.setCancelled(true);
     }
 
 
     @EventHandler
     public void pickupItem(EntityPickupItemEvent e) {
-        if(!e.getEntity().getWorld().equals(spawn))
+        if (!e.getEntity().getWorld().equals(spawn))
             return;
 
-        if(!e.getEntity().hasPermission(Permissions.SPAWN_PICKUP_ITEM.getPermission()))
+        if (!e.getEntity().hasPermission(Permissions.SPAWN_PICKUP_ITEM.getPermission()))
             e.setCancelled(true);
     }
 
     @EventHandler
     public void inventoryChange(InventoryClickEvent e) {
-        if(!e.getWhoClicked().getWorld().equals(spawn))
+        if (!e.getWhoClicked().getWorld().equals(spawn))
             return;
 
-        if(e.getClickedInventory() == e.getWhoClicked().getInventory()) {
-            if(!e.getWhoClicked().hasPermission(Permissions.SPAWN_CHANGE_INVENTORY.getPermission()))
+        if (e.getClickedInventory() == e.getWhoClicked().getInventory()) {
+            if (!e.getWhoClicked().hasPermission(Permissions.SPAWN_CHANGE_INVENTORY.getPermission()))
                 e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void hunger(FoodLevelChangeEvent e) {
-        if(!e.getEntity().getWorld().equals(spawn))
+        if (!e.getEntity().getWorld().equals(spawn))
             return;
         e.setFoodLevel(20);
         e.setCancelled(true);

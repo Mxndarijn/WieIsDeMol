@@ -1,30 +1,27 @@
 package nl.mxndarijn.wieisdemol.items.presets;
 
-import nl.mxndarijn.api.inventory.MxInventory;
-import nl.mxndarijn.api.inventory.MxItemClicked;
-import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
-import nl.mxndarijn.api.util.MxWorldFilter;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
-import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.inventory.menu.MxDefaultInventoryBuilder;
+import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
+import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.mxitem.MxItem;
-import nl.mxndarijn.api.chatinput.MxChatInputManager;
+import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MxWorldFilter;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.managers.PresetsManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import nl.mxndarijn.api.mxworld.MxLocation;
-import nl.mxndarijn.wieisdemol.presets.Preset;
-import nl.mxndarijn.wieisdemol.presets.PresetConfig;
-import nl.mxndarijn.wieisdemol.managers.PresetsManager;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerManager;
+import nl.mxndarijn.wieisdemol.presets.Preset;
+import nl.mxndarijn.wieisdemol.presets.PresetConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -43,17 +40,17 @@ public class ShulkerConfigureTool extends MxItem {
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Preset> optionalPreset = PresetsManager.getInstance().getPresetByWorldUID(e.getPlayer().getWorld().getUID());
-        if(!optionalPreset.isPresent()) {
+        if (!optionalPreset.isPresent()) {
             return;
         }
 
         Preset preset = optionalPreset.get();
         PresetConfig config = preset.getConfig();
         ShulkerManager manager = preset.getShulkerManager();
-        if(e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof ShulkerBox) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock() != null && e.getClickedBlock().getState() instanceof ShulkerBox) {
             e.setCancelled(true);
             MxLocation location = MxLocation.getFromLocation(e.getClickedBlock().getLocation());
-            if(manager.containsLocation(location)) {
+            if (manager.containsLocation(location)) {
                 Optional<ShulkerInformation> information = manager.getShulkerByLocation(location);
                 ShulkerInformation inf = information.get();
                 MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultInventoryBuilder.create(ChatColor.GRAY + "Verwijder shulker", MxInventorySlots.THREE_ROWS)
@@ -95,18 +92,18 @@ public class ShulkerConfigureTool extends MxItem {
             // Create new
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_ENTER_NAME, ChatPrefix.WIDM));
             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(),
-                message -> {
-                    if(manager.containsLocation(location))
-                        return;
-                    AtomicBoolean bool = new AtomicBoolean(true);
-                    preset.getShulkerManager().getShulkers().forEach(shulker -> {
-                        if(shulker.getMaterial() == e.getClickedBlock().getType()) {
-                            bool.set(false);
-                        }
-                    });
-                    ShulkerInformation shulkerInformation = new ShulkerInformation(message, location, e.getClickedBlock().getType(), bool.get());
-                    manager.addShulker(shulkerInformation);
-                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_CHEST_ADDED, Arrays.asList(message, (bool.get() ? "Ja" : "Nee"))));
+                    message -> {
+                        if (manager.containsLocation(location))
+                            return;
+                        AtomicBoolean bool = new AtomicBoolean(true);
+                        preset.getShulkerManager().getShulkers().forEach(shulker -> {
+                            if (shulker.getMaterial() == e.getClickedBlock().getType()) {
+                                bool.set(false);
+                            }
+                        });
+                        ShulkerInformation shulkerInformation = new ShulkerInformation(message, location, e.getClickedBlock().getType(), bool.get());
+                        manager.addShulker(shulkerInformation);
+                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_CHEST_ADDED, Arrays.asList(message, (bool.get() ? "Ja" : "Nee"))));
 
                     }
             );

@@ -8,9 +8,7 @@ import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
@@ -19,18 +17,18 @@ import java.util.UUID;
 public abstract class Book extends MxItem {
 
     public ItemStack is;
+    public Game game;
+
     public Book(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
         super(is, worldFilter, gameItem, actions);
         this.is = is;
     }
 
     public void sendBookMessageToAll(String message) {
-        if(game != null)
+        if (game != null)
             game.sendMessageToAll(message);
 
     }
-
-    public Game game;
 
     public void getGame(World w) {
         Optional<Game> g = GameWorldManager.getInstance().getGameByWorldUID(w.getUID());
@@ -42,10 +40,10 @@ public abstract class Book extends MxItem {
     }
 
     public boolean isItemTheSame(ItemStack item) {
-        if(item.getType() == Material.AIR || item.getItemMeta() == null)
+        if (item.getType() == Material.AIR || item.getItemMeta() == null)
             return false;
-        if(item.getType() == is.getType()) {
-            if(is.getItemMeta().hasDisplayName() && item.getItemMeta().hasDisplayName() && Functions.convertComponentToString(item.getItemMeta().displayName()).equalsIgnoreCase(Functions.convertComponentToString(is.getItemMeta().displayName()))) {
+        if (item.getType() == is.getType()) {
+            if (is.getItemMeta().hasDisplayName() && item.getItemMeta().hasDisplayName() && Functions.convertComponentToString(item.getItemMeta().displayName()).equalsIgnoreCase(Functions.convertComponentToString(is.getItemMeta().displayName()))) {
                 return true;
             } else {
                 return !is.getItemMeta().hasDisplayName();

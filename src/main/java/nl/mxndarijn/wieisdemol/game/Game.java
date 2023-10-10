@@ -1,9 +1,7 @@
 package nl.mxndarijn.wieisdemol.game;
 
-import it.unimi.dsi.fastutil.Hash;
 import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
-import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
 import nl.mxndarijn.api.mxworld.MxAtlas;
 import nl.mxndarijn.api.mxworld.MxWorld;
@@ -12,8 +10,8 @@ import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.ScoreBoard;
 import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
-import nl.mxndarijn.wieisdemol.game.events.*;
 import nl.mxndarijn.wieisdemol.game.events.GameEvent;
+import nl.mxndarijn.wieisdemol.game.events.*;
 import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.*;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestManager;
@@ -38,39 +36,35 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 public class Game {
 
-    private GameInfo gameInfo;
+    private final GameInfo gameInfo;
     private final UUID mainHost;
-    private Optional<MxWorld> mxWorld;
-
     private final WarpManager warpManager;
     private final ChestManager chestManager;
     private final ShulkerManager shulkerManager;
-    private DoorManager doorManager;
-    private InteractionManager interactionManager;
-    private File directory;
-
-    private ArrayList<UUID> hosts;
-
-    private MapConfig config;
-
-    private List<GamePlayer> colors;
-
-    private MxSupplierScoreBoard hostScoreboard;
-    private MxSupplierScoreBoard spectatorScoreboard;
-
+    private final DoorManager doorManager;
+    private final InteractionManager interactionManager;
+    private final File directory;
+    private final ArrayList<UUID> hosts;
+    private final MapConfig config;
+    private final List<GamePlayer> colors;
+    private final MxSupplierScoreBoard hostScoreboard;
+    private final MxSupplierScoreBoard spectatorScoreboard;
+    private final List<UUID> spectators;
+    private final HashMap<UUID, Location> respawnLocations;
+    private final JavaPlugin plugin;
+    private Optional<MxWorld> mxWorld;
     private boolean firstStart = false;
-
     private long gameTime = 0;
     private int peacekeeperKills;
     private boolean playersCanEndVote = true;
-    private List<UUID> spectators;
-    private HashMap<UUID, Location> respawnLocations;
+    private List<GameEvent> events;
+    private BukkitTask chestAttachmentUpdater;
+    private BukkitTask updateGameUpdater;
 
-    private final JavaPlugin plugin;
+
     public Game(UUID mainHost, GameInfo gameInfo, MapConfig mapConfig, MxWorld mxWorld) {
         this.gameInfo = gameInfo;
         this.mainHost = mainHost;
@@ -104,7 +98,7 @@ public class Game {
             AtomicInteger alivePlayers = new AtomicInteger();
             AtomicInteger deadPlayers = new AtomicInteger();
             colors.forEach(g -> {
-                if(g.isAlive())
+                if (g.isAlive())
                     alivePlayers.getAndIncrement();
                 else
                     deadPlayers.getAndIncrement();
@@ -143,7 +137,7 @@ public class Game {
             }});
         });
         loadWorld().thenAccept(loaded -> {
-            if(!loaded) {
+            if (!loaded) {
                 stopGame();
             }
         });
@@ -152,9 +146,28 @@ public class Game {
         GameWorldManager.getInstance().addGame(this);
     }
 
+    public static Optional<Game> createGameFromGameInfo(UUID mainHost, GameInfo gameInfo) {
+        Optional<Map> map = MapManager.getInstance().getMapById(gameInfo.getMapId());
+        if (map.isEmpty() || map.get().getMxWorld().isEmpty()) {
+            return Optional.empty();
+        }
+
+        File newDir = new File(SpecialDirectories.GAMES_WORLDS.getDirectory() + "");
+        Optional<MxWorld> optionalWorld = MxAtlas.getInstance().duplicateMxWorld(map.get().getMxWorld().get(), newDir);
+
+        if (optionalWorld.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Game g = new Game(mainHost, gameInfo, map.get().getMapConfig(), optionalWorld.get());
+
+        return Optional.of(g);
+    }
+
     public String getGameTime() {
         return formatGameTime(gameTime);
     }
+
     private String formatGameTime(long timeInMillis) {
         // Converteer milliseconden naar seconden
         long timeInSeconds = timeInMillis / 1000;
@@ -167,43 +180,23 @@ public class Game {
         return String.format("%02d:%02d", minutes, seconds);
     }
 
-
     private File getDirectory() {
         return directory;
     }
 
-
-    public static Optional<Game> createGameFromGameInfo(UUID mainHost, GameInfo gameInfo) {
-        Optional<Map> map = MapManager.getInstance().getMapById(gameInfo.getMapId());
-        if(map.isEmpty() || map.get().getMxWorld().isEmpty()) {
-            return Optional.empty();
-        }
-
-        File newDir = new File(SpecialDirectories.GAMES_WORLDS.getDirectory() + "");
-        Optional<MxWorld> optionalWorld = MxAtlas.getInstance().duplicateMxWorld(map.get().getMxWorld().get(), newDir);
-
-        if(optionalWorld.isEmpty()) {
-            return Optional.empty();
-        }
-
-        Game g = new Game(mainHost, gameInfo, map.get().getMapConfig(), optionalWorld.get());
-
-        return Optional.of(g);
-    }
-
     public CompletableFuture<Boolean> loadWorld() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        if(this.mxWorld.isEmpty()) {
+        if (this.mxWorld.isEmpty()) {
             future.complete(false);
             return future;
         }
-        if(this.mxWorld.get().isLoaded()) {
+        if (this.mxWorld.get().isLoaded()) {
             future.complete(true);
             return future;
         }
         MxAtlas.getInstance().loadMxWorld(this.mxWorld.get()).thenAccept(loaded -> {
             future.complete(loaded);
-            if(loaded) {
+            if (loaded) {
                 registerEvents();
                 updateChestAttachments();
                 updateGame();
@@ -220,7 +213,7 @@ public class Game {
                         removePlayer(p.getUniqueId());
                         ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), hostScoreboard);
 
-                        if(hosts.isEmpty()) {
+                        if (hosts.isEmpty()) {
                             setGameStatus(UpcomingGameStatus.FINISHED);
                         }
 
@@ -231,7 +224,6 @@ public class Game {
         return future;
     }
 
-    private List<GameEvent> events;
     public void registerEvents() {
         unregisterEvents();
         events = new ArrayList<>(Arrays.asList(
@@ -245,7 +237,7 @@ public class Game {
     }
 
     public void unregisterEvents() {
-        if(events == null)
+        if (events == null)
             return;
         events.forEach(HandlerList::unregisterAll);
     }
@@ -268,25 +260,26 @@ public class Game {
         });
         return future;
     }
+
     public void addHost(UUID uuid) {
         Bukkit.getScheduler().runTask(plugin, () -> {
             Player p = Bukkit.getPlayer(uuid);
-            if(p != null) {
+            if (p != null) {
                 hosts.add(uuid);
                 gameInfo.getQueue().remove(uuid);
-                if(this.mxWorld.isEmpty() || !this.mxWorld.get().isLoaded()) {
+                if (this.mxWorld.isEmpty() || !this.mxWorld.get().isLoaded()) {
                     AtomicInteger i = new AtomicInteger();
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                        if(this.mxWorld.isPresent() && this.mxWorld.get().isLoaded()) {
+                        if (this.mxWorld.isPresent() && this.mxWorld.get().isLoaded()) {
                             addHostItems(p);
                         } else {
-                            if(i.get() < 100) {
+                            if (i.get() < 100) {
                                 i.getAndIncrement();
                                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                                    if(this.mxWorld.isPresent() && this.mxWorld.get().isLoaded()) {
+                                    if (this.mxWorld.isPresent() && this.mxWorld.get().isLoaded()) {
                                         addHostItems(p);
                                     } else {
-                                        if(i.get() < 100) {
+                                        if (i.get() < 100) {
                                             i.getAndIncrement();
                                         }
                                     }
@@ -302,7 +295,7 @@ public class Game {
     }
 
     public void addHostItems(Player p) {
-        if(this.mxWorld.isEmpty())
+        if (this.mxWorld.isEmpty())
             return;
         World w = Bukkit.getWorld(mxWorld.get().getWorldUID());
         p.teleport(w.getSpawnLocation());
@@ -373,10 +366,10 @@ public class Game {
     public boolean addPlayer(UUID playerUUID, GamePlayer gamePlayer) {
         //TODO Change Inventory
         Player p = Bukkit.getPlayer(playerUUID);
-        if(p == null || mxWorld.isEmpty())
+        if (p == null || mxWorld.isEmpty())
             return false;
 
-        if(gamePlayer.getPlayer().isPresent()) {
+        if (gamePlayer.getPlayer().isPresent()) {
             removePlayer(gamePlayer.getPlayer().get());
         }
 
@@ -398,7 +391,7 @@ public class Game {
 
     public Optional<GamePlayer> getGamePlayerOfPlayer(UUID uuid) {
         for (GamePlayer color : colors) {
-            if(color.getPlayer().isPresent() && color.getPlayer().get().equals(uuid)) {
+            if (color.getPlayer().isPresent() && color.getPlayer().get().equals(uuid)) {
                 return Optional.of(color);
             }
         }
@@ -408,14 +401,14 @@ public class Game {
     public boolean removePlayer(UUID playerUUID) {
         //TODO replace player
         Optional<GamePlayer> player = getGamePlayerOfPlayer(playerUUID);
-        if(player.isEmpty())
+        if (player.isEmpty())
             return false;
 
         GamePlayer gamePlayer = player.get();
         gamePlayer.setPlayingPlayer(null);
 
         Player p = Bukkit.getPlayer(playerUUID);
-        if(p != null) {
+        if (p != null) {
             p.teleport(Functions.getSpawnLocation());
             sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_LEAVED, new ArrayList<>(Arrays.asList(p.getName(), gamePlayer.getMapPlayer().getColor().getDisplayName()))));
         }
@@ -435,7 +428,7 @@ public class Game {
     public void sendMessageToHosts(String message) {
         hosts.forEach(host -> {
             Player p = Bukkit.getPlayer(host);
-            if(p != null) {
+            if (p != null) {
                 p.sendMessage(message);
             }
         });
@@ -447,9 +440,9 @@ public class Game {
 
     public void sendMessageToPlayers(String message) {
         colors.forEach(color -> {
-            if(color.getPlayer().isPresent()) {
+            if (color.getPlayer().isPresent()) {
                 Player p = Bukkit.getPlayer(color.getPlayer().get());
-                if(p != null) {
+                if (p != null) {
                     p.sendMessage(message);
                 }
             }
@@ -458,26 +451,25 @@ public class Game {
 
     public void setGameStatus(UpcomingGameStatus upcomingGameStatus) {
         getGameInfo().setStatus(upcomingGameStatus);
-        if(upcomingGameStatus == UpcomingGameStatus.PLAYING && !firstStart) {
+        if (upcomingGameStatus == UpcomingGameStatus.PLAYING && !firstStart) {
             firstStart = true;
             chestManager.onGameStart(this);
         }
-        if(upcomingGameStatus == UpcomingGameStatus.FINISHED) {
+        if (upcomingGameStatus == UpcomingGameStatus.FINISHED) {
             stopGame();
             GameManager.getInstance().removeUpcomingGame(gameInfo);
         }
         sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_STATUS_CHANGED, Collections.singletonList(upcomingGameStatus.getStatus())));
     }
 
-    private BukkitTask chestAttachmentUpdater;
     public void updateChestAttachments() {
-        if(chestAttachmentUpdater != null)
+        if (chestAttachmentUpdater != null)
             return;
         AtomicLong lastUpdateTime = new AtomicLong(System.currentTimeMillis());
         chestAttachmentUpdater = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            if(this.mxWorld.isEmpty())
+            if (this.mxWorld.isEmpty())
                 chestAttachmentUpdater.cancel();
-            if(gameInfo.getStatus() != UpcomingGameStatus.PLAYING)
+            if (gameInfo.getStatus() != UpcomingGameStatus.PLAYING)
                 return;
             long l = System.currentTimeMillis();
             chestManager.getChests().forEach(chestInformation -> {
@@ -489,20 +481,19 @@ public class Game {
         }, 0L, 20L);
     }
 
-    private BukkitTask updateGameUpdater;
     public void updateGame() {
-        if(updateGameUpdater != null)
+        if (updateGameUpdater != null)
             return;
         final AtomicLong[] lastUpdateTime = {null};
         updateGameUpdater = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
-            if(this.mxWorld.isEmpty())
+            if (this.mxWorld.isEmpty())
                 updateGameUpdater.cancel();
-            if(lastUpdateTime[0] != null && gameInfo.getStatus() == UpcomingGameStatus.FREEZE)
+            if (lastUpdateTime[0] != null && gameInfo.getStatus() == UpcomingGameStatus.FREEZE)
                 lastUpdateTime[0].set(System.currentTimeMillis());
-            if(gameInfo.getStatus() != UpcomingGameStatus.PLAYING)
+            if (gameInfo.getStatus() != UpcomingGameStatus.PLAYING)
                 return;
-            if(lastUpdateTime[0] == null)
-                 lastUpdateTime[0] = new AtomicLong(System.currentTimeMillis());
+            if (lastUpdateTime[0] == null)
+                lastUpdateTime[0] = new AtomicLong(System.currentTimeMillis());
             long l = System.currentTimeMillis();
             long delta = l - lastUpdateTime[0].get();
             gameTime += delta;
@@ -513,9 +504,9 @@ public class Game {
 
     public void stopGame() {
         sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_GAME_STOPPED));
-        hosts.forEach( u-> {
+        hosts.forEach(u -> {
             Player p = Bukkit.getPlayer(u);
-            if(p != null) {
+            if (p != null) {
                 ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), hostScoreboard);
                 p.teleport(Functions.getSpawnLocation());
                 VanishManager.getInstance().showPlayerForAll(p);
@@ -524,9 +515,9 @@ public class Game {
                 p.setFoodLevel(20);
             }
         });
-        spectators.forEach( u-> {
+        spectators.forEach(u -> {
             Player p = Bukkit.getPlayer(u);
-            if(p != null) {
+            if (p != null) {
                 p.teleport(Functions.getSpawnLocation());
                 VanishManager.getInstance().showPlayerForAll(p);
                 ScoreBoardManager.getInstance().removePlayerScoreboard(u, spectatorScoreboard);
@@ -536,9 +527,9 @@ public class Game {
             }
         });
         colors.forEach(g -> {
-            if(g.getPlayer().isPresent()) {
+            if (g.getPlayer().isPresent()) {
                 Player p = Bukkit.getPlayer(g.getPlayer().get());
-                if(p != null) {
+                if (p != null) {
                     ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), g.getScoreboard());
                     p.teleport(Functions.getSpawnLocation());
                     VanishManager.getInstance().showPlayerForAll(p);
@@ -554,8 +545,8 @@ public class Game {
 
     public int getPlayerCount() {
         AtomicInteger i = new AtomicInteger();
-        colors.forEach( c -> {
-            if(c.getPlayer().isPresent())
+        colors.forEach(c -> {
+            if (c.getPlayer().isPresent())
                 i.getAndIncrement();
         });
 
@@ -565,7 +556,7 @@ public class Game {
     public void addSpectator(UUID uuid) {
         spectators.add(uuid);
         Player player = Bukkit.getPlayer(uuid);
-        if(player != null) {
+        if (player != null) {
             player.getInventory().clear();
             ScoreBoardManager.getInstance().setPlayerScoreboard(uuid, spectatorScoreboard);
             player.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_JOIN));
@@ -576,22 +567,22 @@ public class Game {
 
 
     public void addSpectatorSettings(UUID uuid) {
-        if(mxWorld.isEmpty())
+        if (mxWorld.isEmpty())
             return;
         addSpectatorSettings(uuid, Bukkit.getWorld(mxWorld.get().getWorldUID()).getSpawnLocation());
     }
 
     public void addSpectatorSettings(UUID uuid, Location loc) {
         Player p = Bukkit.getPlayer(uuid);
-        if(p != null) {
-            if(!p.isDead()) {
+        if (p != null) {
+            if (!p.isDead()) {
                 p.teleport(loc);
             } else {
                 respawnLocations.put(uuid, loc);
             }
             p.getInventory().clear();
             p.getInventory().setItem(0, Items.GAME_SPECTATOR_TELEPORT_ITEM.getItemStack());
-            if(spectators.contains(p.getUniqueId())) {
+            if (spectators.contains(p.getUniqueId())) {
                 p.getInventory().setItem(8, Items.GAME_SPECTATOR_LEAVE_ITEM.getItemStack());
             }
             p.setHealth(20);
@@ -602,13 +593,16 @@ public class Game {
     }
 
 
-
     public boolean isFirstStart() {
         return firstStart;
     }
 
     public int getPeacekeeperKills() {
         return peacekeeperKills;
+    }
+
+    public void setPeacekeeperKills(int peacekeeperKills) {
+        this.peacekeeperKills = peacekeeperKills;
     }
 
     public List<GameEvent> getEvents() {
@@ -631,14 +625,10 @@ public class Game {
         return respawnLocations;
     }
 
-    public void setPeacekeeperKills(int peacekeeperKills) {
-        this.peacekeeperKills = peacekeeperKills;
-    }
-
     public void removeSpectator(UUID uniqueId, boolean teleport) {
         spectators.remove(uniqueId);
         Player p = Bukkit.getPlayer(uniqueId);
-        if(p != null) {
+        if (p != null) {
             VanishManager.getInstance().showPlayerForAll(p);
             ScoreBoardManager.getInstance().removePlayerScoreboard(uniqueId, spectatorScoreboard);
             p.setHealth(20);
@@ -647,7 +637,7 @@ public class Game {
             p.setAllowFlight(false);
             p.getInventory().clear();
         }
-        if(teleport)
+        if (teleport)
             p.teleport(Functions.getSpawnLocation());
     }
 
@@ -663,8 +653,8 @@ public class Game {
 
 
         colors.forEach(gp -> {
-            if(gp.getPlayer().isPresent()) {
-                if(gp.getVotedOn().isPresent()) {
+            if (gp.getPlayer().isPresent()) {
+                if (gp.getVotedOn().isPresent()) {
                     votes.put(gp.getVotedOn().get(), 1 + votes.get(gp.getVotedOn().get()));
                 }
             }
@@ -678,11 +668,11 @@ public class Game {
         playerList.sort(Comparator.comparingInt(votes::get).reversed());
 
         sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTES, Collections.singletonList(name)));
-        if(playerList.isEmpty()) {
+        if (playerList.isEmpty()) {
             sendMessageToAll(ChatColor.RED + "Geen stemmen.");
         }
         playerList.forEach(p -> {
-            if(p.getPlayer().isEmpty())
+            if (p.getPlayer().isEmpty())
                 return;
             OfflinePlayer player = Bukkit.getOfflinePlayer(p.getPlayer().get());
             sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTES_SUBJECT, Arrays.asList(player.getName(), p.getMapPlayer().getColor().getDisplayName(), votes.get(p) + "")));
@@ -691,9 +681,8 @@ public class Game {
         clearVotingResults();
 
 
-
-
     }
+
     public void clearVotingResults() {
         colors.forEach(gamePlayer -> {
             gamePlayer.setVotedOn(Optional.empty());

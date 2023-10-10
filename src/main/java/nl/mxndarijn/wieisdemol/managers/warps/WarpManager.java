@@ -18,7 +18,7 @@ public class WarpManager {
 
     public WarpManager(File f) {
         this.warpFile = f;
-        if(!this.warpFile.exists()) {
+        if (!this.warpFile.exists()) {
             try {
                 this.warpFile.createNewFile();
             } catch (IOException e) {
@@ -39,7 +39,7 @@ public class WarpManager {
         fc.getKeys(false).forEach(k -> {
             fc.set(k, null);
         });
-        warps.forEach( w -> {
+        warps.forEach(w -> {
             w.save(warpFile, fc);
         });
         try {
@@ -66,7 +66,7 @@ public class WarpManager {
 
     public Optional<Warp> getWarpByName(String warpName) {
         for (Warp warp : warps) {
-            if(warp.getName().equals(warpName))
+            if (warp.getName().equals(warpName))
                 return Optional.of(warp);
         }
         return Optional.empty();

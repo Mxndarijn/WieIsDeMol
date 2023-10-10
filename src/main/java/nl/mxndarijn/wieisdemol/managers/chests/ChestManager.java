@@ -14,15 +14,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChestManager {
 
@@ -31,7 +28,7 @@ public class ChestManager {
 
     public ChestManager(File f) {
         this.chestFile = f;
-        if(!this.chestFile.exists()) {
+        if (!this.chestFile.exists()) {
             try {
                 this.chestFile.createNewFile();
             } catch (IOException e) {
@@ -59,7 +56,7 @@ public class ChestManager {
         fc.getKeys(false).forEach(k -> {
             fc.set(k, null);
         });
-        chests.forEach( w -> {
+        chests.forEach(w -> {
             w.save(fc);
         });
         try {
@@ -82,7 +79,7 @@ public class ChestManager {
 
     public boolean containsLocation(MxLocation location) {
         for (ChestInformation chest : chests) {
-            if(chest.getLocation().equals(location)) {
+            if (chest.getLocation().equals(location)) {
                 return true;
             }
         }
@@ -96,7 +93,7 @@ public class ChestManager {
 
     public Optional<ChestInformation> getChestByLocation(MxLocation location) {
         for (ChestInformation chest : chests) {
-            if(chest.getLocation().equals(location)) {
+            if (chest.getLocation().equals(location)) {
                 return Optional.of(chest);
             }
         }
@@ -106,7 +103,7 @@ public class ChestManager {
     public int getAmountOfChestsFilled(Map map) {
         int filled = 0;
         Optional<MxWorld> world = map.getMxWorld();
-        if(world.isEmpty())
+        if (world.isEmpty())
             return -1;
         MxWorld m = world.get();
         World w = Bukkit.getWorld(m.getWorldUID());

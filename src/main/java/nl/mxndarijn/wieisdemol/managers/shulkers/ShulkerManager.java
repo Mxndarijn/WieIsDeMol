@@ -5,12 +5,10 @@ import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.mxworld.MxWorld;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -28,7 +26,7 @@ public class ShulkerManager {
 
     public ShulkerManager(File f) {
         this.shulkerFile = f;
-        if(!this.shulkerFile.exists()) {
+        if (!this.shulkerFile.exists()) {
             try {
                 this.shulkerFile.createNewFile();
             } catch (IOException e) {
@@ -78,7 +76,7 @@ public class ShulkerManager {
 
     public boolean containsLocation(MxLocation location) {
         for (ShulkerInformation shulker : shulkers) {
-            if(shulker.getLocation().equals(location)) {
+            if (shulker.getLocation().equals(location)) {
                 return true;
             }
         }
@@ -88,7 +86,7 @@ public class ShulkerManager {
 
     public Optional<ShulkerInformation> getShulkerByLocation(MxLocation location) {
         for (ShulkerInformation shulker : shulkers) {
-            if(shulker.getLocation().equals(location)) {
+            if (shulker.getLocation().equals(location)) {
                 return Optional.of(shulker);
             }
         }
@@ -102,7 +100,7 @@ public class ShulkerManager {
     public int getAmountOfShulkersFilled(Map map) {
         int filled = 0;
         Optional<MxWorld> world = map.getMxWorld();
-        if(world.isEmpty())
+        if (world.isEmpty())
             return filled;
         MxWorld m = world.get();
         World w = Bukkit.getWorld(m.getWorldUID());

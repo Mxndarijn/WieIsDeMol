@@ -9,6 +9,7 @@ public enum StorageContainerConfigValue {
     IS_PUBLIC("is-public");
 
     private final String configValue;
+
     StorageContainerConfigValue(String name) {
         this.configValue = name;
     }

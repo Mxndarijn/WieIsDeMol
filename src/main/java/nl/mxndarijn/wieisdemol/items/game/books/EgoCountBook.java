@@ -25,16 +25,16 @@ public class EgoCountBook extends Book {
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
         getGame(p.getWorld());
-        if(game == null)
+        if (game == null)
             return;
 
         Optional<GamePlayer> optionalGamePlayer = getGamePlayer(p.getUniqueId());
 
-        if(optionalGamePlayer.isPresent()) {
-            if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+        if (optionalGamePlayer.isPresent()) {
+            if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
                 return;
             GamePlayer gp = optionalGamePlayer.get();
-            if(!gp.isAlive())
+            if (!gp.isAlive())
                 return;
 
             for (Map.Entry<Integer, ? extends ItemStack> entry : p.getInventory().all(is.getType()).entrySet()) {
@@ -50,11 +50,11 @@ public class EgoCountBook extends Book {
                     }
                     AtomicInteger count = new AtomicInteger(0);
                     game.getColors().forEach(g -> {
-                        if(!g.isAlive())
+                        if (!g.isAlive())
                             return;
-                        if(g.getPlayer().isEmpty())
+                        if (g.getPlayer().isEmpty())
                             return;
-                        if(g.getMapPlayer().getRole() == Role.EGO) {
+                        if (g.getMapPlayer().getRole() == Role.EGO) {
                             count.getAndIncrement();
                         }
                     });

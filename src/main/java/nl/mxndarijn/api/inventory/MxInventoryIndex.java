@@ -16,6 +16,7 @@ public enum MxInventoryIndex {
 
     private final int beginIndex;
     private final int endIndex;
+
     MxInventoryIndex(int beginIndex, int endIndex) {
         this.beginIndex = beginIndex;
         this.endIndex = endIndex;

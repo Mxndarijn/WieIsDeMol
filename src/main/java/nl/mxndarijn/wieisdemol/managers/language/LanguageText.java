@@ -75,7 +75,7 @@ LanguageText {
     MAP_DOORITEM_DOOR_OPENED("map-dooritem-door-opened"),
     MAP_DOORITEM_DOOR_IS_NOT_A_DOOR("map-dooritem-door-is-not-a-door"),
     MAP_DOORITEM_DOOR_CLOSED("map-dooritem-door-closed"),
-    COMMAND_MAPS_COULD_NOT_FIND_MAP ("command-maps-could-not-find-map"),
+    COMMAND_MAPS_COULD_NOT_FIND_MAP("command-maps-could-not-find-map"),
     COMMAND_MAPS_LOADING_MAP("command-maps-loading-map"),
     COMMAND_MAPS_COULD_NOT_FIND_MXWORLD("command-maps-could-not-find-mxworld"),
     COMMAND_MAPS_COULD_NOT_FIND_WORLD("command-maps-could-not-find-world"),
@@ -183,9 +183,11 @@ LanguageText {
     GAME_PLAYER_VOTED(),
     GAME_HOST_DISABLED_VOTE();
     private final String configValue;
+
     LanguageText(String value) {
         this.configValue = value;
     }
+
     LanguageText() {
         this.configValue = name().toLowerCase().replaceAll("_", "-");
     }

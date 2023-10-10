@@ -1,8 +1,9 @@
 package nl.mxndarijn.wieisdemol.items;
 
+import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
+import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;
-import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.wieisdemol.items.game.*;
 import nl.mxndarijn.wieisdemol.items.game.books.*;
 import nl.mxndarijn.wieisdemol.items.game.spectate.LeaveGameItem;
@@ -15,7 +16,6 @@ import nl.mxndarijn.wieisdemol.items.presets.ChestConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.DoorConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.PresetConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.ShulkerConfigureTool;
-import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.wieisdemol.items.spawn.GamesItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -27,10 +27,10 @@ public enum Items {
     // Preset Items
     PRESET_CONFIGURE_TOOL(
             MxDefaultItemStackBuilder.create(Material.NETHER_STAR, 1)
-                .setName(ChatColor.GRAY + "Preset Configure-Tool")
-                .addLore(" ")
-                .addLore(ChatColor.YELLOW + "Met dit item kan je instellingen in een preset aanpassen.")
-                .build(),
+                    .setName(ChatColor.GRAY + "Preset Configure-Tool")
+                    .addLore(" ")
+                    .addLore(ChatColor.YELLOW + "Met dit item kan je instellingen in een preset aanpassen.")
+                    .build(),
             p -> {
                 return true;
             },
@@ -361,12 +361,12 @@ public enum Items {
     ;
 
 
-
     private final ItemStack itemStack;
     private final MxWorldFilter worldFilter;
     private final boolean gameItem;
     private final Class<? extends MxItem> classObject;
     private final Action[] actions;
+
     Items(ItemStack is, MxWorldFilter mxWorldFilter, boolean gameItem, Class<? extends MxItem> classObject, Action... actions) {
         this.itemStack = is;
         this.worldFilter = mxWorldFilter;

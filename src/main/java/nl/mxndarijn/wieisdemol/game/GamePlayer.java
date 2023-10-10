@@ -11,24 +11,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class GamePlayer {
 
+    private final boolean canReborn;
     private MapPlayer mapPlayer;
     private Optional<UUID> player;
     private boolean alive;
     private MxSupplierScoreBoard scoreboard;
-
     private boolean beginChestOpened;
     private boolean peacekeeperChestOpened;
-
     private Game game;
     private JavaPlugin plugin;
-    private boolean canReborn;
     private Optional<GamePlayer> votedOn;
 
     public GamePlayer(MapPlayer mapPlayer, JavaPlugin plugin, Game game) {
@@ -41,7 +37,7 @@ public class GamePlayer {
         this.peacekeeperChestOpened = false;
         this.votedOn = Optional.empty();
         this.canReborn = !mapPlayer.isPeacekeeper();
-         String host = Bukkit.getOfflinePlayer(game.getMainHost()).getName();
+        String host = Bukkit.getOfflinePlayer(game.getMainHost()).getName();
         scoreboard = new MxSupplierScoreBoard(plugin, () -> {
             return ScoreBoard.GAME_HOST.getTitle(new HashMap<>() {{
                 put("%%map_name%%", game.getConfig().getPresetConfig().getName());
@@ -62,7 +58,7 @@ public class GamePlayer {
         this.player.ifPresent(p -> {
             scoreboard.removePlayer(p);
         });
-        if(player != null) {
+        if (player != null) {
             this.player = Optional.of(player);
             ScoreBoardManager.getInstance().setPlayerScoreboard(player, scoreboard);
         } else {
@@ -74,72 +70,72 @@ public class GamePlayer {
         return mapPlayer;
     }
 
-    public Optional<UUID> getPlayer() {
-        return player;
-    }
-
     public void setMapPlayer(MapPlayer mapPlayer) {
         this.mapPlayer = mapPlayer;
+    }
+
+    public Optional<UUID> getPlayer() {
+        return player;
     }
 
     public void setPlayer(Optional<UUID> player) {
         this.player = player;
     }
 
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
-    public void setScoreboard(MxSupplierScoreBoard scoreboard) {
-        this.scoreboard = scoreboard;
-    }
-
-    public void setBeginChestOpened(boolean beginChestOpened) {
-        this.beginChestOpened = beginChestOpened;
-    }
-
-    public void setPeacekeeperChestOpened(boolean peacekeeperChestOpened) {
-        this.peacekeeperChestOpened = peacekeeperChestOpened;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-    public void setPlugin(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
-
     public boolean isAlive() {
         return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
     }
 
     public MxSupplierScoreBoard getScoreboard() {
         return scoreboard;
     }
 
+    public void setScoreboard(MxSupplierScoreBoard scoreboard) {
+        this.scoreboard = scoreboard;
+    }
+
     public boolean isBeginChestOpened() {
         return beginChestOpened;
+    }
+
+    public void setBeginChestOpened(boolean beginChestOpened) {
+        this.beginChestOpened = beginChestOpened;
     }
 
     public boolean isPeacekeeperChestOpened() {
         return peacekeeperChestOpened;
     }
 
+    public void setPeacekeeperChestOpened(boolean peacekeeperChestOpened) {
+        this.peacekeeperChestOpened = peacekeeperChestOpened;
+    }
+
     public Game getGame() {
         return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     public JavaPlugin getPlugin() {
         return plugin;
     }
 
+    public void setPlugin(JavaPlugin plugin) {
+        this.plugin = plugin;
+    }
+
     public void givePeacekeeperLoot() {
-        if(player.isPresent()) {
+        if (player.isPresent()) {
             Player p = Bukkit.getPlayer(player.get());
-            if(p != null) {
+            if (p != null) {
                 for (PeacekeeperLoot loot : PeacekeeperLoot.values()) {
-                    if(loot.getSlot() == null) {
+                    if (loot.getSlot() == null) {
                         p.getInventory().addItem(loot.getIs());
                     } else {
                         p.getInventory().setItem(loot.getSlot(), loot.getIs());
@@ -149,11 +145,11 @@ public class GamePlayer {
         }
     }
 
-    public void setVotedOn(Optional<GamePlayer> votedOn) {
-        this.votedOn = votedOn;
-    }
-
     public Optional<GamePlayer> getVotedOn() {
         return votedOn;
+    }
+
+    public void setVotedOn(Optional<GamePlayer> votedOn) {
+        this.votedOn = votedOn;
     }
 }

@@ -1,6 +1,5 @@
 package nl.mxndarijn.wieisdemol.game.events;
 
-import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.game.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -12,6 +11,7 @@ public abstract class GameEvent implements Listener {
 
     public Game game;
     public JavaPlugin plugin;
+
     public GameEvent(Game g, JavaPlugin plugin) {
         this.game = g;
         this.plugin = plugin;

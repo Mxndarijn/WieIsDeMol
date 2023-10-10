@@ -1,28 +1,30 @@
 package nl.mxndarijn.wieisdemol.commands;
 
 import net.kyori.adventure.text.Component;
-import nl.mxndarijn.api.mxcommand.MxCommand;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
-import nl.mxndarijn.wieisdemol.data.Permissions;
-import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
+import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.inventory.heads.MxHeadSection;
+import nl.mxndarijn.api.inventory.menu.MxDefaultInventoryBuilder;
+import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
-import nl.mxndarijn.api.inventory.menu.MxDefaultInventoryBuilder;
-import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
+import nl.mxndarijn.api.mxcommand.MxCommand;
+import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.Permissions;
+import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
+import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.items.util.storage.StorageContainer;
 import nl.mxndarijn.wieisdemol.items.util.storage.StorageManager;
-import nl.mxndarijn.api.chatinput.MxChatInputManager;
+import nl.mxndarijn.wieisdemol.managers.MapManager;
+import nl.mxndarijn.wieisdemol.managers.PresetsManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import nl.mxndarijn.wieisdemol.map.Map;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.presets.Preset;
-import nl.mxndarijn.wieisdemol.managers.PresetsManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -36,7 +38,10 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class ItemsCommand extends MxCommand {
     private final StorageManager manager = StorageManager.getInstance();
@@ -46,15 +51,23 @@ public class ItemsCommand extends MxCommand {
         super(Permissions.COMMAND_MAPS_ITEMS, true, false, p -> {
             UUID worldUID = p.getWorld().getUID();
             Optional<Map> map = MapManager.getInstance().getMapByWorldUID(worldUID);
+            Optional<Game> game = GameWorldManager.getInstance().getGameByWorldUID(worldUID);
             Optional<Preset> preset = PresetsManager.getInstance().getPresetByWorldUID(worldUID);
             //TODO Add Games
-            return map.isPresent() || preset.isPresent();
+            return map.isPresent() || preset.isPresent() || game.isPresent();
         });
     }
 
     @Override
     public void execute(CommandSender sender, Command command, String label, String[] args) {
         Player p = (Player) sender;
+
+        Optional<Game> game = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
+        if (game.isPresent()) {
+            if (!game.get().getHosts().contains(p.getUniqueId()))
+                return;
+        }
+
         MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultInventoryBuilder.create(ChatColor.GRAY + "Items", MxInventorySlots.THREE_ROWS)
                 .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_CHEST)
                                 .setName(ChatColor.GRAY + "Server Opslag")
@@ -103,7 +116,7 @@ public class ItemsCommand extends MxCommand {
                 .setListItems(containers)
                 .setPrevious(mainInv);
 
-        if(p.hasPermission(Permissions.ITEM_ITEMS_EDIT_SERVER_CONTAINERS.getPermission())) {
+        if (p.hasPermission(Permissions.ITEM_ITEMS_EDIT_SERVER_CONTAINERS.getPermission())) {
             builder.setItem(MxSkullItemStackBuilder.create(1)
                             .setSkinFromHeadsData("wooden-plus")
                             .setName(ChatColor.GRAY + "Voeg opslag toe")
@@ -124,7 +137,7 @@ public class ItemsCommand extends MxCommand {
                                 String key = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "skull_key"), PersistentDataType.STRING);
 
                                 Optional<MxHeadSection> section = MxHeadManager.getInstance().getHeadSection(key);
-                                if(section.isPresent()) {
+                                if (section.isPresent()) {
                                     StorageContainer newContainer = new StorageContainer(message, section.get().getKey(), "server", false, new File(SpecialDirectories.STORAGE_FILES.getDirectory() + File.separator + "server" + File.separator + UUID.randomUUID() + ".yml"));
                                     StorageManager.getInstance().addServerContainer(newContainer);
                                     p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_CONTAINER_ADDED));
@@ -181,62 +194,62 @@ public class ItemsCommand extends MxCommand {
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                 .setPrevious(mainInv)
                 .setListItems(containers)
-                        .setItem(MxSkullItemStackBuilder.create(1)
-                                        .setSkinFromHeadsData("wooden-plus")
-                                        .setName(ChatColor.GRAY + "Voeg opslag toe")
-                                        .addBlankLore()
-                                        .addLore(ChatColor.YELLOW + "Klik hier om een opslag toe te voegen")
-                                        .build(),
-                                25,
-                                (mxInv, e) -> {
-                                    p.closeInventory();
-                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_ENTER_NAME_FOR_CONTAINER));
-                                    MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
-                                        MxHeadManager mxHeadManager = MxHeadManager.getInstance();
-                                        ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
-                                        MxItemClicked clicked = (mxInv1, e1) -> {
-                                            ItemStack is = e1.getCurrentItem();
-                                            ItemMeta im = is.getItemMeta();
-                                            PersistentDataContainer container = im.getPersistentDataContainer();
-                                            String key = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "skull_key"), PersistentDataType.STRING);
+                .setItem(MxSkullItemStackBuilder.create(1)
+                                .setSkinFromHeadsData("wooden-plus")
+                                .setName(ChatColor.GRAY + "Voeg opslag toe")
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik hier om een opslag toe te voegen")
+                                .build(),
+                        25,
+                        (mxInv, e) -> {
+                            p.closeInventory();
+                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_ENTER_NAME_FOR_CONTAINER));
+                            MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
+                                MxHeadManager mxHeadManager = MxHeadManager.getInstance();
+                                ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+                                MxItemClicked clicked = (mxInv1, e1) -> {
+                                    ItemStack is = e1.getCurrentItem();
+                                    ItemMeta im = is.getItemMeta();
+                                    PersistentDataContainer container = im.getPersistentDataContainer();
+                                    String key = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "skull_key"), PersistentDataType.STRING);
 
-                                            Optional<MxHeadSection> section = MxHeadManager.getInstance().getHeadSection(key);
-                                            if(section.isPresent()) {
-                                                StorageContainer newContainer = new StorageContainer(message, section.get().getKey(), p.getUniqueId().toString(), false, new File(SpecialDirectories.STORAGE_FILES.getDirectory() + File.separator + p.getUniqueId() + File.separator + UUID.randomUUID() + ".yml"));
-                                                StorageManager.getInstance().addPlayerContainer(p.getUniqueId().toString(), newContainer);
-                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_CONTAINER_ADDED));
-                                                p.closeInventory();
-                                                openContainer(p, newContainer, mainInv);
-                                            }
+                                    Optional<MxHeadSection> section = MxHeadManager.getInstance().getHeadSection(key);
+                                    if (section.isPresent()) {
+                                        StorageContainer newContainer = new StorageContainer(message, section.get().getKey(), p.getUniqueId().toString(), false, new File(SpecialDirectories.STORAGE_FILES.getDirectory() + File.separator + p.getUniqueId() + File.separator + UUID.randomUUID() + ".yml"));
+                                        StorageManager.getInstance().addPlayerContainer(p.getUniqueId().toString(), newContainer);
+                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_CONTAINER_ADDED));
+                                        p.closeInventory();
+                                        openContainer(p, newContainer, mainInv);
+                                    }
 
-                                        };
+                                };
 
-                                        MxHeadManager.getInstance().getAllHeadKeys().forEach(key -> {
-                                            Optional<MxHeadSection> section = mxHeadManager.getHeadSection(key);
-                                            section.ifPresent(mxHeadSection -> {
-                                                MxSkullItemStackBuilder b = MxSkullItemStackBuilder.create(1)
-                                                        .setSkinFromHeadsData(key)
-                                                        .setName(ChatColor.GRAY + mxHeadSection.getName().get())
-                                                        .addBlankLore()
-                                                        .addLore(ChatColor.YELLOW + "Klik om de skull te selecteren.")
-                                                        .addCustomTagString("skull_key", mxHeadSection.getKey());
-                                                list.add(new Pair<>(b.build(), clicked));
-                                            });
-                                        });
-
-                                        MxInventoryManager.getInstance().addAndOpenInventory(p,
-                                                MxListInventoryBuilder.create(ChatColor.GRAY + "Vul-Tool", MxInventorySlots.SIX_ROWS)
-                                                        .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
-                                                        .addListItems(list)
-                                                        .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
-                                                                .setName(ChatColor.GRAY + "Info")
-                                                                .addBlankLore()
-                                                                .addLore(ChatColor.YELLOW + "Klik op een skull om dat het logo te maken van de opslag.")
-                                                                .build(), 48, null)
-                                                        .build());
+                                MxHeadManager.getInstance().getAllHeadKeys().forEach(key -> {
+                                    Optional<MxHeadSection> section = mxHeadManager.getHeadSection(key);
+                                    section.ifPresent(mxHeadSection -> {
+                                        MxSkullItemStackBuilder b = MxSkullItemStackBuilder.create(1)
+                                                .setSkinFromHeadsData(key)
+                                                .setName(ChatColor.GRAY + mxHeadSection.getName().get())
+                                                .addBlankLore()
+                                                .addLore(ChatColor.YELLOW + "Klik om de skull te selecteren.")
+                                                .addCustomTagString("skull_key", mxHeadSection.getKey());
+                                        list.add(new Pair<>(b.build(), clicked));
                                     });
-                                }
-                        )
+                                });
+
+                                MxInventoryManager.getInstance().addAndOpenInventory(p,
+                                        MxListInventoryBuilder.create(ChatColor.GRAY + "Vul-Tool", MxInventorySlots.SIX_ROWS)
+                                                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
+                                                .addListItems(list)
+                                                .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
+                                                        .setName(ChatColor.GRAY + "Info")
+                                                        .addBlankLore()
+                                                        .addLore(ChatColor.YELLOW + "Klik op een skull om dat het logo te maken van de opslag.")
+                                                        .build(), 48, null)
+                                                .build());
+                            });
+                        }
+                )
                 .build());
     }
 
@@ -264,22 +277,22 @@ public class ItemsCommand extends MxCommand {
             ItemStack is = item.clone();
             ItemMeta im = is.getItemMeta();
             List<Component> lores = im.hasLore() ? im.lore() : new ArrayList<>();
-            if(lores == null)
+            if (lores == null)
                 lores = new ArrayList<>();
             lores.add(Component.text(" "));
             lores.add(Component.text(ChatColor.YELLOW + "Linker-muisknop om het item in je inventory te krijgen"));
-            if(container.hasPermissionToEdit(p)) {
+            if (container.hasPermissionToEdit(p)) {
                 lores.add(Component.text(ChatColor.YELLOW + "Shift + Rechter-muisknop om het item te verwijderen"));
             }
 
             im.lore(lores);
             is.setItemMeta(im);
             items.add(new Pair<>(is, (mxInv, e) -> {
-                if(e.isLeftClick() && !e.isShiftClick()) {
+                if (e.isLeftClick() && !e.isShiftClick()) {
                     p.getInventory().addItem(item);
                 }
 
-                if(e.isRightClick() && e.isShiftClick()) {
+                if (e.isRightClick() && e.isShiftClick()) {
                     container.getContents().remove(item);
                     openContainer(p, container, mainInv);
                 }
@@ -288,19 +301,19 @@ public class ItemsCommand extends MxCommand {
         MxListInventoryBuilder builder = MxListInventoryBuilder.create(ChatColor.GRAY + container.getName(), MxInventorySlots.SIX_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                 .setListItems(items);
-        if(container.hasPermissionToEdit(p)) {
+        if (container.hasPermissionToEdit(p)) {
             builder.setItem(MxSkullItemStackBuilder.create(1)
-                            .setSkinFromHeadsData("red-minus")
-                            .setName(ChatColor.RED + "Verwijder Opslag")
-                            .addBlankLore()
-                            .addLore(ChatColor.YELLOW + "Klik om de opslag te verwijderen")
-                            .build(),
-                    46, (mxInv, e) -> {
+                                    .setSkinFromHeadsData("red-minus")
+                                    .setName(ChatColor.RED + "Verwijder Opslag")
+                                    .addBlankLore()
+                                    .addLore(ChatColor.YELLOW + "Klik om de opslag te verwijderen")
+                                    .build(),
+                            46, (mxInv, e) -> {
                                 p.closeInventory();
                                 container.delete();
                                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_CONTAINER_DELETED));
-                    }
-            )
+                            }
+                    )
                     .setItem(MxSkullItemStackBuilder.create(1)
                                     .setSkinFromHeadsData("wooden-plus")
                                     .setName(ChatColor.GRAY + "Voeg items toe")
@@ -313,7 +326,7 @@ public class ItemsCommand extends MxCommand {
                                         .defaultCancelEvent(false)
                                         .setOnInventoryCloseEvent((p1, inv, e1) -> {
                                             for (ItemStack content : inv.getInv().getContents()) {
-                                                if(content != null) {
+                                                if (content != null) {
                                                     container.getContents().add(content);
                                                 }
                                             }
@@ -324,7 +337,7 @@ public class ItemsCommand extends MxCommand {
                             }
                     )
             ;
-            if(!container.getOwner().equalsIgnoreCase("server")) {
+            if (!container.getOwner().equalsIgnoreCase("server")) {
                 builder.setItem(MxSkullItemStackBuilder.create(1)
                                 .setSkinFromHeadsData("minecraft-world")
                                 .setName(ChatColor.GRAY + "Toggle openbaar")

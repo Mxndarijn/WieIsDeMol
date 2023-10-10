@@ -48,7 +48,7 @@ public class MxSkullItemStackBuilder extends MxItemStackBuilder<MxSkullItemStack
         SkullMeta meta = (SkullMeta) itemMeta;
         OfflinePlayer p = Bukkit.getOfflinePlayer(id);
         boolean returnedValue = meta.setOwningPlayer(p);
-        if(!returnedValue) {
+        if (!returnedValue) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MXINVENTORY, "Could not set owner of skull");
         }
         return this;
@@ -56,21 +56,19 @@ public class MxSkullItemStackBuilder extends MxItemStackBuilder<MxSkullItemStack
 
     public MxSkullItemStackBuilder setSkinFromHeadsData(String value) {
         Optional<String> dataOpt = MxHeadManager.getInstance().getTextureValue(value);
-        if(!dataOpt.isPresent()) {
+        if (!dataOpt.isPresent()) {
             dataOpt = MxHeadManager.getInstance().getTextureValue("question-mark");
         }
-        if(dataOpt.isPresent()) {
+        if (dataOpt.isPresent()) {
             String data = dataOpt.get();
             GameProfile profile = new GameProfile(UUID.randomUUID(), null);
             profile.getProperties().put("textures", new Property("textures", data));
-            try
-            {
+            try {
                 Field profileField = itemMeta.getClass().getDeclaredField("profile");
                 profileField.setAccessible(true);
                 profileField.set(itemMeta, profile);
-            }
-            catch (IllegalArgumentException|NoSuchFieldException|SecurityException | IllegalAccessException error)
-            {
+            } catch (IllegalArgumentException | NoSuchFieldException | SecurityException |
+                     IllegalAccessException error) {
                 Logger.logMessage(LogLevel.ERROR, Prefix.MXINVENTORY, "Could not load skull: " + value);
                 error.printStackTrace();
             }

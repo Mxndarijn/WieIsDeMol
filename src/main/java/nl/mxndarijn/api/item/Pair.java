@@ -2,13 +2,12 @@ package nl.mxndarijn.api.item;
 
 public final class Pair<T, U> {
 
+    public final T first;
+    public final U second;
     public Pair(T first, U second) {
         this.second = second;
         this.first = first;
     }
-
-    public final T first;
-    public final U second;
 
     // Because 'pair()' is shorter than 'new Pair<>()'.
     // Sometimes this difference might be very significant (especially in a

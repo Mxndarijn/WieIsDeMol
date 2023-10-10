@@ -23,7 +23,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -33,7 +32,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class PlayerManagementItem extends MxItem  {
+public class PlayerManagementItem extends MxItem {
 
     public PlayerManagementItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
         super(is, worldFilter, gameItem, actions);
@@ -43,11 +42,11 @@ public class PlayerManagementItem extends MxItem  {
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Game> optionalGame = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
 
-        if(optionalGame.isEmpty())
+        if (optionalGame.isEmpty())
             return;
         Game game = optionalGame.get();
 
-        if(!game.getHosts().contains(p.getUniqueId()))
+        if (!game.getHosts().contains(p.getUniqueId()))
             return;
 
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
@@ -64,7 +63,7 @@ public class PlayerManagementItem extends MxItem  {
                             .addLore(ChatColor.YELLOW + "Klik om deze kleur aan te passen.")
                             .build(),
                     (mxInv, e1) -> {
-                        MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY +  "Beheer kleur: " + gamePlayer.getMapPlayer().getColor().getDisplayName(), MxInventorySlots.THREE_ROWS)
+                        MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Beheer kleur: " + gamePlayer.getMapPlayer().getColor().getDisplayName(), MxInventorySlots.THREE_ROWS)
                                 .setItem(MxDefaultItemStackBuilder.create(Material.BOOK)
                                                 .setName(ChatColor.GRAY + "Wijzig rol")
                                                 .addBlankLore()
@@ -92,56 +91,56 @@ public class PlayerManagementItem extends MxItem  {
                                 .setItem(MxDefaultItemStackBuilder.create(Material.SKELETON_SKULL)
                                                 .setName(ChatColor.GRAY + "Wijzig speler")
                                                 .addBlankLore()
-                                                .addLore(ChatColor.GRAY + "Huidig: " + (gamePlayer.getPlayer().isPresent() ? Bukkit.getPlayer(gamePlayer.getPlayer().get()).getName(): "Geen speler"))
+                                                .addLore(ChatColor.GRAY + "Huidig: " + (gamePlayer.getPlayer().isPresent() ? Bukkit.getPlayer(gamePlayer.getPlayer().get()).getName() : "Geen speler"))
                                                 .addBlankLore()
                                                 .addLore(ChatColor.YELLOW + "Klik hier om de speler aan te passen.")
                                                 .build(),
                                         13,
                                         (mxInv1, e2) -> {
-                                    List<Pair<ItemStack, MxItemClicked>> players = new ArrayList<>();
-                                    AtomicInteger queueAmount = new AtomicInteger(1);
-                                    game.getGameInfo().getQueue().forEach(playerUUID -> {
-                                        if(playerUUID == null || Bukkit.getPlayer(playerUUID) == null)
-                                            return;
-                                        players.add(new Pair<>(
-                                                MxSkullItemStackBuilder.create(1)
-                                                        .setSkinFromHeadsData(playerUUID.toString())
-                                                        .setName(ChatColor.GRAY + Bukkit.getPlayer(playerUUID).getName())
-                                                        .addBlankLore()
-                                                        .addLore(ChatColor.GRAY + "Nummer in wachtrij: " + queueAmount)
-                                                        .addBlankLore()
-                                                        .addLore(ChatColor.YELLOW + "Klik hier om deze speler te selecteren.")
-                                                        .build(),
-                                                (mxInv22, e32) -> {
-                                                    game.addPlayer(playerUUID, gamePlayer);
-                                                    p.closeInventory();
-                                                }
-                                        ));
-                                        queueAmount.getAndIncrement();
-                                    });
-                                    game.getSpectators().forEach(playerUUID -> {
-                                        if(playerUUID == null || Bukkit.getPlayer(playerUUID) == null)
-                                            return;
-                                        players.add(new Pair<>(
-                                                MxSkullItemStackBuilder.create(1)
-                                                        .setSkinFromHeadsData(playerUUID.toString())
-                                                        .setName(ChatColor.GRAY + Bukkit.getPlayer(playerUUID).getName())
-                                                        .addBlankLore()
-                                                        .addLore(ChatColor.GRAY + "Nummer in wachtrij: Spectator")
-                                                        .addBlankLore()
-                                                        .addLore(ChatColor.YELLOW + "Klik hier om deze speler te selecteren.")
-                                                        .build(),
-                                                (mxInv22, e32) -> {
-                                                    game.removeSpectator(playerUUID, false);
-                                                    game.addPlayer(playerUUID, gamePlayer);
-                                                    p.closeInventory();
-                                                }
-                                        ));
-                                    });
-                                            MxInventoryManager.getInstance().addAndOpenInventory(p, new MxListInventoryBuilder(ChatColor.GRAY + "Kies speler (" + gamePlayer.getMapPlayer().getColor().getDisplayName() + ChatColor.GRAY + ")" , MxInventorySlots.FOUR_ROWS)
+                                            List<Pair<ItemStack, MxItemClicked>> players = new ArrayList<>();
+                                            AtomicInteger queueAmount = new AtomicInteger(1);
+                                            game.getGameInfo().getQueue().forEach(playerUUID -> {
+                                                if (playerUUID == null || Bukkit.getPlayer(playerUUID) == null)
+                                                    return;
+                                                players.add(new Pair<>(
+                                                        MxSkullItemStackBuilder.create(1)
+                                                                .setSkinFromHeadsData(playerUUID.toString())
+                                                                .setName(ChatColor.GRAY + Bukkit.getPlayer(playerUUID).getName())
+                                                                .addBlankLore()
+                                                                .addLore(ChatColor.GRAY + "Nummer in wachtrij: " + queueAmount)
+                                                                .addBlankLore()
+                                                                .addLore(ChatColor.YELLOW + "Klik hier om deze speler te selecteren.")
+                                                                .build(),
+                                                        (mxInv22, e32) -> {
+                                                            game.addPlayer(playerUUID, gamePlayer);
+                                                            p.closeInventory();
+                                                        }
+                                                ));
+                                                queueAmount.getAndIncrement();
+                                            });
+                                            game.getSpectators().forEach(playerUUID -> {
+                                                if (playerUUID == null || Bukkit.getPlayer(playerUUID) == null)
+                                                    return;
+                                                players.add(new Pair<>(
+                                                        MxSkullItemStackBuilder.create(1)
+                                                                .setSkinFromHeadsData(playerUUID.toString())
+                                                                .setName(ChatColor.GRAY + Bukkit.getPlayer(playerUUID).getName())
+                                                                .addBlankLore()
+                                                                .addLore(ChatColor.GRAY + "Nummer in wachtrij: Spectator")
+                                                                .addBlankLore()
+                                                                .addLore(ChatColor.YELLOW + "Klik hier om deze speler te selecteren.")
+                                                                .build(),
+                                                        (mxInv22, e32) -> {
+                                                            game.removeSpectator(playerUUID, false);
+                                                            game.addPlayer(playerUUID, gamePlayer);
+                                                            p.closeInventory();
+                                                        }
+                                                ));
+                                            });
+                                            MxInventoryManager.getInstance().addAndOpenInventory(p, new MxListInventoryBuilder(ChatColor.GRAY + "Kies speler (" + gamePlayer.getMapPlayer().getColor().getDisplayName() + ChatColor.GRAY + ")", MxInventorySlots.FOUR_ROWS)
                                                     .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_THREE)
                                                     .setPrevious(mxInv1)
-                                                            .setListItems(players)
+                                                    .setListItems(players)
                                                     .setItem(MxDefaultItemStackBuilder.create(Material.NAME_TAG)
                                                                     .setName(ChatColor.GRAY + "Typ naam")
                                                                     .addBlankLore()
@@ -149,16 +148,16 @@ public class PlayerManagementItem extends MxItem  {
                                                                     .build(),
                                                             27,
                                                             (mxInv2, e3) -> {
-                                                        p.closeInventory();
-                                                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ENTER_NAME, ChatPrefix.WIDM));
+                                                                p.closeInventory();
+                                                                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ENTER_NAME, ChatPrefix.WIDM));
                                                                 MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                                                                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                                                                         Player enteredPlayer = Bukkit.getPlayer(message);
-                                                                        if(enteredPlayer == null) {
+                                                                        if (enteredPlayer == null) {
                                                                             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ENTER_NAME_NOT_FOUND, ChatPrefix.WIDM));
                                                                             return;
                                                                         }
-                                                                        if(!game.getGameInfo().getQueue().contains(enteredPlayer.getUniqueId())) {
+                                                                        if (!game.getGameInfo().getQueue().contains(enteredPlayer.getUniqueId())) {
                                                                             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ENTER_NAME_NOT_IN_QUEUE, ChatPrefix.WIDM));
                                                                             return;
                                                                         }
@@ -167,17 +166,17 @@ public class PlayerManagementItem extends MxItem  {
                                                                 });
 
                                                             })
-                                                            .setItem(MxDefaultItemStackBuilder.create(Material.SKELETON_SKULL)
-                                                                    .setName(ChatColor.GRAY + "Verwijder Speler")
-                                                                    .addBlankLore()
-                                                                    .addLore(ChatColor.YELLOW + "Verander de kleur naar niemand.")
-                                                                    .build(), 28, (mxInv23, e33) -> {
-                                                                        if(gamePlayer.getPlayer().isEmpty())
-                                                                            return;
-                                                                        game.removePlayer(gamePlayer.getPlayer().get());
-                                                                        p.closeInventory();
-                                                                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_COLOR_CLEARED, Collections.singletonList(gamePlayer.getMapPlayer().getColor().getDisplayName())));
-                                                                    })
+                                                    .setItem(MxDefaultItemStackBuilder.create(Material.SKELETON_SKULL)
+                                                            .setName(ChatColor.GRAY + "Verwijder Speler")
+                                                            .addBlankLore()
+                                                            .addLore(ChatColor.YELLOW + "Verander de kleur naar niemand.")
+                                                            .build(), 28, (mxInv23, e33) -> {
+                                                        if (gamePlayer.getPlayer().isEmpty())
+                                                            return;
+                                                        game.removePlayer(gamePlayer.getPlayer().get());
+                                                        p.closeInventory();
+                                                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_COLOR_CLEARED, Collections.singletonList(gamePlayer.getMapPlayer().getColor().getDisplayName())));
+                                                    })
                                                     .build());
                                         })
                                 .setItem(MxDefaultItemStackBuilder.create(Material.GOLDEN_SWORD)
@@ -194,19 +193,18 @@ public class PlayerManagementItem extends MxItem  {
                                             gamePlayer.setAlive(!gamePlayer.isAlive());
                                             p.closeInventory();
                                             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYERSTATE_CHANGED, Arrays.asList(gamePlayer.getMapPlayer().getColor().getDisplayName(), gamePlayer.isAlive() ? ChatColor.GREEN + "Levend" : ChatColor.RED + "Dood")));
-                                            if(gamePlayer.getPlayer().isEmpty())
+                                            if (gamePlayer.getPlayer().isEmpty())
                                                 return;
                                             Player player = Bukkit.getPlayer(gamePlayer.getPlayer().get());
-                                            if(gamePlayer.isAlive()) {
+                                            if (gamePlayer.isAlive()) {
                                                 game.removeSpectator(player.getUniqueId(), false);
                                                 player.getInventory().clear();
                                                 player.teleport(p);
                                                 player.setAllowFlight(false);
-                                            }
-                                            else {
+                                            } else {
                                                 player.setHealth(0);
                                             }
-                                                    //TODO
+                                            //TODO
                                         })
                                 .setPrevious(mxInv)
                                 .build()
@@ -230,15 +228,15 @@ public class PlayerManagementItem extends MxItem  {
                         (mxInv, e12) -> {
                             p.closeInventory();
                             game.getColors().forEach(gp -> {
-                                if(gp.getPlayer().isPresent())
+                                if (gp.getPlayer().isPresent())
                                     return;
-                                if(!game.getGameInfo().getQueue().isEmpty()) {
+                                if (!game.getGameInfo().getQueue().isEmpty()) {
                                     game.addPlayer(game.getGameInfo().getQueue().get(0), gp);
                                 }
                             });
                             game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_AUTOMATICALLY_FILLED));
 
-                })
+                        })
                 .build()
         );
     }
@@ -273,7 +271,7 @@ public class PlayerManagementItem extends MxItem  {
         return (mxInv, e) -> {
             Colors color = mapPlayer.getColor();
             mapPlayer.setPeacekeeper(!mapPlayer.isPeacekeeper());
-            if(mapPlayer.isPeacekeeper()) {
+            if (mapPlayer.isPeacekeeper()) {
                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_IS_NOW_PEACEKEEPER, Collections.singletonList(color.getDisplayName())));
             } else {
                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_IS_NOT_PEACEKEEPER, Collections.singletonList(color.getDisplayName())));

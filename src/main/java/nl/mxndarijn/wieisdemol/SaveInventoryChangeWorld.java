@@ -2,9 +2,9 @@ package nl.mxndarijn.wieisdemol;
 
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
 import nl.mxndarijn.api.changeworld.WorldReachedZeroPlayersEvent;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
-import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.inventory.saver.InventoryManager;
+import nl.mxndarijn.api.item.Pair;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.World;
@@ -18,11 +18,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class SaveInventoryChangeWorld  implements MxChangeWorld {
+public class SaveInventoryChangeWorld implements MxChangeWorld {
 
     private final ArrayList<Pair<ItemStack, String>> defaultItems;
     private final File inventoryFile;
     private final WorldReachedZeroPlayersEvent event;
+
     public SaveInventoryChangeWorld(File inventoryFile, ArrayList<Pair<ItemStack, String>> items, WorldReachedZeroPlayersEvent event) {
         defaultItems = items;
         this.inventoryFile = inventoryFile;
@@ -35,7 +36,7 @@ public class SaveInventoryChangeWorld  implements MxChangeWorld {
         FileConfiguration fc = YamlConfiguration.loadConfiguration(inventoryFile);
         InventoryManager.loadInventoryForPlayer(fc, p.getUniqueId().toString(), p);
         defaultItems.forEach(itemPair -> {
-            if(!InventoryManager.containsItem(p.getInventory(), itemPair.first)) {
+            if (!InventoryManager.containsItem(p.getInventory(), itemPair.first)) {
                 p.getInventory().addItem(itemPair.first);
             }
             p.sendMessage(itemPair.second);

@@ -8,29 +8,31 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class GameManager {
 
     private static GameManager instance;
+    private final ConfigFiles config;
+    private List<GameInfo> upcomingGameList;
+
+    private GameManager() {
+        config = ConfigFiles.UPCOMING_GAMES;
+        loadGames();
+    }
 
     public static GameManager getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new GameManager();
         return instance;
     }
 
-
     public List<GameInfo> getUpcomingGameList() {
         return upcomingGameList;
-    }
-
-    private List<GameInfo> upcomingGameList;
-    private final ConfigFiles config;
-    private GameManager() {
-        config = ConfigFiles.UPCOMING_GAMES;
-        loadGames();
     }
 
     public void removeAllGamesWithMap(Map map) {
@@ -57,7 +59,7 @@ public class GameManager {
 
     public void addUpcomingGame(UUID host, Map map, LocalDateTime date) {
         GameInfo upcomingGame = GameInfo.create(map, host, date);
-            upcomingGameList.add(upcomingGame);
+        upcomingGameList.add(upcomingGame);
     }
 
     public void save() {

@@ -1,24 +1,20 @@
 package nl.mxndarijn.wieisdemol;
 
-import nl.mxndarijn.wieisdemol.commands.*;
-import nl.mxndarijn.wieisdemol.data.ConfigFiles;
-import nl.mxndarijn.wieisdemol.data.Permissions;
-import nl.mxndarijn.api.inventory.heads.MxHeadManager;
-import nl.mxndarijn.wieisdemol.managers.SpawnManager;
-import nl.mxndarijn.wieisdemol.managers.VanishManager;
-import nl.mxndarijn.wieisdemol.managers.GameManager;
-import nl.mxndarijn.wieisdemol.managers.items.ItemManager;
-import nl.mxndarijn.wieisdemol.items.util.storage.StorageManager;
+import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
-import nl.mxndarijn.api.util.events.PlayerJoinEventHeadManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
+import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.api.util.events.PlayerJoinEventHeadManager;
+import nl.mxndarijn.wieisdemol.commands.*;
+import nl.mxndarijn.wieisdemol.data.ConfigFiles;
+import nl.mxndarijn.wieisdemol.data.Permissions;
+import nl.mxndarijn.wieisdemol.items.util.storage.StorageManager;
+import nl.mxndarijn.wieisdemol.managers.*;
+import nl.mxndarijn.wieisdemol.managers.items.ItemManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
-import nl.mxndarijn.api.changeworld.ChangeWorldManager;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
-import nl.mxndarijn.wieisdemol.managers.PresetsManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,10 +57,11 @@ public final class WieIsDeMol extends JavaPlugin {
         StorageManager.getInstance().save();
         Logger.logMessage(LogLevel.INFORMATION, "Stopped Wie Is De Mol...");
     }
+
     private void setLogLevel() {
         Logger.setLogLevel(LogLevel.DEBUG);
         Optional<LogLevel> level = LogLevel.getLevelByInt(ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("log-level"));
-        if(level.isPresent()) {
+        if (level.isPresent()) {
             Logger.setLogLevel(level.get());
             Logger.logMessage(LogLevel.INFORMATION, Prefix.LOGGER, "Log-level has been set to " + level.get().getName() + ChatColor.DARK_GRAY + " (Found in config)");
         } else {
@@ -74,7 +71,7 @@ public final class WieIsDeMol extends JavaPlugin {
     }
 
     private void registerCommands() {
-        Logger.logMessage(LogLevel.INFORMATION,"Registering commands...");
+        Logger.logMessage(LogLevel.INFORMATION, "Registering commands...");
         getCommand("maps").setExecutor(new MapCommand(Permissions.COMMAND_MAPS, true, false));
         getCommand("presets").setExecutor(new PresetsCommand(Permissions.COMMAND_PRESETS, true, false));
         getCommand("skulls").setExecutor(new SkullsCommand(Permissions.COMMAND_SKULLS, true, false));
@@ -86,7 +83,7 @@ public final class WieIsDeMol extends JavaPlugin {
 
     private void configFilesSaver() {
         int interval = ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("auto-save-configs-interval");
-        if(interval == 0) {
+        if (interval == 0) {
             interval = 5;
             Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Interval for auto-save is 0, autosetting it to 5.. (Needs to be higher than 0)");
             ConfigFiles.MAIN_CONFIG.getFileConfiguration().set("auto-save-configs-interval", 5);
@@ -94,6 +91,6 @@ public final class WieIsDeMol extends JavaPlugin {
         Logger.logMessage(LogLevel.INFORMATION, Prefix.CONFIG_FILES, "Saving interval for config files is " + interval + " minutes.");
         Bukkit.getScheduler().scheduleSyncRepeatingTask(this, () -> {
             ConfigFiles.saveAll();
-        },20L * 60L * interval,20L * 60L * interval);
+        }, 20L * 60L * interval, 20L * 60L * interval);
     }
 }

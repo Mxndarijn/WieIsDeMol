@@ -1,7 +1,10 @@
 package nl.mxndarijn.wieisdemol.items.game;
 
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
-import nl.mxndarijn.api.inventory.*;
+import nl.mxndarijn.api.inventory.MxInventoryIndex;
+import nl.mxndarijn.api.inventory.MxInventoryManager;
+import nl.mxndarijn.api.inventory.MxInventorySlots;
+import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
@@ -21,7 +24,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class GameSpelerTool extends MxItem {
 
@@ -34,14 +40,14 @@ public class GameSpelerTool extends MxItem {
 
         Optional<Game> mapOptional = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
 
-        if(mapOptional.isEmpty()) {
+        if (mapOptional.isEmpty()) {
             return;
         }
 
         Game game = mapOptional.get();
 
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(p.getUniqueId());
-        if(gp.isEmpty())
+        if (gp.isEmpty())
             return;
 
         MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Speler Tool", MxInventorySlots.THREE_ROWS)
@@ -53,8 +59,8 @@ public class GameSpelerTool extends MxItem {
                                 .build(),
                         11,
                         (mxInv, e1) -> {
-                    p.closeInventory();
-                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ENTER_QUESTION));
+                            p.closeInventory();
+                            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ENTER_QUESTION));
                             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                                 game.sendMessageToHosts(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_HOST, Arrays.asList(p.getName(), message)));
                                 p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_QUESTION_SEND));
@@ -69,9 +75,9 @@ public class GameSpelerTool extends MxItem {
                         13,
                         (mxInv, e1) -> {
                             List<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
-                            game.getColors().forEach( gamePlayer -> {
-                                if(gamePlayer.getPlayer().isPresent()) {
-                                    if(gamePlayer.getPlayer().get().equals(p.getUniqueId()))
+                            game.getColors().forEach(gamePlayer -> {
+                                if (gamePlayer.getPlayer().isPresent()) {
+                                    if (gamePlayer.getPlayer().get().equals(p.getUniqueId()))
                                         return;
                                     OfflinePlayer pl = Bukkit.getOfflinePlayer(gamePlayer.getPlayer().get());
                                     list.add(new Pair<>(
@@ -92,26 +98,26 @@ public class GameSpelerTool extends MxItem {
                                 }
                             });
                             MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Stemmen", MxInventorySlots.THREE_ROWS)
-                                            .setListItems(list)
-                                            .setPrevious(mxInv)
-                                            .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
-                                            .setShowPageNumbers(false)
-                                            .setItem(MxSkullItemStackBuilder.create(1)
+                                    .setListItems(list)
+                                    .setPrevious(mxInv)
+                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                                    .setShowPageNumbers(false)
+                                    .setItem(MxSkullItemStackBuilder.create(1)
                                                     .setSkinFromHeadsData("message-icon")
-                                                            .setName(ChatColor.GRAY + "Laat resultaten zien")
-                                                            .addBlankLore()
-                                                            .addLore(ChatColor.YELLOW + "Klik hier om de resultaten aan")
-                                                            .addLore(ChatColor.YELLOW + "iedereen te laten zien.")
-                                                            .build(),
-                                                    18, (mxInv1, e2) -> {
-                                                        p.closeInventory();
-                                                        if(game.isPlayersCanEndVote()) {
-                                                            game.showVotingResults(p.getName());
-                                                        } else {
-                                                            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_DISABLED_VOTE));
-                                                        }
-                                                    }
-                                            )
+                                                    .setName(ChatColor.GRAY + "Laat resultaten zien")
+                                                    .addBlankLore()
+                                                    .addLore(ChatColor.YELLOW + "Klik hier om de resultaten aan")
+                                                    .addLore(ChatColor.YELLOW + "iedereen te laten zien.")
+                                                    .build(),
+                                            18, (mxInv1, e2) -> {
+                                                p.closeInventory();
+                                                if (game.isPlayersCanEndVote()) {
+                                                    game.showVotingResults(p.getName());
+                                                } else {
+                                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_DISABLED_VOTE));
+                                                }
+                                            }
+                                    )
                                     .build()
                             );
                         })

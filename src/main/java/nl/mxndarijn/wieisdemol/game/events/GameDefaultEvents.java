@@ -24,39 +24,39 @@ public class GameDefaultEvents extends GameEvent {
 
     @EventHandler
     public void paintingBreak(HangingBreakByEntityEvent e) {
-        if(e.getRemover() == null)
+        if (e.getRemover() == null)
             return;
-        if(!validateWorld(e.getRemover().getWorld()))
+        if (!validateWorld(e.getRemover().getWorld()))
             return;
         Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getRemover().getUniqueId());
-        if(gamePlayer.isEmpty())
+        if (gamePlayer.isEmpty())
             return;
-        if(e.getEntity() instanceof Painting) {
+        if (e.getEntity() instanceof Painting) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void join(PlayerJoinEvent e) {
-        if(!validateWorld(e.getPlayer().getWorld()))
+        if (!validateWorld(e.getPlayer().getWorld()))
             return;
         Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
-        if(gamePlayer.isEmpty() && !game.getHosts().contains(e.getPlayer().getUniqueId()))
+        if (gamePlayer.isEmpty() && !game.getHosts().contains(e.getPlayer().getUniqueId()))
             return;
         e.joinMessage(Component.text(""));
         game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_JOINED_AGAIN, Collections.singletonList(e.getPlayer().getName())));
         gamePlayer.ifPresent(player -> ScoreBoardManager.getInstance().setPlayerScoreboard(e.getPlayer().getUniqueId(), player.getScoreboard()));
-        if(game.getHosts().contains(e.getPlayer().getUniqueId())) {
+        if (game.getHosts().contains(e.getPlayer().getUniqueId())) {
             ScoreBoardManager.getInstance().setPlayerScoreboard(e.getPlayer().getUniqueId(), game.getHostScoreboard());
         }
     }
 
     @EventHandler
     public void quit(PlayerQuitEvent e) {
-        if(!validateWorld(e.getPlayer().getWorld()))
+        if (!validateWorld(e.getPlayer().getWorld()))
             return;
         Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
-        if(gamePlayer.isEmpty() && !game.getHosts().contains(e.getPlayer().getUniqueId()))
+        if (gamePlayer.isEmpty() && !game.getHosts().contains(e.getPlayer().getUniqueId()))
             return;
         e.quitMessage(Component.text(""));
         game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_LEAVED_AGAIN, Collections.singletonList(e.getPlayer().getName())));

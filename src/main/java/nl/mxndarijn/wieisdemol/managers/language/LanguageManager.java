@@ -1,12 +1,12 @@
 package nl.mxndarijn.wieisdemol.managers.language;
 
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
-import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,26 +20,17 @@ import java.util.List;
 
 public class LanguageManager {
     private static LanguageManager instance;
-
-    public static LanguageManager getInstance() {
-        if(instance == null) {
-            instance = new LanguageManager();
-        }
-        return instance;
-    }
-
     private FileConfiguration languageConfig;
     private File languageFile;
-
     public LanguageManager() {
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
         String path = ConfigFiles.MAIN_CONFIG.getFileConfiguration().getString("language-file");
         languageFile = new File(plugin.getDataFolder() + File.separator + "languages" + File.separator + path);
-        if(!languageFile.exists()) {
+        if (!languageFile.exists()) {
             Logger.logMessage(LogLevel.INFORMATION, Prefix.LANGUAGE_MANAGER, languageConfig.getString("language-name") + " has been created and loaded! (" + path + ")");
-            Functions.copyFileFromResources(path.split("/")[0],path);
+            Functions.copyFileFromResources(path.split("/")[0], path);
         }
-        if(!languageFile.exists()) {
+        if (!languageFile.exists()) {
             Logger.logMessage(LogLevel.FATAL, Prefix.LANGUAGE_MANAGER, "Could not load language file... using default nl-NL.yml");
             languageFile = new File(plugin.getDataFolder() + File.separator + "languages" + File.separator + "nl-NL.yml");
         }
@@ -47,12 +38,19 @@ public class LanguageManager {
         Logger.logMessage(LogLevel.INFORMATION, Prefix.LANGUAGE_MANAGER, languageConfig.getString("language-name") + " has been loaded! (" + path + ")");
     }
 
+    public static LanguageManager getInstance() {
+        if (instance == null) {
+            instance = new LanguageManager();
+        }
+        return instance;
+    }
+
     public String getLanguageString(LanguageText text, List<String> placeholders) {
         checkAvailability(text);
         String languageString = ChatColor.translateAlternateColorCodes('&', languageConfig.getString(text.getConfigValue()));
         for (int i = 0; i < placeholders.size(); i++) {
             String v = placeholders.get(i);
-            languageString = languageString.replace("%%" + (i+1) + "%%", v);
+            languageString = languageString.replace("%%" + (i + 1) + "%%", v);
         }
         return languageString;
     }
@@ -72,10 +70,10 @@ public class LanguageManager {
     }
 
     private void checkAvailability(LanguageText text) {
-        if(!languageConfig.contains(text.getConfigValue())) {
+        if (!languageConfig.contains(text.getConfigValue())) {
             JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
             FileConfiguration fileConfiguration = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource(ConfigFiles.DEFAULT_LANGUAGE.getFileName())));
-            if(fileConfiguration.contains(text.getConfigValue())) {
+            if (fileConfiguration.contains(text.getConfigValue())) {
                 String value = fileConfiguration.getString(text.getConfigValue());
                 languageConfig.addDefault(text.getConfigValue(), value);
                 try {

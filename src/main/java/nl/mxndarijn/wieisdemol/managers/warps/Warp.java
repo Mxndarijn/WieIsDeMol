@@ -28,20 +28,13 @@ public class Warp {
         this.skullId = skullId;
     }
 
-    public void save(File file, FileConfiguration fc) {
-        ConfigurationSection section = fc.createSection(name);
-        section.set("skull", skullId);
-        mxLocation.write(section.createSection("location"));
-    }
-
-    public static Optional<Warp> create( ConfigurationSection section) {
+    public static Optional<Warp> create(ConfigurationSection section) {
         Warp w = new Warp(section);
-        if(w.mxLocation != null) {
+        if (w.mxLocation != null) {
             return Optional.of(w);
         }
         return Optional.empty();
     }
-
 
     public static List<Warp> getWarpsFromFile(File f, FileConfiguration fc) {
         ArrayList<Warp> warps = new ArrayList<>();
@@ -55,24 +48,30 @@ public class Warp {
 
     }
 
+    public void save(File file, FileConfiguration fc) {
+        ConfigurationSection section = fc.createSection(name);
+        section.set("skull", skullId);
+        mxLocation.write(section.createSection("location"));
+    }
+
     public String getName() {
         return name;
-    }
-
-    public MxLocation getMxLocation() {
-        return mxLocation;
-    }
-
-    public String getSkullId() {
-        return skullId;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
+    public MxLocation getMxLocation() {
+        return mxLocation;
+    }
+
     public void setMxLocation(MxLocation mxLocation) {
         this.mxLocation = mxLocation;
+    }
+
+    public String getSkullId() {
+        return skullId;
     }
 
     public void setSkullId(String skullId) {

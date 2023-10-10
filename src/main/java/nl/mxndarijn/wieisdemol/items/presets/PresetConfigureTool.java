@@ -1,32 +1,32 @@
 package nl.mxndarijn.wieisdemol.items.presets;
 
-import nl.mxndarijn.api.util.MxWorldFilter;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
-import nl.mxndarijn.wieisdemol.data.Interaction;
-import nl.mxndarijn.wieisdemol.data.Colors;
-import nl.mxndarijn.wieisdemol.managers.InteractionManager;
+import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.inventory.heads.MxHeadSection;
+import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
+import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
-import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
-import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
-import nl.mxndarijn.api.mxitem.MxItem;
-import nl.mxndarijn.api.chatinput.MxChatInputManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.wieisdemol.managers.warps.WarpManager;
+import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MxWorldFilter;
+import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.Colors;
+import nl.mxndarijn.wieisdemol.data.Interaction;
+import nl.mxndarijn.wieisdemol.managers.InteractionManager;
+import nl.mxndarijn.wieisdemol.managers.PresetsManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
+import nl.mxndarijn.wieisdemol.managers.warps.Warp;
+import nl.mxndarijn.wieisdemol.managers.warps.WarpManager;
 import nl.mxndarijn.wieisdemol.presets.Preset;
 import nl.mxndarijn.wieisdemol.presets.PresetConfig;
-import nl.mxndarijn.wieisdemol.managers.PresetsManager;
-import nl.mxndarijn.wieisdemol.managers.warps.Warp;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,7 +44,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-public class PresetConfigureTool extends MxItem  {
+public class PresetConfigureTool extends MxItem {
 
     public PresetConfigureTool(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
         super(is, worldFilter, gameItem, actions);
@@ -53,13 +53,13 @@ public class PresetConfigureTool extends MxItem  {
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Preset> optionalPreset = PresetsManager.getInstance().getPresetByWorldUID(e.getPlayer().getWorld().getUID());
-        if(!optionalPreset.isPresent()) {
+        if (!optionalPreset.isPresent()) {
             return;
         }
         Preset preset = optionalPreset.get();
         PresetConfig config = preset.getConfig();
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p,MxDefaultMenuBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
                 .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_PEARL)
                                 .setName(ChatColor.GRAY + "Verander spawn locatie")
                                 .addBlankLore()
@@ -68,7 +68,7 @@ public class PresetConfigureTool extends MxItem  {
                         13,
                         (mxInv1, e12) -> {
                             File settings = new File(preset.getDirectory(), "worldsettings.yml");
-                            if(settings.exists()) {
+                            if (settings.exists()) {
                                 FileConfiguration fc = YamlConfiguration.loadConfiguration(settings);
                                 Location l = p.getLocation();
                                 ConfigurationSection section = fc.createSection("spawn");
@@ -100,7 +100,7 @@ public class PresetConfigureTool extends MxItem  {
                                 String key = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "skull_key"), PersistentDataType.STRING);
 
                                 Optional<MxHeadSection> section = MxHeadManager.getInstance().getHeadSection(key);
-                                if(section.isPresent() && section.get().getName().isPresent()) {
+                                if (section.isPresent() && section.get().getName().isPresent()) {
                                     clickMain.getWhoClicked().sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_SKULL_CHANGED, Collections.singletonList(section.get().getName().get())));
                                 }
                                 config.setSkullId(key);
@@ -250,12 +250,12 @@ public class PresetConfigureTool extends MxItem  {
                 .build();
     }
 
-    private void openStarsMenu(Player p,MxInventory mainInv, Preset preset, PresetConfig config, int type) {
+    private void openStarsMenu(Player p, MxInventory mainInv, Preset preset, PresetConfig config, int type) {
         String levelTag = "level";
         MxItemClicked clicked = (mxInv, e) -> {
             PersistentDataContainer container = e.getCurrentItem().getItemMeta().getPersistentDataContainer();
             int level = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), levelTag), PersistentDataType.INTEGER);
-            if(type == 0) {
+            if (type == 0) {
                 config.setPlayDifficulty(level);
                 mainInv.getInv().setItem(17, getPlayDifficulty(preset, config));
             } else {
@@ -266,7 +266,7 @@ public class PresetConfigureTool extends MxItem  {
             MxInventoryManager.getInstance().addAndOpenInventory(p, mainInv);
         };
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p,MxDefaultMenuBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
                 .setItem(MxDefaultItemStackBuilder.create(Material.TURTLE_EGG)
                                 .setName(ChatColor.GRAY + "Level: 1")
                                 .addBlankLore()
@@ -274,7 +274,7 @@ public class PresetConfigureTool extends MxItem  {
                                 .addLore(ChatColor.YELLOW + "Klik hier om het level te veranderen naar 1.")
                                 .build(),
                         11,
-                       clicked)
+                        clicked)
                 .setItem(MxDefaultItemStackBuilder.create(Material.TURTLE_EGG)
                                 .setName(ChatColor.GRAY + "Level: 2")
                                 .addBlankLore()
@@ -307,16 +307,16 @@ public class PresetConfigureTool extends MxItem  {
                                 .build(),
                         15,
                         clicked)
-                        .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
-                                .setName(ChatColor.GRAY + "Info")
-                                .addBlankLore()
-                                .addLore(ChatColor.YELLOW + "Verander het visuele aspect voor de " + (type == 0 ? "play-difficulty" : "host-difficulty"))
-                                .build(),22,null)
+                .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
+                        .setName(ChatColor.GRAY + "Info")
+                        .addBlankLore()
+                        .addLore(ChatColor.YELLOW + "Verander het visuele aspect voor de " + (type == 0 ? "play-difficulty" : "host-difficulty"))
+                        .build(), 22, null)
                 .setPrevious(mainInv)
                 .build());
     }
 
-    private void openWarpsMenu(Player p,MxInventory mainInv, Preset preset, PresetConfig config) {
+    private void openWarpsMenu(Player p, MxInventory mainInv, Preset preset, PresetConfig config) {
         List<Warp> warps = preset.getWarpManager().getWarps();
         MxItemClicked clicked = (mxInv, e) -> {
             ItemStack is = e.getCurrentItem();
@@ -325,16 +325,16 @@ public class PresetConfigureTool extends MxItem  {
             String warpName = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "warp-name"), PersistentDataType.STRING);
 
             Optional<Warp> optW = preset.getWarpManager().getWarpByName(warpName);
-            if(optW.isPresent()) {
+            if (optW.isPresent()) {
                 Warp w = optW.get();
                 MxLocation l = w.getMxLocation();
                 MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create("Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
                         .setPrevious(mxInv)
                         .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_PEARL)
-                                    .setName(ChatColor.GRAY + "Verander warp locatie")
-                                    .addBlankLore()
-                                    .addLore(ChatColor.YELLOW + "Verander de warp locatie naar je huidige locatie.")
-                                    .build(),
+                                        .setName(ChatColor.GRAY + "Verander warp locatie")
+                                        .addBlankLore()
+                                        .addLore(ChatColor.YELLOW + "Verander de warp locatie naar je huidige locatie.")
+                                        .build(),
                                 12,
                                 (mxInv1, e12) -> {
                                     preset.getWarpManager().removeWarp(w);
@@ -346,10 +346,10 @@ public class PresetConfigureTool extends MxItem  {
                                 }
                         )
                         .setItem(MxDefaultItemStackBuilder.create(Material.COMPASS)
-                                    .setName(ChatColor.GRAY + "Teleporteer")
-                                    .addBlankLore()
-                                    .addLore(ChatColor.YELLOW + "Teleporteer naar de warp.")
-                                    .build(),
+                                        .setName(ChatColor.GRAY + "Teleporteer")
+                                        .addBlankLore()
+                                        .addLore(ChatColor.YELLOW + "Teleporteer naar de warp.")
+                                        .build(),
                                 14,
                                 (mxInv1, e12) -> {
                                     p.teleport(w.getMxLocation().getLocation(p.getWorld()));
@@ -359,11 +359,11 @@ public class PresetConfigureTool extends MxItem  {
                         )
 
                         .setItem(MxSkullItemStackBuilder.create(1)
-                                    .setSkinFromHeadsData("red-minus")
-                                    .setName(ChatColor.GRAY + "Verwijder")
-                                    .addBlankLore()
-                                    .addLore(ChatColor.YELLOW + "Verwijder de warp.")
-                                    .build(),
+                                        .setSkinFromHeadsData("red-minus")
+                                        .setName(ChatColor.GRAY + "Verwijder")
+                                        .addBlankLore()
+                                        .addLore(ChatColor.YELLOW + "Verwijder de warp.")
+                                        .build(),
                                 26,
                                 (mxInv1, e12) -> {
                                     preset.getWarpManager().removeWarp(w);
@@ -372,17 +372,17 @@ public class PresetConfigureTool extends MxItem  {
                                 }
                         )
                         .setItem(MxSkullItemStackBuilder.create(1)
-                                    .setSkinFromHeadsData(w.getSkullId())
-                                    .setName(ChatColor.GRAY + "Info")
-                                    .addBlankLore()
-                                    .addLore(ChatColor.GRAY + "Naam: " + w.getName())
-                                    .addBlankLore()
-                                    .addLore(ChatColor.GRAY + "X: " + l.getX())
-                                    .addLore(ChatColor.GRAY + "Y: " + l.getY())
-                                    .addLore(ChatColor.GRAY + "Z: " + l.getZ())
-                                    .addLore(ChatColor.GRAY + "Pitch: " + l.getPitch())
-                                    .addLore(ChatColor.GRAY + "Yaw: " + l.getYaw())
-                                    .build(),
+                                        .setSkinFromHeadsData(w.getSkullId())
+                                        .setName(ChatColor.GRAY + "Info")
+                                        .addBlankLore()
+                                        .addLore(ChatColor.GRAY + "Naam: " + w.getName())
+                                        .addBlankLore()
+                                        .addLore(ChatColor.GRAY + "X: " + l.getX())
+                                        .addLore(ChatColor.GRAY + "Y: " + l.getY())
+                                        .addLore(ChatColor.GRAY + "Z: " + l.getZ())
+                                        .addLore(ChatColor.GRAY + "Pitch: " + l.getPitch())
+                                        .addLore(ChatColor.GRAY + "Yaw: " + l.getYaw())
+                                        .build(),
                                 22,
                                 (mxInv1, e12) -> {
                                     p.teleport(w.getMxLocation().getLocation(p.getWorld()));
@@ -409,7 +409,7 @@ public class PresetConfigureTool extends MxItem  {
             ));
         });
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p,MxListInventoryBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                 .addListItems(list)
                 .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
@@ -436,7 +436,7 @@ public class PresetConfigureTool extends MxItem  {
                         p.closeInventory();
                         WarpManager warpManager = preset.getWarpManager();
                         MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
-                            if(warps.stream().anyMatch(w -> w.getName().equalsIgnoreCase(message))) {
+                            if (warps.stream().anyMatch(w -> w.getName().equalsIgnoreCase(message))) {
                                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_NAME_ALREADY_EXISTS, Collections.singletonList(message)));
                                 return;
                             }
@@ -471,7 +471,7 @@ public class PresetConfigureTool extends MxItem  {
                                             .build(), 48, null)
                                     .setPrevious(mxInv)
                                     .build());
-                        })
+                })
                 .setPrevious(mainInv)
                 .build()
         );
@@ -486,7 +486,7 @@ public class PresetConfigureTool extends MxItem  {
             builder.addItem(
                     getColorItemStack(c, config),
                     (mxInv, e) -> {
-                        if(colorsMap.containsKey(c)) {
+                        if (colorsMap.containsKey(c)) {
                             // Remove color
                             MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Preset Configure-Tool", MxInventorySlots.THREE_ROWS)
                                     .setPrevious(mxInv)
@@ -504,40 +504,40 @@ public class PresetConfigureTool extends MxItem  {
                                                 p.closeInventory();
                                                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_COLOR_REMOVED, Collections.singletonList(c.getColor() + c.getDisplayName())));
                                             })
-                                        .setItem(
-                                                MxDefaultItemStackBuilder.create(Material.ENDER_PEARL)
-                                                        .setName(ChatColor.GRAY + "Verander Spawnpoint")
-                                                        .addBlankLore()
-                                                        .addLore(ChatColor.YELLOW + "Klik hier om de spawnpoint aan te passen.")
-                                                        .build(),
-                                                15,
-                                                (mxInv1, e1) -> {
-                                                    MxLocation location = MxLocation.getFromLocation(p.getLocation());
-                                                    colorsMap.put(c, location);
-                                                    config.save();
-                                                    p.closeInventory();
-                                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_COLOR_SPAWNPOINT_CHANGED, Collections.singletonList(c.getColor() + c.getDisplayName())));
-                                                })
-                                            .setItem(
-                                                    MxDefaultItemStackBuilder.create(Material.COMPASS)
-                                                            .setName(ChatColor.GRAY + "Teleporteer naar Spawnpoint")
-                                                            .addBlankLore()
-                                                            .addLore(ChatColor.YELLOW + "Klik hier om naar de spawnpoint te teleporteren.")
-                                                            .build(),
-                                                    13,
-                                                    (mxInv1, e1) -> {
-                                                        p.teleport(colorsMap.get(c).getLocation(p.getWorld()));
-                                                        p.closeInventory();
-                                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_COLOR_TELEPORTED, Collections.singletonList(c.getColor() + c.getDisplayName())));
-                                                    })
-                                            .setItem(MxSkullItemStackBuilder.create(1)
+                                    .setItem(
+                                            MxDefaultItemStackBuilder.create(Material.ENDER_PEARL)
+                                                    .setName(ChatColor.GRAY + "Verander Spawnpoint")
+                                                    .addBlankLore()
+                                                    .addLore(ChatColor.YELLOW + "Klik hier om de spawnpoint aan te passen.")
+                                                    .build(),
+                                            15,
+                                            (mxInv1, e1) -> {
+                                                MxLocation location = MxLocation.getFromLocation(p.getLocation());
+                                                colorsMap.put(c, location);
+                                                config.save();
+                                                p.closeInventory();
+                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_COLOR_SPAWNPOINT_CHANGED, Collections.singletonList(c.getColor() + c.getDisplayName())));
+                                            })
+                                    .setItem(
+                                            MxDefaultItemStackBuilder.create(Material.COMPASS)
+                                                    .setName(ChatColor.GRAY + "Teleporteer naar Spawnpoint")
+                                                    .addBlankLore()
+                                                    .addLore(ChatColor.YELLOW + "Klik hier om naar de spawnpoint te teleporteren.")
+                                                    .build(),
+                                            13,
+                                            (mxInv1, e1) -> {
+                                                p.teleport(colorsMap.get(c).getLocation(p.getWorld()));
+                                                p.closeInventory();
+                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_COLOR_TELEPORTED, Collections.singletonList(c.getColor() + c.getDisplayName())));
+                                            })
+                                    .setItem(MxSkullItemStackBuilder.create(1)
                                                     .setSkinFromHeadsData(c.getHeadKey())
                                                     .setName(c.getColor() + c.getDisplayName())
                                                     .build(),
-                                                    22,
-                                                    null)
-                                            .build()
-                                    );
+                                            22,
+                                            null)
+                                    .build()
+                            );
 
                         } else {
                             // Add Color
@@ -558,7 +558,7 @@ public class PresetConfigureTool extends MxItem  {
     private void openInteractionsMenu(Player p, MxInventory mainInv, Preset preset, PresetConfig config) {
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
         InteractionManager manager = preset.getInteractionManager();
-        manager.getInteractions().forEach((i,b) -> {
+        manager.getInteractions().forEach((i, b) -> {
             list.add(new Pair<>(getInteractionItem(i, b),
                     (mxInv, e) -> {
                         manager.setInteraction(i, !manager.getInteractions().get(i));
@@ -586,6 +586,7 @@ public class PresetConfigureTool extends MxItem  {
                 .addLore(ChatColor.YELLOW + "Klik hier om het block te togglen.")
                 .build();
     }
+
     private ItemStack getColorItemStack(Colors c, PresetConfig config) {
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData(c.getHeadKey())

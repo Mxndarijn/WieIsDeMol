@@ -15,15 +15,15 @@ public enum SpecialDirectories {
     LANGUAGE_FILES("languages"),
     STORAGE_FILES("storages");
 
+    private static final List<SpecialDirectories> values = Collections.unmodifiableList(Arrays.asList(values()));
     private final File directory;
     private final String folderName;
 
-    private static final List<SpecialDirectories> values = Collections.unmodifiableList(Arrays.asList(values()));
     SpecialDirectories(String folderName) {
         this.folderName = folderName;
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
         directory = new File(plugin.getDataFolder() + getPath());
-        if(!directory.exists()) {
+        if (!directory.exists()) {
             boolean success = directory.mkdirs();
 
         }

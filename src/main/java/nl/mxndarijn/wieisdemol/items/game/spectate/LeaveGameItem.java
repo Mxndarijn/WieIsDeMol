@@ -22,8 +22,8 @@ public class LeaveGameItem extends MxItem {
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Game> optionalGame = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
-        if(optionalGame.isPresent()) {
-            if(optionalGame.get().getSpectators().contains(p.getUniqueId())) {
+        if (optionalGame.isPresent()) {
+            if (optionalGame.get().getSpectators().contains(p.getUniqueId())) {
                 optionalGame.get().removeSpectator(p.getUniqueId());
                 p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_LEAVE));
                 optionalGame.get().sendMessageToHosts(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_LEFT, Collections.singletonList(p.getName())));

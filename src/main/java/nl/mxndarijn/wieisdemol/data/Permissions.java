@@ -21,6 +21,7 @@ public enum Permissions {
     VANISH("widm.vanish");
 
     private final String permission;
+
     Permissions(String permission) {
         this.permission = permission;
     }

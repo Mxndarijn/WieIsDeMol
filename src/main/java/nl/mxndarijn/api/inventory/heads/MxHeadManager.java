@@ -4,11 +4,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
-import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -25,30 +25,24 @@ import java.util.*;
 
 public class MxHeadManager {
     private static MxHeadManager instance;
-
-    public static MxHeadManager getInstance() {
-        if(instance == null) {
-            instance = new MxHeadManager();
-        }
-        return instance;
-    }
     private final FileConfiguration fileConfiguration;
+
     public MxHeadManager() {
         fileConfiguration = ConfigFiles.HEAD_DATA.getFileConfiguration();
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
             Logger.logMessage(LogLevel.INFORMATION, Prefix.MXHEAD_MANAGER, "Refreshing player skulls...");
-            for(String key : fileConfiguration.getKeys(false)) {
+            for (String key : fileConfiguration.getKeys(false)) {
                 Optional<MxHeadSection> optionalSection = MxHeadSection.loadHead(key);
-                if(optionalSection.isPresent()) {
+                if (optionalSection.isPresent()) {
                     MxHeadSection section = optionalSection.get();
-                    if(section.getType().get() == MxHeadsType.PLAYER) {
+                    if (section.getType().get() == MxHeadsType.PLAYER) {
                         Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Refreshing skull: " + key);
                         Optional<String> value = getTexture(section.getUuid().get());
-                        if(!value.isPresent()) {
+                        if (!value.isPresent()) {
                             Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not get texture for " + key + ", skipping texture...");
                             continue;
                         }
-                        if(!section.getValue().get().equalsIgnoreCase(value.get())) {
+                        if (!section.getValue().get().equalsIgnoreCase(value.get())) {
                             section.setValue(value.get());
                             section.apply();
                         }
@@ -58,9 +52,16 @@ public class MxHeadManager {
         });
     }
 
+    public static MxHeadManager getInstance() {
+        if (instance == null) {
+            instance = new MxHeadManager();
+        }
+        return instance;
+    }
+
     public Optional<String> getTextureValue(String name) {
         Optional<MxHeadSection> optionalSection = MxHeadSection.loadHead(name);
-        if(optionalSection.isPresent()) {
+        if (optionalSection.isPresent()) {
             MxHeadSection section = optionalSection.get();
             return section.getValue();
         }
@@ -74,20 +75,20 @@ public class MxHeadManager {
     public boolean storeSkullTexture(ItemStack itemStack, String textureName, String displayName, MxHeadsType type) {
         Optional<MxHeadSection> optionalSection = MxHeadSection.loadHead(textureName);
         Optional<UUID> ownerOptional = Optional.empty();
-        if(type == MxHeadsType.PLAYER) {
+        if (type == MxHeadsType.PLAYER) {
             ownerOptional = getOwner(itemStack);
         }
         Optional<String> optionalTexture = Optional.empty();
-        if(type == MxHeadsType.PLAYER) {
-            if(ownerOptional.isPresent()) {
+        if (type == MxHeadsType.PLAYER) {
+            if (ownerOptional.isPresent()) {
                 optionalTexture = getTexture(ownerOptional.get());
             }
         } else {
             optionalTexture = getTextureValue(itemStack);
         }
-        if(optionalTexture.isPresent()) {
+        if (optionalTexture.isPresent()) {
             String texture = optionalTexture.get();
-            if(optionalSection.isPresent()) {
+            if (optionalSection.isPresent()) {
                 MxHeadSection section = optionalSection.get();
                 section.setType(type);
                 section.setValue(texture);
@@ -96,10 +97,10 @@ public class MxHeadManager {
                 section.apply();
                 return true;
             } else {
-                if(type == MxHeadsType.PLAYER) {
-                    if(ownerOptional.isPresent()) {
+                if (type == MxHeadsType.PLAYER) {
+                    if (ownerOptional.isPresent()) {
                         Optional<MxHeadSection> section = MxHeadSection.create(textureName, displayName, type, texture, ownerOptional.get());
-                        if(!section.isPresent()) {
+                        if (!section.isPresent()) {
                             Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not create MxHeadSection, wrong input.");
                             return false;
                         }
@@ -110,8 +111,8 @@ public class MxHeadManager {
                         return false;
                     }
                 } else {
-                    Optional<MxHeadSection> section =  MxHeadSection.create(textureName, displayName, type, texture);
-                    if(!section.isPresent()) {
+                    Optional<MxHeadSection> section = MxHeadSection.create(textureName, displayName, type, texture);
+                    if (!section.isPresent()) {
                         Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not create MxHeadSection, wrong input.");
                         return false;
                     }
@@ -124,7 +125,7 @@ public class MxHeadManager {
     }
 
     private Optional<String> getTextureValue(ItemStack itemStack) {
-        if(itemStack.getType() == Material.PLAYER_HEAD) {
+        if (itemStack.getType() == Material.PLAYER_HEAD) {
             try {
                 SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
                 Field profileField = skullMeta.getClass().getDeclaredField("profile");
@@ -133,7 +134,7 @@ public class MxHeadManager {
                 Collection<Property> textures = profile.getProperties().get("textures");
 
                 Optional<Property> optionalTexture = textures.stream().findFirst();
-                if(optionalTexture.isPresent()) {
+                if (optionalTexture.isPresent()) {
                     Property texture = optionalTexture.get();
                     return Optional.of(texture.getValue());
                 } else {
@@ -152,10 +153,10 @@ public class MxHeadManager {
     }
 
     private Optional<UUID> getOwner(ItemStack itemStack) {
-        if(itemStack.getType() == Material.PLAYER_HEAD) {
+        if (itemStack.getType() == Material.PLAYER_HEAD) {
             SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
             OfflinePlayer player = skullMeta.getOwningPlayer();
-            if(player == null) {
+            if (player == null) {
                 Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not load head data, because it does not have an owner.");
                 return Optional.empty();
             }
@@ -167,7 +168,7 @@ public class MxHeadManager {
     }
 
     public void removeHead(String key) {
-        if(fileConfiguration.contains(key)) {
+        if (fileConfiguration.contains(key)) {
             fileConfiguration.set(key, null);
         }
     }

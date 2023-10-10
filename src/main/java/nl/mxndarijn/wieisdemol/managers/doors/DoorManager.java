@@ -6,7 +6,10 @@ import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.mxworld.MxWorld;
 import nl.mxndarijn.wieisdemol.map.Map;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -24,7 +27,7 @@ public class DoorManager {
 
     public DoorManager(File f) {
         this.doorFile = f;
-        if(!this.doorFile.exists()) {
+        if (!this.doorFile.exists()) {
             try {
                 this.doorFile.createNewFile();
             } catch (IOException e) {
@@ -51,7 +54,7 @@ public class DoorManager {
         fc.getKeys(false).forEach(k -> {
             fc.set(k, null);
         });
-        doors.forEach( w -> {
+        doors.forEach(w -> {
             w.save(fc);
         });
         try {
@@ -75,7 +78,7 @@ public class DoorManager {
 
     public Optional<DoorInformation> getDoorById(String id) {
         for (DoorInformation door : doors) {
-            if(door.getUuid().equalsIgnoreCase(id)) {
+            if (door.getUuid().equalsIgnoreCase(id)) {
                 return Optional.of(door);
             }
         }
@@ -88,7 +91,7 @@ public class DoorManager {
 
     public boolean areAllDoorsClosed(Map map) {
         Optional<MxWorld> world = map.getMxWorld();
-        if(world.isEmpty())
+        if (world.isEmpty())
             return false;
         MxWorld m = world.get();
         World w = Bukkit.getWorld(m.getWorldUID());

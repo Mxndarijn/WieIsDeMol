@@ -18,6 +18,7 @@ public class MxItemStackBuilder<T extends MxItemStackBuilder<T>> {
     ItemStack itemStack;
     ItemMeta itemMeta;
     List<String> lores;
+
     MxItemStackBuilder(Material mat) {
         this(mat, 1);
     }
@@ -41,6 +42,7 @@ public class MxItemStackBuilder<T extends MxItemStackBuilder<T>> {
         lores.add(lore);
         return (T) this;
     }
+
     public T addBlankLore() {
         lores.add(" ");
         return (T) this;

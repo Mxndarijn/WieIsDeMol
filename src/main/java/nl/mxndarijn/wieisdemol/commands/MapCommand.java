@@ -1,25 +1,23 @@
 package nl.mxndarijn.wieisdemol.commands;
 
-import nl.mxndarijn.api.mxcommand.MxCommand;
-import nl.mxndarijn.api.util.MxWorldFilter;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
-import nl.mxndarijn.wieisdemol.data.Permissions;
+import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
-import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
-import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.inventory.menu.MxDefaultInventoryBuilder;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
-import nl.mxndarijn.api.chatinput.MxChatInputManager;
+import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
+import nl.mxndarijn.api.item.Pair;
+import nl.mxndarijn.api.mxcommand.MxCommand;
+import nl.mxndarijn.api.mxworld.MxWorld;
+import nl.mxndarijn.api.util.MxWorldFilter;
+import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.Permissions;
+import nl.mxndarijn.wieisdemol.managers.MapManager;
+import nl.mxndarijn.wieisdemol.managers.PresetsManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import nl.mxndarijn.api.logger.LogLevel;
-import nl.mxndarijn.api.logger.Logger;
-import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.map.Map;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
-import nl.mxndarijn.api.mxworld.MxWorld;
 import nl.mxndarijn.wieisdemol.presets.Preset;
-import nl.mxndarijn.wieisdemol.managers.PresetsManager;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -40,6 +38,7 @@ import java.util.stream.Collectors;
 public class MapCommand extends MxCommand {
 
     private static final LanguageManager lang = LanguageManager.getInstance();
+
     public MapCommand(Permissions permission, boolean onlyPlayersCanExecute, boolean canBeExecutedInGame, MxWorldFilter worldFilter) {
         super(permission, onlyPlayersCanExecute, canBeExecutedInGame, worldFilter);
     }
@@ -76,7 +75,7 @@ public class MapCommand extends MxCommand {
                                             .setName(ChatColor.GRAY + "Info")
                                             .addLore(" ")
                                             .addLore(ChatColor.YELLOW + "Klik op een map om deze aan te passen.")
-                                            .build(), 49,null)
+                                            .build(), 49, null)
                                     .build());
 
                         })
@@ -109,15 +108,15 @@ public class MapCommand extends MxCommand {
                                     }
                                     MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                                         Optional<Map> map = Map.createFromPreset(message, optionalPreset.get(), p.getUniqueId());
-                                        if(map.isPresent()) {
-                                            if(map.get().getMxWorld().isEmpty()) {
+                                        if (map.isPresent()) {
+                                            if (map.get().getMxWorld().isEmpty()) {
                                                 p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_CREATED));
                                                 return;
                                             }
                                             p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_MAP_CREATED));
                                             MxWorld mxWorld = map.get().getMxWorld().get();
                                             map.get().loadWorld().thenAccept(loaded -> {
-                                                if(loaded) {
+                                                if (loaded) {
                                                     World w = Bukkit.getWorld(mxWorld.getWorldUID());
                                                     if (w == null) {
                                                         p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_MAP_COULD_NOT_BE_CREATED));
@@ -148,7 +147,7 @@ public class MapCommand extends MxCommand {
                                             .setName(ChatColor.GRAY + "Info")
                                             .addLore(" ")
                                             .addLore(ChatColor.YELLOW + "Klik op een preset om deze te vullen en uiteindelijk te hosten.")
-                                            .build(), 49,null)
+                                            .build(), 49, null)
                                     .build());
 
 
@@ -164,7 +163,7 @@ public class MapCommand extends MxCommand {
                                 .build(),
                         16,
                         (clickedInv, e) -> {
-                        // Bookshelf
+                            // Bookshelf
                             List<Map> playerMaps = MapManager.getInstance().getAllMaps().stream().filter(m -> m.getMapConfig().getSharedPlayers().contains(p.getUniqueId())).toList();
                             MxItemClicked clickedOnPlayerMap = getClickedOnPlayerMap(p);
 
@@ -178,7 +177,7 @@ public class MapCommand extends MxCommand {
                                             .setName(ChatColor.GRAY + "Info")
                                             .addLore(" ")
                                             .addLore(ChatColor.YELLOW + "Klik op een map om deze aan te passen.")
-                                            .build(), 49,null)
+                                            .build(), 49, null)
                                     .build());
 
                         })
@@ -204,12 +203,12 @@ public class MapCommand extends MxCommand {
                 Map map = optionalMap.get();
                 p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_LOADING_MAP));
                 map.loadWorld().thenAccept(loaded -> {
-                    if(map.getMxWorld().isEmpty()) {
+                    if (map.getMxWorld().isEmpty()) {
                         p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_MXWORLD));
                         return;
                     }
                     World w = Bukkit.getWorld(map.getMxWorld().get().getWorldUID());
-                    if(w == null) {
+                    if (w == null) {
                         p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_COULD_NOT_FIND_WORLD));
                         return;
                     }

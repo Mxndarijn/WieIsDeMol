@@ -4,7 +4,8 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Team;
 
-import java.util.*;
+import java.util.Random;
+import java.util.UUID;
 
 public class MxScoreBoardTeam {
     private final String id;
@@ -33,32 +34,31 @@ public class MxScoreBoardTeam {
 
     }
 
-
-    public void setLine(String line) {
-        if(line.length() > scoreboard.MAX_LINE_LENGTH) {
-            throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
-        }
-        int lineLength = line.length();
-        if(lineLength <= scoreboard.MAX_LINE_LENGTH / 2) {
-            team.prefix(Component.text(line));
-            team.suffix(Component.text(""));
-        } else {
-            String prefix = line.substring(0, scoreboard.MAX_LINE_LENGTH / 2);
-            String suffix = getLatestChatColor(prefix) + line.substring(scoreboard.MAX_LINE_LENGTH / 2);
-            if((prefix + suffix).length() > scoreboard.MAX_LINE_LENGTH)
-                throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
-            team.prefix(Component.text(prefix));
-            team.suffix(Component.text(suffix));
-
-        }
-    }
-
     public String getId() {
         return id;
     }
 
     public String getLine() {
         return line;
+    }
+
+    public void setLine(String line) {
+        if (line.length() > scoreboard.MAX_LINE_LENGTH) {
+            throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
+        }
+        int lineLength = line.length();
+        if (lineLength <= scoreboard.MAX_LINE_LENGTH / 2) {
+            team.prefix(Component.text(line));
+            team.suffix(Component.text(""));
+        } else {
+            String prefix = line.substring(0, scoreboard.MAX_LINE_LENGTH / 2);
+            String suffix = getLatestChatColor(prefix) + line.substring(scoreboard.MAX_LINE_LENGTH / 2);
+            if ((prefix + suffix).length() > scoreboard.MAX_LINE_LENGTH)
+                throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
+            team.prefix(Component.text(prefix));
+            team.suffix(Component.text(suffix));
+
+        }
     }
 
     public Team getTeam() {

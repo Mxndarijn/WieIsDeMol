@@ -15,10 +15,20 @@ public enum LogLevel {
     private final String prefix;
     private final int level;
     private final String name;
+
     LogLevel(String logName, int level, ChatColor color) {
         this.level = level;
         this.name = color + logName;
         this.prefix = Logger.getMainWieIsDeMolPrefix() + ChatColor.DARK_GRAY + "-" + color + logName + ChatColor.DARK_GRAY + "]" + color + " \u00BB " + ChatColor.DARK_GRAY;
+    }
+
+    public static Optional<LogLevel> getLevelByInt(int i) {
+        for (LogLevel l : values()) {
+            if (l.level == i) {
+                return Optional.of(l);
+            }
+        }
+        return Optional.empty();
     }
 
     public String getPrefix() {
@@ -27,15 +37,6 @@ public enum LogLevel {
 
     public int getLevel() {
         return level;
-    }
-
-    public static Optional<LogLevel> getLevelByInt(int i) {
-        for(LogLevel l : values()) {
-            if(l.level == i) {
-                return Optional.of(l);
-            }
-        }
-        return Optional.empty();
     }
 
     public String getName() {

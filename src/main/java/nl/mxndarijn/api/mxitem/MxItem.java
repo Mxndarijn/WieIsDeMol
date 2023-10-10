@@ -1,16 +1,15 @@
 package nl.mxndarijn.api.mxitem;
 
-import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
-import nl.mxndarijn.api.util.MxWorldFilter;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.api.inventory.saver.InventoryManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,13 +26,12 @@ import java.util.Collections;
 
 public abstract class MxItem implements Listener {
 
+    public final JavaPlugin plugin;
     private final ItemStack is;
     private final MxWorldFilter worldFilter;
     private final LanguageManager languageManager;
-
     private final boolean gameItem;
     private final Action[] actions;
-    public final JavaPlugin plugin;
 
 
     public MxItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
@@ -49,28 +47,28 @@ public abstract class MxItem implements Listener {
 
     @EventHandler
     public void interact(PlayerInteractEvent e) {
-        if(!Arrays.stream(actions).anyMatch(a -> a == e.getAction())) {
+        if (!Arrays.stream(actions).anyMatch(a -> a == e.getAction())) {
             return;
         }
 
-        if(e.getHand() != EquipmentSlot.HAND) {
+        if (e.getHand() != EquipmentSlot.HAND) {
             return;
         }
 
 
-        if(e.getItem() == null || !e.getItem().hasItemMeta() || e.getItem().getType() == Material.AIR) {
+        if (e.getItem() == null || !e.getItem().hasItemMeta() || e.getItem().getType() == Material.AIR) {
             return;
         }
 
         Player p = e.getPlayer();
-        if(gameItem) {
-            if(!GameWorldManager.getInstance().isPlayerPLayingInAGame(p.getUniqueId())) {
+        if (gameItem) {
+            if (!GameWorldManager.getInstance().isPlayerPLayingInAGame(p.getUniqueId())) {
                 return;
             }
             // TODO check ingame
         }
 
-        if(!InventoryManager.validateItem(e.getItem(), is)) {
+        if (!InventoryManager.validateItem(e.getItem(), is)) {
             return;
         }
 
@@ -80,7 +78,7 @@ public abstract class MxItem implements Listener {
         } catch (Exception ex) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MXITEM, "Could not execute item: " + Functions.convertComponentToString(is.getItemMeta().displayName()));
             ex.printStackTrace();
-            p.sendMessage(languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_ITEM, Collections.emptyList(),  ChatPrefix.WIDM));
+            p.sendMessage(languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_ITEM, Collections.emptyList(), ChatPrefix.WIDM));
         }
 
     }
@@ -97,9 +95,6 @@ public abstract class MxItem implements Listener {
 //    public void interactAtEntity(PlayerInteractAtEntityEvent e) {
 //
 //    }
-
-
-
 
 
 }

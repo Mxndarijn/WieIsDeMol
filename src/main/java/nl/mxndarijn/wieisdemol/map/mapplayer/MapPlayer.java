@@ -1,11 +1,11 @@
 package nl.mxndarijn.wieisdemol.map.mapplayer;
 
-import nl.mxndarijn.wieisdemol.data.Role;
-import nl.mxndarijn.wieisdemol.data.Colors;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.wieisdemol.data.Colors;
+import nl.mxndarijn.wieisdemol.data.Role;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Optional;
@@ -32,27 +32,27 @@ public class MapPlayer {
 
     public static Optional<MapPlayer> loadMapPlayerFromConfigurationSection(ConfigurationSection section) {
         Optional<Colors> color = Colors.getColorByType(section.getName());
-        if(color.isEmpty()) {
+        if (color.isEmpty()) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not load color");
             return Optional.empty();
         }
         ConfigurationSection locationSection = section.getConfigurationSection(MapPlayerConfigValue.LOCATION.getConfigValue());
 
-        if(locationSection == null) {
+        if (locationSection == null) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not load spawnpoint for color: (Section null) " + color.get().getType() + " Path: " + section.getCurrentPath());
             return Optional.empty();
         }
 
         boolean isPeacekeeper = section.getBoolean(MapPlayerConfigValue.IS_PEACEKEEPER.getConfigValue(), false);
         Optional<Role> role = Role.getRoleByType(section.getString(MapPlayerConfigValue.ROLE.getConfigValue(), Role.SPELER.getRoleType()));
-        if(role.isEmpty()) {
+        if (role.isEmpty()) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not load role for color: " + color.get().getType());
             return Optional.empty();
         }
 
         Optional<MxLocation> optionalMxLocation = MxLocation.loadFromConfigurationSection(locationSection);
 
-        if(optionalMxLocation.isEmpty()) {
+        if (optionalMxLocation.isEmpty()) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not load spawnpoint for color: " + color.get().getType());
             return Optional.empty();
         }
@@ -78,17 +78,20 @@ public class MapPlayer {
         return location;
     }
 
+    public void setLocation(MxLocation location) {
+        this.location = location;
+    }
+
     public Role getRole() {
         return role;
     }
 
-    public boolean isPeacekeeper() {
-        return isPeacekeeper;
-    }
-
-
     public void setRole(Role role) {
         this.role = role;
+    }
+
+    public boolean isPeacekeeper() {
+        return isPeacekeeper;
     }
 
     public void setPeacekeeper(boolean peacekeeper) {
@@ -101,9 +104,5 @@ public class MapPlayer {
 
     public String getRoleDisplayWithoutPeacekeeper() {
         return role.getRolName();
-    }
-
-    public void setLocation(MxLocation location) {
-        this.location = location;
     }
 }

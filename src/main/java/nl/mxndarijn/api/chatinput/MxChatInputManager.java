@@ -19,13 +19,6 @@ public class MxChatInputManager implements Listener {
     private static MxChatInputManager instance;
     private final HashMap<UUID, MxChatInputCallback> map;
 
-    public static MxChatInputManager getInstance() {
-        if(instance == null) {
-            instance = new MxChatInputManager();
-        }
-        return instance;
-    }
-
     private MxChatInputManager() {
         map = new HashMap<>();
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
@@ -35,11 +28,17 @@ public class MxChatInputManager implements Listener {
 
     }
 
+    public static MxChatInputManager getInstance() {
+        if (instance == null) {
+            instance = new MxChatInputManager();
+        }
+        return instance;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void chatEvent(AsyncChatEvent e) {
         UUID uuid = e.getPlayer().getUniqueId();
-        if(map.containsKey(uuid)) {
+        if (map.containsKey(uuid)) {
             e.setCancelled(true);
             MxChatInputCallback inputCallback = map.get(uuid);
             map.remove(uuid);

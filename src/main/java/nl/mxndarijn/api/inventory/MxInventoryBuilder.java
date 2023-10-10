@@ -18,6 +18,7 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
     protected boolean canBeClosed = true;
 
     protected MxOnInventoryCloseEvent closeEvent = null;
+
     protected MxInventoryBuilder(String name, MxInventorySlots slotType) {
         this.slotType = slotType;
         this.name = getRandomPrefix() + name;
@@ -31,7 +32,7 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
 
     public T addItem(ItemStack is, MxItemClicked onClicked) {
         int index = inv.firstEmpty();
-        if(index == -1) {
+        if (index == -1) {
             return (T) this;
         }
         inv.setItem(index, is);
@@ -85,7 +86,7 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
         StringBuilder prefix = new StringBuilder();
         ChatColor[] list = ChatColor.values();
         Random random = new Random();
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             ChatColor r = list[random.nextInt(list.length)];
             prefix.append(r);
         }

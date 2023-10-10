@@ -20,19 +20,19 @@ public class GameFreezeEvents extends GameEvent {
 
     @EventHandler
     public void move(PlayerMoveEvent e) {
-        if(game.getGameInfo().getStatus() != UpcomingGameStatus.FREEZE)
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.FREEZE)
             return;
-        if(
+        if (
                 checkValues(e.getFrom().getBlockX(), e.getTo().getBlockX()) &&
-                checkValues(e.getFrom().getBlockZ(), e.getTo().getBlockZ())
+                        checkValues(e.getFrom().getBlockZ(), e.getTo().getBlockZ())
         ) {
             return;
         }
-        if(!validateWorld(e.getPlayer().getWorld())) {
+        if (!validateWorld(e.getPlayer().getWorld())) {
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
-        if(gp.isEmpty()){
+        if (gp.isEmpty()) {
             return;
         }
         e.getPlayer().teleport(new Location(e.getFrom().getWorld(), e.getFrom().getBlockX(), e.getFrom().getBlockY(), e.getFrom().getBlockZ()));
@@ -46,20 +46,20 @@ public class GameFreezeEvents extends GameEvent {
 
     @EventHandler
     public void damage(EntityDamageEvent e) {
-        if(game.getGameInfo().getStatus() != UpcomingGameStatus.FREEZE)
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.FREEZE)
             return;
-        if(!validateWorld(e.getEntity().getWorld()))
+        if (!validateWorld(e.getEntity().getWorld()))
             return;
         e.setCancelled(true);
     }
 
     @EventHandler
     public void interact(PlayerInteractEvent e) {
-        if(game.getGameInfo().getStatus() != UpcomingGameStatus.FREEZE)
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.FREEZE)
             return;
-        if(!validateWorld(e.getPlayer().getWorld()))
+        if (!validateWorld(e.getPlayer().getWorld()))
             return;
-        if(game.getHosts().contains(e.getPlayer().getUniqueId())){
+        if (game.getHosts().contains(e.getPlayer().getUniqueId())) {
             return;
         }
         e.setCancelled(true);
@@ -67,9 +67,9 @@ public class GameFreezeEvents extends GameEvent {
 
     @EventHandler
     public void hunger(FoodLevelChangeEvent e) {
-        if(game.getGameInfo().getStatus() != UpcomingGameStatus.FREEZE)
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.FREEZE)
             return;
-        if(!validateWorld(e.getEntity().getWorld()))
+        if (!validateWorld(e.getEntity().getWorld()))
             return;
         e.setCancelled(true);
     }

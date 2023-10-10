@@ -7,7 +7,6 @@ import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.util.MxWorldFilter;
-import nl.mxndarijn.wieisdemol.data.CustomInventoryOverlay;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
@@ -31,29 +30,29 @@ public class SwitchBook extends Book {
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
         getGame(p.getWorld());
-        if(game == null)
+        if (game == null)
             return;
 
         Optional<GamePlayer> optionalGamePlayer = getGamePlayer(p.getUniqueId());
 
-        if(optionalGamePlayer.isPresent()) {
-            if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+        if (optionalGamePlayer.isPresent()) {
+            if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
                 return;
             GamePlayer gp = optionalGamePlayer.get();
-            if(!gp.isAlive())
+            if (!gp.isAlive())
                 return;
             List<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
             game.getColors().forEach(gamePlayer -> {
-                if(gamePlayer.getPlayer().isEmpty())
+                if (gamePlayer.getPlayer().isEmpty())
                     return;
-                if(!gamePlayer.isAlive())
+                if (!gamePlayer.isAlive())
                     return;
-                if(gamePlayer.getPlayer().get().equals(p.getUniqueId()))
+                if (gamePlayer.getPlayer().get().equals(p.getUniqueId()))
                     return;
-                if(gamePlayer.isPeacekeeperChestOpened() && gamePlayer.getMapPlayer().isPeacekeeper())
+                if (gamePlayer.isPeacekeeperChestOpened() && gamePlayer.getMapPlayer().isPeacekeeper())
                     return;
                 Player player = Bukkit.getPlayer(gamePlayer.getPlayer().get());
-                if(player == null)
+                if (player == null)
                     return;
 
                 list.add(new Pair<>(
@@ -82,7 +81,7 @@ public class SwitchBook extends Book {
                                     Location playerLocation = player.getLocation();
                                     p.teleport(playerLocation);
                                     player.teleport(pLoc);
-                                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SWITCH_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor()  +  p.getName(), gamePlayer.getMapPlayer().getColor().getColor()+ player.getName())));
+                                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SWITCH_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())));
                                     break;
                                 }
                             }
@@ -90,8 +89,8 @@ public class SwitchBook extends Book {
                 ));
             });
 
-            MxInventoryManager.getInstance().addAndOpenInventory(p,MxListInventoryBuilder.create("Switch", MxInventorySlots.SIX_ROWS)
-                    .setAvailableSlots(12,13,14,20,21,22,23,24,25,30,31,32,33,34,35,41,42,43)
+            MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("Switch", MxInventorySlots.SIX_ROWS)
+                    .setAvailableSlots(12, 13, 14, 20, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 35, 41, 42, 43)
                     .setShowPageNumbers(false)
                     .setListItems(list)
                     .build());

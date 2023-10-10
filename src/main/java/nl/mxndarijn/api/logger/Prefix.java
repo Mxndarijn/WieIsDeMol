@@ -22,6 +22,7 @@ public enum Prefix {
 
     private final String prefix;
     private final String name;
+
     Prefix(String prefix) {
         this.prefix = ChatColor.DARK_GRAY + "[" + prefix + ChatColor.DARK_GRAY + "] ";
         this.name = prefix;

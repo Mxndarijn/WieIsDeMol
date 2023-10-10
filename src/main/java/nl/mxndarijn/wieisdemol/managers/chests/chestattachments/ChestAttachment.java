@@ -25,22 +25,23 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.EulerAngle;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 
 public abstract class ChestAttachment {
     public ChestInformation information;
     public String type;
-    private Optional<Game> game;
     public Optional<ArmorStand> armorStand;
+    private Optional<Game> game;
 
+    public static boolean getDefaultValues(ChestAttachment attachment, ChestInformation information, Map<String, Object> section) {
 
-        public static boolean getDefaultValues(ChestAttachment attachment, ChestInformation information, Map<String, Object> section) {
-
-        if(section == null) {
+        if (section == null) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not load ChestAttachment (No Section)");
             return false;
         }
-        if(!section.containsKey("type")) {
+        if (!section.containsKey("type")) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not load ChestAttachment (No Type)");
             return false;
         }
@@ -48,6 +49,7 @@ public abstract class ChestAttachment {
         attachment.information = information;
         return true;
     }
+
     public void onGameStart(Game game) {
         this.game = Optional.of(game);
     }
@@ -56,15 +58,17 @@ public abstract class ChestAttachment {
         this.type = type;
         this.information = information;
     }
+
     public void onGamePause() {
 
     }
+
     public void onGameUpdate(long delta) {
 
     }
 
 
-        public abstract Pair<ItemStack, MxItemClicked> getEditAttachmentItem();
+    public abstract Pair<ItemStack, MxItemClicked> getEditAttachmentItem();
 
     public boolean canOpenChest(GamePlayer gamePlayer) {
         return true;
@@ -81,9 +85,9 @@ public abstract class ChestAttachment {
     public abstract Map<String, Object> getDataForSaving();
 
     public void spawnArmorStand() {
-        if(game.isEmpty())
+        if (game.isEmpty())
             return;
-        if(game.get().getMxWorld().isEmpty())
+        if (game.get().getMxWorld().isEmpty())
             return;
         Location location = information.getLocation().getLocation(Bukkit.getWorld(game.get().getMxWorld().get().getWorldUID())).add(0.5, 0.2, 0.5);
 
@@ -104,8 +108,7 @@ public abstract class ChestAttachment {
                 .build());
 
         Location blockLocation = information.getLocation().getLocation(Bukkit.getWorld(game.get().getMxWorld().get().getWorldUID()));
-        if(blockLocation.getBlock().getBlockData() instanceof org.bukkit.block.data.type.Chest) {
-            org.bukkit.block.data.type.Chest di = (org.bukkit.block.data.type.Chest) blockLocation.getBlock().getBlockData();
+        if (blockLocation.getBlock().getBlockData() instanceof org.bukkit.block.data.type.Chest di) {
             BlockFace bf = di.getFacing();
             float val = switch (bf) {
                 case NORTH -> 180f;

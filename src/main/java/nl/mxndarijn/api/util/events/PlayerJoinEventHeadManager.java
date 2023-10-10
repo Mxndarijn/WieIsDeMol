@@ -21,7 +21,7 @@ public class PlayerJoinEventHeadManager implements Listener {
     @EventHandler
     public void join(PlayerJoinEvent e) {
         Optional<MxHeadSection> section = MxHeadManager.getInstance().getHeadSection(e.getPlayer().getUniqueId().toString());
-        if(section.isEmpty()) {
+        if (section.isEmpty()) {
 
             ItemStack headItem = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta skullMeta = (SkullMeta) headItem.getItemMeta();
@@ -32,7 +32,7 @@ public class PlayerJoinEventHeadManager implements Listener {
             // Stel de gewijzigde SkullMeta in op het hoofditem
             headItem.setItemMeta(skullMeta);
 
-            MxHeadManager.getInstance().storeSkullTexture(headItem, e.getPlayer().getUniqueId().toString(),  e.getPlayer().getName(), MxHeadsType.PLAYER);
+            MxHeadManager.getInstance().storeSkullTexture(headItem, e.getPlayer().getUniqueId().toString(), e.getPlayer().getName(), MxHeadsType.PLAYER);
             Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Added skull of " + e.getPlayer().getName() + " (" + e.getPlayer().getUniqueId() + ")");
         }
     }

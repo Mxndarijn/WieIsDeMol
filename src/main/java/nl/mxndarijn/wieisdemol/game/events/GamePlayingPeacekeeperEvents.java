@@ -25,12 +25,12 @@ public class GamePlayingPeacekeeperEvents extends GameEvent {
 
     @EventHandler
     public void peacekeeperOpenChest(PlayerInteractEvent e) {
-        if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
             return;
-        if(!validateWorld(e.getPlayer().getWorld()))
+        if (!validateWorld(e.getPlayer().getWorld()))
             return;
 
-        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         assert e.getClickedBlock() != null;
@@ -39,22 +39,22 @@ public class GamePlayingPeacekeeperEvents extends GameEvent {
         }
         Player p = e.getPlayer();
         Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
-        if(optionalGamePlayer.isEmpty())
+        if (optionalGamePlayer.isEmpty())
             return;
-        if(optionalGamePlayer.get().isPeacekeeperChestOpened() && optionalGamePlayer.get().getMapPlayer().isPeacekeeper())
+        if (optionalGamePlayer.get().isPeacekeeperChestOpened() && optionalGamePlayer.get().getMapPlayer().isPeacekeeper())
             e.setCancelled(true);
     }
 
     @EventHandler
     public void itemDropPeacekeeper(PlayerDropItemEvent e) {
         Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
-        if(gamePlayer.isEmpty())
+        if (gamePlayer.isEmpty())
             return;
-        if(e.getItemDrop().getItemStack().getItemMeta() == null || e.getItemDrop().getItemStack().lore() == null) {
+        if (e.getItemDrop().getItemStack().getItemMeta() == null || e.getItemDrop().getItemStack().lore() == null) {
             return;
         }
         e.getItemDrop().getItemStack().lore().forEach(l -> {
-            if(Functions.convertComponentToString(l).equalsIgnoreCase((ChatColor.GOLD + "Peacekeeper-Item"))) {
+            if (Functions.convertComponentToString(l).equalsIgnoreCase((ChatColor.GOLD + "Peacekeeper-Item"))) {
                 e.setCancelled(true);
             }
         });

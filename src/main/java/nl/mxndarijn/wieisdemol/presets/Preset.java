@@ -1,31 +1,31 @@
 package nl.mxndarijn.wieisdemol.presets;
 
+import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
-import nl.mxndarijn.api.mxscoreboard.MxScoreBoard;
-import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
-import nl.mxndarijn.wieisdemol.ChangeScoreboardOnChangeWorld;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
-import nl.mxndarijn.wieisdemol.data.ScoreBoard;
-import nl.mxndarijn.wieisdemol.managers.InteractionManager;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
-import nl.mxndarijn.wieisdemol.items.Items;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import nl.mxndarijn.api.util.Functions;
-import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.wieisdemol.SaveInventoryChangeWorld;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestManager;
-import nl.mxndarijn.wieisdemol.managers.doors.DoorManager;
-import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerManager;
-import nl.mxndarijn.wieisdemol.managers.warps.WarpManager;
-import nl.mxndarijn.api.changeworld.ChangeWorldManager;
+import nl.mxndarijn.api.mxscoreboard.MxScoreBoard;
+import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
 import nl.mxndarijn.api.mxworld.MxAtlas;
 import nl.mxndarijn.api.mxworld.MxWorld;
+import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.wieisdemol.ChangeScoreboardOnChangeWorld;
+import nl.mxndarijn.wieisdemol.SaveInventoryChangeWorld;
+import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.ScoreBoard;
+import nl.mxndarijn.wieisdemol.items.Items;
+import nl.mxndarijn.wieisdemol.managers.InteractionManager;
+import nl.mxndarijn.wieisdemol.managers.chests.ChestManager;
+import nl.mxndarijn.wieisdemol.managers.doors.DoorManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
+import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerManager;
+import nl.mxndarijn.wieisdemol.managers.warps.WarpManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -37,35 +37,36 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class Preset {
 
+    public static final String PRESET_ITEMMETA_TAG = "preset_id";
     private final File directory;
     private final File inventoriesFile;
     private PresetConfig config;
-
     private Optional<MxWorld> mxWorld;
     private WarpManager warpManager;
     private ChestManager chestManager;
     private ShulkerManager shulkerManager;
     private DoorManager doorManager;
     private InteractionManager interactionManager;
-
     private MxScoreBoard scoreboard;
 
-    public static final String PRESET_ITEMMETA_TAG = "preset_id";
     private Preset(File directory) {
         this.directory = directory;
         this.mxWorld = Optional.empty();
         File presetConfigFile = new File(directory + File.separator + "preset.yml");
         inventoriesFile = new File(directory + File.separator + "inventories.yml");
-        if(containsWorld()) {
-            if(!presetConfigFile.exists()) {
+        if (containsWorld()) {
+            if (!presetConfigFile.exists()) {
                 Functions.copyFileFromResources("preset.yml", presetConfigFile);
             }
-            if(!inventoriesFile.exists()) {
+            if (!inventoriesFile.exists()) {
                 try {
                     inventoriesFile.createNewFile();
                 } catch (IOException e) {
@@ -82,16 +83,17 @@ public class Preset {
             this.interactionManager = new InteractionManager(new File(getDirectory(), "interactions.yml"));
         }
     }
+
     public static Optional<Preset> create(File file) {
         Preset preset = new Preset(file);
 
-        if(preset.containsWorld() && preset.mxWorld.isPresent()) {
+        if (preset.containsWorld() && preset.mxWorld.isPresent()) {
             return Optional.of(preset);
         } else {
-            if(!preset.containsWorld()) {
+            if (!preset.containsWorld()) {
                 Logger.logMessage(LogLevel.ERROR, Prefix.PRESETS_MANAGER, "Could not find world. (" + preset.getDirectory() + ")");
             }
-            if(preset.getMxWorld().isEmpty()) {
+            if (preset.getMxWorld().isEmpty()) {
                 Logger.logMessage(LogLevel.ERROR, Prefix.PRESETS_MANAGER, "Could not find MxWorld. (" + preset.getDirectory() + ")");
             }
             return Optional.empty();
@@ -108,7 +110,7 @@ public class Preset {
 
     public ItemStack getItemStack() {
         MxSkullItemStackBuilder builder = MxSkullItemStackBuilder.create(1);
-        if(MxHeadManager.getInstance().getAllHeadKeys().contains(config.getSkullId())) {
+        if (MxHeadManager.getInstance().getAllHeadKeys().contains(config.getSkullId())) {
             builder.setSkinFromHeadsData(config.getSkullId());
         } else {
             builder.setSkinFromHeadsData("question-mark");
@@ -117,7 +119,7 @@ public class Preset {
         builder.setName(ChatColor.GRAY + config.getName())
                 .addLore(" ");
 
-        if(!config.isConfigured()) {
+        if (!config.isConfigured()) {
             builder.addLore(ChatColor.GRAY + "Wereld-Naam: " + directory.getName());
             builder.addLore(" ");
         }
@@ -125,7 +127,7 @@ public class Preset {
                 .addLore(getStars(config.getHostDifficulty()))
                 .addLore(ChatColor.GRAY + "Speel-Moeilijkheid:")
                 .addLore(getStars(config.getPlayDifficulty()));
-        if(config.isLocked()) {
+        if (config.isLocked()) {
             builder.addLore(ChatColor.GRAY + "Locked: " + (config.isLocked() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"))
                     .addLore(ChatColor.GRAY + "Door: " + config.getLockedBy())
                     .addLore(ChatColor.GRAY + "Reden: ")
@@ -142,7 +144,7 @@ public class Preset {
 
     public ItemStack getItemStackForNewMap() {
         MxSkullItemStackBuilder builder = MxSkullItemStackBuilder.create(1);
-        if(MxHeadManager.getInstance().getAllHeadKeys().contains(config.getSkullId())) {
+        if (MxHeadManager.getInstance().getAllHeadKeys().contains(config.getSkullId())) {
             builder.setSkinFromHeadsData(config.getSkullId());
         } else {
             builder.setSkinFromHeadsData("question-mark");
@@ -163,7 +165,7 @@ public class Preset {
                 .addLore(ChatColor.GRAY + "Aantal Kisten: " + chestManager.getChests().size())
                 .addLore(ChatColor.GRAY + "Aantal deuren: " + doorManager.getDoors().size());
 
-        if(config.isLocked()) {
+        if (config.isLocked()) {
             builder.addLore(ChatColor.GRAY + "Locked: " + (config.isLocked() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"))
                     .addLore(ChatColor.GRAY + "Door: " + config.getLockedBy())
                     .addLore(ChatColor.GRAY + "Reden: ")
@@ -185,8 +187,8 @@ public class Preset {
 
     public String getStars(int stars) {
         StringBuilder hostStars = new StringBuilder();
-        for(int i = 1; i <= 5; i++) {
-            if(i <= stars) {
+        for (int i = 1; i <= 5; i++) {
+            if (i <= stars) {
                 hostStars.append(ChatColor.YELLOW + "\u272B");
             } else {
                 hostStars.append(ChatColor.GRAY + "\u272B");
@@ -197,11 +199,11 @@ public class Preset {
 
     public CompletableFuture<Boolean> loadWorld() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        if(this.mxWorld.isEmpty()) {
+        if (this.mxWorld.isEmpty()) {
             future.complete(false);
             return future;
         }
-        if(this.mxWorld.get().isLoaded()) {
+        if (this.mxWorld.get().isLoaded()) {
             future.complete(false);
             return future;
         }
@@ -252,16 +254,17 @@ public class Preset {
 
     public void unloadWorld() {
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
-            if(!this.mxWorld.isPresent()) {
+            if (!this.mxWorld.isPresent()) {
                 return;
             }
-            if(!this.mxWorld.get().isLoaded()) {
+            if (!this.mxWorld.get().isLoaded()) {
                 return;
             }
             config.save();
             MxAtlas.getInstance().unloadMxWorld(this.mxWorld.get(), true);
         });
     }
+
     public Optional<MxWorld> getMxWorld() {
         return mxWorld;
     }

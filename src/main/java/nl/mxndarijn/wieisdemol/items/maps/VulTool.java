@@ -1,37 +1,36 @@
 package nl.mxndarijn.wieisdemol.items.maps;
 
-import nl.mxndarijn.api.chatinput.MxChatInputCallback;
-import nl.mxndarijn.api.util.MxWorldFilter;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
-import nl.mxndarijn.wieisdemol.data.Interaction;
-import nl.mxndarijn.wieisdemol.data.Role;
-import nl.mxndarijn.wieisdemol.data.Colors;
-import nl.mxndarijn.wieisdemol.managers.InteractionManager;
+import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.inventory.heads.MxHeadSection;
+import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
+import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
-import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
-import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
-import nl.mxndarijn.api.mxitem.MxItem;
-import nl.mxndarijn.api.chatinput.MxChatInputManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import nl.mxndarijn.api.util.Functions;
-import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.wieisdemol.map.Map;
-import nl.mxndarijn.wieisdemol.map.MapConfig;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
-import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
+import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
-import nl.mxndarijn.wieisdemol.presets.PresetConfig;
+import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.MxWorldFilter;
+import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.Colors;
+import nl.mxndarijn.wieisdemol.data.Interaction;
+import nl.mxndarijn.wieisdemol.data.Role;
+import nl.mxndarijn.wieisdemol.managers.InteractionManager;
+import nl.mxndarijn.wieisdemol.managers.MapManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.warps.Warp;
 import nl.mxndarijn.wieisdemol.managers.warps.WarpManager;
+import nl.mxndarijn.wieisdemol.map.Map;
+import nl.mxndarijn.wieisdemol.map.MapConfig;
+import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
+import nl.mxndarijn.wieisdemol.presets.PresetConfig;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.ShulkerBox;
@@ -65,7 +64,7 @@ public class VulTool extends MxItem {
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Map> optionalMap = MapManager.getInstance().getMapByWorldUID(p.getWorld().getUID());
-        if(optionalMap.isEmpty()) {
+        if (optionalMap.isEmpty()) {
             return;
         }
         Map map = optionalMap.get();
@@ -73,13 +72,13 @@ public class VulTool extends MxItem {
         PresetConfig presetConfig = mapConfig.getPresetConfig();
 
         MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Vul Tool", MxInventorySlots.THREE_ROWS)
-                        .setItem(MxDefaultItemStackBuilder.create(Material.DIAMOND_SWORD)
+                .setItem(MxDefaultItemStackBuilder.create(Material.DIAMOND_SWORD)
                                 .setName(ChatColor.GRAY + "Peacekeeper-Kills")
                                 .addBlankLore()
                                 .addLore(ChatColor.GRAY + "Huidig: " + map.getMapConfig().getPeacekeeperKills())
                                 .addLore(ChatColor.YELLOW + "Klik hier om het aantal peacekeeper kills te veranderen.")
                                 .build(),
-                25,
+                        25,
                         (mxInv, e12) -> {
                             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_ENTER_PEACEKEEPER_KILLS));
                             p.closeInventory();
@@ -89,7 +88,7 @@ public class VulTool extends MxItem {
                                     map.getMapConfig().setPeacekeeperKills(i);
                                     p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_PEACEKEEPER_KILLS_CHANGED, Collections.singletonList(i + "")));
                                 } catch (NumberFormatException a) {
-                                     p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_PEACEKEEPER_KILLS_CHANGED_ERROR));
+                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_PEACEKEEPER_KILLS_CHANGED_ERROR));
                                 }
                             });
                         })
@@ -187,6 +186,7 @@ public class VulTool extends MxItem {
                 .addLore(ChatColor.YELLOW + "Klik hier om het block te togglen.")
                 .build();
     }
+
     private ItemStack getColorItemStack(Colors c, PresetConfig config) {
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData(c.getHeadKey())
@@ -222,6 +222,7 @@ public class VulTool extends MxItem {
                 .addLore(ChatColor.YELLOW + "Klik hier om de items van /items te bekijken.")
                 .build();
     }
+
     private ItemStack getWarpItemStack() {
         return MxDefaultItemStackBuilder.create(Material.COMPASS)
                 .setName(ChatColor.GRAY + "Warps")
@@ -239,17 +240,17 @@ public class VulTool extends MxItem {
             String warpName = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "warp-name"), PersistentDataType.STRING);
 
             Optional<Warp> optW = map.getWarpManager().getWarpByName(warpName);
-            if(optW.isEmpty()) {
+            if (optW.isEmpty()) {
                 return;
             }
             Warp w = optW.get();
-            if(e.isLeftClick()) {
+            if (e.isLeftClick()) {
                 p.teleport(w.getMxLocation().getLocation(p.getWorld()));
                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_TELEPORTED));
                 return;
             }
 
-            if(!e.isRightClick()) {
+            if (!e.isRightClick()) {
                 return;
             }
             MxLocation l = w.getMxLocation();
@@ -361,7 +362,7 @@ public class VulTool extends MxItem {
                         p.closeInventory();
                         WarpManager warpManager = map.getWarpManager();
                         MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
-                            if(warps.stream().anyMatch(w -> w.getName().equalsIgnoreCase(message))) {
+                            if (warps.stream().anyMatch(w -> w.getName().equalsIgnoreCase(message))) {
                                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_NAME_ALREADY_EXISTS, Collections.singletonList(message)));
                                 return;
                             }
@@ -427,7 +428,7 @@ public class VulTool extends MxItem {
             String key = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "skull_key"), PersistentDataType.STRING);
 
             Optional<MxHeadSection> section = MxHeadManager.getInstance().getHeadSection(key);
-            if(section.isPresent() && section.get().getName().isPresent()) {
+            if (section.isPresent() && section.get().getName().isPresent()) {
                 clickMain.getWhoClicked().sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_SKULL_CHANGED, Collections.singletonList(section.get().getName().get())));
             }
             config.setSkullId(key);
@@ -466,7 +467,7 @@ public class VulTool extends MxItem {
     private void openInteractionsMenu(Player p, MxInventory mainInv, Map map) {
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
         InteractionManager manager = map.getInteractionManager();
-        manager.getInteractions().forEach((i,b) -> {
+        manager.getInteractions().forEach((i, b) -> {
             list.add(new Pair<>(getInteractionItem(i, b),
                     (mxInv, e) -> {
                         manager.setInteraction(i, !manager.getInteractions().get(i));
@@ -488,7 +489,7 @@ public class VulTool extends MxItem {
     private void openManageSharedPlayers(Player p, MxInventory mainInv, Map map) {
         MapConfig config = map.getMapConfig();
 
-        if(!config.getOwner().equals(p.getUniqueId())) {
+        if (!config.getOwner().equals(p.getUniqueId())) {
             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_NOT_OWNER_OF_MAP));
             return;
         }
@@ -504,7 +505,7 @@ public class VulTool extends MxItem {
                             .addLore(ChatColor.YELLOW + "Shift + Linkermuis-knop om " + player.getName() + " te verwijderen als vuller.")
                             .build(),
                     (mxInv, e) -> {
-                        if(e.isLeftClick() && e.isShiftClick()) {
+                        if (e.isLeftClick() && e.isShiftClick()) {
                             config.getSharedPlayers().remove(sharedPlayer);
                             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_PLAYER_REMOVED, Collections.singletonList(player.getName())));
                             openManageSharedPlayers(p, mainInv, map);
@@ -513,46 +514,46 @@ public class VulTool extends MxItem {
             ));
         });
         MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("Vul-Tool Beheer Vullers", MxInventorySlots.THREE_ROWS)
-                        .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
-                        .setListItems(list)
-                        .setNextPageItemStackSlot(25)
-                        .setPreviousItemStackSlot(20)
-                        .setPrevious(mainInv)
-                        .setItem(
-                                MxSkullItemStackBuilder.create(1)
-                                        .setSkinFromHeadsData("wooden-plus")
-                                        .setName(ChatColor.GRAY + "Voeg vuller toe")
-                                        .addBlankLore()
-                                        .addLore(ChatColor.YELLOW + "Klik hier om een vuller toe te voegen")
-                                        .build(),
-                                26,
-                                (mxInv, e) -> {
-                                    p.closeInventory();
-                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_ENTER_NAME_OF_VULLER));
-                                    MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
-                                        Player offlinePlayer = Bukkit.getPlayer(message);
-                                        if(offlinePlayer == null) {
-                                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_PLAYER_NOT_FOUND));
-                                            return;
-                                        }
-                                        UUID uuid = offlinePlayer.getUniqueId();
-                                        if(uuid == p.getUniqueId()) {
-                                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_YOU_CANT_ADD_YOURSELF));
-                                            return;
-                                        }
-                                        if(containsUUID(config.getSharedPlayers(), uuid)) {
-                                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_PLAYER_ALREADY_ADDED));
-                                            return;
-                                        }
-                                        config.getSharedPlayers().add(uuid);
-                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_PLAYER_ADDED, Collections.singletonList(offlinePlayer.getName())));
-                                    });
+                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                .setListItems(list)
+                .setNextPageItemStackSlot(25)
+                .setPreviousItemStackSlot(20)
+                .setPrevious(mainInv)
+                .setItem(
+                        MxSkullItemStackBuilder.create(1)
+                                .setSkinFromHeadsData("wooden-plus")
+                                .setName(ChatColor.GRAY + "Voeg vuller toe")
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik hier om een vuller toe te voegen")
+                                .build(),
+                        26,
+                        (mxInv, e) -> {
+                            p.closeInventory();
+                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_ENTER_NAME_OF_VULLER));
+                            MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
+                                Player offlinePlayer = Bukkit.getPlayer(message);
+                                if (offlinePlayer == null) {
+                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_PLAYER_NOT_FOUND));
+                                    return;
                                 }
-                        )
+                                UUID uuid = offlinePlayer.getUniqueId();
+                                if (uuid == p.getUniqueId()) {
+                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_YOU_CANT_ADD_YOURSELF));
+                                    return;
+                                }
+                                if (containsUUID(config.getSharedPlayers(), uuid)) {
+                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_PLAYER_ALREADY_ADDED));
+                                    return;
+                                }
+                                config.getSharedPlayers().add(uuid);
+                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_PLAYER_ADDED, Collections.singletonList(offlinePlayer.getName())));
+                            });
+                        }
+                )
                 .build());
     }
 
-   private boolean containsUUID(List<UUID> uuidList, UUID uuid) {
+    private boolean containsUUID(List<UUID> uuidList, UUID uuid) {
         for (UUID listUUID : uuidList) {
             if (listUUID.equals(uuid)) {
                 return true;
@@ -563,7 +564,7 @@ public class VulTool extends MxItem {
 
     private void changeSpawn(Player p, Map map) {
         File settings = new File(map.getDirectory(), "worldsettings.yml");
-        if(settings.exists()) {
+        if (settings.exists()) {
             FileConfiguration fc = YamlConfiguration.loadConfiguration(settings);
             Location l = p.getLocation();
             ConfigurationSection section = fc.createSection("spawn");
@@ -584,7 +585,7 @@ public class VulTool extends MxItem {
     }
 
     private void deleteMap(Player p, Map map, MxInventory mainInv) {
-        if(!map.getMapConfig().getOwner().equals(p.getUniqueId())) {
+        if (!map.getMapConfig().getOwner().equals(p.getUniqueId())) {
             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_NOT_OWNER_OF_MAP));
             return;
         }
@@ -598,24 +599,24 @@ public class VulTool extends MxItem {
                             p.closeInventory();
                         }
                 )
-                        .setItem(MxDefaultItemStackBuilder.create(Material.RED_WOOL)
-                                        .setName(ChatColor.RED + "Verwijder map")
-                                        .build(),
-                                15,
-                                (mxInv, e) -> {
-                                    map.getMxWorld().ifPresent(mxWorld -> {
-                                        World w = Bukkit.getWorld(mxWorld.getWorldUID());
-                                        if(w == null) {
-                                            return;
-                                        }
-                                        w.getPlayers().forEach(player -> {
-                                            p.teleport(Functions.getSpawnLocation());
-                                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_TELEPORTED_BECAUSE_WORLD_DELETED));
-                                        });
-                                        map.delete();
-                                    });
+                .setItem(MxDefaultItemStackBuilder.create(Material.RED_WOOL)
+                                .setName(ChatColor.RED + "Verwijder map")
+                                .build(),
+                        15,
+                        (mxInv, e) -> {
+                            map.getMxWorld().ifPresent(mxWorld -> {
+                                World w = Bukkit.getWorld(mxWorld.getWorldUID());
+                                if (w == null) {
+                                    return;
                                 }
-                        ).build());
+                                w.getPlayers().forEach(player -> {
+                                    p.teleport(Functions.getSpawnLocation());
+                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_TELEPORTED_BECAUSE_WORLD_DELETED));
+                                });
+                                map.delete();
+                            });
+                        }
+                ).build());
     }
 
     private void openColorsMenu(Player p, MxInventory mainInv, Map map) {
@@ -635,18 +636,18 @@ public class VulTool extends MxItem {
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                 .setPrevious(mainInv)
                 .setListItems(list)
-                        .setItem(MxSkullItemStackBuilder.create(1)
-                                        .setSkinFromHeadsData("wooden-plus")
-                                        .setName(ChatColor.GRAY + "Voeg een kleur toe")
-                                        .addBlankLore()
-                                        .addLore(ChatColor.YELLOW + "Klik hier om een kleur toe te voegen.")
-                                        .build(),
-                                25,
-                                (mxInv, e) -> {
-                                    // TODO add color
-                                    addColorMenu(p, map, mainInv);
-                                }
-                        )
+                .setItem(MxSkullItemStackBuilder.create(1)
+                                .setSkinFromHeadsData("wooden-plus")
+                                .setName(ChatColor.GRAY + "Voeg een kleur toe")
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik hier om een kleur toe te voegen.")
+                                .build(),
+                        25,
+                        (mxInv, e) -> {
+                            // TODO add color
+                            addColorMenu(p, map, mainInv);
+                        }
+                )
                 .build()
         );
     }
@@ -672,7 +673,7 @@ public class VulTool extends MxItem {
         });
 
         for (Colors color : Colors.values()) {
-            if(existingColors.contains(color))
+            if (existingColors.contains(color))
                 continue;
             list.add(new Pair<>(
                     MxSkullItemStackBuilder.create(1)
@@ -685,7 +686,7 @@ public class VulTool extends MxItem {
                         MapPlayer mapPlayer = new MapPlayer(color, MxLocation.getFromLocation(p.getLocation()));
                         config.getColors().add(mapPlayer);
                         p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_ADDED, Collections.singletonList(color.getDisplayName())));
-                        openColorsMenu(p, mainInv,  map);
+                        openColorsMenu(p, mainInv, map);
                     }
             ));
         }
@@ -702,16 +703,17 @@ public class VulTool extends MxItem {
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
         MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Kleur " + mapPlayer.getColor().getDisplayName(), MxInventorySlots.THREE_ROWS)
                 .setPrevious(mainInv)
-                        .setPreviousItemStackSlot(21)
-                        .setItem(MxSkullItemStackBuilder.create(1)
-                                        .setSkinFromHeadsData(color.getHeadKey())
-                                        .setName(color.getDisplayName())
-                                        .addBlankLore()
-                                        .addLore(ChatColor.GRAY + "Rol: " + mapPlayer.getRoleDisplayString())
-                                        .build(),
-                                23,
-                                (mxInv, e) -> {})
-                .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_PEARL )
+                .setPreviousItemStackSlot(21)
+                .setItem(MxSkullItemStackBuilder.create(1)
+                                .setSkinFromHeadsData(color.getHeadKey())
+                                .setName(color.getDisplayName())
+                                .addBlankLore()
+                                .addLore(ChatColor.GRAY + "Rol: " + mapPlayer.getRoleDisplayString())
+                                .build(),
+                        23,
+                        (mxInv, e) -> {
+                        })
+                .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_PEARL)
                                 .setName(ChatColor.GRAY + "Verander spawnpoint")
                                 .addBlankLore()
                                 .addLore(ChatColor.GRAY + "Status: " + decimalFormat.format(mapPlayer.getLocation().getX()) + ", " + decimalFormat.format(mapPlayer.getLocation().getY()) + ", " + decimalFormat.format(mapPlayer.getLocation().getZ()))
@@ -742,9 +744,9 @@ public class VulTool extends MxItem {
                                 .build(),
                         16,
                         (mxInv, e) -> {
-                        ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+                            ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
                             map.getShulkerManager().getShulkers().forEach(shulkerInformation -> {
-                                if(shulkerInformation.getMaterial() == mapPlayer.getColor().getShulkerBlock()) {
+                                if (shulkerInformation.getMaterial() == mapPlayer.getColor().getShulkerBlock()) {
                                     list.add(new Pair<>(
                                             MxDefaultItemStackBuilder.create(shulkerInformation.getMaterial())
                                                     .setName(ChatColor.GRAY + shulkerInformation.getName())
@@ -754,13 +756,13 @@ public class VulTool extends MxItem {
                                                     .addLore(ChatColor.YELLOW + "Klik om de shulker op afstand te openen.")
                                                     .build(),
                                             (mxInv1, e12) -> {
-                                                if(map.getMxWorld().isEmpty()) {
+                                                if (map.getMxWorld().isEmpty()) {
                                                     return;
                                                 }
                                                 World w = Bukkit.getWorld(map.getMxWorld().get().getWorldUID());
                                                 Location loc = shulkerInformation.getLocation().getLocation(w);
                                                 Block block = loc.getBlock();
-                                                if(block.getState() instanceof ShulkerBox shulkerBox) {
+                                                if (block.getState() instanceof ShulkerBox shulkerBox) {
                                                     p.openInventory(shulkerBox.getInventory());
                                                 } else {
                                                     p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_SHULKER_IS_NOT_A_SHULKER));
@@ -771,7 +773,7 @@ public class VulTool extends MxItem {
                             });
                             MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + " Shulkers - " + mapPlayer.getColor().getDisplayName(), MxInventorySlots.THREE_ROWS)
                                     .setPrevious(mxInv)
-                                            .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                                     .setListItems(list)
                                     .build());
                         })
@@ -785,10 +787,10 @@ public class VulTool extends MxItem {
                         12,
                         (mxInv, e) -> {
                             MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Rol aannpassen " + mapPlayer.getColor().getDisplayName(), MxInventorySlots.THREE_ROWS)
-                                            .setPrevious(mxInv)
-                                            .setItem(getItemForRole(Role.SPELER), 11, getClickForRole(p, mapPlayer, Role.SPELER, colorInv))
-                                            .setItem(getItemForRole(Role.MOL), 13, getClickForRole(p, mapPlayer, Role.MOL, colorInv))
-                                            .setItem(getItemForRole(Role.EGO), 15, getClickForRole(p, mapPlayer, Role.EGO, colorInv))
+                                    .setPrevious(mxInv)
+                                    .setItem(getItemForRole(Role.SPELER), 11, getClickForRole(p, mapPlayer, Role.SPELER, colorInv))
+                                    .setItem(getItemForRole(Role.MOL), 13, getClickForRole(p, mapPlayer, Role.MOL, colorInv))
+                                    .setItem(getItemForRole(Role.EGO), 15, getClickForRole(p, mapPlayer, Role.EGO, colorInv))
                                     .build());
                         })
                 .setItem(MxDefaultItemStackBuilder.create(Material.DIAMOND_SWORD)
@@ -801,7 +803,7 @@ public class VulTool extends MxItem {
                         14,
                         (mxInv, e) -> {
                             mapPlayer.setPeacekeeper(!mapPlayer.isPeacekeeper());
-                            if(mapPlayer.isPeacekeeper()) {
+                            if (mapPlayer.isPeacekeeper()) {
                                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_IS_NOW_PEACEKEEPER, Collections.singletonList(color.getDisplayName())));
                             } else {
                                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_COLOR_IS_NOT_PEACEKEEPER, Collections.singletonList(color.getDisplayName())));

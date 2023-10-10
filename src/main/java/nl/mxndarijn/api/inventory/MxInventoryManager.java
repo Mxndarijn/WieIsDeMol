@@ -14,12 +14,6 @@ import java.util.*;
 public class MxInventoryManager implements Listener {
 
     private static MxInventoryManager instance;
-    public static MxInventoryManager getInstance() {
-        if(instance == null) {
-            instance = new MxInventoryManager();
-        }
-        return instance;
-    }
     private final HashMap<UUID, List<MxInventory>> inventories;
     private final JavaPlugin plugin;
     private MxInventoryManager() {
@@ -29,21 +23,28 @@ public class MxInventoryManager implements Listener {
 
     }
 
+    public static MxInventoryManager getInstance() {
+        if (instance == null) {
+            instance = new MxInventoryManager();
+        }
+        return instance;
+    }
+
     @EventHandler
     public void InventoryClick(InventoryClickEvent e) {
         e.getWhoClicked();
-        if(e.getClickedInventory() == null || e.getView().getTitle() == null) {
+        if (e.getClickedInventory() == null || e.getView().getTitle() == null) {
             return;
         }
 
         UUID uuid = e.getWhoClicked().getUniqueId();
-        if(!inventories.containsKey(uuid)) {
+        if (!inventories.containsKey(uuid)) {
             return;
         }
         List<MxInventory> get = inventories.get(uuid);
         for (int i = 0; i < get.size(); i++) {
             MxInventory mxInventory = get.get(i);
-            if(e.getClickedInventory() == mxInventory.getInv()) {
+            if (e.getClickedInventory() == mxInventory.getInv()) {
                 if (mxInventory.isCancelEvent()) {
                     e.setCancelled(true);
                 }
@@ -56,26 +57,27 @@ public class MxInventoryManager implements Listener {
         }
     }
 
-    @EventHandler void InventoryClose(InventoryCloseEvent e) {
+    @EventHandler
+    void InventoryClose(InventoryCloseEvent e) {
         UUID uuid = e.getPlayer().getUniqueId();
-        if(!inventories.containsKey(uuid)) {
+        if (!inventories.containsKey(uuid)) {
             return;
         }
         List<MxInventory> list = inventories.get(uuid);
         Iterator<MxInventory> i = list.iterator();
-        while(i.hasNext()) {
+        while (i.hasNext()) {
             MxInventory mxInventory = i.next();
-            if(mxInventory.getName().equals(e.getView().getTitle())) {
-                if(!mxInventory.isCanBeClosed()) {
+            if (mxInventory.getName().equals(e.getView().getTitle())) {
+                if (!mxInventory.isCanBeClosed()) {
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         e.getPlayer().openInventory(mxInventory.getInv());
                     }, 1);
                 } else {
-                    if(mxInventory.getCloseEvent() != null) {
+                    if (mxInventory.getCloseEvent() != null) {
                         Player p = (Player) e.getPlayer();
                         mxInventory.getCloseEvent().onClose(p, mxInventory, e);
                     }
-                    if(mxInventory.isDelete()) {
+                    if (mxInventory.isDelete()) {
                         list.remove(mxInventory);
                         break;
                     }
@@ -85,14 +87,15 @@ public class MxInventoryManager implements Listener {
     }
 
     public void addInventory(UUID uuid, MxInventory inv) {
-        if(inventories.containsKey(uuid)) {
+        if (inventories.containsKey(uuid)) {
             inventories.get(uuid).add(inv);
         } else {
             inventories.put(uuid, new ArrayList<>(Collections.singletonList(inv)));
         }
     }
+
     public void addAndOpenInventory(Player p, MxInventory inv) {
-        if(p == null) {
+        if (p == null) {
             return;
         }
         addInventory(p.getUniqueId(), inv);

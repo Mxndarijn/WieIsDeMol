@@ -54,6 +54,7 @@ public enum PeacekeeperLoot {
 
     private final ItemStack is;
     private final EquipmentSlot slot;
+
     PeacekeeperLoot(ItemStack is, EquipmentSlot slot) {
         this.is = is;
         this.slot = slot;
@@ -66,6 +67,6 @@ public enum PeacekeeperLoot {
     public EquipmentSlot getSlot() {
         return slot;
     }
-};
+}
 
 

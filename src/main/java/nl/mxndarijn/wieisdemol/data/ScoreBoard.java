@@ -22,7 +22,7 @@ public enum ScoreBoard {
         configFile.getFileConfiguration().getStringList("lines").forEach(string -> {
             this.uneditedLines.add(ChatColor.translateAlternateColorCodes('&', string));
         });
-        this.title = ChatColor.translateAlternateColorCodes('&',configFile.getFileConfiguration().getString("title","Unknown"));
+        this.title = ChatColor.translateAlternateColorCodes('&', configFile.getFileConfiguration().getString("title", "Unknown"));
     }
 
     public String getTitle(HashMap<String, String> placeholders) {

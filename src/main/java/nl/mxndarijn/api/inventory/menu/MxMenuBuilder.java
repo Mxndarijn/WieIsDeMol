@@ -1,6 +1,9 @@
 package nl.mxndarijn.api.inventory.menu;
 
-import nl.mxndarijn.api.inventory.*;
+import nl.mxndarijn.api.inventory.MxInventory;
+import nl.mxndarijn.api.inventory.MxInventoryBuilder;
+import nl.mxndarijn.api.inventory.MxInventoryManager;
+import nl.mxndarijn.api.inventory.MxInventorySlots;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

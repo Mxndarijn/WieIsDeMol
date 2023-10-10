@@ -1,9 +1,9 @@
 package nl.mxndarijn.wieisdemol.managers.world;
 
-import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GameInfo;
 import org.apache.commons.io.FileUtils;
@@ -15,18 +15,19 @@ import java.util.UUID;
 
 public class GameWorldManager {
     private static GameWorldManager instance;
-    private ArrayList<Game> games;
-    public static GameWorldManager getInstance() {
-        if(instance == null) {
-            instance = new GameWorldManager();
-        }
-        return instance;
-    }
+    private final ArrayList<Game> games;
 
     private GameWorldManager() {
         this.games = new ArrayList<>();
         deleteGameWorlds();
 
+    }
+
+    public static GameWorldManager getInstance() {
+        if (instance == null) {
+            instance = new GameWorldManager();
+        }
+        return instance;
     }
 
     private void deleteGameWorlds() {
@@ -74,7 +75,7 @@ public class GameWorldManager {
 
     public boolean isPlayerPLayingInAGame(UUID uniqueId) {
         for (Game game : games) {
-            if ( game.getGamePlayerOfPlayer(uniqueId).isPresent())
+            if (game.getGamePlayerOfPlayer(uniqueId).isPresent())
                 return true;
         }
         return false;

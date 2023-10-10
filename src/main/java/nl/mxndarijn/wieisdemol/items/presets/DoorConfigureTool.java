@@ -1,23 +1,26 @@
 package nl.mxndarijn.wieisdemol.items.presets;
 
-import nl.mxndarijn.api.util.MxWorldFilter;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
-import nl.mxndarijn.api.inventory.*;
+import nl.mxndarijn.api.chatinput.MxChatInputManager;
+import nl.mxndarijn.api.inventory.MxInventoryIndex;
+import nl.mxndarijn.api.inventory.MxInventoryManager;
+import nl.mxndarijn.api.inventory.MxInventorySlots;
+import nl.mxndarijn.api.inventory.MxItemClicked;
+import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
+import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
-import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
-import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.mxitem.MxItem;
-import nl.mxndarijn.api.chatinput.MxChatInputManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
+import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MxWorldFilter;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.managers.PresetsManager;
 import nl.mxndarijn.wieisdemol.managers.doors.DoorInformation;
 import nl.mxndarijn.wieisdemol.managers.doors.DoorManager;
-import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.presets.Preset;
 import nl.mxndarijn.wieisdemol.presets.PresetConfig;
-import nl.mxndarijn.wieisdemol.managers.PresetsManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -30,6 +33,7 @@ import java.util.*;
 public class DoorConfigureTool extends MxItem {
 
     private final HashMap<UUID, DoorInformation> players;
+
     public DoorConfigureTool(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
         super(is, worldFilter, gameItem, actions);
 
@@ -39,13 +43,13 @@ public class DoorConfigureTool extends MxItem {
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Preset> optionalPreset = PresetsManager.getInstance().getPresetByWorldUID(e.getPlayer().getWorld().getUID());
-        if(!optionalPreset.isPresent()) {
+        if (!optionalPreset.isPresent()) {
             return;
         }
         Preset preset = optionalPreset.get();
         PresetConfig config = preset.getConfig();
         DoorManager manager = preset.getDoorManager();
-        if(e.getAction() == Action.RIGHT_CLICK_AIR) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR) {
             // Open menu
             ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
             manager.getDoors().forEach(door -> {
@@ -89,9 +93,9 @@ public class DoorConfigureTool extends MxItem {
                                             }
                                     )
                                     .setItem(MxSkullItemStackBuilder.create(1)
-                                            .setSkinFromHeadsData("trapdoor")
-                                            .setName(ChatColor.GRAY + door.getName())
-                                            .build(),
+                                                    .setSkinFromHeadsData("trapdoor")
+                                                    .setName(ChatColor.GRAY + door.getName())
+                                                    .build(),
                                             13, null)
                                     .build());
 
@@ -121,18 +125,18 @@ public class DoorConfigureTool extends MxItem {
                                 });
                             }).build());
         } else {
-            if(players.containsKey(p.getUniqueId())) {
+            if (players.containsKey(p.getUniqueId())) {
                 DoorInformation information = players.get(p.getUniqueId());
-                if(manager.getDoors().contains(information)) {
+                if (manager.getDoors().contains(information)) {
                     MxLocation location = MxLocation.getFromLocation(e.getClickedBlock().getLocation());
                     Optional<MxLocation> optionalMxLocation = information.getLocation(location);
-                    if(!optionalMxLocation.isPresent() && !p.isSneaking()) {
+                    if (!optionalMxLocation.isPresent() && !p.isSneaking()) {
                         information.addLocation(location, e.getClickedBlock().getType());
                         manager.save();
                         p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_CONFIGURE_TOOL_ADDED, ChatPrefix.WIDM));
                     } else {
-                        if(p.isSneaking()) {
-                            if(optionalMxLocation.isPresent()) {
+                        if (p.isSneaking()) {
+                            if (optionalMxLocation.isPresent()) {
                                 information.removeLocation(optionalMxLocation.get());
                                 manager.save();
                                 p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_CONFIGURE_TOOL_LOCATION_REMOVED, ChatPrefix.WIDM));

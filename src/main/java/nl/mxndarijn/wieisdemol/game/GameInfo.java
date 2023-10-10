@@ -3,8 +3,8 @@ package nl.mxndarijn.wieisdemol.game;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.wieisdemol.data.Permissions;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.managers.GameManager;
+import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,11 +18,10 @@ import java.util.*;
 
 public class GameInfo {
 
+    private final List<UUID> queue;
     private String mapId;
     private UUID host;
     private LocalDateTime time;
-
-    private final List<UUID> queue;
     private UpcomingGameStatus status;
 
     private GameInfo() {
@@ -45,12 +44,12 @@ public class GameInfo {
         game.mapId = (String) map.get("mapId");
         game.time = LocalDateTime.parse((String) map.get("time"));
 
-        if(game.time.isBefore(LocalDateTime.now()))
+        if (game.time.isBefore(LocalDateTime.now()))
             return Optional.empty();
 
 
         Optional<Map> optionalMap = MapManager.getInstance().getMapById(game.mapId);
-        if(optionalMap.isEmpty()) {
+        if (optionalMap.isEmpty()) {
             return Optional.empty();
         }
 
@@ -82,7 +81,7 @@ public class GameInfo {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         String formattedTime = time.format(formatter);
         Optional<Map> optionalMap = MapManager.getInstance().getMapById(mapId);
-        if(optionalMap.isEmpty()) {
+        if (optionalMap.isEmpty()) {
             GameManager.getInstance().removeUpcomingGame(this);
         }
         Map map = optionalMap.get();
@@ -97,15 +96,15 @@ public class GameInfo {
 
         Duration duration = Duration.between(time, LocalDateTime.now());
         Long minutes = Math.abs(duration.toMinutes());
-        if(status.isCanJoinQueue()) {
-            if(minutes < ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("time-before-queue-is-open-in-hours") * 60L) {
+        if (status.isCanJoinQueue()) {
+            if (minutes < ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("time-before-queue-is-open-in-hours") * 60L) {
                 builder.addBlankLore()
                         .addLore(ChatColor.GRAY + "Begint om: " + formattedTime + " (Over " + minutes + (minutes > 1 ? " minuten)" : " minuut)"))
                         .addLore(ChatColor.GRAY + "Aantal wachtend: " + queue.size());
 
                 builder.addLore(ChatColor.YELLOW + "Klik hier om in de wachtrij te komen.");
-                if(host == p.getUniqueId() || p.hasPermission(Permissions.ITEM_GAMES_MANAGE_OTHER_GAMES.getPermission())) {
-                    builder.addLore(ChatColor.YELLOW+ "Shift-Klik om de game te beheren.");
+                if (host == p.getUniqueId() || p.hasPermission(Permissions.ITEM_GAMES_MANAGE_OTHER_GAMES.getPermission())) {
+                    builder.addLore(ChatColor.YELLOW + "Shift-Klik om de game te beheren.");
                 }
             } else {
                 builder.addBlankLore();

@@ -25,7 +25,7 @@ public class VanishCommand extends MxCommand {
     public void execute(CommandSender sender, Command command, String label, String[] args) throws Exception {
         Player p = (Player) sender;
         VanishManager.getInstance().toggleVanish(p);
-        if(VanishManager.getInstance().isPlayerHidden(p)) {
+        if (VanishManager.getInstance().isPlayerHidden(p)) {
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_ON, ChatPrefix.WIDM));
         } else {
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_OFF, ChatPrefix.WIDM));

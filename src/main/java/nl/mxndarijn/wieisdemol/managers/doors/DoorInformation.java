@@ -9,9 +9,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.*;
 
 public class DoorInformation {
+    private final HashMap<MxLocation, Material> locations;
     private String uuid;
     private String name;
-    private final HashMap<MxLocation, Material> locations;
+
     public DoorInformation(String name) {
         this.uuid = UUID.randomUUID().toString();
         this.name = name;
@@ -23,13 +24,13 @@ public class DoorInformation {
     }
 
     public static Optional<DoorInformation> load(ConfigurationSection section) {
-        if(section == null) {
+        if (section == null) {
             return Optional.empty();
         }
         DoorInformation i = new DoorInformation();
         i.uuid = section.getName();
         i.name = section.getString("name");
-        if(section.contains("locations")) {
+        if (section.contains("locations")) {
             section.getMapList("locations").forEach(map -> {
                 MxLocation location = new MxLocation();
                 location.setX((double) map.get("x"));
@@ -79,8 +80,8 @@ public class DoorInformation {
     }
 
     public boolean containsLocation(MxLocation location) {
-        for(MxLocation l : locations.keySet()) {
-            if(l.equals(location)) {
+        for (MxLocation l : locations.keySet()) {
+            if (l.equals(location)) {
                 return true;
             }
         }
@@ -88,8 +89,8 @@ public class DoorInformation {
     }
 
     public Optional<MxLocation> getLocation(MxLocation location) {
-        for(MxLocation l : locations.keySet()) {
-            if(l.equals(location)) {
+        for (MxLocation l : locations.keySet()) {
+            if (l.equals(location)) {
                 return Optional.of(l);
             }
         }

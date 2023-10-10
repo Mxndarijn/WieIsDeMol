@@ -2,7 +2,7 @@ name: wieisdemol
 version: '${version}'
 main: nl.mxndarijn.wieisdemol.WieIsDeMol
 api-version: 1.19
-depend: [ ProtocolLib, TTA]
+depend: [ ProtocolLib, TTA ]
 commands:
   test:
     Description: Test command for development

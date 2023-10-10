@@ -9,7 +9,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 
 public enum ConfigFiles {
     MAIN_CONFIG("config.yml", "config.yml", false),
@@ -35,14 +36,21 @@ public enum ConfigFiles {
         this.path = path;
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
         file = new File(plugin.getDataFolder() + File.separator + path);
-        if(!file.exists()) {
+        if (!file.exists()) {
             Logger.logMessage(LogLevel.INFORMATION, Prefix.CONFIG_FILES, "Could not load: " + file.getName() + ". Trying to load it from internal sources...");
             Functions.copyFileFromResources(fileName, path);
         }
-        fileConfiguration =  YamlConfiguration.loadConfiguration(file);
+        fileConfiguration = YamlConfiguration.loadConfiguration(file);
         this.autoSave = autoSave;
     }
 
+    public static void saveAll() {
+        Logger.logMessage(LogLevel.INFORMATION, Prefix.CONFIG_FILES, "Saving all files... ");
+        for (ConfigFiles value : values()) {
+            if (value.autoSave)
+                value.save();
+        }
+    }
 
     public FileConfiguration getFileConfiguration() {
         return fileConfiguration;
@@ -62,14 +70,6 @@ public enum ConfigFiles {
             fileConfiguration.save(file);
         } catch (IOException e) {
             Logger.logMessage(LogLevel.ERROR, Prefix.CONFIG_FILES, "Could not save file... " + path);
-        }
-    }
-
-    public static void saveAll() {
-        Logger.logMessage(LogLevel.INFORMATION, Prefix.CONFIG_FILES, "Saving all files... ");
-        for(ConfigFiles value : values()) {
-            if(value.autoSave)
-                value.save();
         }
     }
 }

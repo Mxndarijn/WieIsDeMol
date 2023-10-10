@@ -5,9 +5,9 @@ import java.util.UUID;
 
 public class MxWorld {
     private final String name;
-    private UUID worldUID;
     private final String uuid;
     private final File dir;
+    private UUID worldUID;
     private boolean loaded;
 
     public MxWorld(String name, String uuid, File dir) {
@@ -16,15 +16,6 @@ public class MxWorld {
         this.dir = dir;
         this.loaded = false;
         this.worldUID = null;
-    }
-
-    public void setWorldUID(UUID uid) {
-        this.worldUID = uid;
-    }
-
-
-    public void setLoaded(boolean b) {
-        this.loaded = b;
     }
 
     public String getUUID() {
@@ -39,11 +30,19 @@ public class MxWorld {
         return worldUID;
     }
 
+    public void setWorldUID(UUID uid) {
+        this.worldUID = uid;
+    }
+
     public File getDir() {
         return dir;
     }
 
     public boolean isLoaded() {
         return loaded;
+    }
+
+    public void setLoaded(boolean b) {
+        this.loaded = b;
     }
 }

@@ -14,6 +14,7 @@ public class ShulkerInformation {
     private MxLocation location;
     private Material material;
     private boolean isStartingRoom;
+
     public ShulkerInformation(String name, MxLocation location, Material material, boolean isStartingRoom) {
         this.uuid = UUID.randomUUID().toString();
         this.name = name;
@@ -27,7 +28,7 @@ public class ShulkerInformation {
     }
 
     public static Optional<ShulkerInformation> load(ConfigurationSection section) {
-        if(section == null) {
+        if (section == null) {
             return Optional.empty();
         }
         ShulkerInformation i = new ShulkerInformation();
@@ -38,7 +39,7 @@ public class ShulkerInformation {
         Optional<MxLocation> optionalMxLocation = MxLocation.loadFromConfigurationSection(section.getConfigurationSection("location"));
         optionalMxLocation.ifPresent(location -> i.location = location);
 
-        if(i.location != null) {
+        if (i.location != null) {
             return Optional.of(i);
         }
         return Optional.empty();

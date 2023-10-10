@@ -1,11 +1,11 @@
 package nl.mxndarijn.wieisdemol.managers;
 
-import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import nl.mxndarijn.wieisdemol.map.Map;
 import nl.mxndarijn.api.mxworld.MxWorld;
+import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
+import nl.mxndarijn.wieisdemol.map.Map;
 import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
@@ -19,20 +19,13 @@ public class MapManager {
 
     private final ArrayList<Map> maps;
 
-    public static MapManager getInstance() {
-        if(instance == null) {
-            instance = new MapManager();
-        }
-        return instance;
-    }
-
     private MapManager() {
         maps = new ArrayList<>();
         Arrays.stream(SpecialDirectories.MAP_WORLDS.getDirectory().listFiles()).forEach(file -> {
-            if(file.isDirectory()) {
+            if (file.isDirectory()) {
                 Arrays.stream(file.listFiles()).forEach(mapFile -> {
                     Optional<Map> optionalMap = Map.create(mapFile);
-                    if(optionalMap.isPresent()) {
+                    if (optionalMap.isPresent()) {
                         Logger.logMessage(LogLevel.INFORMATION, Prefix.MAPS_MANAGER, "Map Added: " + mapFile.getName());
                         maps.add(optionalMap.get());
                     } else {
@@ -43,13 +36,20 @@ public class MapManager {
         });
     }
 
+    public static MapManager getInstance() {
+        if (instance == null) {
+            instance = new MapManager();
+        }
+        return instance;
+    }
+
     public ArrayList<Map> getAllMaps() {
         return maps;
     }
 
     public Optional<Map> getMapById(String s) {
-        for(Map m : maps) {
-            if(m.getDirectory().getName().equals(s)) {
+        for (Map m : maps) {
+            if (m.getDirectory().getName().equals(s)) {
                 return Optional.of(m);
             }
         }
@@ -57,11 +57,11 @@ public class MapManager {
     }
 
     public Optional<Map> getMapByWorldUID(UUID uid) {
-        for(Map m : maps) {
-            if(m.getMxWorld().isPresent()) {
+        for (Map m : maps) {
+            if (m.getMxWorld().isPresent()) {
                 MxWorld mxWorld = m.getMxWorld().get();
-                if(mxWorld.isLoaded()) {
-                    if(mxWorld.getWorldUID() == uid) {
+                if (mxWorld.isLoaded()) {
+                    if (mxWorld.getWorldUID() == uid) {
                         return Optional.of(m);
                     }
                 }
@@ -77,7 +77,7 @@ public class MapManager {
     public void removeMap(Map map) {
         try {
             FileUtils.deleteDirectory(map.getDirectory());
-            if(map.getDirectory().exists())
+            if (map.getDirectory().exists())
                 FileUtils.forceDelete(map.getDirectory());
             maps.remove(map);
 

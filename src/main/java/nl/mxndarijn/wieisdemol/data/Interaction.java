@@ -108,6 +108,7 @@ public enum Interaction {
 
     private final Material mat;
     private final boolean defaultValue;
+
     Interaction(Material mat) {
         this.mat = mat;
         this.defaultValue = true;

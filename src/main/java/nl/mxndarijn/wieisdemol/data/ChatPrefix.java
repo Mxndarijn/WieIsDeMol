@@ -8,8 +8,9 @@ public enum ChatPrefix {
 
     private final String prefix;
     private final String name;
+
     ChatPrefix(String prefix) {
-        this.prefix = prefix +  ChatColor.DARK_GREEN + " \u00BB " + ChatColor.GRAY;
+        this.prefix = prefix + ChatColor.DARK_GREEN + " \u00BB " + ChatColor.GRAY;
         this.name = prefix;
     }
 

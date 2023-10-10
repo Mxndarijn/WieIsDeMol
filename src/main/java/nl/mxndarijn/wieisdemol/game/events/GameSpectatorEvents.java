@@ -2,7 +2,6 @@ package nl.mxndarijn.wieisdemol.game.events;
 
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
-import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.items.Items;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -27,133 +26,133 @@ public class GameSpectatorEvents extends GameEvent {
 
     @EventHandler
     public void interactSpectator(PlayerInteractEvent e) {
-        if(!validateWorld(e.getPlayer().getWorld()))
+        if (!validateWorld(e.getPlayer().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+        if (game.getSpectators().contains(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
+        if (gp.isPresent() && !gp.get().isAlive()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void damage(EntityDamageEvent e) {
-        if(!validateWorld(e.getEntity().getWorld()))
+        if (!validateWorld(e.getEntity().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getEntity().getUniqueId())) {
+        if (game.getSpectators().contains(e.getEntity().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getEntity().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
+        if (gp.isPresent() && !gp.get().isAlive()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void damage(EntityDamageByEntityEvent e) {
-        if(!validateWorld(e.getDamager().getWorld()))
+        if (!validateWorld(e.getDamager().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getDamager().getUniqueId())) {
+        if (game.getSpectators().contains(e.getDamager().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getDamager().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
+        if (gp.isPresent() && !gp.get().isAlive()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void hunger(FoodLevelChangeEvent e) {
-        if(!validateWorld(e.getEntity().getWorld()))
+        if (!validateWorld(e.getEntity().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getEntity().getUniqueId())) {
+        if (game.getSpectators().contains(e.getEntity().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getEntity().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
+        if (gp.isPresent() && !gp.get().isAlive()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void pickup(EntityPickupItemEvent e) {
-        if(!validateWorld(e.getEntity().getWorld()))
+        if (!validateWorld(e.getEntity().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getEntity().getUniqueId())) {
+        if (game.getSpectators().contains(e.getEntity().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getEntity().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
+        if (gp.isPresent() && !gp.get().isAlive()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void pickup(EntityDropItemEvent e) {
-        if(!validateWorld(e.getEntity().getWorld()))
+        if (!validateWorld(e.getEntity().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getEntity().getUniqueId())) {
+        if (game.getSpectators().contains(e.getEntity().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getEntity().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
+        if (gp.isPresent() && !gp.get().isAlive()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void place(BlockPlaceEvent e) {
-        if(!validateWorld(e.getPlayer().getWorld()))
+        if (!validateWorld(e.getPlayer().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+        if (game.getSpectators().contains(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
+        if (gp.isPresent() && !gp.get().isAlive()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void place(BlockBreakEvent e) {
-        if(!validateWorld(e.getPlayer().getWorld()))
+        if (!validateWorld(e.getPlayer().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+        if (game.getSpectators().contains(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
+        if (gp.isPresent() && !gp.get().isAlive()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void respawn(PlayerRespawnEvent e) {
-        if(!game.getSpectators().contains(e.getPlayer().getUniqueId())) {
-            if(game.getRespawnLocations().containsKey(e.getPlayer().getUniqueId()))
+        if (!game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+            if (game.getRespawnLocations().containsKey(e.getPlayer().getUniqueId()))
                 e.setRespawnLocation(game.getRespawnLocations().get(e.getPlayer().getUniqueId()));
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
-            if(game.getRespawnLocations().containsKey(e.getPlayer().getUniqueId()))
+        if (gp.isPresent() && !gp.get().isAlive()) {
+            if (game.getRespawnLocations().containsKey(e.getPlayer().getUniqueId()))
                 e.setRespawnLocation(game.getRespawnLocations().get(e.getPlayer().getUniqueId()));
         }
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
             Player p = e.getPlayer();
             p.getInventory().setItem(0, Items.GAME_SPECTATOR_TELEPORT_ITEM.getItemStack());
-            if(game.getSpectators().contains(p.getUniqueId())) {
+            if (game.getSpectators().contains(p.getUniqueId())) {
                 p.getInventory().setItem(8, Items.GAME_SPECTATOR_LEAVE_ITEM.getItemStack());
             }
         }, 20L);
@@ -161,42 +160,42 @@ public class GameSpectatorEvents extends GameEvent {
 
     @EventHandler
     public void place(EntityDamageByEntityEvent e) {
-        if(!validateWorld(e.getDamager().getWorld()))
+        if (!validateWorld(e.getDamager().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getDamager().getUniqueId())) {
+        if (game.getSpectators().contains(e.getDamager().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getDamager().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
+        if (gp.isPresent() && !gp.get().isAlive()) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void drop(PlayerDropItemEvent e) {
-        if(!validateWorld(e.getPlayer().getWorld()))
+        if (!validateWorld(e.getPlayer().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+        if (game.getSpectators().contains(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
-        if(game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+        if (game.getSpectators().contains(e.getPlayer().getUniqueId())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void click(InventoryClickEvent e) {
-        if(!validateWorld(e.getWhoClicked().getWorld()))
+        if (!validateWorld(e.getWhoClicked().getWorld()))
             return;
-        if(game.getSpectators().contains(e.getWhoClicked().getUniqueId())) {
+        if (game.getSpectators().contains(e.getWhoClicked().getUniqueId())) {
             e.setCancelled(true);
             return;
         }
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getWhoClicked().getUniqueId());
-        if(gp.isPresent() && !gp.get().isAlive()) {
-            if(e.getClickedInventory() == ((Player) e.getWhoClicked()).getInventory())
+        if (gp.isPresent() && !gp.get().isAlive()) {
+            if (e.getClickedInventory() == e.getWhoClicked().getInventory())
                 e.setCancelled(true);
         }
     }

@@ -3,13 +3,11 @@ package nl.mxndarijn.wieisdemol.commands;
 import nl.mxndarijn.api.mxcommand.MxCommand;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.game.Game;
-import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,7 +19,7 @@ public class MessagePlayerCommand extends MxCommand {
 
 
     public MessagePlayerCommand(Permissions permissions, boolean b, boolean b1) {
-        super(permissions, b,b1);
+        super(permissions, b, b1);
     }
 
 
@@ -30,29 +28,29 @@ public class MessagePlayerCommand extends MxCommand {
 
         Player p = (Player) sender;
         Optional<Game> optionalGame = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
-        if(optionalGame.isEmpty()) {
+        if (optionalGame.isEmpty()) {
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_NOT_HOST));
             return;
         }
         Game game = optionalGame.get();
 
-        if(!game.getHosts().contains(p.getUniqueId())) {
+        if (!game.getHosts().contains(p.getUniqueId())) {
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_NOT_HOST));
             return;
         }
 
-        if(args.length < 2) {
+        if (args.length < 2) {
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_SYNTAX_ERROR));
             return;
         }
 
         Player player = Bukkit.getPlayer(args[0]);
-        if(player == null) {
+        if (player == null) {
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_PLAYER_NOT_FOUND));
             return;
         }
 
-        if(game.getGamePlayerOfPlayer(player.getUniqueId()).isEmpty()) {
+        if (game.getGamePlayerOfPlayer(player.getUniqueId()).isEmpty()) {
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_NOT_IN_GAME));
             return;
         }
@@ -61,6 +59,5 @@ public class MessagePlayerCommand extends MxCommand {
 
         player.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST, Collections.singletonList(message)));
         p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_SEND));
-        return;
     }
 }

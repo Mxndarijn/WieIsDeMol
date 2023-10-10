@@ -21,13 +21,6 @@ public class ChangeWorldManager implements Listener {
 
     private final HashMap<UUID, List<MxChangeWorld>> worlds;
 
-    public static ChangeWorldManager getInstance() {
-        if(instance == null) {
-            instance = new ChangeWorldManager();
-        }
-        return instance;
-    }
-    
     private ChangeWorldManager() {
         Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "Loading...");
         worlds = new HashMap<>();
@@ -38,19 +31,26 @@ public class ChangeWorldManager implements Listener {
 
     }
 
+    public static ChangeWorldManager getInstance() {
+        if (instance == null) {
+            instance = new ChangeWorldManager();
+        }
+        return instance;
+    }
+
     @EventHandler
     public void changeWorld(PlayerChangedWorldEvent e) {
         UUID from = e.getFrom().getUID();
         UUID to = e.getPlayer().getWorld().getUID();
-        if(from != to) {
-            if(worlds.containsKey(from)) {
-                worlds.get(from).forEach(mxChangeWorld -> mxChangeWorld.leave(e.getPlayer(),e.getFrom(), e));
+        if (from != to) {
+            if (worlds.containsKey(from)) {
+                worlds.get(from).forEach(mxChangeWorld -> mxChangeWorld.leave(e.getPlayer(), e.getFrom(), e));
             } else {
                 Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "World: " + e.getFrom().getName() + " not found (leaving this world). (" + e.getPlayer().getName() + ")");
             }
         }
-        if(worlds.containsKey(to)) {
-            worlds.get(to).forEach(mxChangeWorld -> mxChangeWorld.enter(e.getPlayer(),e.getFrom(), e));
+        if (worlds.containsKey(to)) {
+            worlds.get(to).forEach(mxChangeWorld -> mxChangeWorld.enter(e.getPlayer(), e.getFrom(), e));
         } else {
             Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "World: " + e.getPlayer().getWorld().getName() + " not found (going to this world). (" + e.getPlayer().getName() + ")");
         }
@@ -59,7 +59,7 @@ public class ChangeWorldManager implements Listener {
     @EventHandler
     public void worldUnload(WorldUnloadEvent e) {
         UUID worldUID = e.getWorld().getUID();
-        if(worlds.containsKey(worldUID)) {
+        if (worlds.containsKey(worldUID)) {
             Logger.logMessage(LogLevel.DEBUG, Prefix.CHANGEWORLD_MANAGER, "World: " + e.getWorld().getName() + " has been unloaded.");
             worlds.remove(worldUID);
 

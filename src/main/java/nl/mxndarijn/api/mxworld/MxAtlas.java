@@ -1,13 +1,16 @@
 package nl.mxndarijn.api.mxworld;
 
-import nl.mxndarijn.api.util.VoidGenerator;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.VoidGenerator;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.apache.commons.io.FileUtils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,18 +25,18 @@ import java.util.concurrent.CompletableFuture;
 
 public class MxAtlas {
     private static MxAtlas instance;
-    public static MxAtlas getInstance() {
-        if(instance == null) {
-            instance = new MxAtlas();
-        }
-        return instance;
-    }
-
     private final ArrayList<MxWorld> worlds;
 
     private MxAtlas() {
         Logger.logMessage(LogLevel.INFORMATION, Prefix.MXATLAS, "Started MxAtlas... (World-Manager)");
         worlds = new ArrayList<>();
+    }
+
+    public static MxAtlas getInstance() {
+        if (instance == null) {
+            instance = new MxAtlas();
+        }
+        return instance;
     }
 
     public Optional<MxWorld> getMxWorld(String name) {
@@ -113,19 +116,19 @@ public class MxAtlas {
 
 
     public boolean unloadMxWorld(MxWorld mxWorld, boolean save) {
-        if(!mxWorld.isLoaded())
+        if (!mxWorld.isLoaded())
             return true;
         Logger.logMessage(LogLevel.DEBUG, Prefix.MXATLAS, "Unloading MxWorld: " + mxWorld.getName());
         World w = Bukkit.getWorld(mxWorld.getWorldUID());
-        if(w == null) {
+        if (w == null) {
             Logger.logMessage(LogLevel.WARNING, Prefix.MXATLAS, "Could not unload MxWorld (World is null): " + mxWorld.getName());
             return false;
         }
-        for(Player p : w.getPlayers()) {
+        for (Player p : w.getPlayers()) {
             p.teleport(Functions.getSpawnLocation());
         }
         boolean unloaded = Bukkit.unloadWorld(Bukkit.getWorld(mxWorld.getWorldUID()), save);
-        if(unloaded) {
+        if (unloaded) {
             mxWorld.setLoaded(false);
         } else {
             Logger.logMessage(LogLevel.WARNING, Prefix.MXATLAS, "Could not unload MxWorld: " + mxWorld.getName());
@@ -134,8 +137,8 @@ public class MxAtlas {
     }
 
     public boolean deleteMxWorld(MxWorld mxWorld) {
-        if(mxWorld.isLoaded()) {
-            if(!unloadMxWorld(mxWorld, false)) {
+        if (mxWorld.isLoaded()) {
+            if (!unloadMxWorld(mxWorld, false)) {
                 return false;
             }
         }
@@ -156,7 +159,7 @@ public class MxAtlas {
         File directoryToCloneTo = new File(dir + File.separator + uuid);
         try {
             FileUtils.copyDirectory(worldToClone.getDir(), directoryToCloneTo);
-            File uidDat = new File(directoryToCloneTo.getAbsoluteFile() +File.separator +  "uid.dat");
+            File uidDat = new File(directoryToCloneTo.getAbsoluteFile() + File.separator + "uid.dat");
             uidDat.delete();
 
         } catch (IOException e) {
@@ -179,9 +182,9 @@ public class MxAtlas {
     public List<MxWorld> loadFolder(File dir) {
         List<MxWorld> list = new ArrayList<>();
         for (File file : Objects.requireNonNull(dir.listFiles())) {
-            if(file.isDirectory()) {
+            if (file.isDirectory()) {
                 File uidDat = new File(file.getAbsolutePath() + "/uid.dat");
-                if(uidDat.exists()) {
+                if (uidDat.exists()) {
                     MxWorld mxWorld = new MxWorld(file.getName(), file.getName(), file);
                     list.add(mxWorld);
                     worlds.add(mxWorld);

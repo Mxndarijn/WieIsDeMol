@@ -1,13 +1,13 @@
 package nl.mxndarijn.api.mxcommand;
 
+import nl.mxndarijn.api.logger.LogLevel;
+import nl.mxndarijn.api.logger.Logger;
+import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import nl.mxndarijn.api.logger.LogLevel;
-import nl.mxndarijn.api.logger.Logger;
-import nl.mxndarijn.api.logger.Prefix;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,26 +30,28 @@ public abstract class MxCommand implements CommandExecutor {
         this.canBeExecutedInGame = canBeExecutedInGame;
         this.languageManager = LanguageManager.getInstance();
     }
+
     public MxCommand(Permissions permission, boolean onlyPlayersCanExecute, boolean canBeExecutedInGame) {
-        this(permission, onlyPlayersCanExecute, canBeExecutedInGame,null);
+        this(permission, onlyPlayersCanExecute, canBeExecutedInGame, null);
     }
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(onlyPlayersCanExecute) {
-            if(!(sender instanceof Player)) {
-                sender.sendMessage(languageManager.getLanguageString(LanguageText.NO_PLAYER, Collections.emptyList(),  ChatPrefix.WIDM));
+        if (onlyPlayersCanExecute) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage(languageManager.getLanguageString(LanguageText.NO_PLAYER, Collections.emptyList(), ChatPrefix.WIDM));
                 return true;
             }
-            if(worldFilter != null && !worldFilter.isPlayerInCorrectWorld((Player) sender)) {
-                sender.sendMessage(languageManager.getLanguageString(LanguageText.NOT_CORRECT_WORLD, Collections.emptyList(),  ChatPrefix.WIDM));
+            if (worldFilter != null && !worldFilter.isPlayerInCorrectWorld((Player) sender)) {
+                sender.sendMessage(languageManager.getLanguageString(LanguageText.NOT_CORRECT_WORLD, Collections.emptyList(), ChatPrefix.WIDM));
                 return true;
             }
         }
-        if(!sender.hasPermission(permission.getPermission())) {
-            sender.sendMessage(languageManager.getLanguageString(LanguageText.NO_PERMISSION, Collections.emptyList(),  ChatPrefix.WIDM));
+        if (!sender.hasPermission(permission.getPermission())) {
+            sender.sendMessage(languageManager.getLanguageString(LanguageText.NO_PERMISSION, Collections.emptyList(), ChatPrefix.WIDM));
             return true;
         }
-        if(sender instanceof Player) {
+        if (sender instanceof Player) {
             // TODO check ingame
         }
         try {
@@ -57,7 +59,7 @@ public abstract class MxCommand implements CommandExecutor {
         } catch (Exception e) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MXCOMMAND, "Could not execute command " + command.getName());
             e.printStackTrace();
-            sender.sendMessage(languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_COMMAND, Collections.emptyList(),  ChatPrefix.WIDM));
+            sender.sendMessage(languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_COMMAND, Collections.emptyList(), ChatPrefix.WIDM));
         }
         return true;
     }

@@ -1,9 +1,9 @@
 package nl.mxndarijn.wieisdemol.map;
 
-import nl.mxndarijn.wieisdemol.data.Colors;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.wieisdemol.data.Colors;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 import nl.mxndarijn.wieisdemol.presets.PresetConfig;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,13 +13,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MapConfig {
-    private File file;
     private final ArrayList<MapPlayer> colors;
-
+    private File file;
     private String name;
     private UUID owner;
 
@@ -45,7 +47,7 @@ public class MapConfig {
         this.peacekeeperKills = 1;
         this.sharedPlayers = new ArrayList<>();
         this.colors = new ArrayList<>();
-        presetConfig.getColors().forEach((c,l) -> {
+        presetConfig.getColors().forEach((c, l) -> {
             this.colors.add(new MapPlayer(c, l));
         });
         save();
@@ -55,7 +57,7 @@ public class MapConfig {
         this.file = file;
         FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
         Arrays.stream(MapConfigValue.values()).forEach(value -> {
-            if(!fc.contains(value.getConfigValue())) {
+            if (!fc.contains(value.getConfigValue())) {
                 Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not find config value: " + value + " (" + file.getAbsolutePath() + ")");
             }
         });
@@ -75,10 +77,10 @@ public class MapConfig {
 
         this.colors = new ArrayList<>();
         ConfigurationSection colorSection = fc.getConfigurationSection(MapConfigValue.COLORS.getConfigValue());
-        if(colorSection != null) {
+        if (colorSection != null) {
             colorSection.getKeys(false).forEach(key -> {
                 ConfigurationSection sec = colorSection.getConfigurationSection(key);
-                if(sec != null) {
+                if (sec != null) {
                     Optional<MapPlayer> mp = MapPlayer.loadMapPlayerFromConfigurationSection(sec);
                     mp.ifPresent(mapPlayer -> {
                         colors.add(mapPlayer);
@@ -87,6 +89,7 @@ public class MapConfig {
             });
         }
     }
+
     public void save() {
         FileConfiguration fc = YamlConfiguration.loadConfiguration(file);
         if (file == null || fc == null) {
@@ -175,7 +178,7 @@ public class MapConfig {
 
     public Optional<MapPlayer> getMapPlayerOfColor(Colors color) {
         for (MapPlayer mapPlayer : colors) {
-            if(mapPlayer.getColor().equals(color))
+            if (mapPlayer.getColor().equals(color))
                 return Optional.of(mapPlayer);
         }
         return Optional.empty();

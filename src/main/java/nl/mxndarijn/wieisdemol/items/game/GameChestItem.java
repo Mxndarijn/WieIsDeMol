@@ -33,7 +33,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class GameChestItem extends MxItem  {
+public class GameChestItem extends MxItem {
 
 
     public GameChestItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
@@ -44,13 +44,13 @@ public class GameChestItem extends MxItem  {
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Game> mapOptional = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
 
-        if(mapOptional.isEmpty()) {
+        if (mapOptional.isEmpty()) {
             return;
         }
 
         Game game = mapOptional.get();
 
-        if(!game.getHosts().contains(p.getUniqueId()))
+        if (!game.getHosts().contains(p.getUniqueId()))
             return;
 
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
@@ -66,7 +66,7 @@ public class GameChestItem extends MxItem  {
                     (mxInv, e12) -> {
                         Location loc = chest.getLocation().getLocation(p.getWorld());
                         Block block = p.getWorld().getBlockAt(loc);
-                        if(block.getType() == Material.CHEST) {
+                        if (block.getType() == Material.CHEST) {
                             Chest chestBlock = (Chest) block.getState();
                             p.openInventory(chestBlock.getBlockInventory());
                         } else {
@@ -88,29 +88,29 @@ public class GameChestItem extends MxItem  {
     @EventHandler
     public void open(InventoryOpenEvent e) {
         Location loc = e.getInventory().getLocation();
-        if(loc == null) {
+        if (loc == null) {
             return;
         }
-        if(!(e.getInventory().getHolder() instanceof Chest))
+        if (!(e.getInventory().getHolder() instanceof Chest))
             return;
         Block b = loc.getBlock();
 
         Player p = (Player) e.getPlayer();
         Optional<Map> mapOptional = MapManager.getInstance().getMapByWorldUID(p.getWorld().getUID());
 
-        if(mapOptional.isEmpty()) {
+        if (mapOptional.isEmpty()) {
             return;
         }
 
         Map map = mapOptional.get();
-        Optional<ChestInformation>  optionalChestInformation = map.getChestManager().getChestByLocation(MxLocation.getFromLocation(b.getLocation()));
-        if(optionalChestInformation.isEmpty()) {
+        Optional<ChestInformation> optionalChestInformation = map.getChestManager().getChestByLocation(MxLocation.getFromLocation(b.getLocation()));
+        if (optionalChestInformation.isEmpty()) {
             return;
         }
 
         ChestInformation chestInformation = optionalChestInformation.get();
         chestInformation.getChestAttachmentList().forEach(a -> {
-            a.onOpenChest(e) ;
+            a.onOpenChest(e);
         });
 
     }

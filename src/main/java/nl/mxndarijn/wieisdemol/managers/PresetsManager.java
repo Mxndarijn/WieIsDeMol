@@ -1,10 +1,10 @@
 package nl.mxndarijn.wieisdemol.managers;
 
-import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.mxworld.MxWorld;
+import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 import nl.mxndarijn.wieisdemol.presets.Preset;
 
 import java.util.ArrayList;
@@ -16,20 +16,13 @@ public class PresetsManager {
     private static PresetsManager instance;
     private final ArrayList<Preset> presets;
 
-    public static PresetsManager getInstance() {
-        if(instance == null) {
-            instance = new PresetsManager();
-        }
-        return instance;
-    }
-
     private PresetsManager() {
         presets = new ArrayList<>();
 
         Arrays.stream(SpecialDirectories.PRESET_WORLDS.getDirectory().listFiles()).forEach(file -> {
-            if(file.isDirectory()) {
+            if (file.isDirectory()) {
                 Optional<Preset> optionalPreset = Preset.create(file);
-                if(optionalPreset.isPresent()) {
+                if (optionalPreset.isPresent()) {
                     Logger.logMessage(LogLevel.INFORMATION, Prefix.PRESETS_MANAGER, "Preset Added: " + file.getName());
                     presets.add(optionalPreset.get());
                 } else {
@@ -38,10 +31,18 @@ public class PresetsManager {
             }
         });
     }
+
+    public static PresetsManager getInstance() {
+        if (instance == null) {
+            instance = new PresetsManager();
+        }
+        return instance;
+    }
+
     public ArrayList<Preset> getConfiguredPresets() {
         ArrayList<Preset> list = new ArrayList<>();
         presets.forEach(preset -> {
-            if(preset.getConfig().isConfigured()) {
+            if (preset.getConfig().isConfigured()) {
                 list.add(preset);
             }
         });
@@ -52,7 +53,7 @@ public class PresetsManager {
     public ArrayList<Preset> getNonConfiguredPresets() {
         ArrayList<Preset> list = new ArrayList<>();
         presets.forEach(preset -> {
-            if(!preset.getConfig().isConfigured()) {
+            if (!preset.getConfig().isConfigured()) {
                 list.add(preset);
             }
         });
@@ -61,8 +62,8 @@ public class PresetsManager {
     }
 
     public Optional<Preset> getPresetById(String s) {
-        for(Preset p : presets) {
-            if(p.getDirectory().getName().equals(s)) {
+        for (Preset p : presets) {
+            if (p.getDirectory().getName().equals(s)) {
                 return Optional.of(p);
             }
         }
@@ -70,11 +71,11 @@ public class PresetsManager {
     }
 
     public Optional<Preset> getPresetByWorldUID(UUID uid) {
-        for(Preset p : presets) {
-            if(p.getMxWorld().isPresent()) {
+        for (Preset p : presets) {
+            if (p.getMxWorld().isPresent()) {
                 MxWorld mxWorld = p.getMxWorld().get();
-                if(mxWorld.isLoaded()) {
-                    if(mxWorld.getWorldUID() == uid) {
+                if (mxWorld.isLoaded()) {
+                    if (mxWorld.getWorldUID() == uid) {
                         return Optional.of(p);
                     }
                 }

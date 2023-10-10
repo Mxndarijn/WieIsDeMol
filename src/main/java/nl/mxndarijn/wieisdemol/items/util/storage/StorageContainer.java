@@ -1,10 +1,10 @@
 package nl.mxndarijn.wieisdemol.items.util.storage;
 
-import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.wieisdemol.data.Permissions;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,10 +22,10 @@ public class StorageContainer {
     private final ArrayList<ItemStack> contents;
     private final String skull;
     private final String name;
-    private boolean isPublic;
     private final String owner;
-
     private final File file;
+    private boolean isPublic;
+
     public StorageContainer(File file) {
         this.file = file;
         contents = new ArrayList<>();
@@ -34,14 +34,14 @@ public class StorageContainer {
         skull = fc.getString(StorageContainerConfigValue.SKULL.getConfigValue(), "Niet gevonden");
         owner = fc.getString(StorageContainerConfigValue.OWNER.getConfigValue(), "Niet gevonden");
         isPublic = fc.getBoolean(StorageContainerConfigValue.IS_PUBLIC.getConfigValue(), false);
-        if(fc.contains(StorageContainerConfigValue.ITEMS.getConfigValue())) {
+        if (fc.contains(StorageContainerConfigValue.ITEMS.getConfigValue())) {
             List<?> list = fc.getList(StorageContainerConfigValue.ITEMS.getConfigValue());
-            if(list == null) {
+            if (list == null) {
                 Logger.logMessage(LogLevel.ERROR, Prefix.STORAGE_MANAGER, "Could not load items in " + file.getAbsolutePath());
                 return;
             }
             list.forEach(item -> {
-                if(item instanceof ItemStack) {
+                if (item instanceof ItemStack) {
                     contents.add((ItemStack) item);
                 }
             });
@@ -77,6 +77,10 @@ public class StorageContainer {
         return isPublic;
     }
 
+    public void setPublic(boolean b) {
+        isPublic = b;
+    }
+
     public ItemStack getItemStack() {
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData(skull)
@@ -91,17 +95,17 @@ public class StorageContainer {
     }
 
     public boolean hasPermissionToEdit(Player p) {
-        if(p.getUniqueId().toString().equalsIgnoreCase(owner)) {
+        if (p.getUniqueId().toString().equalsIgnoreCase(owner)) {
             return true;
         }
-        if(owner.equalsIgnoreCase("server")) {
+        if (owner.equalsIgnoreCase("server")) {
             return p.hasPermission(Permissions.ITEM_ITEMS_EDIT_SERVER_CONTAINERS.getPermission());
         }
         return false;
     }
 
     public void delete() {
-        if(!this.file.delete()) {
+        if (!this.file.delete()) {
             Logger.logMessage(LogLevel.ERROR, Prefix.STORAGE_MANAGER, "Could not delete container: " + this.file.getAbsolutePath());
             return;
         }
@@ -109,7 +113,7 @@ public class StorageContainer {
     }
 
     public void save() {
-        if(!file.exists())  {
+        if (!file.exists()) {
             file.getParentFile().mkdirs();
             try {
                 file.createNewFile();
@@ -131,9 +135,5 @@ public class StorageContainer {
             Logger.logMessage(LogLevel.ERROR, Prefix.STORAGE_MANAGER, "Could not save container: " + file.getAbsolutePath());
             e.printStackTrace();
         }
-    }
-
-    public void setPublic(boolean b) {
-        isPublic = b;
     }
 }

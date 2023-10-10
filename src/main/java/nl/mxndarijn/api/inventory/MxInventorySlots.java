@@ -9,6 +9,7 @@ public enum MxInventorySlots {
     SIX_ROWS(54);
 
     public final int slots;
+
     MxInventorySlots(int slots) {
         this.slots = slots;
     }

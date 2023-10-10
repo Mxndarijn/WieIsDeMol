@@ -64,6 +64,7 @@ public enum ChestAttachments {
     private final String displayName;
     private final ItemStack is;
     private final String skullName;
+
     ChestAttachments(String name, Class<? extends ChestAttachment> attachment, String displayName, String skullName, ItemStack is) {
         this.attachmentClass = attachment;
         this.name = name;
@@ -74,7 +75,7 @@ public enum ChestAttachments {
 
     public static Optional<ChestAttachments> getAttachmentByType(String type) {
         for (ChestAttachments value : values()) {
-            if(value.name.equalsIgnoreCase(type)) {
+            if (value.name.equalsIgnoreCase(type)) {
                 return Optional.of(value);
             }
         }
@@ -96,7 +97,7 @@ public enum ChestAttachments {
     public Optional<ChestAttachment> createNewInstance(ChestInformation inf) {
         try {
             Method createFromSectionMethod = attachmentClass.getDeclaredMethod("createNewInstance", String.class, ChestInformation.class);
-            return Optional.of( (ChestAttachment) createFromSectionMethod.invoke(null, name, inf));
+            return Optional.of((ChestAttachment) createFromSectionMethod.invoke(null, name, inf));
         } catch (Exception ex) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not load createNewInstance for: " + attachmentClass.getName());
             ex.printStackTrace();

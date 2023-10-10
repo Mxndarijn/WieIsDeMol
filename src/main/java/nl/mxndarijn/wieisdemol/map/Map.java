@@ -1,32 +1,32 @@
 package nl.mxndarijn.wieisdemol.map;
 
+import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
-import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
-import nl.mxndarijn.wieisdemol.ChangeScoreboardOnChangeWorld;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
-import nl.mxndarijn.wieisdemol.data.ScoreBoard;
-import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
-import nl.mxndarijn.wieisdemol.managers.InteractionManager;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
-import nl.mxndarijn.wieisdemol.items.Items;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.api.changeworld.ChangeWorldManager;
-import nl.mxndarijn.wieisdemol.SaveInventoryChangeWorld;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestManager;
-import nl.mxndarijn.wieisdemol.managers.doors.DoorManager;
+import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
 import nl.mxndarijn.api.mxworld.MxAtlas;
 import nl.mxndarijn.api.mxworld.MxWorld;
-import nl.mxndarijn.wieisdemol.presets.Preset;
+import nl.mxndarijn.wieisdemol.ChangeScoreboardOnChangeWorld;
+import nl.mxndarijn.wieisdemol.SaveInventoryChangeWorld;
+import nl.mxndarijn.wieisdemol.WieIsDeMol;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.ScoreBoard;
+import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
+import nl.mxndarijn.wieisdemol.items.Items;
+import nl.mxndarijn.wieisdemol.managers.InteractionManager;
+import nl.mxndarijn.wieisdemol.managers.MapManager;
+import nl.mxndarijn.wieisdemol.managers.chests.ChestManager;
+import nl.mxndarijn.wieisdemol.managers.doors.DoorManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerManager;
 import nl.mxndarijn.wieisdemol.managers.warps.WarpManager;
+import nl.mxndarijn.wieisdemol.presets.Preset;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -42,20 +42,16 @@ import java.util.concurrent.CompletableFuture;
 
 public class Map {
 
+    public static final String MAP_ITEMMETA_TAG = "map_id";
     private File directory;
     private MapConfig mapConfig;
     private File inventoriesFile;
-
     private Optional<MxWorld> mxWorld;
-
     private WarpManager warpManager;
     private ChestManager chestManager;
     private ShulkerManager shulkerManager;
     private DoorManager doorManager;
     private InteractionManager interactionManager;
-
-    public static final String  MAP_ITEMMETA_TAG = "map_id";
-
     private MxSupplierScoreBoard scoreboard;
 
 
@@ -66,8 +62,8 @@ public class Map {
         this.mapConfig = new MapConfig(mapConfigFile);
 
         inventoriesFile = new File(directory + File.separator + "inventories.yml");
-        if(containsWorld()) {
-            if(!inventoriesFile.exists()) {
+        if (containsWorld()) {
+            if (!inventoriesFile.exists()) {
                 try {
                     inventoriesFile.createNewFile();
                 } catch (IOException e) {
@@ -84,28 +80,11 @@ public class Map {
         }
     }
 
-    public static Optional<Map> create(File file) {
-        Map map = new Map(file);
-
-        if(map.containsWorld() && map.mxWorld.isPresent()) {
-            return Optional.of(map);
-        } else {
-            if(!map.containsWorld()) {
-                Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not find world. (" + map.getDirectory() + ")");
-                return Optional.empty();
-            }
-            if(map.getMxWorld().isEmpty()) {
-                Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not find MxWorld. (" + map.getDirectory() + ")");
-            }
-            return Optional.empty();
-        }
-    }
-
     public Map(File directory, String name, UUID owner) {
         Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Created map1");
         this.directory = directory;
         File mapConfigFile = new File(directory + File.separator + "map.yml");
-        if(!mapConfigFile.exists()) {
+        if (!mapConfigFile.exists()) {
             try {
                 mapConfigFile.createNewFile();
             } catch (IOException e) {
@@ -116,8 +95,8 @@ public class Map {
         this.mapConfig = new MapConfig(mapConfigFile, name, owner);
 
         inventoriesFile = new File(directory + File.separator + "inventories.yml");
-        if(containsWorld()) {
-            if(!inventoriesFile.exists()) {
+        if (containsWorld()) {
+            if (!inventoriesFile.exists()) {
                 try {
                     inventoriesFile.createNewFile();
                 } catch (IOException e) {
@@ -136,14 +115,31 @@ public class Map {
         }
     }
 
+    public static Optional<Map> create(File file) {
+        Map map = new Map(file);
+
+        if (map.containsWorld() && map.mxWorld.isPresent()) {
+            return Optional.of(map);
+        } else {
+            if (!map.containsWorld()) {
+                Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not find world. (" + map.getDirectory() + ")");
+                return Optional.empty();
+            }
+            if (map.getMxWorld().isEmpty()) {
+                Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not find MxWorld. (" + map.getDirectory() + ")");
+            }
+            return Optional.empty();
+        }
+    }
+
     public static Optional<Map> createFromPreset(String name, Preset p, UUID owner) {
-        if(p.getMxWorld().isEmpty()) {
+        if (p.getMxWorld().isEmpty()) {
             return Optional.empty();
         }
         File newDir = new File(SpecialDirectories.MAP_WORLDS.getDirectory() + File.separator + owner.toString());
         Optional<MxWorld> optionalWorld = MxAtlas.getInstance().duplicateMxWorld(p.getMxWorld().get(), newDir);
 
-        if(optionalWorld.isEmpty()) {
+        if (optionalWorld.isEmpty()) {
             return Optional.empty();
         }
 
@@ -158,16 +154,16 @@ public class Map {
 
     public CompletableFuture<Boolean> loadWorld() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
-        if(this.mxWorld.isEmpty()) {
+        if (this.mxWorld.isEmpty()) {
             future.complete(false);
             return future;
         }
-        if(this.mxWorld.get().isLoaded()) {
+        if (this.mxWorld.get().isLoaded()) {
             future.complete(false);
             return future;
         }
         MxAtlas.getInstance().loadMxWorld(this.mxWorld.get()).thenAccept(loaded -> {
-            if(loaded) {
+            if (loaded) {
                 OfflinePlayer player = Bukkit.getOfflinePlayer(mapConfig.getOwner());
                 scoreboard = new MxSupplierScoreBoard(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
                     return ScoreBoard.MAP.getTitle(new HashMap<>() {{
@@ -182,15 +178,15 @@ public class Map {
                         put("%%map_owner%%", player.getName());
                         put("%%colors_amount%%", mapConfig.getColors().size() + "");
                         put("%%vullers_amount%%", scoreboard.getPlayersUsingScoreboard().size() + "");
-                        put("%%chests_filled%%", (chestsFilled == chestManager.getChests().size() ? ChatColor.GREEN : ChatColor.RED ).toString() + chestsFilled);
+                        put("%%chests_filled%%", (chestsFilled == chestManager.getChests().size() ? ChatColor.GREEN : ChatColor.RED).toString() + chestsFilled);
                         put("%%total_chests%%", chestManager.getChests().size() + "");
-                        put("%%shulkers_filled%%", (shulkersFilled == shulkerManager.getShulkers().size() ? ChatColor.GREEN : ChatColor.RED ).toString() + shulkersFilled);
+                        put("%%shulkers_filled%%", (shulkersFilled == shulkerManager.getShulkers().size() ? ChatColor.GREEN : ChatColor.RED).toString() + shulkersFilled);
                         put("%%total_shulkers%%", shulkerManager.getShulkers().size() + "");
                         put("%%all_doors_closed%%", (doorManager.areAllDoorsClosed(m) ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"));
                     }});
                 });
                 scoreboard.setUpdateTimer(60L);
-                ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(),new SaveInventoryChangeWorld(getInventoriesFile(), new ArrayList<>(
+                ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new SaveInventoryChangeWorld(getInventoriesFile(), new ArrayList<>(
                         Arrays.asList(
                                 new Pair<>(Items.VUL_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.VUL_TOOL_INFO)),
                                 new Pair<>(Items.CHEST_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_TOOL_INFO)),
@@ -334,7 +330,7 @@ public class Map {
     public ItemStack getItemStack() {
         MxSkullItemStackBuilder builder = MxSkullItemStackBuilder.create(1);
 
-        if(MxHeadManager.getInstance().getAllHeadKeys().contains(mapConfig.getPresetConfig().getSkullId())) {
+        if (MxHeadManager.getInstance().getAllHeadKeys().contains(mapConfig.getPresetConfig().getSkullId())) {
             builder.setSkinFromHeadsData(mapConfig.getPresetConfig().getSkullId());
         } else {
             builder.setSkinFromHeadsData("question-mark");
@@ -353,7 +349,7 @@ public class Map {
 
         builder.addBlankLore();
         builder.addLore(ChatColor.GRAY + "Eigenaar: " + Bukkit.getOfflinePlayer(mapConfig.getOwner()).getName());
-        if(mapConfig.getSharedPlayers().size() > 0) {
+        if (mapConfig.getSharedPlayers().size() > 0) {
             builder.addLore(ChatColor.GRAY + "Gedeeld met:");
         }
         mapConfig.getSharedPlayers().forEach(u -> {
@@ -361,8 +357,8 @@ public class Map {
         });
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         builder.addBlankLore()
-                        .addLore(ChatColor.GRAY + "Laatst aangepast: " + mapConfig.getDateModified().format(formatter))
-                        .addLore(ChatColor.GRAY + "Aangemaakt op: " + mapConfig.getDateCreated().format(formatter));
+                .addLore(ChatColor.GRAY + "Laatst aangepast: " + mapConfig.getDateModified().format(formatter))
+                .addLore(ChatColor.GRAY + "Aangemaakt op: " + mapConfig.getDateCreated().format(formatter));
 
         builder.addCustomTagString(MAP_ITEMMETA_TAG, directory.getName());
 
@@ -372,8 +368,8 @@ public class Map {
 
     public String getStars(int stars) {
         StringBuilder hostStars = new StringBuilder();
-        for(int i = 1; i <= 5; i++) {
-            if(i <= stars) {
+        for (int i = 1; i <= 5; i++) {
+            if (i <= stars) {
                 hostStars.append(ChatColor.YELLOW + "\u272B");
             } else {
                 hostStars.append(ChatColor.GRAY + "\u272B");

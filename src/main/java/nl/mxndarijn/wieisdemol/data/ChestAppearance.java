@@ -7,6 +7,7 @@ public enum ChestAppearance {
 
     private final String name;
     private final String unicode;
+
     ChestAppearance(String name, String unicodeInventoryName) {
         this.name = name;
         this.unicode = unicodeInventoryName;

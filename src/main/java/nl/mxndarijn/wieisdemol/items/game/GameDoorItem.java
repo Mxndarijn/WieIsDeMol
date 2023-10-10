@@ -12,11 +12,9 @@ import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
-import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -27,7 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class GameDoorItem extends MxItem  {
+public class GameDoorItem extends MxItem {
 
 
     public GameDoorItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
@@ -38,17 +36,17 @@ public class GameDoorItem extends MxItem  {
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Game> mapOptional = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
 
-        if(mapOptional.isEmpty()) {
+        if (mapOptional.isEmpty()) {
             return;
         }
 
         Game game = mapOptional.get();
 
-        if(!game.getHosts().contains(p.getUniqueId()))
+        if (!game.getHosts().contains(p.getUniqueId()))
             return;
 
         World w = Bukkit.getWorld(game.getMxWorld().get().getWorldUID());
-        if(w == null) {
+        if (w == null) {
             return;
         }
 
@@ -57,11 +55,11 @@ public class GameDoorItem extends MxItem  {
             String status = ChatColor.RED + "Lege deur";
             boolean opened;
             boolean foundDoor = !door.getLocations().isEmpty();
-            if(foundDoor) {
+            if (foundDoor) {
                 MxLocation inf = door.getLocations().keySet().iterator().next();
                 Location loc = inf.getLocation(w);
                 Block placedBlock = loc.getBlock();
-                if(placedBlock.getType() != Material.AIR) {
+                if (placedBlock.getType() != Material.AIR) {
                     opened = false;
                     status = ChatColor.RED + "Gesloten";
                 } else {
@@ -82,11 +80,11 @@ public class GameDoorItem extends MxItem  {
                             .build(),
                     (mxInv, e12) -> {
                         p.closeInventory();
-                        if(!foundDoor) {
+                        if (!foundDoor) {
                             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_DOORITEM_DOOR_IS_NOT_A_DOOR));
                             return;
                         }
-                        if(opened) { // close
+                        if (opened) { // close
                             door.close(w);
                             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_DOORITEM_DOOR_CLOSED));
                         } else { // open

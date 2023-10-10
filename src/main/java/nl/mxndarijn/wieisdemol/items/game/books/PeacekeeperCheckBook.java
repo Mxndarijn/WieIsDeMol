@@ -13,7 +13,6 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -30,25 +29,25 @@ public class PeacekeeperCheckBook extends Book {
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
         getGame(p.getWorld());
-        if(game == null)
+        if (game == null)
             return;
 
         Optional<GamePlayer> optionalGamePlayer = getGamePlayer(p.getUniqueId());
 
-        if(optionalGamePlayer.isPresent()) {
-            if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+        if (optionalGamePlayer.isPresent()) {
+            if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
                 return;
             GamePlayer gp = optionalGamePlayer.get();
-            if(!gp.isAlive())
+            if (!gp.isAlive())
                 return;
             List<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
             game.getColors().forEach(gamePlayer -> {
-                if(gamePlayer.getPlayer().isEmpty())
+                if (gamePlayer.getPlayer().isEmpty())
                     return;
-                if(!gamePlayer.isAlive())
+                if (!gamePlayer.isAlive())
                     return;
                 Player player = Bukkit.getPlayer(gamePlayer.getPlayer().get());
-                if(player == null)
+                if (player == null)
                     return;
 
                 list.add(new Pair<>(
@@ -74,7 +73,7 @@ public class PeacekeeperCheckBook extends Book {
                                         p.getInventory().setItem(key, new ItemStack(Material.AIR));
                                     }
                                     String peacekeeper = gamePlayer.getMapPlayer().isPeacekeeper() ? ChatColor.GREEN + "is" : ChatColor.RED + "is niet";
-                                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PEACEKEEPER_CHECK_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor()  +  p.getName(), gamePlayer.getMapPlayer().getColor().getColor()+ player.getName(), peacekeeper)));
+                                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PEACEKEEPER_CHECK_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), peacekeeper)));
                                     break;
                                 }
                             }
@@ -82,8 +81,8 @@ public class PeacekeeperCheckBook extends Book {
                 ));
             });
 
-            MxInventoryManager.getInstance().addAndOpenInventory(p,MxListInventoryBuilder.create("Peacekeeper-Check", MxInventorySlots.SIX_ROWS)
-                    .setAvailableSlots(12,13,14,20,21,22,23,24,25,30,31,32,33,34,35,41,42,43)
+            MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("Peacekeeper-Check", MxInventorySlots.SIX_ROWS)
+                    .setAvailableSlots(12, 13, 14, 20, 21, 22, 23, 24, 25, 30, 31, 32, 33, 34, 35, 41, 42, 43)
                     .setShowPageNumbers(false)
                     .setListItems(list)
                     .build());

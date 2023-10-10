@@ -15,12 +15,10 @@ import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Colors;
 import nl.mxndarijn.wieisdemol.data.CustomInventoryOverlay;
 import nl.mxndarijn.wieisdemol.game.Game;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
-import nl.mxndarijn.wieisdemol.map.Map;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,17 +29,13 @@ import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-public class GameShulkerItem extends MxItem  {
+public class GameShulkerItem extends MxItem {
 
 
     public GameShulkerItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
@@ -52,13 +46,13 @@ public class GameShulkerItem extends MxItem  {
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Game> mapOptional = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
 
-        if(mapOptional.isEmpty()) {
+        if (mapOptional.isEmpty()) {
             return;
         }
 
         Game game = mapOptional.get();
 
-        if(!game.getHosts().contains(p.getUniqueId()))
+        if (!game.getHosts().contains(p.getUniqueId()))
             return;
 
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
@@ -77,11 +71,11 @@ public class GameShulkerItem extends MxItem  {
 
                         World w = Bukkit.getWorld(game.getMxWorld().get().getWorldUID());
                         Location loc = shulker.getLocation().getLocation(w);
-                        if(game.getMxWorld().isEmpty()) {
+                        if (game.getMxWorld().isEmpty()) {
                             return;
                         }
                         Block block = loc.getBlock();
-                        if(block.getState() instanceof ShulkerBox shulkerBox) {
+                        if (block.getState() instanceof ShulkerBox shulkerBox) {
                             p.openInventory(shulkerBox.getInventory());
                         } else {
                             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_SHULKER_IS_NOT_A_SHULKER));
@@ -101,7 +95,7 @@ public class GameShulkerItem extends MxItem  {
 
     @EventHandler
     public void interactEvent(PlayerInteractEvent e) {
-        if(e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
             return;
         }
         assert e.getClickedBlock() != null;
@@ -112,31 +106,31 @@ public class GameShulkerItem extends MxItem  {
         Player p = e.getPlayer();
         Optional<Game> mapOptional = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
 
-        if(mapOptional.isEmpty()) {
+        if (mapOptional.isEmpty()) {
             return;
         }
 
         Game game = mapOptional.get();
-        Optional<ShulkerInformation>  optionalShulkerInformation = game.getShulkerManager().getShulkerByLocation(MxLocation.getFromLocation(e.getClickedBlock().getLocation()));
-        if(optionalShulkerInformation.isEmpty()) {
+        Optional<ShulkerInformation> optionalShulkerInformation = game.getShulkerManager().getShulkerByLocation(MxLocation.getFromLocation(e.getClickedBlock().getLocation()));
+        if (optionalShulkerInformation.isEmpty()) {
             return;
         }
 
         ShulkerInformation shulkerInformation = optionalShulkerInformation.get();
 
         Optional<Colors> c = Colors.getColorByMaterial(shulkerInformation.getMaterial());
-        if(c.isEmpty())
+        if (c.isEmpty())
             return;
 
         Optional<MapPlayer> mp = game.getConfig().getMapPlayerOfColor(c.get());
-        if(mp.isEmpty())
+        if (mp.isEmpty())
             return;
 
         String title = mp.get().getRole().getUnicode();
-        if(shulkerInformation.isStartingRoom()) {
+        if (shulkerInformation.isStartingRoom()) {
             shulkerBox.customName(Component.text(title));
         } else {
-            if(mp.get().isPeacekeeper()) {
+            if (mp.get().isPeacekeeper()) {
                 shulkerBox.customName(Component.text(CustomInventoryOverlay.ROLES_PEACEKEEPER.getUnicodeCharacter()));
             } else {
                 shulkerBox.customName(null);

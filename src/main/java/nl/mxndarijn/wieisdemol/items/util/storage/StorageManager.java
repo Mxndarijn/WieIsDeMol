@@ -1,9 +1,9 @@
 package nl.mxndarijn.wieisdemol.items.util.storage;
 
-import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,41 +17,33 @@ public class StorageManager {
     private final List<StorageContainer> serverContainers;
 
     private final HashMap<String, List<StorageContainer>> playerContainers;
-
-    public static StorageManager getInstance() {
-        if(instance == null) {
-            instance = new StorageManager();
-        }
-
-        return instance;
-    }
-
     private final File storageDir;
+
     private StorageManager() {
         Logger.logMessage(LogLevel.INFORMATION, Prefix.STORAGE_MANAGER, "Loading StorageManager...");
         storageDir = SpecialDirectories.STORAGE_FILES.getDirectory();
         serverContainers = new ArrayList<>();
         playerContainers = new HashMap<>();
 
-        if(storageDir == null) {
+        if (storageDir == null) {
             Logger.logMessage(LogLevel.FATAL, Prefix.STORAGE_MANAGER, "Main folder is null... ");
             return;
         }
-        if(!storageDir.isDirectory()) {
+        if (!storageDir.isDirectory()) {
             Logger.logMessage(LogLevel.FATAL, Prefix.STORAGE_MANAGER, "Main folder is a file, could not load storages... " + storageDir.getAbsolutePath());
             return;
         }
 
-        if(!storageDir.exists()) {
+        if (!storageDir.exists()) {
             storageDir.mkdirs();
         }
 
         for (File file : storageDir.listFiles()) {
-            if(!file.isDirectory())
+            if (!file.isDirectory())
                 continue;
-            if(file.getName().equalsIgnoreCase("server")) {
+            if (file.getName().equalsIgnoreCase("server")) {
                 for (File serverContainer : file.listFiles()) {
-                    if(serverContainer.isDirectory())
+                    if (serverContainer.isDirectory())
                         continue;
 
                     serverContainers.add(new StorageContainer(serverContainer));
@@ -59,13 +51,21 @@ public class StorageManager {
             } else {
                 List<StorageContainer> specificPlayerContainer = new ArrayList<>();
                 for (File playerContainer : file.listFiles()) {
-                    if(playerContainer.isDirectory())
+                    if (playerContainer.isDirectory())
                         continue;
                     specificPlayerContainer.add(new StorageContainer(playerContainer));
                 }
                 playerContainers.put(file.getName(), specificPlayerContainer);
             }
         }
+    }
+
+    public static StorageManager getInstance() {
+        if (instance == null) {
+            instance = new StorageManager();
+        }
+
+        return instance;
     }
 
     public void save() {
@@ -86,7 +86,7 @@ public class StorageManager {
         List<StorageContainer> publicContainers = new ArrayList<>();
         playerContainers.forEach((s, storageContainers) -> {
             storageContainers.forEach(container -> {
-                if(container.isPublic()) {
+                if (container.isPublic()) {
                     publicContainers.add(container);
                 }
             });

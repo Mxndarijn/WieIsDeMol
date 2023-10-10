@@ -19,6 +19,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
     private Optional<ItemStack> previousPageItemStack;
     private int previousPageItemStackSlot;
     private int nextPageItemStackSlot;
+    private boolean showPageNumbers = true;
 
     public MxListInventoryBuilder(String name, MxInventorySlots slotType) {
         super(name, slotType);
@@ -61,7 +62,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
     public MxListInventoryBuilder setAvailableSlots(MxInventoryIndex... indexes) {
         Arrays.stream(indexes).forEach(index -> {
             for (int i = index.getBeginIndex(); i <= index.getEndIndex(); i++) {
-                if(!availableItemsStackSlots.contains(i)) {
+                if (!availableItemsStackSlots.contains(i)) {
                     availableItemsStackSlots.add(i);
                 }
             }
@@ -71,7 +72,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
 
     public MxListInventoryBuilder setAvailableSlots(int... indexes) {
         Arrays.stream(indexes).forEach(index -> {
-            if(!availableItemsStackSlots.contains(index)) {
+            if (!availableItemsStackSlots.contains(index)) {
                 availableItemsStackSlots.add(index);
             }
         });
@@ -104,7 +105,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
 
     @Override
     public MxInventory build() {
-        if(availableItemsStackSlots.isEmpty()) {
+        if (availableItemsStackSlots.isEmpty()) {
             Logger.logMessage(LogLevel.FATAL, Prefix.MXINVENTORY, "No available item slots...");
             itemStackList.clear();
         }
@@ -112,11 +113,11 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
         Iterator<Pair<ItemStack, MxItemClicked>> iterator = itemStackList.iterator();
 
         int amountOfInventories = (int) Math.ceil((double) itemStackList.size() / availableItemsStackSlots.size());
-        if(amountOfInventories == 0) amountOfInventories = 1; // If no values preset, we want to show an inv;
+        if (amountOfInventories == 0) amountOfInventories = 1; // If no values preset, we want to show an inv;
         String nameWithoutSuffix = this.name;
         changeTitle(this.name + getSuffix(1, amountOfInventories));
         availableItemsStackSlots.forEach(i -> {
-            if(iterator.hasNext()) {
+            if (iterator.hasNext()) {
                 Pair<ItemStack, MxItemClicked> entry = iterator.next();
                 setItem(entry.first, i, entry.second);
             }
@@ -125,15 +126,15 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
         List<MxDefaultInventoryBuilder> extraInventories = new ArrayList<>();
         List<MxInventory> inventories = new ArrayList<>();
 
-        for(int i = 2; i <= amountOfInventories; i++) { // 2 because the main inv is 1
+        for (int i = 2; i <= amountOfInventories; i++) { // 2 because the main inv is 1
             MxDefaultInventoryBuilder builder = MxDefaultInventoryBuilder.create(nameWithoutSuffix + getSuffix(i, amountOfInventories), slotType);
             onClickedMap.forEach((index, clicked) -> {
-                if(!availableItemsStackSlots.contains(index)) {
+                if (!availableItemsStackSlots.contains(index)) {
                     builder.setItem(inv.getItem(index), index, clicked);
                 }
             });
             availableItemsStackSlots.forEach(itemIndex -> {
-                if(iterator.hasNext()) {
+                if (iterator.hasNext()) {
                     Pair<ItemStack, MxItemClicked> entry = iterator.next();
                     builder.setItem(entry.first, itemIndex, entry.second);
                 }
@@ -146,10 +147,10 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
         }
 
         inventories.add(super.build());
-        if(amountOfInventories > 1 && nextPageItemStack.isPresent() && previousPageItemStack.isPresent()) {
+        if (amountOfInventories > 1 && nextPageItemStack.isPresent() && previousPageItemStack.isPresent()) {
             MxItemClicked goNext = (inv, e) -> {
                 int index = inventories.indexOf(inv);
-                if(index + 1 < inventories.size()) {
+                if (index + 1 < inventories.size()) {
                     MxInventoryManager.getInstance().addAndOpenInventory(e.getWhoClicked().getUniqueId(), inventories.get(index + 1));
                 } else {
                     Logger.logMessage(LogLevel.ERROR, Prefix.MXINVENTORY, "Could not go next in inventory " + e.getView().getTitle());
@@ -157,7 +158,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
             };
             MxItemClicked goPrevious = (inv, e) -> {
                 int index = inventories.indexOf(inv);
-                if(index - 1 >= 0) {
+                if (index - 1 >= 0) {
                     MxInventoryManager.getInstance().addAndOpenInventory(e.getWhoClicked().getUniqueId(), inventories.get(index - 1));
                 } else {
                     Logger.logMessage(LogLevel.ERROR, Prefix.MXINVENTORY, "Could not go previous in inventory " + e.getView().getTitle());
@@ -167,7 +168,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
             extraInventories.forEach(inventoryBuilder -> {
                 int index = extraInventories.indexOf(inventoryBuilder);
                 inventoryBuilder.setItem(previousPageItemStack.get(), previousPageItemStackSlot, goPrevious);
-                if(index + 1 < extraInventories.size()) {   // plus 1 because we want to check for the next inv.
+                if (index + 1 < extraInventories.size()) {   // plus 1 because we want to check for the next inv.
                     inventoryBuilder.setItem(nextPageItemStack.get(), nextPageItemStackSlot, goNext);
                 }
 
@@ -182,12 +183,11 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
     }
 
     private String getSuffix(int a, int b) {
-        if(!showPageNumbers)
+        if (!showPageNumbers)
             return "";
         return ChatColor.DARK_GRAY + " (" + ChatColor.GRAY + a + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + b + ChatColor.DARK_GRAY + ")";
     }
 
-    private boolean showPageNumbers = true;
     public MxListInventoryBuilder setShowPageNumbers(boolean b) {
         showPageNumbers = false;
 

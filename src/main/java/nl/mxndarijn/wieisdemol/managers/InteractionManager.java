@@ -1,9 +1,9 @@
 package nl.mxndarijn.wieisdemol.managers;
 
-import nl.mxndarijn.wieisdemol.data.Interaction;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.wieisdemol.data.Interaction;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -21,7 +21,7 @@ public class InteractionManager {
     public InteractionManager(File f) {
         this.interactionFile = f;
         interactions = new HashMap<>();
-        if(!this.interactionFile.exists()) {
+        if (!this.interactionFile.exists()) {
             try {
                 this.interactionFile.createNewFile();
                 for (Interaction value : Interaction.values()) {
@@ -43,7 +43,7 @@ public class InteractionManager {
             interactions.put(Interaction.valueOf(key), fc.getBoolean(key));
         });
         for (Interaction value : Interaction.values()) {
-            if(!interactions.containsKey(value)) {
+            if (!interactions.containsKey(value)) {
                 interactions.put(value, value.isDefaultValue());
             }
         }
@@ -51,8 +51,8 @@ public class InteractionManager {
 
     public void save() {
         FileConfiguration fc = YamlConfiguration.loadConfiguration(interactionFile);
-        interactions.forEach((k,v) -> {
-            fc.set(k.toString(),v);
+        interactions.forEach((k, v) -> {
+            fc.set(k.toString(), v);
         });
         try {
             fc.save(interactionFile);

@@ -18,6 +18,7 @@ public class SpawnCommand extends MxCommand {
     public SpawnCommand(Permissions permission, boolean onlyPlayersCanExecute, boolean canBeExecutedInGame) {
         super(permission, onlyPlayersCanExecute, canBeExecutedInGame);
     }
+
     @Override
     public void execute(CommandSender sender, Command command, String label, String[] args) {
         World w = Bukkit.getWorld("world");

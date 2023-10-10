@@ -12,6 +12,15 @@ public enum MxHeadsType {
         this.type = type;
     }
 
+    public static Optional<MxHeadsType> getTypeFromName(String name) {
+        for (MxHeadsType t : values()) {
+            if (t.getType().equalsIgnoreCase(name)) {
+                return Optional.of(t);
+            }
+        }
+        return Optional.empty();
+    }
+
     public String getType() {
         return type;
     }
@@ -19,14 +28,5 @@ public enum MxHeadsType {
     @Override
     public String toString() {
         return type;
-    }
-
-    public static Optional<MxHeadsType> getTypeFromName(String name) {
-        for(MxHeadsType t : values()) {
-            if(t.getType().equalsIgnoreCase(name)) {
-                return Optional.of(t);
-            }
-        }
-        return Optional.empty();
     }
 }

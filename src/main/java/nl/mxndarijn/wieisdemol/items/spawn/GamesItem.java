@@ -13,15 +13,18 @@ import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.wieisdemol.data.Permissions;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.game.Game;
-import nl.mxndarijn.wieisdemol.managers.GameManager;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
+import nl.mxndarijn.wieisdemol.managers.GameManager;
+import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import nl.mxndarijn.wieisdemol.map.Map;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -58,7 +61,7 @@ public class GamesItem extends MxItem {
                     new MxItemClicked() {
                         @Override
                         public void OnItemClicked(MxInventory mxInv, InventoryClickEvent e) {
-                            if(!GameManager.getInstance().getUpcomingGameList().contains(upcomingGame)) {
+                            if (!GameManager.getInstance().getUpcomingGameList().contains(upcomingGame)) {
                                 // Kon game niet vinden (is verwijderdt)
                                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_COULD_NOT_FIND_GAME));
                                 p.closeInventory();
@@ -66,20 +69,20 @@ public class GamesItem extends MxItem {
                             }
                             Duration timeBetween = Duration.between(LocalDateTime.now(), upcomingGame.getTime());
                             int hours = ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("time-before-queue-is-open-in-hours");
-                            if(!e.isShiftClick() && Math.abs(timeBetween.toMinutes()) > hours * 60L) {
+                            if (!e.isShiftClick() && Math.abs(timeBetween.toMinutes()) > hours * 60L) {
                                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ITEM_TO_EARLY_TO_JOIN, Collections.singletonList(hours + "")));
                                 return;
                             }
-                            if(upcomingGame.getStatus() == UpcomingGameStatus.PLAYING) {
+                            if (upcomingGame.getStatus() == UpcomingGameStatus.PLAYING) {
                                 // Spectate
                                 Optional<Game> game = GameWorldManager.getInstance().getGameByGameInfo(upcomingGame);
-                                if(game.isPresent()) {
+                                if (game.isPresent()) {
                                     game.get().addSpectator(p.getUniqueId());
                                 }
                                 return;
                             }
-                            if(upcomingGame.getStatus().isCanJoinQueue() && !e.isShiftClick()) {
-                                if(upcomingGame.getQueue().contains(p.getUniqueId())) {
+                            if (upcomingGame.getStatus().isCanJoinQueue() && !e.isShiftClick()) {
+                                if (upcomingGame.getQueue().contains(p.getUniqueId())) {
                                     upcomingGame.getQueue().remove(p.getUniqueId());
                                     p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_LEFT_QUEUE));
                                     p.closeInventory();
@@ -90,10 +93,10 @@ public class GamesItem extends MxItem {
                                 }
                                 return;
                             }
-                            if(e.isLeftClick() && e.isShiftClick()) {
-                                if(p.hasPermission(Permissions.ITEM_GAMES_MANAGE_OTHER_GAMES.getPermission()) || upcomingGame.getHost().equals(p.getUniqueId())) {
+                            if (e.isLeftClick() && e.isShiftClick()) {
+                                if (p.hasPermission(Permissions.ITEM_GAMES_MANAGE_OTHER_GAMES.getPermission()) || upcomingGame.getHost().equals(p.getUniqueId())) {
                                     // Manage game
-                                    if(upcomingGame.getStatus() == UpcomingGameStatus.WAITING) {
+                                    if (upcomingGame.getStatus() == UpcomingGameStatus.WAITING) {
                                         MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Beheer Game", MxInventorySlots.THREE_ROWS)
                                                 .setPrevious(mxInv)
                                                 .setItem(MxDefaultItemStackBuilder.create(Material.FIREWORK_ROCKET)
@@ -104,7 +107,7 @@ public class GamesItem extends MxItem {
                                                         13,
                                                         (mxInv1, e12) -> {
                                                             Optional<Game> gameOptional = Game.createGameFromGameInfo(p.getUniqueId(), upcomingGame);
-                                                            if(gameOptional.isPresent()) {
+                                                            if (gameOptional.isPresent()) {
                                                                 gameOptional.get().addHost(p.getUniqueId());
                                                                 upcomingGame.setStatus(UpcomingGameStatus.CHOOSING_PLAYERS);
 
@@ -138,7 +141,7 @@ public class GamesItem extends MxItem {
         MxListInventoryBuilder builder = MxListInventoryBuilder.create(ChatColor.GRAY + "Games", MxInventorySlots.THREE_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                 .setListItems(list);
-        if(p.hasPermission(Permissions.ITEM_GAMES_CREATE_GAME.getPermission())) {
+        if (p.hasPermission(Permissions.ITEM_GAMES_CREATE_GAME.getPermission())) {
             builder.setItem(MxSkullItemStackBuilder.create(1)
                             .setName(ChatColor.GRAY + "Plan Game")
                             .setSkinFromHeadsData("wooden-plus")
@@ -159,34 +162,34 @@ public class GamesItem extends MxItem {
 
     private void getMap(MxInventory prevInv, Player p) {
         MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Map Selecteren", MxInventorySlots.THREE_ROWS)
-                        .setPrevious(prevInv)
-                        .setItem(MxDefaultItemStackBuilder.create(Material.BOOK)
-                                        .setName(ChatColor.GREEN + "Eigen Mappen")
-                                        .addLore(ChatColor.GRAY + "Bekijk je eigen mappen")
-                                        .addLore(" ")
-                                        .addLore(ChatColor.YELLOW + "Klik om te bekijken")
-                                        .addItemFlag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS)
-                                        .build(),
-                                12,
-                                (mxInv, e) -> {
-                                    List<Map> playerMaps = MapManager.getInstance().getAllMaps().stream().filter(m -> m.getMapConfig().getOwner().equals(p.getUniqueId())).toList();
+                .setPrevious(prevInv)
+                .setItem(MxDefaultItemStackBuilder.create(Material.BOOK)
+                                .setName(ChatColor.GREEN + "Eigen Mappen")
+                                .addLore(ChatColor.GRAY + "Bekijk je eigen mappen")
+                                .addLore(" ")
+                                .addLore(ChatColor.YELLOW + "Klik om te bekijken")
+                                .addItemFlag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS)
+                                .build(),
+                        12,
+                        (mxInv, e) -> {
+                            List<Map> playerMaps = MapManager.getInstance().getAllMaps().stream().filter(m -> m.getMapConfig().getOwner().equals(p.getUniqueId())).toList();
 
-                                    MxItemClicked clickedOnPlayerMap = getClickedOnPlayerMap(p, prevInv);
+                            MxItemClicked clickedOnPlayerMap = getClickedOnPlayerMap(p, prevInv);
 
-                                    ArrayList<Pair<ItemStack, MxItemClicked>> list = playerMaps.stream().map(map -> new Pair<>(map.getItemStack(), clickedOnPlayerMap)).collect(Collectors.toCollection(ArrayList::new));
-                                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Eigen Mappen", MxInventorySlots.SIX_ROWS)
-                                            .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
-                                            .setPreviousItemStackSlot(46)
-                                            .setPrevious(prevInv)
-                                            .setListItems(list)
-                                            .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
-                                                    .setName(ChatColor.GRAY + "Info")
-                                                    .addLore(" ")
-                                                    .addLore(ChatColor.YELLOW + "Klik op een map om deze te selecteren.")
-                                                    .build(), 49,null)
-                                            .build());
+                            ArrayList<Pair<ItemStack, MxItemClicked>> list = playerMaps.stream().map(map -> new Pair<>(map.getItemStack(), clickedOnPlayerMap)).collect(Collectors.toCollection(ArrayList::new));
+                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Eigen Mappen", MxInventorySlots.SIX_ROWS)
+                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
+                                    .setPreviousItemStackSlot(46)
+                                    .setPrevious(prevInv)
+                                    .setListItems(list)
+                                    .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
+                                            .setName(ChatColor.GRAY + "Info")
+                                            .addLore(" ")
+                                            .addLore(ChatColor.YELLOW + "Klik op een map om deze te selecteren.")
+                                            .build(), 49, null)
+                                    .build());
 
-                                })
+                        })
                 .setItem(MxDefaultItemStackBuilder.create(Material.BOOKSHELF)
                                 .setName(ChatColor.GREEN + "Gedeelde mappen")
                                 .addLore(ChatColor.GRAY + "Bekijk alle mappen die met je gedeeld zijn.")
@@ -209,18 +212,18 @@ public class GamesItem extends MxItem {
                                             .setName(ChatColor.GRAY + "Info")
                                             .addLore(" ")
                                             .addLore(ChatColor.YELLOW + "Klik op een map om deze te selecteren.")
-                                            .build(), 49,null)
+                                            .build(), 49, null)
                                     .build());
 
                         })
                 .build())
-                ;
+        ;
     }
-    
-    private void getTime(MxInventory prevInv,  Player p, Map map) {
+
+    private void getTime(MxInventory prevInv, Player p, Map map) {
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
         LocalDate now = LocalDate.now();
-        for(int i = 0; i < 16; i++) {
+        for (int i = 0; i < 16; i++) {
             LocalDate date = now.plusDays(i);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE d MMMM", Locale.forLanguageTag("nl-NL"));
             String formattedDate = date.format(formatter);
@@ -228,12 +231,12 @@ public class GamesItem extends MxItem {
                     .setSkinFromHeadsData("clock")
                     .setName(ChatColor.GRAY + formattedDate)
                     .addBlankLore()
-                    .addLore(ChatColor.GRAY + "Datum: " + (i != 0 ? (i == 1 ? "Morgen" : "Over " + i + " dagen.") :  "Vandaag"))
+                    .addLore(ChatColor.GRAY + "Datum: " + (i != 0 ? (i == 1 ? "Morgen" : "Over " + i + " dagen.") : "Vandaag"))
                     .addBlankLore()
                     .addLore(ChatColor.YELLOW + "Klik om de game te hosten op " + formattedDate + ".");
-            if(i == 0)
+            if (i == 0)
                 formattedDate += " (Vandaag)";
-            if(i == 1)
+            if (i == 1)
                 formattedDate += " (Morgen)";
 
             String finalFormattedDate = formattedDate;
@@ -251,7 +254,7 @@ public class GamesItem extends MxItem {
                             t = LocalTime.parse(message, formatter1);
                             LocalDateTime localDateTime = LocalDateTime.of(date, t);
 
-                            if(localDateTime.isAfter(LocalDateTime.now())) {
+                            if (localDateTime.isAfter(LocalDateTime.now())) {
                                 GameManager.getInstance().addUpcomingGame(p.getUniqueId(), map, localDateTime);
                                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ITEM_UPCOMING_GAME_ADDED));
                             } else {

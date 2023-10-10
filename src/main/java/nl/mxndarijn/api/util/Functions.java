@@ -24,7 +24,7 @@ public class Functions {
     }
 
     public static Location getLocationFromConfiguration(World w, ConfigurationSection section) {
-        if(section.contains("yaw") && section.contains("pitch")) {
+        if (section.contains("yaw") && section.contains("pitch")) {
             return new Location(w, section.getDouble("x"), section.getDouble("y"), section.getDouble("z"), (float) section.getDouble("yaw"), (float) section.getDouble("pitch"));
         } else {
             return new Location(w, section.getDouble("x"), section.getDouble("y"), section.getDouble("z"));
@@ -43,7 +43,7 @@ public class Functions {
         destFile.getParentFile().mkdirs();
         JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
         InputStream inputStream = plugin.getResource(fileName);
-        if(inputStream == null) {
+        if (inputStream == null) {
             Logger.logMessage(LogLevel.FATAL, Prefix.CONFIG_FILES, "Could load resource: " + fileName);
             return;
         }
@@ -67,7 +67,7 @@ public class Functions {
 
     public static String convertComponentToString(Component c) {
         PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
-        return  plainSerializer.serialize(c);
+        return plainSerializer.serialize(c);
     }
 
     public static String formatGameTime(long timeInMillis) {

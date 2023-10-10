@@ -1,22 +1,22 @@
 package nl.mxndarijn.wieisdemol.managers.chests;
 
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.api.inventory.MxInventoryIndex;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
 import nl.mxndarijn.api.inventory.MxItemClicked;
-import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
-import nl.mxndarijn.wieisdemol.game.Game;
-import nl.mxndarijn.wieisdemol.game.GamePlayer;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
-import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
+import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.game.Game;
+import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachment;
 import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachments;
-import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -37,6 +37,7 @@ public class ChestInformation {
     private String path;
 
     private List<ChestAttachment> chestAttachmentList;
+
     public ChestInformation(String name, MxLocation location) {
         this.uuid = UUID.randomUUID().toString();
         this.name = name;
@@ -49,7 +50,7 @@ public class ChestInformation {
     }
 
     public static Optional<ChestInformation> load(ConfigurationSection section) {
-        if(section == null) {
+        if (section == null) {
             return Optional.empty();
         }
         ChestInformation i = new ChestInformation();
@@ -58,15 +59,15 @@ public class ChestInformation {
         Optional<MxLocation> optionalMxLocation = MxLocation.loadFromConfigurationSection(section.getConfigurationSection("location"));
         optionalMxLocation.ifPresent(location -> i.location = location);
         i.chestAttachmentList = new ArrayList<>(); //TODO Load items
-        section.getMapList("attachments").forEach( map -> {
+        section.getMapList("attachments").forEach(map -> {
             Map<String, Object> convertedMap = (Map<String, Object>) map;
             String type = (String) convertedMap.get("type");
             Optional<ChestAttachments> attachment = ChestAttachments.getAttachmentByType(type);
-            if(attachment.isEmpty()) {
+            if (attachment.isEmpty()) {
                 Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not load attachment (Type not found) : " + type);
             } else {
                 Optional<ChestAttachment> opt = attachment.get().getExistingInstance(convertedMap, i);
-                if(opt.isEmpty()) {
+                if (opt.isEmpty()) {
                     Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER + "Could not load attachment " + type);
                 }
                 opt.ifPresent(att -> {
@@ -76,7 +77,7 @@ public class ChestInformation {
 
         });
 
-        if(i.location != null) {
+        if (i.location != null) {
             return Optional.of(i);
         }
         return Optional.empty();
@@ -112,7 +113,7 @@ public class ChestInformation {
         p.closeInventory();
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
         Arrays.stream(ChestAttachments.values()).forEach(attachments -> {
-            if(!containsAttachment(attachments))
+            if (!containsAttachment(attachments))
                 list.add(attachments.getAddItemStack(this));
         });
 
@@ -127,17 +128,19 @@ public class ChestInformation {
                 .setListItems(list)
                 .build());
     }
+
     public MxLocation getLocation() {
         return location;
     }
+
     public void addNewAttachment(Player p, ChestAttachments attachments) {
-        if(containsAttachment(attachments)) {
-                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_COULD_NOT_ADD, Collections.singletonList(attachments.getDisplayName())));
-                p.closeInventory();
-                return;
+        if (containsAttachment(attachments)) {
+            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_COULD_NOT_ADD, Collections.singletonList(attachments.getDisplayName())));
+            p.closeInventory();
+            return;
         }
         Optional<ChestAttachment> attachment = attachments.createNewInstance(this);
-        if(attachment.isPresent()) {
+        if (attachment.isPresent()) {
             chestAttachmentList.add(attachment.get());
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_ADDED, Collections.singletonList(attachments.getDisplayName())));
             p.closeInventory();
@@ -193,7 +196,7 @@ public class ChestInformation {
 
     public boolean containsChestAttachment(ChestAttachments chestAttachments) {
         for (ChestAttachment chestAttachment : chestAttachmentList) {
-            if(chestAttachment.getClass().equals(chestAttachments.getAttachmentClass())) {
+            if (chestAttachment.getClass().equals(chestAttachments.getAttachmentClass())) {
                 return true;
             }
         }
