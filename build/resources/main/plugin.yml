@@ -1,8 +1,8 @@
-name: wieisdemol
+name: WieIsDeMol
 version: '1.0-SNAPSHOT'
 main: nl.mxndarijn.wieisdemol.WieIsDeMol
 api-version: 1.19
-depend: [ ProtocolLib, TTA]
+depend: [ ProtocolLib, TTA ]
 commands:
   test:
     Description: Test command for development
@@ -42,3 +42,6 @@ commands:
       - ms
       - messagespeler
       - messageplayer
+  modify:
+    descriptiuon: Modify
+    usage: /modify

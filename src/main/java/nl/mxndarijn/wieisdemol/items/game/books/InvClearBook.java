@@ -8,6 +8,7 @@ import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.CustomInventoryOverlay;
+import nl.mxndarijn.wieisdemol.data.ItemTag;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
@@ -15,10 +16,12 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
 
@@ -74,7 +77,17 @@ public class InvClearBook extends Book {
                                     } else {
                                         p.getInventory().setItem(key, new ItemStack(Material.AIR));
                                     }
-                                    player.getInventory().clear();
+                                    ItemStack[] inv = player.getInventory().getContents().clone();
+                                    List<ItemStack> clearItems = new ArrayList<>();
+                                    for (ItemStack itemStack : inv) {
+                                        if(itemStack != null && itemStack.getItemMeta() != null) {
+                                            String data = itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.CLEARABLE.getPersistentDataTag()), PersistentDataType.STRING);
+                                            if (data == null || !data.equalsIgnoreCase("false")) {
+                                                clearItems.add(itemStack);
+                                            }
+                                        }
+                                    }
+                                    player.getInventory().removeItem(clearItems.toArray(new ItemStack[0]));
                                     sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCLEAR_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())));
                                     break;
                                 }

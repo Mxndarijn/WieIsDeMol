@@ -58,6 +58,7 @@ public class MessagePlayerCommand extends MxCommand {
         String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
         player.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST, Collections.singletonList(message)));
+        game.sendMessageToHosts(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_TO_ALL_HOSTS, Arrays.asList(player.getName(), message)));
         p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_SEND));
     }
 }

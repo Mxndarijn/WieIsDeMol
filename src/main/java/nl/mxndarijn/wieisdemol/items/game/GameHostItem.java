@@ -1,27 +1,35 @@
 package nl.mxndarijn.wieisdemol.items.game;
 
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
+import nl.mxndarijn.api.inventory.MxInventory;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
+import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
+import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.util.MxWorldFilter;
+import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
+import nl.mxndarijn.wieisdemol.managers.warps.Warp;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 public class GameHostItem extends MxItem {
@@ -84,6 +92,30 @@ public class GameHostItem extends MxItem {
                                                 game.setGameStatus(UpcomingGameStatus.PLAYING);
                                                 p.closeInventory();
                                             })
+                                            .setItem(MxDefaultItemStackBuilder.create(Material.COMPASS)
+                                                            .setName(ChatColor.GRAY + "Warps")
+                                                            .addBlankLore()
+                                                            .addLore(ChatColor.YELLOW + "Klik hier om de warps van de game te bekijken.")
+                                                            .build(),
+                                                    18, (mxInv13, e22) -> {
+                                                        List<Warp> warps = game.getWarpManager().getWarps();
+                                                        ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+                                                        warps.forEach(warp -> {
+                                                            list.add(new Pair<>(
+                                                                    MxSkullItemStackBuilder.create(1)
+                                                                            .setSkinFromHeadsData(warp.getSkullId())
+                                                                            .setName(ChatColor.GRAY + warp.getName())
+                                                                            .addBlankLore()
+                                                                            .addLore(ChatColor.YELLOW + "Klik om naar deze warp te teleporten.")
+                                                                            .build(),
+                                                                    (mxInv14, e23) -> {
+                                                                        p.teleport(warp.getMxLocation().getLocation(p.getWorld()));
+                                                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_TELEPORTED));
+                                                                    }
+                                                            ));
+                                                        });
+
+                                                    })
                                     .build());
 
                         })
@@ -98,24 +130,26 @@ public class GameHostItem extends MxItem {
                             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_ADD_ENTER_NAME));
                             p.closeInventory();
                             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
-                                Player player = Bukkit.getPlayer(message);
-                                if (player == null) {
-                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_ADD_NOT_FOUND));
-                                    return;
-                                }
-                                if (game.getHosts().contains(player.getUniqueId())) {
-                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_ADD_ALREADY_HOST));
-                                    return;
-                                }
-                                if (game.getSpectators().contains(player.getUniqueId()) || game.getGameInfo().getQueue().contains(player.getUniqueId())) {
-                                    if (game.getSpectators().contains(player.getUniqueId())) {
-                                        game.removeSpectator(player.getUniqueId(), false);
+                                Bukkit.getScheduler().runTask(plugin, () -> {
+                                    Player player = Bukkit.getPlayer(message);
+                                    if (player == null) {
+                                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_ADD_NOT_FOUND));
+                                        return;
                                     }
-                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_ADD_HOST_ADDED, Collections.singletonList(player.getName())));
-                                    game.addHost(player.getUniqueId());
-                                } else {
-                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_ADD_NOT_IN_QUEUE, Collections.singletonList(player.getName())));
-                                }
+                                    if (game.getHosts().contains(player.getUniqueId())) {
+                                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_ADD_ALREADY_HOST));
+                                        return;
+                                    }
+                                    if (game.getSpectators().contains(player.getUniqueId()) || game.getGameInfo().getQueue().contains(player.getUniqueId())) {
+                                        if (game.getSpectators().contains(player.getUniqueId())) {
+                                            game.removeSpectator(player.getUniqueId(), false);
+                                        }
+                                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_ADD_HOST_ADDED, Collections.singletonList(player.getName())));
+                                        game.addHost(player.getUniqueId());
+                                    } else {
+                                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_HOST_ADD_NOT_IN_QUEUE, Collections.singletonList(player.getName())));
+                                    }
+                                });
                             });
                         })
                 .setItem(MxSkullItemStackBuilder.create(1)

@@ -56,7 +56,6 @@ public class Map {
 
 
     public Map(File directory) {
-        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Created map");
         this.directory = directory;
         File mapConfigFile = new File(directory + File.separator + "map.yml");
         this.mapConfig = new MapConfig(mapConfigFile);
@@ -81,7 +80,6 @@ public class Map {
     }
 
     public Map(File directory, String name, UUID owner) {
-        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Created map1");
         this.directory = directory;
         File mapConfigFile = new File(directory + File.separator + "map.yml");
         if (!mapConfigFile.exists()) {
@@ -105,8 +103,6 @@ public class Map {
                 }
             }
             this.mxWorld = MxAtlas.getInstance().loadWorld(directory);
-            Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Searching for MxWorld with id: " + directory.getName());
-            Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, "Found mxworld: " + this.mxWorld.isPresent());
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
             this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
             this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));

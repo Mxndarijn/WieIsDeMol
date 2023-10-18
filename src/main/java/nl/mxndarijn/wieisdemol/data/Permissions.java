@@ -18,7 +18,8 @@ public enum Permissions {
     SPAWN_PICKUP_ITEM("widm.pickupitemspawn"),
     SPAWN_CHANGE_INVENTORY("widm.changeinventoryspawn"),
     COMMAND_MESSAGE_PLAYER("widm.messageplayer"),
-    VANISH("widm.vanish");
+    VANISH("widm.vanish"),
+    COMMAND_MODIFY("widm.modify");
 
     private final String permission;
 

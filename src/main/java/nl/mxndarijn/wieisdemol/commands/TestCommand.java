@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 public class TestCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if(!sender.hasPermission("widm.test"))
+            return true;
 
         Player p = (Player) sender;
         for (Items value : Items.values()) {

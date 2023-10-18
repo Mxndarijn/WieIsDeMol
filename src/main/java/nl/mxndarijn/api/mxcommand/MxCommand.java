@@ -8,6 +8,7 @@ import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
+import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -52,7 +53,12 @@ public abstract class MxCommand implements CommandExecutor {
             return true;
         }
         if (sender instanceof Player) {
-            // TODO check ingame
+            if(!canBeExecutedInGame) {
+                if(GameWorldManager.getInstance().isPlayerPLayingInAGame(((Player) sender).getUniqueId())) {
+                    sender.sendMessage(languageManager.getLanguageString(LanguageText.CAN_ONLY_BE_EXECUTED_OUT_OF_GAME, Collections.emptyList(), ChatPrefix.WIDM));
+                    return true;
+                }
+            }
         }
         try {
             execute(sender, command, label, args);

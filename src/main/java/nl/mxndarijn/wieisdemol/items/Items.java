@@ -345,6 +345,18 @@ public enum Items {
             true,
             RebornBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_INVCHECK_BOOK(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Inv-Check")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item kan je iemand ")
+            .addLore(ChatColor.YELLOW + "checken op een item.")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            InvCheckBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_PLAYER_TOOL(MxDefaultItemStackBuilder.create(Material.NETHER_STAR)
             .setName(ChatColor.GRAY + "Speler Tool")
             .addBlankLore()

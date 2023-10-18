@@ -62,8 +62,6 @@ public class VanishManager implements Listener {
     private void hidePlayer(Player viewer, Player targetToHide) {
         hiddenPlayers.add(targetToHide.getUniqueId());
         PacketContainer destroyEntity = new PacketContainer(ENTITY_DESTROY);
-        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, " ID: " + targetToHide.getEntityId());
-        Logger.logMessage(LogLevel.DEBUG_HIGHLIGHT, " FIELDS: " + destroyEntity.getIntegerArrays().toString());
 
         destroyEntity.getModifier().write(0, new IntArrayList(new int[]{targetToHide.getEntityId()}));
 

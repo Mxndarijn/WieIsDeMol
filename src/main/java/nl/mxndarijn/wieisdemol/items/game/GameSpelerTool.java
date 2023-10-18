@@ -13,6 +13,7 @@ import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
+import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
@@ -45,6 +46,8 @@ public class GameSpelerTool extends MxItem {
         }
 
         Game game = mapOptional.get();
+        if(game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
 
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(p.getUniqueId());
         if (gp.isEmpty())
@@ -92,7 +95,7 @@ public class GameSpelerTool extends MxItem {
                                                 p.closeInventory();
                                                 gp.get().setVotedOn(Optional.of(gamePlayer));
                                                 p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTED, Arrays.asList(pl.getName(), gamePlayer.getMapPlayer().getColor().getDisplayName())));
-                                                game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_VOTED, Arrays.asList(p.getName(), gp.get().getMapPlayer().getColor().getDisplayName())));
+                                                game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_VOTED, Arrays.asList(p.getName(), gp.get().getMapPlayer().getColor().getDisplayName(), game.getTotalVotes() + "", ""+game.getColors().size())));
                                             }
                                     ));
                                 }

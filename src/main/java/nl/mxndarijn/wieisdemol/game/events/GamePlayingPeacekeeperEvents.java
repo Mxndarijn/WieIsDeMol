@@ -54,6 +54,7 @@ public class GamePlayingPeacekeeperEvents extends GameEvent {
             return;
         }
         e.getItemDrop().getItemStack().lore().forEach(l -> {
+
             if (Functions.convertComponentToString(l).equalsIgnoreCase((ChatColor.GOLD + "Peacekeeper-Item"))) {
                 e.setCancelled(true);
             }

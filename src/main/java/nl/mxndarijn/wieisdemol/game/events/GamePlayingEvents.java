@@ -4,6 +4,7 @@ import de.Herbystar.TTA.TTA_Methods;
 import net.kyori.adventure.text.Component;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.wieisdemol.data.ItemTag;
 import nl.mxndarijn.wieisdemol.data.Role;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
@@ -13,26 +14,25 @@ import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachments
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Chest;
 import org.bukkit.block.ShulkerBox;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -260,6 +260,12 @@ public class GamePlayingEvents extends GameEvent {
             }, 20L * 10L);
             return;
         }
+        if(e.getItemInHand().getItemMeta() != null) {
+            String data = e.getItemInHand().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.PLACEABLE.getPersistentDataTag()), PersistentDataType.STRING);
+            if(data != null && data.equalsIgnoreCase("false"))
+                e.setCancelled(true);
+            return;
+        }
 
         if (e.getBlock().getType() == Material.EMERALD_BLOCK || e.getBlock().getType() == Material.DIAMOND_BLOCK || e.getBlock().getType() == Material.GOLD_BLOCK) {
             Location loc = e.getBlock().getLocation().clone().add(0.5, -0.1, 0.5);
@@ -318,6 +324,61 @@ public class GamePlayingEvents extends GameEvent {
 
         if (!game.getInteractionManager().isInteractionWithTypeAllowed(type)) {
             e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void damageEntity(EntityDamageByEntityEvent e) {
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if (!validateWorld(e.getEntity().getWorld()))
+            return;
+        Material type = null;
+        if(e.getEntity() instanceof ItemFrame) {
+            type = Material.ITEM_FRAME;
+        }
+        if(e.getEntity() instanceof GlowItemFrame) {
+            type = Material.GLOW_ITEM_FRAME;
+        }
+        if(type != null) {
+            if(game.getGamePlayerOfPlayer(e.getDamager().getUniqueId()).isPresent())
+                if (!game.getInteractionManager().isInteractionWithTypeAllowed(type)) {
+                    e.setCancelled(true);
+                }
+        }
+
+    }
+
+    @EventHandler
+    public void paintingBreak(HangingBreakByEntityEvent e) {
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if (!validateWorld(e.getEntity().getWorld()))
+            return;
+        if(game.getGamePlayerOfPlayer(e.getRemover().getUniqueId()).isPresent())
+            if(e.getEntity() instanceof ItemFrame || e.getEntity() instanceof GlowItemFrame) {
+                e.setCancelled(true);
+            }
+    }
+
+    @EventHandler
+    public void paintingBreak(PlayerInteractEntityEvent e) {
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if (!validateWorld(e.getRightClicked().getWorld()))
+            return;
+        Material type = null;
+        if(e.getRightClicked() instanceof ItemFrame) {
+            type = Material.ITEM_FRAME;
+        }
+        if(e.getRightClicked() instanceof GlowItemFrame) {
+            type = Material.GLOW_ITEM_FRAME;
+        }
+        if(type != null) {
+            if(game.getGamePlayerOfPlayer(e.getRightClicked().getUniqueId()).isPresent())
+                if (!game.getInteractionManager().isInteractionWithTypeAllowed(type)) {
+                    e.setCancelled(true);
+                }
         }
     }
 

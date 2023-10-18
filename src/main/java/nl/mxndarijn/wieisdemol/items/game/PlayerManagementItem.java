@@ -55,7 +55,7 @@ public class PlayerManagementItem extends MxItem {
             list.add(new Pair<>(
                     MxSkullItemStackBuilder.create(1)
                             .setSkinFromHeadsData(gamePlayer.getMapPlayer().getColor().getHeadKey())
-                            .setName(gamePlayer.getPlayer().isPresent() ? ChatColor.GRAY + Bukkit.getPlayer(gamePlayer.getPlayer().get()).getName() : ChatColor.GRAY + "Geen speler toegewezen")
+                            .setName(gamePlayer.getPlayer().isPresent() && Bukkit.getPlayer(gamePlayer.getPlayer().get()) != null ? ChatColor.GRAY + Bukkit.getPlayer(gamePlayer.getPlayer().get()).getName() : ChatColor.GRAY + "Geen speler toegewezen")
                             .addBlankLore()
                             .addLore(ChatColor.GRAY + "Kleur: " + gamePlayer.getMapPlayer().getColor().getDisplayName())
                             .addLore(ChatColor.GRAY + "Rol: " + gamePlayer.getMapPlayer().getRoleDisplayString())

@@ -200,7 +200,6 @@ public class Game {
                 registerEvents();
                 updateChestAttachments();
                 updateGame();
-
                 ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new MxChangeWorld() {
                     @Override
                     public void enter(Player p, World w, PlayerChangedWorldEvent e) {
@@ -232,7 +231,8 @@ public class Game {
                 new GamePlayingEvents(this, plugin),
                 new GameSpectatorEvents(this, plugin),
                 new GamePlayingPeacekeeperEvents(this, plugin),
-                new GameDefaultEvents(this, plugin)
+                new GameDefaultEvents(this, plugin),
+                new GameColorBindEvents(this, plugin)
         ));
     }
 
@@ -242,7 +242,23 @@ public class Game {
         events.forEach(HandlerList::unregisterAll);
     }
 
+    public int getTotalVotes() {
+        AtomicInteger i = new AtomicInteger();
+        colors.forEach(gp -> {
+            if(gp.getVotedOn().isPresent())
+                i.getAndIncrement();
+        });
+
+        return i.get();
+    }
+
     public CompletableFuture<Boolean> unloadWorld() {
+        if(this.mxWorld.isPresent() && Bukkit.getWorld(this.mxWorld.get().getWorldUID()) != null) {
+            World w = Bukkit.getWorld(this.mxWorld.get().getWorldUID());
+            w.getPlayers().forEach(p -> {
+                p.teleport(Functions.getSpawnLocation());
+            });
+        }
         unregisterEvents();
 
         CompletableFuture<Boolean> future = new CompletableFuture<>();
@@ -504,11 +520,12 @@ public class Game {
 
     public void stopGame() {
         sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_GAME_STOPPED));
+        this.mxWorld.ifPresent(world -> ChangeWorldManager.getInstance().removeWorld(world.getWorldUID()));
+
         hosts.forEach(u -> {
             Player p = Bukkit.getPlayer(u);
             if (p != null) {
                 ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), hostScoreboard);
-                p.teleport(Functions.getSpawnLocation());
                 VanishManager.getInstance().showPlayerForAll(p);
                 p.setHealth(20);
                 p.getActivePotionEffects().clear();
@@ -518,7 +535,6 @@ public class Game {
         spectators.forEach(u -> {
             Player p = Bukkit.getPlayer(u);
             if (p != null) {
-                p.teleport(Functions.getSpawnLocation());
                 VanishManager.getInstance().showPlayerForAll(p);
                 ScoreBoardManager.getInstance().removePlayerScoreboard(u, spectatorScoreboard);
                 p.setHealth(20);
@@ -531,7 +547,6 @@ public class Game {
                 Player p = Bukkit.getPlayer(g.getPlayer().get());
                 if (p != null) {
                     ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), g.getScoreboard());
-                    p.teleport(Functions.getSpawnLocation());
                     VanishManager.getInstance().showPlayerForAll(p);
                     p.setHealth(20);
                     p.getActivePotionEffects().clear();
@@ -539,8 +554,11 @@ public class Game {
                 }
             }
         });
-        unloadWorld();
-        this.mxWorld = Optional.empty();
+
+        unloadWorld().thenAccept(unloaded -> {
+            if(unloaded) this.mxWorld = Optional.empty();
+
+        });
     }
 
     public int getPlayerCount() {

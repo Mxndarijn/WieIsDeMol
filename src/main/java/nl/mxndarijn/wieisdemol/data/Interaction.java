@@ -103,7 +103,9 @@ public enum Interaction {
     CAULDRON(Material.CAULDRON),
     COMPOSTER(Material.COMPOSTER, false),
     SOUL_CAMPFIRE(Material.SOUL_CAMPFIRE, false),
-    SMITHING_TABLE(Material.SMITHING_TABLE, false);
+    SMITHING_TABLE(Material.SMITHING_TABLE, false),
+    ITEM_FRAME(Material.ITEM_FRAME, false),
+    GLOW_ITEM_FRAME(Material.GLOW_ITEM_FRAME, false);
 
 
     private final Material mat;

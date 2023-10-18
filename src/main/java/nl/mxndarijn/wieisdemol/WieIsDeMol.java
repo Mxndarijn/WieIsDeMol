@@ -6,6 +6,7 @@ import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.api.util.events.PlayerJoinEventHeadManager;
 import nl.mxndarijn.wieisdemol.commands.*;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
@@ -17,6 +18,7 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Optional;
@@ -79,6 +81,7 @@ public final class WieIsDeMol extends JavaPlugin {
         getCommand("items").setExecutor(new ItemsCommand());
         getCommand("vanish").setExecutor(new VanishCommand(Permissions.VANISH, true, false));
         getCommand("ms").setExecutor(new MessagePlayerCommand(Permissions.COMMAND_MESSAGE_PLAYER, true, false));
+        getCommand("modify").setExecutor(new ModifyCommand(Permissions.COMMAND_MODIFY, true, false, p -> true));
     }
 
     private void configFilesSaver() {

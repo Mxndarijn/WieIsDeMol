@@ -1,4 +1,4 @@
-name: wieisdemol
+name: WieIsDeMol
 version: '${version}'
 main: nl.mxndarijn.wieisdemol.WieIsDeMol
 api-version: 1.19
@@ -42,3 +42,6 @@ commands:
       - ms
       - messagespeler
       - messageplayer
+  modify:
+    descriptiuon: Modify
+    usage: /modify
