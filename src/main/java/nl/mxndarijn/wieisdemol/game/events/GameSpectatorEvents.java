@@ -1,8 +1,11 @@
 package nl.mxndarijn.wieisdemol.game.events;
 
+import io.papermc.paper.event.player.AsyncChatEvent;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.items.Items;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
+import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,9 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Optional;
@@ -198,5 +199,18 @@ public class GameSpectatorEvents extends GameEvent {
             if (e.getClickedInventory() == e.getWhoClicked().getInventory())
                 e.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    public void chat(AsyncChatEvent e) {
+        if (!validateWorld(e.getPlayer().getWorld()))
+            return;
+        if (game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+            e.setCancelled(true);
+            return;
+        }
+        e.setCancelled(true);
+        e.getPlayer().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_TRY_CHAT));
+
     }
 }

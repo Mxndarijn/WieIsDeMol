@@ -159,9 +159,6 @@ public class ChestInformation {
         return file;
     }
 
-    public String getPath() {
-        return path;
-    }
 
     public List<ChestAttachment> getChestAttachmentList() {
         return chestAttachmentList;

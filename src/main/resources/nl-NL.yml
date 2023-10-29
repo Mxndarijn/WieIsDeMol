@@ -199,3 +199,6 @@ game-invcheck-result: "&7%%2%% &7is gechecked op een %%3%% door %%1%%&7. Het ite
 scoreboard-hidden: "&7Je scoreboard is nu onzichtbaar."
 scoreboard-showed: "&7Je scoreboard is nu zichtbaar."
 scoreboard-not-found: "&cGeen scoreboard gevonden."
+game-spectator-try-chat: "&CAls spectator mag je niet typen."
+game-chat-player: "%%1%% &7%%2%% &8| &7%%3%%"
+game-chat-host: "&aHost &7%%1%% &8| &f%%2%%"

@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.game.events;
 
 import de.Herbystar.TTA.TTA_Methods;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.Functions;
@@ -380,6 +381,32 @@ public class GamePlayingEvents extends GameEvent {
                     e.setCancelled(true);
                 }
         }
+    }
+
+    @EventHandler
+    public void chat(AsyncChatEvent e) {
+        Player p = e.getPlayer();
+        if (!validateWorld(p.getWorld()))
+            return;
+        Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
+        if(optionalGamePlayer.isEmpty())
+            return;
+
+        e.setCancelled(true);
+        GamePlayer gp = optionalGamePlayer.get();
+        game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_CHAT_PLAYER, Arrays.asList(gp.getMapPlayer().getColor().getDisplayName(), p.getName(), Functions.convertComponentToString(e.message()))));
+    }
+
+    @EventHandler
+    public void chatHost(AsyncChatEvent e) {
+        Player p = e.getPlayer();
+        if (!validateWorld(p.getWorld()))
+            return;
+        if(game.getHosts().contains(p.getUniqueId()))
+            return;
+
+        e.setCancelled(true);
+        game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_CHAT_HOST, Arrays.asList(p.getName(), Functions.convertComponentToString(e.message()))));
     }
 
 

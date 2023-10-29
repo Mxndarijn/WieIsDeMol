@@ -76,6 +76,49 @@ public enum ItemTag {
         e.getWhoClicked().closeInventory();
         e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
     }),
+    ITEM_LOCK("itemlock", data -> {
+        boolean dataBoolean = true;
+        if (data != null && data.equalsIgnoreCase("false"))
+            dataBoolean = false;
+        return MxSkullItemStackBuilder.create(1)
+                .setSkinFromHeadsData("redstone-block")
+                .setName(ChatColor.GRAY + "Item-Lock")
+                .addBlankLore()
+                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Verplaatsbaar" : ChatColor.RED + "Locked"))
+                .addBlankLore()
+                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .build();
+    }, (mxInv, e) -> {
+        String key = "itemlock";
+        ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
+        ItemMeta im = is.getItemMeta();
+
+        PersistentDataContainer container = im.getPersistentDataContainer();
+        String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING);
+
+        boolean dataBoolean = true;
+        if (data != null && data.equalsIgnoreCase("false"))
+            dataBoolean = false;
+        dataBoolean = !dataBoolean;
+        container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
+        String lore = ChatColor.RED + "Item-Lock";
+        List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
+        if (dataBoolean) {
+            List<Component> newList = new ArrayList<>();
+            list.forEach(c -> {
+                if (!Functions.convertComponentToString(c).equalsIgnoreCase(lore)) {
+                    newList.add(c);
+                }
+            });
+            list = newList;
+        } else {
+            list.add(Component.text(lore));
+        }
+        im.lore(list);
+        is.setItemMeta(im);
+        e.getWhoClicked().closeInventory();
+        e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+    }),
     PLACEABLE("placeable", data -> {
         boolean dataBoolean = true;
         if (data != null && data.equalsIgnoreCase("false"))

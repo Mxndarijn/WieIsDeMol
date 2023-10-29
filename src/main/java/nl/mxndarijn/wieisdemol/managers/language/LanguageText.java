@@ -201,7 +201,10 @@ LanguageText {
     GAME_INVCHECK_RESULT(),
     SCOREBOARD_HIDDEN(),
     SCOREBOARD_SHOWED(),
-    SCOREBOARD_NOT_FOUND();
+    SCOREBOARD_NOT_FOUND(),
+    GAME_SPECTATOR_TRY_CHAT(),
+    GAME_CHAT_PLAYER(),
+    GAME_CHAT_HOST();
     private final String configValue;
 
     LanguageText(String value) {
