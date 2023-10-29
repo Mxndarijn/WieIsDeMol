@@ -3,12 +3,14 @@ package nl.mxndarijn.wieisdemol.managers;
 import nl.mxndarijn.api.mxscoreboard.MxScoreBoard;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.UUID;
 
 public class ScoreBoardManager implements Listener {
@@ -48,5 +50,13 @@ public class ScoreBoardManager implements Listener {
     public void removePlayerScoreboard(UUID uniqueId, MxScoreBoard scoreboard) {
         if (playerList.containsKey(uniqueId) && playerList.get(uniqueId).equals(scoreboard))
             playerList.get(uniqueId).removePlayer(uniqueId);
+        playerList.remove(uniqueId);
+    }
+
+    public Optional<MxScoreBoard> getPlayerScoreboard(Player p) {
+        MxScoreBoard sc = playerList.get(p.getUniqueId());
+        if(sc != null)
+            return Optional.of(sc);
+        return Optional.empty();
     }
 }

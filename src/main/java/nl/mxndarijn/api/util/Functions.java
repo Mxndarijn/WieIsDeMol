@@ -66,7 +66,7 @@ public class Functions {
     }
 
     public static String convertComponentToString(Component c) {
-        PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.plainText();
+        PlainTextComponentSerializer plainSerializer = PlainTextComponentSerializer.builder().build();
         return plainSerializer.serialize(c);
     }
 

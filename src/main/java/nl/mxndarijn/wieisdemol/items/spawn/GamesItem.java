@@ -58,83 +58,80 @@ public class GamesItem extends MxItem {
         GameManager.getInstance().getUpcomingGameList().forEach(upcomingGame -> {
             list.add(new Pair<>(
                     upcomingGame.getItemStack(p),
-                    new MxItemClicked() {
-                        @Override
-                        public void OnItemClicked(MxInventory mxInv, InventoryClickEvent e) {
-                            if (!GameManager.getInstance().getUpcomingGameList().contains(upcomingGame)) {
-                                // Kon game niet vinden (is verwijderdt)
-                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_COULD_NOT_FIND_GAME));
-                                p.closeInventory();
-                                return;
-                            }
-                            Duration timeBetween = Duration.between(LocalDateTime.now(), upcomingGame.getTime());
-                            int hours = ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("time-before-queue-is-open-in-hours");
-                            if (!e.isShiftClick() && Math.abs(timeBetween.toMinutes()) > hours * 60L) {
-                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ITEM_TO_EARLY_TO_JOIN, Collections.singletonList(hours + "")));
-                                return;
-                            }
-                            if (upcomingGame.getStatus() == UpcomingGameStatus.PLAYING) {
-                                // Spectate
-                                Optional<Game> game = GameWorldManager.getInstance().getGameByGameInfo(upcomingGame);
-                                if (game.isPresent()) {
-                                    game.get().addSpectator(p.getUniqueId());
-                                }
-                                return;
-                            }
-                            if (upcomingGame.getStatus().isCanJoinQueue() && !e.isShiftClick()) {
-                                if (upcomingGame.getQueue().contains(p.getUniqueId())) {
-                                    upcomingGame.getQueue().remove(p.getUniqueId());
-                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_LEFT_QUEUE));
-                                    p.closeInventory();
-                                } else {
-                                    upcomingGame.getQueue().add(p.getUniqueId());
-                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ENTERED_QUEUE));
-                                    p.closeInventory();
-                                }
-                                return;
-                            }
-                            if (e.isLeftClick() && e.isShiftClick()) {
-                                if (p.hasPermission(Permissions.ITEM_GAMES_MANAGE_OTHER_GAMES.getPermission()) || upcomingGame.getHost().equals(p.getUniqueId())) {
-                                    // Manage game
-                                    if (upcomingGame.getStatus() == UpcomingGameStatus.WAITING) {
-                                        MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Beheer Game", MxInventorySlots.THREE_ROWS)
-                                                .setPrevious(mxInv)
-                                                .setItem(MxDefaultItemStackBuilder.create(Material.FIREWORK_ROCKET)
-                                                                .setName(ChatColor.GREEN + "Start")
-                                                                .addBlankLore()
-                                                                .addLore(ChatColor.YELLOW + "Klik hier om de game te starten!")
-                                                                .build(),
-                                                        13,
-                                                        (mxInv1, e12) -> {
-                                                            Optional<Game> gameOptional = Game.createGameFromGameInfo(p.getUniqueId(), upcomingGame);
-                                                            if (gameOptional.isPresent()) {
-                                                                gameOptional.get().addHost(p.getUniqueId());
-                                                                upcomingGame.setStatus(UpcomingGameStatus.CHOOSING_PLAYERS);
-
-                                                            } else {
-                                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_COULD_NOT_CREATE_GAME));
-                                                            }
-                                                            p.closeInventory();
-
-                                                        }
-                                                )
-                                                .setItem(MxDefaultItemStackBuilder.create(Material.RED_CONCRETE)
-                                                                .setName(ChatColor.RED + "Verwijder Game")
-                                                                .addBlankLore()
-                                                                .addLore(ChatColor.YELLOW + "Klik hier om de game te verwijderen.")
-                                                                .build(), 26,
-                                                        (mxInv12, e13) -> {
-                                                            GameManager.getInstance().removeUpcomingGame(upcomingGame);
-                                                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_GAME_DELETED));
-                                                            p.closeInventory();
-                                                        })
-                                                .build());
-                                    }
-                                }
-                            }
-
-
+                    (mxInv, e14) -> {
+                        if (!GameManager.getInstance().getUpcomingGameList().contains(upcomingGame)) {
+                            // Kon game niet vinden (is verwijderdt)
+                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_COULD_NOT_FIND_GAME));
+                            p.closeInventory();
+                            return;
                         }
+                        Duration timeBetween = Duration.between(LocalDateTime.now(), upcomingGame.getTime());
+                        int hours = ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("time-before-queue-is-open-in-hours");
+                        if (!e14.isShiftClick() && Math.abs(timeBetween.toMinutes()) > hours * 60L) {
+                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ITEM_TO_EARLY_TO_JOIN, Collections.singletonList(hours + "")));
+                            return;
+                        }
+                        if (upcomingGame.getStatus() == UpcomingGameStatus.PLAYING) {
+                            // Spectate
+                            Optional<Game> game = GameWorldManager.getInstance().getGameByGameInfo(upcomingGame);
+                            if (game.isPresent()) {
+                                game.get().addSpectator(p.getUniqueId());
+                            }
+                            return;
+                        }
+                        if (upcomingGame.getStatus().isCanJoinQueue() && !e14.isShiftClick()) {
+                            if (upcomingGame.getQueue().contains(p.getUniqueId())) {
+                                upcomingGame.getQueue().remove(p.getUniqueId());
+                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_LEFT_QUEUE));
+                                p.closeInventory();
+                            } else {
+                                upcomingGame.getQueue().add(p.getUniqueId());
+                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ENTERED_QUEUE));
+                                p.closeInventory();
+                            }
+                            return;
+                        }
+                        if (e14.isLeftClick() && e14.isShiftClick()) {
+                            if (p.hasPermission(Permissions.ITEM_GAMES_MANAGE_OTHER_GAMES.getPermission()) || upcomingGame.getHost().equals(p.getUniqueId())) {
+                                // Manage game
+                                if (upcomingGame.getStatus() == UpcomingGameStatus.WAITING) {
+                                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Beheer Game", MxInventorySlots.THREE_ROWS)
+                                            .setPrevious(mxInv)
+                                            .setItem(MxDefaultItemStackBuilder.create(Material.FIREWORK_ROCKET)
+                                                            .setName(ChatColor.GREEN + "Start")
+                                                            .addBlankLore()
+                                                            .addLore(ChatColor.YELLOW + "Klik hier om de game te starten!")
+                                                            .build(),
+                                                    13,
+                                                    (mxInv1, e12) -> {
+                                                        Optional<Game> gameOptional = Game.createGameFromGameInfo(p.getUniqueId(), upcomingGame);
+                                                        if (gameOptional.isPresent()) {
+                                                            gameOptional.get().addHost(p.getUniqueId());
+                                                            upcomingGame.setStatus(UpcomingGameStatus.CHOOSING_PLAYERS);
+
+                                                        } else {
+                                                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_COULD_NOT_CREATE_GAME));
+                                                        }
+                                                        p.closeInventory();
+
+                                                    }
+                                            )
+                                            .setItem(MxDefaultItemStackBuilder.create(Material.RED_CONCRETE)
+                                                            .setName(ChatColor.RED + "Verwijder Game")
+                                                            .addBlankLore()
+                                                            .addLore(ChatColor.YELLOW + "Klik hier om de game te verwijderen.")
+                                                            .build(), 26,
+                                                    (mxInv12, e13) -> {
+                                                        GameManager.getInstance().removeUpcomingGame(upcomingGame);
+                                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_GAME_DELETED));
+                                                        p.closeInventory();
+                                                    })
+                                            .build());
+                                }
+                            }
+                        }
+
+
                     }
             ));
         });

@@ -82,6 +82,7 @@ public final class WieIsDeMol extends JavaPlugin {
         getCommand("vanish").setExecutor(new VanishCommand(Permissions.VANISH, true, false));
         getCommand("ms").setExecutor(new MessagePlayerCommand(Permissions.COMMAND_MESSAGE_PLAYER, true, false));
         getCommand("modify").setExecutor(new ModifyCommand(Permissions.COMMAND_MODIFY, true, false, p -> true));
+        getCommand("togglescoreboard").setExecutor(new ToggleScoreboardCommand(Permissions.COMMAND_TOGGLE_SCOREBOARD, true, true));
     }
 
     private void configFilesSaver() {

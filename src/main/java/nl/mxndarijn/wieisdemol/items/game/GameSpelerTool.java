@@ -82,6 +82,8 @@ public class GameSpelerTool extends MxItem {
                                 if (gamePlayer.getPlayer().isPresent()) {
                                     if (gamePlayer.getPlayer().get().equals(p.getUniqueId()))
                                         return;
+                                    if(!gamePlayer.isAlive())
+                                        return;
                                     OfflinePlayer pl = Bukkit.getOfflinePlayer(gamePlayer.getPlayer().get());
                                     list.add(new Pair<>(
                                             MxSkullItemStackBuilder.create(1)

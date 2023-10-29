@@ -45,3 +45,10 @@ commands:
   modify:
     descriptiuon: Modify
     usage: /modify
+  togglescoreboard:
+    description: Toggle your scoreboard
+    usage: /togglescoreboard
+    aliases:
+      - ts
+      - toggles
+      - togglescoreboard

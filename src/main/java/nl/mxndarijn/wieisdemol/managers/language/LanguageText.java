@@ -198,7 +198,10 @@ LanguageText {
     ITEMTAG_CHANGED(),
     COLORBIND_ADDED(),
     COLORBIND_REMOVED(),
-    GAME_INVCHECK_RESULT();
+    GAME_INVCHECK_RESULT(),
+    SCOREBOARD_HIDDEN(),
+    SCOREBOARD_SHOWED(),
+    SCOREBOARD_NOT_FOUND();
     private final String configValue;
 
     LanguageText(String value) {

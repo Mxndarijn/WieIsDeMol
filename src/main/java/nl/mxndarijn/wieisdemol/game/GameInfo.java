@@ -98,9 +98,16 @@ public class GameInfo {
         Long minutes = Math.abs(duration.toMinutes());
         if (status.isCanJoinQueue()) {
             if (minutes < ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("time-before-queue-is-open-in-hours") * 60L) {
-                builder.addBlankLore()
-                        .addLore(ChatColor.GRAY + "Begint om: " + formattedTime + " (Over " + minutes + (minutes > 1 ? " minuten)" : " minuut)"))
-                        .addLore(ChatColor.GRAY + "Aantal wachtend: " + queue.size());
+                if(time.isAfter(LocalDateTime.now())) {
+                    builder.addBlankLore()
+                            .addLore(ChatColor.GRAY + "Begint om: " + formattedTime + " (Over " + minutes + (minutes > 1 ? " minuten)" : " minuut)"))
+                            .addLore(ChatColor.GRAY + "Aantal wachtend: " + queue.size());
+
+                } else {
+                    builder.addBlankLore()
+                            .addLore(ChatColor.GRAY + "Begon om: " + formattedTime + ChatColor.RED + " (Tijd al geweest).")
+                            .addLore(ChatColor.GRAY + "Aantal wachtend: " + queue.size());
+                }
 
                 builder.addLore(ChatColor.YELLOW + "Klik hier om in de wachtrij te komen.");
                 if (host == p.getUniqueId() || p.hasPermission(Permissions.ITEM_GAMES_MANAGE_OTHER_GAMES.getPermission())) {

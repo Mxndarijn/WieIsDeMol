@@ -9,6 +9,8 @@ import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
+import nl.mxndarijn.api.logger.LogLevel;
+import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.mxcommand.MxCommand;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;
@@ -106,10 +108,15 @@ public class ModifyCommand extends MxCommand {
             PersistentDataContainer container = is.getItemMeta().getPersistentDataContainer();
             List<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
             for (ItemTag value : ItemTag.values()) {
+                try {
                 list.add(new Pair<>(
                         value.getContainer().getItem(container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), value.getPersistentDataTag()), PersistentDataType.STRING)),
                         value.getClicked()
                     ));
+                } catch(Exception ex) {
+                    Logger.logMessage(LogLevel.ERROR, "Could not load itemtag: ");
+                    ex.printStackTrace();
+                }
             }
           MxInventoryManager.getInstance().addAndOpenInventory(p, new MxListInventoryBuilder(ChatColor.GRAY + "ItemTags", MxInventorySlots.THREE_ROWS)
                   .setShowPageNumbers(false)
