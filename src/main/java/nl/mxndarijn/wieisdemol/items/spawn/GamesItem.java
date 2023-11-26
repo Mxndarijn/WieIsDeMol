@@ -74,9 +74,7 @@ public class GamesItem extends MxItem {
                         if (upcomingGame.getStatus() == UpcomingGameStatus.PLAYING) {
                             // Spectate
                             Optional<Game> game = GameWorldManager.getInstance().getGameByGameInfo(upcomingGame);
-                            if (game.isPresent()) {
-                                game.get().addSpectator(p.getUniqueId());
-                            }
+                            game.ifPresent(value -> value.addSpectator(p.getUniqueId()));
                             return;
                         }
                         if (upcomingGame.getStatus().isCanJoinQueue() && !e14.isShiftClick()) {

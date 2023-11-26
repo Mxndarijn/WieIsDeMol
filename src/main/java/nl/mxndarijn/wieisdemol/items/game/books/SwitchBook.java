@@ -7,6 +7,8 @@ import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.util.MxWorldFilter;
+import nl.mxndarijn.wieisdemol.data.AvailablePerson;
+import nl.mxndarijn.wieisdemol.data.BookFailurePlayersHolder;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
@@ -70,13 +72,8 @@ public class SwitchBook extends Book {
                                 Integer key = entry.getKey();
                                 ItemStack value = entry.getValue();
                                 if (isItemTheSame(value)) {
-                                    if (value.getAmount() > 1) {
-                                        value.setAmount(value.getAmount() - 1);
-
-                                        p.getInventory().setItem(key, value);
-                                    } else {
-                                        p.getInventory().setItem(key, new ItemStack(Material.AIR));
-                                    }
+                                    if(!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
+                                        return;
                                     Location pLoc = p.getLocation();
                                     Location playerLocation = player.getLocation();
                                     p.teleport(playerLocation);

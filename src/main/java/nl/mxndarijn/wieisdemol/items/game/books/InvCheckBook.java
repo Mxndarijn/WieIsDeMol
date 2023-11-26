@@ -10,6 +10,8 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.util.MxWorldFilter;
+import nl.mxndarijn.wieisdemol.data.AvailablePerson;
+import nl.mxndarijn.wieisdemol.data.BookFailurePlayersHolder;
 import nl.mxndarijn.wieisdemol.data.CustomInventoryOverlay;
 import nl.mxndarijn.wieisdemol.data.ItemTag;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
@@ -118,13 +120,8 @@ public class InvCheckBook extends Book {
             Integer key = entry.getKey();
             ItemStack value = entry.getValue();
             if (isItemTheSame(value)) {
-                if (value.getAmount() > 1) {
-                    value.setAmount(value.getAmount() - 1);
-
-                    p.getInventory().setItem(key, value);
-                } else {
-                    p.getInventory().setItem(key, new ItemStack(Material.AIR));
-                }
+                if(!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
+                    return;
                 ItemStack[] inv = player.getInventory().getContents().clone();
                 List<ItemStack> foundItems = new ArrayList<>();
                 for (ItemStack itemStack : inv) {

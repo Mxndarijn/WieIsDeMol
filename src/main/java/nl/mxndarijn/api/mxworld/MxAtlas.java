@@ -127,7 +127,7 @@ public class MxAtlas {
         for (Player p : w.getPlayers()) {
             p.teleport(Functions.getSpawnLocation());
         }
-        boolean unloaded = Bukkit.unloadWorld(Bukkit.getWorld(mxWorld.getWorldUID()), save);
+        boolean unloaded = Bukkit.unloadWorld(w, save);
         if (unloaded) {
             mxWorld.setLoaded(false);
         } else {

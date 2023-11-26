@@ -157,7 +157,6 @@ public class ChestColorBindAttachment extends ChestAttachment {
     public void onGameStart(Game game) {
         super.onGameStart(game);
         spawnArmorStand();
-        Logger.logMessage("start");
         if (armorStand.isPresent() && !colors.isEmpty()) {
             armorStand.get().getEquipment().setHelmet(MxSkullItemStackBuilder.create(1).setSkinFromHeadsData(colors.get(0).getHeadKey()).build());
             this.currentColor = colors.get(0);

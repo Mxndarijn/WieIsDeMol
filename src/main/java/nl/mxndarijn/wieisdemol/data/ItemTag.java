@@ -1,10 +1,7 @@
 package nl.mxndarijn.wieisdemol.data;
 
 import net.kyori.adventure.text.Component;
-import nl.mxndarijn.api.inventory.MxInventoryIndex;
-import nl.mxndarijn.api.inventory.MxInventoryManager;
-import nl.mxndarijn.api.inventory.MxInventorySlots;
-import nl.mxndarijn.api.inventory.MxItemClicked;
+import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
@@ -20,6 +17,7 @@ import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -59,6 +57,49 @@ public enum ItemTag {
         dataBoolean = !dataBoolean;
         container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
         String lore = ChatColor.RED + "Undroppable";
+        List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
+        if (dataBoolean) {
+            List<Component> newList = new ArrayList<>();
+            list.forEach(c -> {
+                if (!Functions.convertComponentToString(c).equalsIgnoreCase(lore)) {
+                    newList.add(c);
+                }
+            });
+            list = newList;
+        } else {
+            list.add(Component.text(lore));
+        }
+        im.lore(list);
+        is.setItemMeta(im);
+        e.getWhoClicked().closeInventory();
+        e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+    }),
+    VANISHABLE("vanishable", data -> {
+        boolean dataBoolean = true;
+        if (data != null && data.equalsIgnoreCase("false"))
+            dataBoolean = false;
+        return MxSkullItemStackBuilder.create(1)
+                .setSkinFromHeadsData("ghost")
+                .setName(ChatColor.GRAY + "Vanish")
+                .addBlankLore()
+                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Blijft" : ChatColor.RED + "Verdwijnt"))
+                .addBlankLore()
+                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .build();
+    }, (mxInv, e) -> {
+        String key = "vanishable";
+        ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
+        ItemMeta im = is.getItemMeta();
+
+        PersistentDataContainer container = im.getPersistentDataContainer();
+        String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING);
+
+        boolean dataBoolean = true;
+        if (data != null && data.equalsIgnoreCase("false"))
+            dataBoolean = false;
+        dataBoolean = !dataBoolean;
+        container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
+        String lore = ChatColor.RED + "Vanish";
         List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
         if (dataBoolean) {
             List<Component> newList = new ArrayList<>();

@@ -117,7 +117,7 @@ public class GameColorBindEvents extends GameEvent{
         if(is == null)
             return;
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(player.getUniqueId());
-        if(gp.isEmpty())
+        if(gp.isEmpty() && !game.getSpectators().contains(player.getUniqueId()))
             return;
         if(is.getItemMeta() == null)
             return;
@@ -154,7 +154,7 @@ public class GameColorBindEvents extends GameEvent{
         if(is == null)
             return;
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(player.getUniqueId());
-        if(gp.isEmpty())
+        if(gp.isEmpty() && !game.getSpectators().contains(player.getUniqueId()))
             return;
         if(is.getItemMeta() == null)
             return;
@@ -175,7 +175,7 @@ public class GameColorBindEvents extends GameEvent{
         if(is == null)
             return;
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(player.getUniqueId());
-        if(gp.isEmpty())
+        if(gp.isEmpty() && !game.getSpectators().contains(player.getUniqueId()))
             return;
         if(is.getItemMeta() == null)
             return;
@@ -203,7 +203,7 @@ public class GameColorBindEvents extends GameEvent{
             return;
 
         Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(player.getUniqueId());
-        if(gp.isEmpty())
+        if(gp.isEmpty() && !game.getSpectators().contains(player.getUniqueId()))
             return;
         if(is.getItemMeta() == null)
             return;

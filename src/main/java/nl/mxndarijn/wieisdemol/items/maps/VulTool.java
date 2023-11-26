@@ -17,10 +17,7 @@ import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.wieisdemol.data.ChatPrefix;
-import nl.mxndarijn.wieisdemol.data.Colors;
-import nl.mxndarijn.wieisdemol.data.Interaction;
-import nl.mxndarijn.wieisdemol.data.Role;
+import nl.mxndarijn.wieisdemol.data.*;
 import nl.mxndarijn.wieisdemol.managers.InteractionManager;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
@@ -585,7 +582,7 @@ public class VulTool extends MxItem {
     }
 
     private void deleteMap(Player p, Map map, MxInventory mainInv) {
-        if (!map.getMapConfig().getOwner().equals(p.getUniqueId())) {
+        if (!map.getMapConfig().getOwner().equals(p.getUniqueId()) && !p.hasPermission(Permissions.MAP_DELETE_OTHERS.getPermission())) {
             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_NOT_OWNER_OF_MAP));
             return;
         }

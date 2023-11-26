@@ -95,6 +95,10 @@ public class GameSpelerTool extends MxItem {
                                                     .build(),
                                             (mxInv12, e22) -> {
                                                 p.closeInventory();
+                                                if(gp.get().getVotedOn().isPresent() && gp.get().getVotedOn().get() == gamePlayer) {
+                                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTED, Arrays.asList(pl.getName(), gamePlayer.getMapPlayer().getColor().getDisplayName())));
+                                                    return;
+                                                }
                                                 gp.get().setVotedOn(Optional.of(gamePlayer));
                                                 p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTED, Arrays.asList(pl.getName(), gamePlayer.getMapPlayer().getColor().getDisplayName())));
                                                 game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_VOTED, Arrays.asList(p.getName(), gp.get().getMapPlayer().getColor().getDisplayName(), game.getTotalVotes() + "", ""+game.getColors().size())));

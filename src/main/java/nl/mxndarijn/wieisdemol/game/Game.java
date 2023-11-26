@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.game;
 
+import de.Herbystar.TTA.TTA_Methods;
 import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
 import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
@@ -8,6 +9,7 @@ import nl.mxndarijn.api.mxworld.MxWorld;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.Role;
 import nl.mxndarijn.wieisdemol.data.ScoreBoard;
 import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 import nl.mxndarijn.wieisdemol.game.events.GameEvent;
@@ -15,6 +17,8 @@ import nl.mxndarijn.wieisdemol.game.events.*;
 import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.*;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestManager;
+import nl.mxndarijn.wieisdemol.managers.database.DatabaseManager;
+import nl.mxndarijn.wieisdemol.managers.database.PlayerData;
 import nl.mxndarijn.wieisdemol.managers.doors.DoorManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
@@ -213,7 +217,7 @@ public class Game {
                         ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), hostScoreboard);
 
                         if (hosts.isEmpty()) {
-                            setGameStatus(UpcomingGameStatus.FINISHED);
+                            setGameStatus(UpcomingGameStatus.FINISHED, Optional.empty());
                         }
 
                     }
@@ -264,10 +268,6 @@ public class Game {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
             if (this.mxWorld.isEmpty()) {
-                future.complete(true);
-                return;
-            }
-            if (!this.mxWorld.get().isLoaded()) {
                 future.complete(true);
                 return;
             }
@@ -451,7 +451,12 @@ public class Game {
     }
 
     public void sendMessageToSpectators(String message) {
-        //TODO
+        spectators.forEach(host -> {
+            Player p = Bukkit.getPlayer(host);
+            if (p != null) {
+                p.sendMessage(message);
+            }
+        });
     }
 
     public void sendMessageToPlayers(String message) {
@@ -465,15 +470,56 @@ public class Game {
         });
     }
 
-    public void setGameStatus(UpcomingGameStatus upcomingGameStatus) {
+    public void setGameStatus(UpcomingGameStatus upcomingGameStatus, Optional<Role> role) {
         getGameInfo().setStatus(upcomingGameStatus);
         if (upcomingGameStatus == UpcomingGameStatus.PLAYING && !firstStart) {
             firstStart = true;
             chestManager.onGameStart(this);
         }
         if (upcomingGameStatus == UpcomingGameStatus.FINISHED) {
+            role.ifPresent(rol -> {
+                sendMessageToAll(ChatPrefix.WIDM + "Rollen:");
+                colors.forEach(color -> {
+                    if(color.getPlayer().isPresent()) {
+                        sendMessageToAll(ChatColor.GRAY + " - " + Bukkit.getOfflinePlayer(color.getPlayer().get()).getName() + " " + color.getMapPlayer().getColor().getDisplayName() + " " + color.getMapPlayer().getRoleDisplayString());
+                    } else {
+                        sendMessageToAll(ChatColor.GRAY + " - " + "Niemand " + color.getMapPlayer().getColor().getDisplayName() + " " + color.getMapPlayer().getRoleDisplayString());
+                    }
+                });
+                List<UUID> list = new ArrayList<>();
+                list.addAll(getSpectators());
+                list.addAll(getHosts());
+                getColors().forEach(c -> {
+                    if (c.getPlayer().isPresent())
+                        list.add(c.getPlayer().get());
+                });
+
+                list.forEach(uuid -> {
+                    Player p = Bukkit.getPlayer(uuid);
+                    if (p != null) {
+                        TTA_Methods.sendTitle(p, rol.getTitle(), 10, 100, 10, rol.getSubTitle(), 20, 90, 10);
+                    }
+                });
+                colors.forEach(color -> {
+
+                    if (color.getPlayer().isPresent()) {
+                        UUID uuid = color.getPlayer().get();
+                        PlayerData pd = DatabaseManager.getInstance().getPlayerData(uuid);
+                        if (color.getMapPlayer().getRole() == rol)  {
+                            pd.updateData(new HashMap<>() {{
+                                put(rol.getWinType(), pd.getData(rol.getWinType())+ 1);
+                                put(PlayerData.UserDataType.GAMESPLAYED, pd.getData(PlayerData.UserDataType.GAMESPLAYED)+ 1);
+                            }});
+
+                        } else {
+                            pd.updateData(new HashMap<>() {{
+                                put(PlayerData.UserDataType.GAMESPLAYED, pd.getData(PlayerData.UserDataType.GAMESPLAYED)+ 1);
+                            }});
+                        }
+                    }
+                });
+            });
             stopGame();
-            GameManager.getInstance().removeUpcomingGame(gameInfo);
         }
         sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_STATUS_CHANGED, Collections.singletonList(upcomingGameStatus.getStatus())));
     }
@@ -554,10 +600,12 @@ public class Game {
                 }
             }
         });
+        World w = Bukkit.getWorld(this.mxWorld.get().getWorldUID());
 
         unloadWorld().thenAccept(unloaded -> {
             if(unloaded) this.mxWorld = Optional.empty();
-
+            GameManager.getInstance().removeUpcomingGame(gameInfo);
+            GameWorldManager.getInstance().removeGame(this);
         });
     }
 
@@ -598,11 +646,17 @@ public class Game {
             } else {
                 respawnLocations.put(uuid, loc);
             }
-            p.getInventory().clear();
-            p.getInventory().setItem(0, Items.GAME_SPECTATOR_TELEPORT_ITEM.getItemStack());
-            if (spectators.contains(p.getUniqueId())) {
-                p.getInventory().setItem(8, Items.GAME_SPECTATOR_LEAVE_ITEM.getItemStack());
-            }
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                p.getInventory().clear();
+                p.getInventory().setItem(0, Items.GAME_SPECTATOR_TELEPORT_ITEM.getItemStack());
+                if (spectators.contains(p.getUniqueId())) {
+                    p.getInventory().setItem(8, Items.GAME_SPECTATOR_LEAVE_ITEM.getItemStack());
+                }
+                VanishManager.getInstance().hidePlayerForAll(p);
+            }, 40L);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                VanishManager.getInstance().hidePlayerForAll(p);
+            }, 80L);
             p.setHealth(20);
             p.setFoodLevel(20);
             p.setAllowFlight(true);

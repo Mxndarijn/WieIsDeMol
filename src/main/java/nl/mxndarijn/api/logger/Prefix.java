@@ -18,6 +18,7 @@ public enum Prefix {
     LOGGER(ChatColor.DARK_PURPLE + "Logger"),
     LANGUAGE_MANAGER(ChatColor.GOLD + "Language-Manager"),
     CONFIG_FILES(ChatColor.YELLOW + "Config-Files"),
+    DATABASEMANAGER(ChatColor.YELLOW + "Database-Manager"),
     STORAGE_MANAGER(ChatColor.GREEN + "Storage-Manager");
 
     private final String prefix;

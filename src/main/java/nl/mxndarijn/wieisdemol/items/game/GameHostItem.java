@@ -1,17 +1,16 @@
 package nl.mxndarijn.wieisdemol.items.game;
 
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
-import nl.mxndarijn.api.inventory.MxInventory;
-import nl.mxndarijn.api.inventory.MxInventoryManager;
-import nl.mxndarijn.api.inventory.MxInventorySlots;
-import nl.mxndarijn.api.inventory.MxItemClicked;
+import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
+import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.Role;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
@@ -67,18 +66,32 @@ public class GameHostItem extends MxItem {
                                                     .build(),
                                             10,
                                             (mxInv1, e2) -> {
-                                                game.setGameStatus(UpcomingGameStatus.FREEZE);
+                                                game.setGameStatus(UpcomingGameStatus.FREEZE, Optional.empty());
                                                 p.closeInventory();
                                             })
                                     .setItem(MxSkullItemStackBuilder.create(1)
                                                     .setSkinFromHeadsData("red-block")
                                                     .setName(UpcomingGameStatus.FINISHED.getStatus())
                                                     .addBlankLore()
+                                                    .addLore(ChatColor.GRAY + "Hierbij worden geen statistics aangepast!")
                                                     .addLore(ChatColor.YELLOW + "Klik hier om de status te veranderen naar: " + UpcomingGameStatus.FINISHED.getStatus())
+                                                    .build(),
+                                            14,
+                                            (mxInv1, e2) -> {
+                                                game.setGameStatus(UpcomingGameStatus.FINISHED, Optional.empty());
+                                                p.closeInventory();
+                                            })
+                                    .setItem(MxSkullItemStackBuilder.create(1)
+                                                    .setSkinFromHeadsData("emerald-block")
+                                                    .setName(ChatColor.DARK_GREEN + "Ego-Win")
+                                                    .addBlankLore()
+                                                    .addLore(ChatColor.GRAY + "Hierbij wint de ego")
+                                                    .addLore(ChatColor.YELLOW + "Klik hier om de status te veranderen naar: " + UpcomingGameStatus.FINISHED.getStatus())
+                                                    .addLore(ChatColor.YELLOW + "Hierbij wint de ego.")
                                                     .build(),
                                             16,
                                             (mxInv1, e2) -> {
-                                                game.setGameStatus(UpcomingGameStatus.FINISHED);
+                                                game.setGameStatus(UpcomingGameStatus.FINISHED, Optional.of(Role.EGO));
                                                 p.closeInventory();
                                             })
                                     .setItem(MxSkullItemStackBuilder.create(1)
@@ -87,37 +100,43 @@ public class GameHostItem extends MxItem {
                                                     .addBlankLore()
                                                     .addLore(ChatColor.YELLOW + "Klik hier om de status te veranderen naar: " + UpcomingGameStatus.PLAYING.getStatus())
                                                     .build(),
-                                            13,
+                                            12,
                                             (mxInv1, e2) -> {
-                                                game.setGameStatus(UpcomingGameStatus.PLAYING);
+                                                game.setGameStatus(UpcomingGameStatus.PLAYING, Optional.empty());
                                                 p.closeInventory();
                                             })
-                                            .setItem(MxDefaultItemStackBuilder.create(Material.COMPASS)
-                                                            .setName(ChatColor.GRAY + "Warps")
-                                                            .addBlankLore()
-                                                            .addLore(ChatColor.YELLOW + "Klik hier om de warps van de game te bekijken.")
-                                                            .build(),
-                                                    18, (mxInv13, e22) -> {
-                                                        List<Warp> warps = game.getWarpManager().getWarps();
-                                                        ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
-                                                        warps.forEach(warp -> {
-                                                            list.add(new Pair<>(
-                                                                    MxSkullItemStackBuilder.create(1)
-                                                                            .setSkinFromHeadsData(warp.getSkullId())
-                                                                            .setName(ChatColor.GRAY + warp.getName())
-                                                                            .addBlankLore()
-                                                                            .addLore(ChatColor.YELLOW + "Klik om naar deze warp te teleporten.")
-                                                                            .build(),
-                                                                    (mxInv14, e23) -> {
-                                                                        p.teleport(warp.getMxLocation().getLocation(p.getWorld()));
-                                                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_TELEPORTED));
-                                                                    }
-                                                            ));
-                                                        });
 
-                                                    })
                                     .build());
 
+                        })
+                .setItem(MxDefaultItemStackBuilder.create(Material.COMPASS)
+                                .setName(ChatColor.GRAY + "Warps")
+                                .addBlankLore()
+                                .addLore(ChatColor.YELLOW + "Klik hier om de warps van de game te bekijken.")
+                                .build(),
+                        18, (mxInv13, e22) -> {
+                            List<Warp> warps = game.getWarpManager().getWarps();
+                            ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+                            warps.forEach(warp -> {
+                                list.add(new Pair<>(
+                                        MxSkullItemStackBuilder.create(1)
+                                                .setSkinFromHeadsData(warp.getSkullId())
+                                                .setName(ChatColor.GRAY + warp.getName())
+                                                .addBlankLore()
+                                                .addLore(ChatColor.YELLOW + "Klik om naar deze warp te teleporten.")
+                                                .build(),
+                                        (mxInv14, e23) -> {
+                                            p.teleport(warp.getMxLocation().getLocation(p.getWorld()));
+                                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_CONFIGURE_TOOL_WARPS_WARP_TELEPORTED));
+                                        }
+                                ));
+                            });
+                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Warps", MxInventorySlots.THREE_ROWS)
+                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                                    .setPrevious(mxInv13)
+                                    .setListItems(list)
+                                    .build()
+                            );
                         })
                 .setItem(MxSkullItemStackBuilder.create(1)
                                 .setSkinFromHeadsData("wooden-plus")

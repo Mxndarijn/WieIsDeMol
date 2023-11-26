@@ -253,7 +253,15 @@ redstone-block:
   name: Redstone Block
   type: manually-added
   value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzc5Njk1MzM4MjZmZTRlZjQ2NTc4OWY4MjMzMTU5OGM4YjhlYzhkYWJhMjk2Yjc1MzA0NGI1MDlmYWJlYWI4NiJ9fX0=
+ghost:
+  name: Geest
+  type: manually-added
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTI5N2NiNTdlNmJmMDhlNmU1MGIwMTc4NDVlM2NmYmZkMTQ2MjU2NWI4NGJlMGQ2NGRiM2IzYmJmNWQ4ZjRlMiJ9fX0=
 sculk-sensor:
   name: Skulk Sensor
   type: manually-added
   value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNjdkYWExZmIwNDNkZjBmNDRiYWM5ZTViMzdiZDJiYzUyYjRlNTQ1YzNmYWU5NjNkNjU0ODU2NjA4NDNkZWY0MSJ9fX0=
+ender-pearl:
+  name: Ender Pearl
+  type: manually-added
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNWNiN2MyMWNjNDNkYzE3Njc4ZWU2ZjE2NTkxZmZhYWIxZjYzN2MzN2Y0ZjZiYmQ4Y2VhNDk3NDUxZDc2ZGI2ZCJ9fX0=

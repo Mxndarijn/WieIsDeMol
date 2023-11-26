@@ -7,6 +7,7 @@ import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import de.myzelyam.api.vanish.VanishAPI;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
@@ -30,27 +31,11 @@ public class VanishManager implements Listener {
 
     private static VanishManager instance;
 
-    private final Set<UUID> hiddenPlayers;
-    private final ProtocolManager protocolManager;
 
     private final Plugin plugin;
 
     public VanishManager(Plugin plugin) {
         this.plugin = plugin;
-        plugin.getServer().getPluginManager().registerEvents(this, plugin);
-
-        protocolManager = ProtocolLibrary.getProtocolManager();
-        hiddenPlayers = new HashSet<>();
-
-        protocolManager.addPacketListener(
-                new PacketAdapter(plugin, ListenerPriority.NORMAL, PacketType.Play.Server.NAMED_SOUND_EFFECT,
-                        PacketType.Play.Server.ENTITY_SOUND) {
-                    @Override
-                    public void onPacketSending(PacketEvent event) {
-
-                    }
-                }
-        );
     }
 
     public static VanishManager getInstance() {
@@ -59,46 +44,14 @@ public class VanishManager implements Listener {
         return instance;
     }
 
-    private void hidePlayer(Player viewer, Player targetToHide) {
-        hiddenPlayers.add(targetToHide.getUniqueId());
-        PacketContainer destroyEntity = new PacketContainer(ENTITY_DESTROY);
-
-        destroyEntity.getModifier().write(0, new IntArrayList(new int[]{targetToHide.getEntityId()}));
-
-        // Make the entity disappear
-        protocolManager.sendServerPacket(viewer, destroyEntity);
-    }
-
     private void showPlayer(Player player) {
-        hiddenPlayers.remove(player.getUniqueId());
-
-        protocolManager.updateEntity(player, new ArrayList<>(Bukkit.getOnlinePlayers()));
+        VanishAPI.showPlayer(player);
     }
 
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void join(PlayerLoginEvent e) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
-            if (e.getResult() != PlayerLoginEvent.Result.ALLOWED)
-                return;
-            hiddenPlayers.forEach(uuid -> {
-                Player p = Bukkit.getPlayer(uuid);
-                if (uuid != e.getPlayer().getUniqueId()) {
-                    Logger.logMessage("Hiding player: " + p.getName());
-                    hidePlayer(e.getPlayer(), p);
-
-                }
-            });
-        }, 5L);
-    }
-
-    @EventHandler
-    public void leave(PlayerQuitEvent e) {
-        hiddenPlayers.remove(e.getPlayer().getUniqueId());
-    }
 
     public void toggleVanish(Player p) {
-        if (hiddenPlayers.contains(p.getUniqueId())) {
+        if (VanishAPI.isInvisible(p)) {
             showPlayer(p);
         } else {
             hidePlayerForAll(p);
@@ -106,30 +59,11 @@ public class VanishManager implements Listener {
     }
 
     public boolean isPlayerHidden(Player p) {
-        return hiddenPlayers.contains(p.getUniqueId());
+        return VanishAPI.isInvisible(p);
     }
 
     public void hidePlayerForAll(Player p) {
-        hiddenPlayers.add(p.getUniqueId());
-        Bukkit.getOnlinePlayers().forEach(on -> {
-            if (on.getUniqueId() != p.getUniqueId())
-                hidePlayer(on, p);
-        });
-    }
-
-    @EventHandler
-    public void changeWorld(PlayerChangedWorldEvent e) {
-        if (e.getFrom() == e.getPlayer().getWorld()) return;
-        Player p = e.getPlayer();
-        if (hiddenPlayers.contains(p.getUniqueId())) {
-            hidePlayerForAll(p);
-        }
-
-        hiddenPlayers.forEach(uuid -> {
-            if (uuid != p.getUniqueId()) {
-                hidePlayer(p, Objects.requireNonNull(Bukkit.getPlayer(uuid)));
-            }
-        });
+        VanishAPI.hidePlayer(p);
     }
 
     public void showPlayerForAll(Player p) {

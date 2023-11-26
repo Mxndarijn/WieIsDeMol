@@ -17,6 +17,7 @@ import nl.mxndarijn.wieisdemol.ChangeScoreboardOnChangeWorld;
 import nl.mxndarijn.wieisdemol.SaveInventoryChangeWorld;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
+import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.data.ScoreBoard;
 import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.InteractionManager;
@@ -142,7 +143,7 @@ public class Preset {
         return builder.build();
     }
 
-    public ItemStack getItemStackForNewMap() {
+    public ItemStack getItemStackForNewMap(Player p) {
         MxSkullItemStackBuilder builder = MxSkullItemStackBuilder.create(1);
         if (MxHeadManager.getInstance().getAllHeadKeys().contains(config.getSkullId())) {
             builder.setSkinFromHeadsData(config.getSkullId());
@@ -172,6 +173,10 @@ public class Preset {
                     .addLore(ChatColor.RED + config.getLockReason());
         }
         builder.addCustomTagString(PRESET_ITEMMETA_TAG, directory.getName());
+
+        if(!p.hasPermission(Permissions.COMMAND_MAPS_CREATE_SPECIFIC_MAP + config.getName().toLowerCase().replaceAll(" ", "_"))) {
+            builder.addLore(ChatColor.RED + "Jij kan deze preset niet zelf aanmaken.");
+        }
 
         return builder.build();
     }

@@ -4,14 +4,12 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;
+import nl.mxndarijn.wieisdemol.data.ItemTag;
 import nl.mxndarijn.wieisdemol.items.game.*;
 import nl.mxndarijn.wieisdemol.items.game.books.*;
 import nl.mxndarijn.wieisdemol.items.game.spectate.LeaveGameItem;
 import nl.mxndarijn.wieisdemol.items.game.spectate.TeleportItem;
-import nl.mxndarijn.wieisdemol.items.maps.MapChestItem;
-import nl.mxndarijn.wieisdemol.items.maps.MapDoorItem;
-import nl.mxndarijn.wieisdemol.items.maps.MapShulkerItem;
-import nl.mxndarijn.wieisdemol.items.maps.VulTool;
+import nl.mxndarijn.wieisdemol.items.maps.*;
 import nl.mxndarijn.wieisdemol.items.presets.ChestConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.DoorConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.PresetConfigureTool;
@@ -229,6 +227,7 @@ public enum Items {
             .setName(ChatColor.GRAY + "Verlaat Game")
             .addBlankLore()
             .addLore(ChatColor.YELLOW + "Gebruik dit item om te stoppen met spectaten.")
+            .addCustomTagString(ItemTag.DROPPABLE.getPersistentDataTag(), false)
             .build(),
             p -> {
                 return true;
@@ -240,6 +239,7 @@ public enum Items {
             .setName(ChatColor.GRAY + "Teleporteer naar speler")
             .addBlankLore()
             .addLore(ChatColor.YELLOW + "Gebruik dit item om te teleporteren naar spelers.")
+            .addCustomTagString(ItemTag.DROPPABLE.getPersistentDataTag(), false)
             .build(),
             p -> {
                 return true;
@@ -357,12 +357,49 @@ public enum Items {
             true,
             InvCheckBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_TELEPORT_BOOK(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Teleport")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item kan je iemand ")
+            .addLore(ChatColor.YELLOW + "teleporteren naar iemand anders.")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            TeleportBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+
+    MAP_GENERATOR_CONFIGURATOR(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Generator")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met deze generator krijg je een random item.")
+            .build(),
+            p -> {
+                return true;
+            },
+            false,
+            MapGeneratorBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_GENERATOR(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Generator")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met deze generator krijg je een random item.")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            GeneratorBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_PLAYER_TOOL(MxDefaultItemStackBuilder.create(Material.NETHER_STAR)
             .setName(ChatColor.GRAY + "Speler Tool")
             .addBlankLore()
             .addLore(ChatColor.YELLOW + "Met dit item kan je stemmen,")
             .addLore(ChatColor.YELLOW + "hosts een vraag stellen,")
             .addLore(ChatColor.YELLOW + "of alle kleuren zien.")
+            .addCustomTagString(ItemTag.DROPPABLE.getPersistentDataTag(), false)
+            .addCustomTagString(ItemTag.VANISHABLE.getPersistentDataTag(), false)
             .build(),
             p -> {
                 return true;

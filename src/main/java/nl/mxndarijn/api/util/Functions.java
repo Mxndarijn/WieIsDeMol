@@ -7,6 +7,7 @@ import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,6 +18,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Functions {
     public static Location getSpawnLocation() {
@@ -81,4 +86,34 @@ public class Functions {
         // Gebruik String.format om de tijd in het juiste formaat weer te geven
         return String.format("%02d:%02d", minutes, seconds);
     }
+
+//    public static String convertWithColors(String input) {
+//        return RGBUtils.getInstance().convertRGBtoLegacy(input);
+//    }
+//
+//    public static List<String> convertListWithColors(List<String> inputList) {
+//        return inputList.stream()
+//                .map(Functions::convertWithColors)
+//                .collect(Collectors.toList());
+//    }
+//
+//    public static java.awt.Color hexToRgb(String hex) {
+//        // Verwijder het '#' karakter als het aanwezig is
+//        if (hex.startsWith("#")) {
+//            hex = hex.substring(1);
+//        }
+//
+//        // Controleer of de hexadecimale kleurcode geldig is
+//        if (hex.length() != 6) {
+//            throw new IllegalArgumentException("Ongeldige hexadecimale kleurcode");
+//        }
+//
+//        // Parse de hexadecimale waarden voor rood, groen en blauw
+//        int red = Integer.parseInt(hex.substring(0, 2), 16);
+//        int green = Integer.parseInt(hex.substring(2, 4), 16);
+//        int blue = Integer.parseInt(hex.substring(4, 6), 16);
+//
+//        // Maak een java.awt.Color object en retourneer het
+//        return new java.awt.Color(red, green, blue);
+//    }
 }

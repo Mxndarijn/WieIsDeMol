@@ -1,7 +1,6 @@
 package nl.mxndarijn.wieisdemol.commands;
 
 import net.kyori.adventure.text.Component;
-import nl.mxndarijn.api.chatinput.MxChatInputCallback;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
@@ -15,8 +14,8 @@ import nl.mxndarijn.api.mxcommand.MxCommand;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
-import nl.mxndarijn.wieisdemol.data.ItemTag;
-import nl.mxndarijn.wieisdemol.data.Permissions;
+import nl.mxndarijn.wieisdemol.data.*;
+import nl.mxndarijn.wieisdemol.items.game.books.Book;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.ChatColor;
@@ -26,19 +25,19 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.intellij.lang.annotations.Language;
 
-import java.awt.*;
-import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class ModifyCommand extends MxCommand {
@@ -56,7 +55,18 @@ public class ModifyCommand extends MxCommand {
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_NO_ITEM_FOUND));
             return;
         }
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Modify", MxInventorySlots.THREE_ROWS)
+        MxDefaultMenuBuilder menu = MxDefaultMenuBuilder.create(ChatColor.GRAY + "Modify", MxInventorySlots.THREE_ROWS);
+        if(is.getType() == Material.BOOK) {
+            menu.setItem(MxDefaultItemStackBuilder.create(Material.BOOK)
+                    .setName(ChatColor.GRAY + "Book modify")
+                    .addBlankLore()
+                    .addLore(ChatColor.GRAY + "Met book modify kan je succes kansen instellen,")
+                    .addLore(ChatColor.GRAY + "en eventueel wat er moet gebeuren als het faalt.")
+                    .addBlankLore()
+                    .addLore(ChatColor.YELLOW + "Klik hier om de itemtags van het item aan te passen.")
+                    .build(), 16, getOnClickBookLore(p, is));
+        }
+        MxInventoryManager.getInstance().addAndOpenInventory(p, menu
                 .setItem(MxDefaultItemStackBuilder.create(Material.OAK_SIGN)
                         .setName(ChatColor.GRAY + "Verander Naam")
                         .addBlankLore()
@@ -74,7 +84,7 @@ public class ModifyCommand extends MxCommand {
                         .addBlankLore()
                         .addLore(ChatColor.YELLOW + "Klik hier om de enchants van het item aan te passen.")
                         .build(), 14, getClickOnEnchantments(p, is))
-                .setItem(MxDefaultItemStackBuilder.create(Material.BOOK)
+                .setItem(MxDefaultItemStackBuilder.create(Material.PIGLIN_BANNER_PATTERN)
                         .setName(ChatColor.GRAY + "Verander Lore")
                         .addBlankLore()
                         .addLore(ChatColor.YELLOW + "Klik hier om de lore van het item aan te passen.")
@@ -84,10 +94,144 @@ public class ModifyCommand extends MxCommand {
                         .addBlankLore()
                         .addLore(ChatColor.YELLOW + "Klik hier om de itemtags van het item aan te passen.")
                         .build(), 15, getClickOnItemTags(p, is))
-
                 .build()
 
         );
+    }
+
+    private MxItemClicked getOnClickBookLore(Player p, ItemStack is) {
+        return (mxInv, e) -> {
+            String key = "success-rating";
+            ItemMeta im = is.getItemMeta();
+
+            PersistentDataContainer container = im.getPersistentDataContainer();
+            int data = container.getOrDefault(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.INTEGER, 100);
+
+            MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Book Modify", MxInventorySlots.THREE_ROWS)
+                    .setItem(MxDefaultItemStackBuilder.create(Material.EXPERIENCE_BOTTLE)
+                                    .setName(ChatColor.GRAY + "Succeskans")
+                                    .addBlankLore()
+                                    .addLore(ChatColor.GRAY + "Succeskans: " + data)
+                                    .addBlankLore()
+                                    .addLore(ChatColor.YELLOW + "Klik hier om de kans aan te passen.").build(), 12,
+                            (mxInv1, e1) -> {
+                                p.closeInventory();
+                                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_ENTER_NUMBER));
+                                MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
+                                   try {
+                                       int i = Integer.parseInt(message);
+                                       if(i < 0 || i > 100) {
+                                           p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_NOT_A_NUMBER));
+                                           return;
+                                       }
+                                       container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.INTEGER, i);
+                                       p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_RATING_CHANGED, Collections.singletonList(i + "")));
+                                       String lore = ChatColor.BLUE + "Succeskans: " + ((i > 50) ? ChatColor.GREEN : ChatColor.RED) + i + "%";
+                                       List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
+                                       List<Component> newList = new ArrayList<>();
+                                       list.forEach(c -> {
+                                           if (!Functions.convertComponentToString(c).contains(ChatColor.BLUE + "Succeskans: ")) {
+                                               newList.add(c);
+                                           }
+                                       });
+                                       list = newList;
+                                       list.add(Component.text(lore));
+                                       im.lore(list);
+                                       is.setItemMeta(im);
+                                   } catch(NumberFormatException ex) {
+                                       p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_NOT_A_NUMBER));
+                                   }
+                                });
+
+                            })
+                    .setItem(MxDefaultItemStackBuilder.create(Material.LECTERN)
+                                    .setName(ChatColor.GRAY + "Faal-Actie")
+                                    .addBlankLore()
+                                    .addBlankLore()
+                                    .addLore(ChatColor.YELLOW + "Klik hier om de faal-actie aan te passen.").build(), 14,
+                            (mxInv1, e1) -> {
+                                List<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+                                Optional<BookData> optionalBook = BookData.getBookByItemStack(is);
+                                if(optionalBook.isEmpty()) {
+                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_BOOK_NOT_FOUND));
+                                    return;
+                                }
+                                for (BookFailureAction value : BookFailureAction.values()) {
+                                    if(value.getPlayersNeeded() > optionalBook.get().getPersons().length) {
+                                        continue;
+                                    }
+                                    list.add(new Pair<>(
+                                            value.getIs(),
+                                            (mxInv2, e2) -> {
+                                                List<AvailablePerson> persons = new ArrayList<>();
+                                                AtomicInteger index = new AtomicInteger();
+                                                StringBuilder dataBuilder = new StringBuilder(value.getType() + "[");
+                                                List<String> items = value.getSelectors();
+
+                                                List<Pair<ItemStack, MxItemClicked>> selectorsList = new ArrayList<>();
+                                                for (AvailablePerson availablePerson : optionalBook.get().getPersons()) {
+                                                    selectorsList.add(new Pair<>(
+                                                            MxDefaultItemStackBuilder.create(Material.PLAYER_HEAD)
+                                                                    .setName(ChatColor.GRAY + availablePerson.getName())
+                                                                    .addBlankLore()
+                                                                    .addLore(ChatColor.YELLOW + "Selecteer " + availablePerson.getName())
+                                                                    .build(),
+                                                            (mxInv3, e3) -> {
+                                                                        persons.add(availablePerson);
+                                                                        index.getAndIncrement();
+
+                                                                        if(index.get() < value.getPlayersNeeded()) {
+                                                                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(items.get(index.get()), MxInventorySlots.THREE_ROWS)
+                                                                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                                                                                    .setListItems(selectorsList)
+                                                                                    .build());
+                                                                        } else {
+                                                                            persons.forEach(person -> {
+                                                                                dataBuilder.append(person.getType()).append(",");
+                                                                            });
+                                                                            dataBuilder.deleteCharAt(dataBuilder.length() -1);
+                                                                            dataBuilder.append("]");
+
+                                                                            String keyForFail = "fail-action";
+                                                                            container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), keyForFail), PersistentDataType.STRING, dataBuilder.toString());
+                                                                            String lore = ChatColor.BLUE + "" +ChatColor.GRAY + ChatColor.DARK_AQUA + ChatColor.RESET + ChatColor.RED + "Faal-Actie: ";
+                                                                            List<Component> listLore = im.hasLore() ? im.lore() : new ArrayList<>();
+                                                                            List<Component> newList = new ArrayList<>();
+                                                                            listLore.forEach(c -> {
+                                                                                if (!Functions.convertComponentToString(c).contains(lore)) {
+                                                                                    newList.add(c);
+                                                                                }
+                                                                            });
+                                                                            listLore = newList;
+                                                                            listLore.add(Component.text(lore + value.getTextInterface().getText(persons)));
+                                                                            im.lore(listLore);
+                                                                            is.setItemMeta(im);
+
+                                                                            p.closeInventory();
+                                                                            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_BOOK_CHANGED));
+
+                                                                        }
+                                                            }
+                                                    ));
+                                                }
+                                                if(value.getPlayersNeeded() > 0) {
+                                                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(items.get(index.get()), MxInventorySlots.THREE_ROWS)
+                                                            .setPrevious(mxInv1)
+                                                            .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                                                                    .setListItems(selectorsList)
+                                                            .build());
+                                                }
+                                            }
+                                    ));
+                                }
+                                MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY+ "Selecteer actie", MxInventorySlots.THREE_ROWS)
+                                                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                                                .setPrevious(mxInv1)
+                                                .setListItems(list)
+                                        .build());
+
+                            }).build());
+        };
     }
 
     private MxItemClicked getClickOnName(Player p, ItemStack is) {
@@ -134,7 +278,7 @@ public class ModifyCommand extends MxCommand {
             p.closeInventory();
             p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENTER_NEW_LORE));
             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
-                List<String> lore = new ArrayList<>(List.of(message.split("\n")));
+                List<String> lore = new ArrayList<>(List.of(message.split("/n")));
                 List<Component> loreComp = lore.stream().map(l -> Component.text(ChatColor.translateAlternateColorCodes('&', l))).collect(Collectors.toList());
                 ItemMeta im = is.getItemMeta();
                 im.lore(loreComp);

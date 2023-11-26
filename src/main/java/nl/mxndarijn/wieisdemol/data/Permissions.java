@@ -20,8 +20,11 @@ public enum Permissions {
     COMMAND_MESSAGE_PLAYER("widm.messageplayer"),
     VANISH("widm.vanish"),
     COMMAND_MODIFY("widm.modify"),
-    COMMAND_TOGGLE_SCOREBOARD("widm.togglescoreboard");
+    COMMAND_TOGGLE_SCOREBOARD("widm.togglescoreboard"),
 
+    COMMAND_MAPS_CREATE_SPECIFIC_MAP("widm.map.create."),
+    COMMAND_MAPS_VIEW_ALL("widm.maps.viewall"),
+    MAP_DELETE_OTHERS("widm.delete.othermaps");
     private final String permission;
 
     Permissions(String permission) {

@@ -9,6 +9,7 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
@@ -181,7 +182,8 @@ public class GameSpectatorEvents extends GameEvent {
             e.setCancelled(true);
             return;
         }
-        if (game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+        Optional<GamePlayer> gp = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
+        if (gp.isPresent() && !gp.get().isAlive()) {
             e.setCancelled(true);
         }
     }
@@ -202,12 +204,35 @@ public class GameSpectatorEvents extends GameEvent {
     }
 
     @EventHandler
+    public void join(PlayerJoinEvent e) {
+        if (!validateWorld(e.getPlayer().getWorld()))
+            return;
+        Optional<GamePlayer> oGp = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
+        if(oGp.isEmpty()) {
+            if (!game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+                return;
+            }
+        } else {
+            if(oGp.get().isAlive()) {
+                return;
+            }
+        }
+        game.addSpectatorSettings(e.getPlayer().getUniqueId(), e.getPlayer().getLocation());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void chat(AsyncChatEvent e) {
         if (!validateWorld(e.getPlayer().getWorld()))
             return;
-        if (game.getSpectators().contains(e.getPlayer().getUniqueId())) {
-            e.setCancelled(true);
-            return;
+        Optional<GamePlayer> oGp = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
+        if(oGp.isEmpty()) {
+            if (!game.getSpectators().contains(e.getPlayer().getUniqueId())) {
+                return;
+            }
+        } else {
+            if(oGp.get().isAlive()) {
+                return;
+            }
         }
         e.setCancelled(true);
         e.getPlayer().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_TRY_CHAT));

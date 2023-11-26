@@ -3,6 +3,7 @@ package nl.mxndarijn.wieisdemol.game.events;
 import de.Herbystar.TTA.TTA_Methods;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
+import nl.mxndarijn.api.inventory.saver.InventoryManager;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.wieisdemol.data.ItemTag;
@@ -10,8 +11,10 @@ import nl.mxndarijn.wieisdemol.data.Role;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
+import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachments;
+import nl.mxndarijn.wieisdemol.managers.items.ItemManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
@@ -33,6 +36,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -257,15 +261,16 @@ public class GamePlayingEvents extends GameEvent {
                 }
             });
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                game.stopGame();
+                game.setGameStatus(UpcomingGameStatus.FINISHED, Optional.of(role));
             }, 20L * 10L);
             return;
         }
         if(e.getItemInHand().getItemMeta() != null) {
             String data = e.getItemInHand().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.PLACEABLE.getPersistentDataTag()), PersistentDataType.STRING);
-            if(data != null && data.equalsIgnoreCase("false"))
+            if(data != null && data.equalsIgnoreCase("false")) {
                 e.setCancelled(true);
-            return;
+                return;
+            }
         }
 
         if (e.getBlock().getType() == Material.EMERALD_BLOCK || e.getBlock().getType() == Material.DIAMOND_BLOCK || e.getBlock().getType() == Material.GOLD_BLOCK) {
@@ -383,13 +388,17 @@ public class GamePlayingEvents extends GameEvent {
         }
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void chat(AsyncChatEvent e) {
         Player p = e.getPlayer();
+        if(e.isCancelled())
+            return;
         if (!validateWorld(p.getWorld()))
             return;
         Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
         if(optionalGamePlayer.isEmpty())
+            return;
+        if(!optionalGamePlayer.get().isAlive())
             return;
 
         e.setCancelled(true);
@@ -402,11 +411,31 @@ public class GamePlayingEvents extends GameEvent {
         Player p = e.getPlayer();
         if (!validateWorld(p.getWorld()))
             return;
-        if(game.getHosts().contains(p.getUniqueId()))
+        if(!game.getHosts().contains(p.getUniqueId()))
             return;
 
         e.setCancelled(true);
         game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_CHAT_HOST, Arrays.asList(p.getName(), Functions.convertComponentToString(e.message()))));
+    }
+
+    @EventHandler
+    public void playerDeadEvent(PlayerDeathEvent e) {
+        Player p = e.getPlayer();
+        if (!validateWorld(e.getPlayer().getWorld()))
+            return;
+        Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
+        if(optionalGamePlayer.isEmpty())
+            return;
+        ArrayList<ItemStack> drops = new ArrayList<>(e.getDrops());
+        for (ItemStack item : drops) {
+            if (item.getItemMeta() == null)
+                continue;
+            String data = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.VANISHABLE.getPersistentDataTag()), PersistentDataType.STRING);
+            if (data != null && data.equalsIgnoreCase("false"))
+                e.getDrops().remove(item);
+        }
+
+
     }
 
 

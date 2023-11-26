@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import me.clip.placeholderapi.PlaceholderAPI;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -39,10 +40,30 @@ public class GamePlayer {
         this.canReborn = !mapPlayer.isPeacekeeper();
         String host = Bukkit.getOfflinePlayer(game.getMainHost()).getName();
         scoreboard = new MxSupplierScoreBoard(plugin, () -> {
+            if(player.isPresent()) {
+                Player p = Bukkit.getPlayer(player.get());
+                if (p != null) {
+                    return PlaceholderAPI.setPlaceholders(p, ScoreBoard.GAME_HOST.getTitle(new HashMap<>() {{
+                        put("%%map_name%%", game.getConfig().getPresetConfig().getName());
+                    }}));
+                }
+            }
             return ScoreBoard.GAME_HOST.getTitle(new HashMap<>() {{
                 put("%%map_name%%", game.getConfig().getPresetConfig().getName());
             }});
         }, () -> {
+            if(player.isPresent()) {
+                Player p = Bukkit.getPlayer(player.get());
+                if (p != null) {
+                    return PlaceholderAPI.setPlaceholders(p, ScoreBoard.GAME_PLAYER.getLines(new HashMap<>() {{
+                        put("%%game_status%%", game.getGameInfo().getStatus().getStatus());
+                        put("%%game_time%%", game.getGameTime());
+                        put("%%color%%", mapPlayer.getColor().getDisplayName());
+                        put("%%host%%", host);
+                        put("%%role%%", (beginChestOpened ? (peacekeeperChestOpened ? mapPlayer.getRoleDisplayString() : mapPlayer.getRoleDisplayWithoutPeacekeeper()) : ChatColor.GRAY + "Onbekend"));
+                    }}));
+                }
+            }
             return ScoreBoard.GAME_PLAYER.getLines(new HashMap<>() {{
                 put("%%game_status%%", game.getGameInfo().getStatus().getStatus());
                 put("%%game_time%%", game.getGameTime());

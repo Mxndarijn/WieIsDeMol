@@ -45,6 +45,10 @@ public class GameWorldManager {
         this.games.add(game);
     }
 
+    public void removeGame(Game game) {
+        this.games.remove(game);
+    }
+
     public Optional<Game> getGameByWorldUID(UUID uid) {
         for (Game game : games) {
             if (game.getMxWorld().isPresent()) {

@@ -2,7 +2,8 @@ name: WieIsDeMol
 version: '${version}'
 main: nl.mxndarijn.wieisdemol.WieIsDeMol
 api-version: 1.19
-depend: [ ProtocolLib, TTA ]
+depend: [ ProtocolLib, TTA, PlaceholderAPI, TAB]
+softdepend: [ SuperVanish]
 commands:
   test:
     Description: Test command for development
@@ -28,13 +29,6 @@ commands:
   spawn:
     description: Spawn
     usage: /spawn
-  vanish:
-    description: Vanish
-    usage: /vanish
-    aliases:
-      - vanish
-      - v
-      - laatmenuonzichtbaarzijn
   ms:
     description: Message Speler
     usage: /ms [Speler] [Bericht]

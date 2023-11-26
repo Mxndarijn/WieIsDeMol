@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.commands;
 
+import nl.mxndarijn.api.chatinput.MxChatInputCallback;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.menu.MxDefaultInventoryBuilder;
@@ -22,6 +23,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -106,6 +108,10 @@ public class MapCommand extends MxCommand {
                                         p.closeInventory();
                                         return;
                                     }
+                                    if(!p.hasPermission(Permissions.COMMAND_MAPS_CREATE_SPECIFIC_MAP + optionalPreset.get().getConfig().getName().toLowerCase().replaceAll(" ", "_"))) {
+                                        p.sendMessage(ChatPrefix.WIDM + lang.getLanguageString(LanguageText.COMMAND_MAPS_DONT_HAVE_PERMISSION_FOR_MAP));
+                                        return;
+                                    }
                                     MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                                         Optional<Map> map = Map.createFromPreset(message, optionalPreset.get(), p.getUniqueId());
                                         if (map.isPresent()) {
@@ -136,7 +142,7 @@ public class MapCommand extends MxCommand {
                                     p.closeInventory();
                                 });
                             };
-                            ArrayList<Pair<ItemStack, MxItemClicked>> list = presets.stream().map(preset -> new Pair<>(preset.getItemStackForNewMap(), clickedOnConfiguredPreset)).collect(Collectors.toCollection(ArrayList::new));
+                            ArrayList<Pair<ItemStack, MxItemClicked>> list = presets.stream().map(preset -> new Pair<>(preset.getItemStackForNewMap(p), clickedOnConfiguredPreset)).collect(Collectors.toCollection(ArrayList::new));
 
                             MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Nieuwe map", MxInventorySlots.SIX_ROWS)
                                     .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
@@ -165,24 +171,46 @@ public class MapCommand extends MxCommand {
                         (clickedInv, e) -> {
                             // Bookshelf
                             List<Map> playerMaps = MapManager.getInstance().getAllMaps().stream().filter(m -> m.getMapConfig().getSharedPlayers().contains(p.getUniqueId())).toList();
-                            MxItemClicked clickedOnPlayerMap = getClickedOnPlayerMap(p);
 
-                            ArrayList<Pair<ItemStack, MxItemClicked>> list = playerMaps.stream().map(map -> new Pair<>(map.getItemStack(), clickedOnPlayerMap)).collect(Collectors.toCollection(ArrayList::new));
-                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Gedeelde Mappen", MxInventorySlots.SIX_ROWS)
-                                    .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
-                                    .setPreviousItemStackSlot(46)
-                                    .setPrevious(clickedInv)
-                                    .setListItems(list)
-                                    .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
-                                            .setName(ChatColor.GRAY + "Info")
-                                            .addLore(" ")
-                                            .addLore(ChatColor.YELLOW + "Klik op een map om deze aan te passen.")
-                                            .build(), 49, null)
-                                    .build());
+                            if(p.hasPermission(Permissions.COMMAND_MAPS_VIEW_ALL.getPermission())) {
+                                playerMaps = MapManager.getInstance().getAllMaps();
+                            }
+                            openMap(p, playerMaps, clickedInv);
 
                         })
                 .build();
         MxInventoryManager.getInstance().addAndOpenInventory(p, inv);
+    }
+
+    private void openMap(Player p, List<Map> maps, MxInventory prev) {
+        MxItemClicked clickedOnPlayerMap = getClickedOnPlayerMap(p);
+        ArrayList<Pair<ItemStack, MxItemClicked>> list = maps.stream().map(map -> new Pair<>(map.getItemStack(), clickedOnPlayerMap)).collect(Collectors.toCollection(ArrayList::new));
+        MxListInventoryBuilder sharedInv = MxListInventoryBuilder.create(ChatColor.GRAY + "Gedeelde Mappen", MxInventorySlots.SIX_ROWS)
+                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
+                .setPreviousItemStackSlot(46)
+                .setPrevious(prev)
+                .setListItems(list)
+                .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
+                        .setName(ChatColor.GRAY + "Info")
+                        .addLore(" ")
+                        .addLore(ChatColor.YELLOW + "Klik op een map om deze aan te passen.")
+                        .build(), 49, null);
+        sharedInv.setItem(MxDefaultItemStackBuilder.create(Material.PLAYER_HEAD)
+                        .setName(ChatColor.GRAY + "Filter op owner")
+                        .addBlankLore()
+                        .addLore(ChatColor.YELLOW + "Klik hier om op owner te filteren.")
+                        .build(),
+                52, (mxInv, e12) -> {
+                    p.closeInventory();
+                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_MAPS_ENTER_FILTER));
+                    MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
+                        OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(message);
+                        List<Map> filteredMaps = MapManager.getInstance().getAllMaps().stream().filter(m -> m.getMapConfig().getOwner().equals(offlinePlayer.getUniqueId())).toList();
+                        openMap(p, filteredMaps, prev);
+                    });
+                });
+
+        MxInventoryManager.getInstance().addAndOpenInventory(p, sharedInv.build());
     }
 
     private MxItemClicked getClickedOnPlayerMap(Player p) {

@@ -13,6 +13,8 @@ import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Colors;
 import nl.mxndarijn.wieisdemol.data.Role;
 import nl.mxndarijn.wieisdemol.game.Game;
+import nl.mxndarijn.wieisdemol.game.GamePlayer;
+import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
@@ -184,8 +186,6 @@ public class PlayerManagementItem extends MxItem {
                                                 .addBlankLore()
                                                 .addLore(ChatColor.GRAY + "Kill of reborn de speler.")
                                                 .addBlankLore()
-                                                .addLore(ChatColor.GRAY + "Status: TODO")
-                                                .addBlankLore()
                                                 .addLore(ChatColor.YELLOW + "Klik hier om de speler te killen / rebornen.")
                                                 .build(),
                                         16,
@@ -200,11 +200,54 @@ public class PlayerManagementItem extends MxItem {
                                                 game.removeSpectator(player.getUniqueId(), false);
                                                 player.getInventory().clear();
                                                 player.teleport(p);
+                                                player.getInventory().addItem(Items.GAME_PLAYER_TOOL.getItemStack());
                                                 player.setAllowFlight(false);
                                             } else {
                                                 player.setHealth(0);
                                             }
                                             //TODO
+                                        })
+                                .setItem(MxDefaultItemStackBuilder.create(Material.CHEST)
+                                                .setName(ChatColor.GRAY + "Bekijk inventory")
+                                                .addBlankLore()
+                                                .addLore(ChatColor.YELLOW + "Klik hier om de inventory te bekijken.")
+                                                .build(),
+                                        24,
+                                        (mxInv1, e2) -> {
+                                            if (gamePlayer.getPlayer().isEmpty())
+                                                return;
+                                            Player player = Bukkit.getPlayer(gamePlayer.getPlayer().get());
+                                            if (gamePlayer.isAlive()) {
+                                            p.openInventory(player.getInventory());
+                                            }
+                                        })
+                                .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_PEARL)
+                                                .setName(ChatColor.GRAY + "Teleporteer naar je toe")
+                                                .addBlankLore()
+                                                .addLore(ChatColor.YELLOW + "Klik hier om de speler naar je te tpen.")
+                                                .build(),
+                                        25,
+                                        (mxInv1, e2) -> {
+                                            if (gamePlayer.getPlayer().isEmpty())
+                                                return;
+                                            Player player = Bukkit.getPlayer(gamePlayer.getPlayer().get());
+                                            if (gamePlayer.isAlive()) {
+                                                player.teleport(p);
+                                            }
+                                        })
+                                .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_PEARL)
+                                                .setName(ChatColor.GRAY + "Teleporteer naar speler")
+                                                .addBlankLore()
+                                                .addLore(ChatColor.YELLOW + "Klik hier om naar de speler te teleporten.")
+                                                .build(),
+                                        26,
+                                        (mxInv1, e2) -> {
+                                            if (gamePlayer.getPlayer().isEmpty())
+                                                return;
+                                            Player player = Bukkit.getPlayer(gamePlayer.getPlayer().get());
+                                            if (gamePlayer.isAlive()) {
+                                                p.teleport(player);
+                                            }
                                         })
                                 .setPrevious(mxInv)
                                 .build()
@@ -227,7 +270,10 @@ public class PlayerManagementItem extends MxItem {
                         26,
                         (mxInv, e12) -> {
                             p.closeInventory();
-                            game.getColors().forEach(gp -> {
+                            List<GamePlayer> colors = new ArrayList<>(game.getColors());
+                            Collections.shuffle(colors);
+
+                            colors.forEach(gp -> {
                                 if (gp.getPlayer().isPresent())
                                     return;
                                 if (!game.getGameInfo().getQueue().isEmpty()) {

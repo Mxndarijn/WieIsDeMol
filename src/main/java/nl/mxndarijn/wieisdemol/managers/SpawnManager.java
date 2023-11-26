@@ -1,12 +1,17 @@
 package nl.mxndarijn.wieisdemol.managers;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
+import nl.mxndarijn.api.logger.Logger;
+import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.Permissions;
+import nl.mxndarijn.wieisdemol.data.ScoreBoard;
 import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -22,21 +27,29 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public class SpawnManager implements Listener {
 
     private static SpawnManager instance;
     private final World spawn;
     private final JavaPlugin plugin;
-    private final Location spawnPoint;
+    private final HashMap<UUID, MxSupplierScoreBoard> scoreboards = new HashMap<>();
+
 
     private SpawnManager() {
         plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
         PluginManager manager = plugin.getServer().getPluginManager();
-        this.spawnPoint = Functions.getSpawnLocation();
-        this.spawn = spawnPoint.getWorld();
+        this.spawn = Bukkit.getWorld("world");
+
 
         manager.registerEvents(this, plugin);
 
@@ -46,8 +59,10 @@ public class SpawnManager implements Listener {
                 p.closeInventory();
                 p.getInventory().clear();
                 p.setGameMode(GameMode.ADVENTURE);
-                p.teleport(spawnPoint);
+                p.teleport(Functions.getSpawnLocation());
                 p.getInventory().addItem(Items.GAMES_ITEM.getItemStack());
+                MxSupplierScoreBoard sb = scoreboards.get(p.getUniqueId());
+                ScoreBoardManager.getInstance().setPlayerScoreboard(p.getUniqueId(), sb);
 
                 // Add Items
             }
@@ -56,6 +71,8 @@ public class SpawnManager implements Listener {
             public void leave(Player p, World w, PlayerChangedWorldEvent e) {
                 p.closeInventory();
                 p.getInventory().clear();
+                MxSupplierScoreBoard sb = scoreboards.get(p.getUniqueId());
+                ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), sb);
             }
         });
 
@@ -68,14 +85,27 @@ public class SpawnManager implements Listener {
     }
 
     @EventHandler
+    public void leave(PlayerQuitEvent e) {
+        MxSupplierScoreBoard sb = scoreboards.remove(e.getPlayer().getUniqueId());
+        sb.delete();
+    }
+
+    @EventHandler
     public void join(PlayerJoinEvent e) {
+        MxSupplierScoreBoard sb =  new MxSupplierScoreBoard(plugin, () -> {
+            return PlaceholderAPI.setPlaceholders(e.getPlayer(), ScoreBoard.SPAWN.getTitle(new HashMap<>()));
+        }, () -> {
+            return PlaceholderAPI.setPlaceholders(e.getPlayer(), ScoreBoard.SPAWN.getLines(new HashMap<>()));
+        });
+        sb.setUpdateTimer(100);
+        scoreboards.put(e.getPlayer().getUniqueId(), sb);
         if (GameWorldManager.getInstance().isPlayerInAGame(e.getPlayer().getUniqueId())) {
             return;
         }
-        e.getPlayer().teleport(spawnPoint);
         if (e.getPlayer().getWorld() == spawn) {
             plugin.getServer().getPluginManager().callEvent(new PlayerChangedWorldEvent(e.getPlayer(), e.getPlayer().getWorld()));
         }
+        e.getPlayer().teleport(Functions.getSpawnLocation());
     }
 
     @EventHandler

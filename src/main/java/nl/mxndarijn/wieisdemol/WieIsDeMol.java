@@ -13,6 +13,7 @@ import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.items.util.storage.StorageManager;
 import nl.mxndarijn.wieisdemol.managers.*;
+import nl.mxndarijn.wieisdemol.managers.database.DatabaseManager;
 import nl.mxndarijn.wieisdemol.managers.items.ItemManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
@@ -42,6 +43,11 @@ public final class WieIsDeMol extends JavaPlugin {
         StorageManager.getInstance();
         GameManager.getInstance();
         VanishManager.getInstance();
+        DatabaseManager.getInstance();
+
+        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new WIDMPlaceholderExpansion().register();
+        }
         registerCommands();
         configFilesSaver();
 
@@ -79,7 +85,7 @@ public final class WieIsDeMol extends JavaPlugin {
         getCommand("skulls").setExecutor(new SkullsCommand(Permissions.COMMAND_SKULLS, true, false));
         getCommand("spawn").setExecutor(new SpawnCommand(Permissions.COMMAND_SPAWN, true, false));
         getCommand("items").setExecutor(new ItemsCommand());
-        getCommand("vanish").setExecutor(new VanishCommand(Permissions.VANISH, true, false));
+        //getCommand("vanish").setExecutor(new VanishCommand(Permissions.VANISH, true, false));
         getCommand("ms").setExecutor(new MessagePlayerCommand(Permissions.COMMAND_MESSAGE_PLAYER, true, false));
         getCommand("modify").setExecutor(new ModifyCommand(Permissions.COMMAND_MODIFY, true, false, p -> true));
         getCommand("togglescoreboard").setExecutor(new ToggleScoreboardCommand(Permissions.COMMAND_TOGGLE_SCOREBOARD, true, true));
