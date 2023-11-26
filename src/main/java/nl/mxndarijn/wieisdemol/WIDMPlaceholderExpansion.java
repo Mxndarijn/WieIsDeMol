@@ -55,6 +55,26 @@ public class WIDMPlaceholderExpansion extends PlaceholderExpansion {
         if(params.equalsIgnoreCase("games_played")){
             return DatabaseManager.getInstance().getPlayerData(player.getUniqueId()).getData(PlayerData.UserDataType.GAMESPLAYED) + "";
         }
+        if(params.equalsIgnoreCase("winrate")){
+            // Haal de gegevens uit de database
+            int playerWins = DatabaseManager.getInstance().getPlayerData(player.getUniqueId()).getData(PlayerData.UserDataType.SPELERWINS);
+            int molWins = DatabaseManager.getInstance().getPlayerData(player.getUniqueId()).getData(PlayerData.UserDataType.MOLWINS);
+            int egoWins = DatabaseManager.getInstance().getPlayerData(player.getUniqueId()).getData(PlayerData.UserDataType.EGOWINS);
+            int totalGamesPlayed = DatabaseManager.getInstance().getPlayerData(player.getUniqueId()).getData(PlayerData.UserDataType.GAMESPLAYED);
+
+// Bereken de totale overwinningen
+            int totalWins = playerWins + molWins + egoWins;
+
+// Bereken de winrate
+            double winRate = totalGamesPlayed > 0 ? ((double) totalWins / totalGamesPlayed) * 100 : 0;
+
+// Rond de winrate af naar het dichtstbijzijnde geheel getal
+            int roundedWinRate = (int) Math.round(winRate);
+
+// Retourneer de winrate als een percentage
+            return roundedWinRate + "%";
+
+        }
         if(params.equalsIgnoreCase("next_game")){
             List<GameInfo> games = GameManager.getInstance().getUpcomingGameList();
             games.sort(Comparator.comparing(GameInfo::getTime));
