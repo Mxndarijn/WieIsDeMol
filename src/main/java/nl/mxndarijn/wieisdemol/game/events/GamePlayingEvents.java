@@ -1,7 +1,8 @@
 package nl.mxndarijn.wieisdemol.game.events;
 
-import de.Herbystar.TTA.TTA_Methods;
+//import de.Herbystar.TTA.TTA_Methods;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.Zrips.CMILib.TitleMessages.CMITitleMessage;
 import net.kyori.adventure.text.Component;
 import nl.mxndarijn.api.inventory.saver.InventoryManager;
 import nl.mxndarijn.api.mxworld.MxLocation;
@@ -257,7 +258,7 @@ public class GamePlayingEvents extends GameEvent {
             list.forEach(uuid -> {
                 Player p = Bukkit.getPlayer(uuid);
                 if (p != null) {
-                    TTA_Methods.sendTitle(p, role.getTitle(), 10, 100, 10, role.getSubTitle(), 20, 90, 10);
+                    CMITitleMessage.send(p, role.getTitle(), role.getSubTitle(), 10, 100, 10);
                 }
             });
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {

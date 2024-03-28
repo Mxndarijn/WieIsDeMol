@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.game;
 
-import de.Herbystar.TTA.TTA_Methods;
+//import de.Herbystar.TTA.TTA_Methods;
+import net.Zrips.CMILib.TitleMessages.CMITitleMessage;
 import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
 import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
@@ -497,7 +498,8 @@ public class Game {
                 list.forEach(uuid -> {
                     Player p = Bukkit.getPlayer(uuid);
                     if (p != null) {
-                        TTA_Methods.sendTitle(p, rol.getTitle(), 10, 100, 10, rol.getSubTitle(), 20, 90, 10);
+                        CMITitleMessage.send(p, rol.getTitle(), rol.getSubTitle(), 10, 100, 10);
+//                        TTA_Methods.sendTitle(p, rol.getTitle(), 10, 100, 10, rol.getSubTitle(), 20, 90, 10);
                     }
                 });
                 colors.forEach(color -> {
