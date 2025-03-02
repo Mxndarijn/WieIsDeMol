@@ -486,7 +486,7 @@ public class VulTool extends MxItem {
     private void openManageSharedPlayers(Player p, MxInventory mainInv, Map map) {
         MapConfig config = map.getMapConfig();
 
-        if (!config.getOwner().equals(p.getUniqueId())) {
+        if (!config.getOwner().equals(p.getUniqueId()) || !p.hasPermission(Permissions.VULTOOL.getPermission())) {
             p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_VUL_TOOL_NOT_OWNER_OF_MAP));
             return;
         }
@@ -788,6 +788,7 @@ public class VulTool extends MxItem {
                                     .setItem(getItemForRole(Role.SPELER), 11, getClickForRole(p, mapPlayer, Role.SPELER, colorInv))
                                     .setItem(getItemForRole(Role.MOL), 13, getClickForRole(p, mapPlayer, Role.MOL, colorInv))
                                     .setItem(getItemForRole(Role.EGO), 15, getClickForRole(p, mapPlayer, Role.EGO, colorInv))
+                                    .setItem(getItemForRole(Role.SHAPESHIFTER), 17, getClickForRole(p, mapPlayer, Role.SHAPESHIFTER, colorInv))
                                     .build());
                         })
                 .setItem(MxDefaultItemStackBuilder.create(Material.DIAMOND_SWORD)

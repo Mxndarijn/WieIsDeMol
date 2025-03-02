@@ -8,7 +8,6 @@ import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -17,10 +16,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
-public class MolCountBook extends Book {
-    public MolCountBook(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
+public class ShapeShifterCountBook extends Book {
+    public ShapeShifterCountBook(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
         super(is, worldFilter, gameItem, actions);
     }
 
@@ -49,10 +47,10 @@ public class MolCountBook extends Book {
                     for (GamePlayer g : game.getColors()) {
                         if(!g.isAlive()) continue;
                         if(g.getPlayer().isEmpty()) continue;
-                        if(g.getMapPlayer().getRole() != Role.MOL) continue;
+                        if(g.getMapPlayer().getRole() != Role.SHAPESHIFTER) continue;
                         count++;
                     }
-                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MOLCOUNT_MESSAGE, Collections.singletonList(count + "")));
+                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SHAPESHIFTER_MESSAGE, Collections.singletonList(count + "")));
                     break;
                 }
             }

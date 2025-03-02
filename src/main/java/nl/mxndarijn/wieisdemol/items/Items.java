@@ -300,7 +300,7 @@ public enum Items {
             .setName(ChatColor.GRAY + "Mol-Count")
             .addBlankLore()
             .addLore(ChatColor.YELLOW + "Met dit item krijg je te horen")
-            .addLore(ChatColor.YELLOW + "hoeveel spelers er nog zijn.")
+            .addLore(ChatColor.YELLOW + "hoeveel mollen er nog zijn.")
             .build(),
             p -> {
                 return true;
@@ -313,13 +313,25 @@ public enum Items {
             .setName(ChatColor.GRAY + "Ego-Count")
             .addBlankLore()
             .addLore(ChatColor.YELLOW + "Met dit item krijg je te horen")
-            .addLore(ChatColor.YELLOW + "hoeveel spelers er nog zijn.")
+            .addLore(ChatColor.YELLOW + "hoeveel ego's er nog zijn.")
             .build(),
             p -> {
                 return true;
             },
             true,
             EgoCountBook.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
+    GAME_SHAPESHIFTERCOUNT(MxDefaultItemStackBuilder.create(Material.BOOK)
+            .setName(ChatColor.GRAY + "Shapeshifter-Count")
+            .addBlankLore()
+            .addLore(ChatColor.YELLOW + "Met dit item krijg je te horen")
+            .addLore(ChatColor.YELLOW + "hoeveel shapeshifter's er nog zijn.")
+            .build(),
+            p -> {
+                return true;
+            },
+            true,
+            ShapeShifterCountBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_PEACEKEEPER_CHECKER(MxDefaultItemStackBuilder.create(Material.BOOK)
             .setName(ChatColor.GRAY + "Peacekeeper-Check")

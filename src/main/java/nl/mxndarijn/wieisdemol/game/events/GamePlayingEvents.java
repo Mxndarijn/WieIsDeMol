@@ -19,6 +19,7 @@ import nl.mxndarijn.wieisdemol.managers.items.ItemManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
+import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 import org.bukkit.*;
 import org.bukkit.block.Chest;
 import org.bukkit.block.ShulkerBox;
@@ -130,7 +131,7 @@ public class GamePlayingEvents extends GameEvent {
     public void chestAttachmentCanOpenChest(PlayerInteractEvent e) {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             assert e.getClickedBlock() != null;
-            if (e.getClickedBlock().getType() != Material.CHEST) {
+            if (e.getClickedBlock().getType() != Material.CHEST && e.getClickedBlock().getType() != Material.TRAPPED_CHEST) {
                 return;
             }
             Optional<ChestInformation> inf = game.getChestManager().getChestByLocation(MxLocation.getFromLocation(e.getClickedBlock().getLocation()));
@@ -436,8 +437,19 @@ public class GamePlayingEvents extends GameEvent {
                 e.getDrops().remove(item);
         }
 
+        if(p.getKiller() == null) return;
+        Game game = optionalGamePlayer.get().getGame();
+        MapPlayer killer = getMapPlayer(p.getKiller(), game);
+        MapPlayer player = getMapPlayer(p, game);
 
+        if(killer == null || player == null) return;
+        if(killer.getRole() != Role.SHAPESHIFTER) return;
+        killer.setRole(player.getRole());
     }
 
+    private MapPlayer getMapPlayer(Player player, Game game) {
+        Optional<GamePlayer> gamePlayer = game.getColors().stream().filter(gPlayer -> gPlayer.getPlayer().isPresent() && gPlayer.getPlayer().get() == player.getUniqueId()).findFirst();
+        return gamePlayer.map(GamePlayer::getMapPlayer).orElse(null);
+    }
 
 }
