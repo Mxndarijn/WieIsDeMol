@@ -1,10 +1,11 @@
 package nl.mxndarijn.wieisdemol.game.events;
 
 //import de.Herbystar.TTA.TTA_Methods;
+
 import io.papermc.paper.event.player.AsyncChatEvent;
-import net.Zrips.CMILib.TitleMessages.CMITitleMessage;
 import net.kyori.adventure.text.Component;
-import nl.mxndarijn.api.inventory.saver.InventoryManager;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.title.TitlePart;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.wieisdemol.data.ItemTag;
@@ -12,10 +13,8 @@ import nl.mxndarijn.wieisdemol.data.Role;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
-import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachments;
-import nl.mxndarijn.wieisdemol.managers.items.ItemManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
@@ -259,7 +258,8 @@ public class GamePlayingEvents extends GameEvent {
             list.forEach(uuid -> {
                 Player p = Bukkit.getPlayer(uuid);
                 if (p != null) {
-                    CMITitleMessage.send(p, role.getTitle(), role.getSubTitle(), 10, 100, 10);
+                    p.sendTitlePart(TitlePart.TITLE, MiniMessage.miniMessage().deserialize(role.getTitle()));
+                    p.sendTitlePart(TitlePart.SUBTITLE, MiniMessage.miniMessage().deserialize(role.getSubTitle()));
                 }
             });
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {

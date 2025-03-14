@@ -2,7 +2,7 @@ name: WieIsDeMol
 version: '1.0-SNAPSHOT'
 main: nl.mxndarijn.wieisdemol.WieIsDeMol
 api-version: 1.19
-depend: [ ProtocolLib, TTA, PlaceholderAPI, TAB]
+depend: [ ProtocolLib, PlaceholderAPI, TAB]
 softdepend: [ SuperVanish]
 commands:
   test:
