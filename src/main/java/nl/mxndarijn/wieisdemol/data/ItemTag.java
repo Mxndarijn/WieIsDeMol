@@ -159,6 +159,10 @@ public enum ItemTag {
         is.setItemMeta(im);
         e.getWhoClicked().closeInventory();
         e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+
+        if (!dataBoolean) {
+            e.setCancelled(true);
+        }
     }),
     PLACEABLE("placeable", data -> {
         boolean dataBoolean = true;

@@ -133,6 +133,10 @@ public class GamePlayingEvents extends GameEvent {
             if (e.getClickedBlock().getType() != Material.CHEST && e.getClickedBlock().getType() != Material.TRAPPED_CHEST) {
                 return;
             }
+            if(game.getPeacekeeperKills() == 0) {
+                e.setCancelled(true);
+                return;
+            }
             Optional<ChestInformation> inf = game.getChestManager().getChestByLocation(MxLocation.getFromLocation(e.getClickedBlock().getLocation()));
             Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
             if (optionalGamePlayer.isPresent()) {
