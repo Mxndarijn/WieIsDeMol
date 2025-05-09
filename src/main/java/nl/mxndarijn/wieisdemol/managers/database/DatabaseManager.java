@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.database;
 
+import com.zaxxer.hikari.HikariDataSource;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -20,7 +21,7 @@ public class DatabaseManager implements Listener {
 
     private static DatabaseManager instance;
     private HashMap<UUID, PlayerData> playerDataHashMap;
-    private final Connection connection;
+    private final HikariDataSource hikari;
     public static DatabaseManager getInstance() {
         if(instance == null)
             instance = new DatabaseManager();
@@ -32,20 +33,18 @@ public class DatabaseManager implements Listener {
         try {
             playerDataHashMap = new HashMap<>();
             FileConfiguration fc = ConfigFiles.MAIN_CONFIG.getFileConfiguration();
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            String connectionString = fc.getString("database-connection-string", "");
-            String username = fc.getString("database-username", "");
+
+            hikari = new HikariDataSource();
+            hikari.setDataSourceClassName("com.mysql.cj.jdbc.Driver");
+            hikari.setJdbcUrl(fc.getString("database-connection-string", ""));
+            hikari.setUsername(fc.getString("database-username", ""));
+
             String password = fc.getString("database-password", "");
-            if(password.equalsIgnoreCase("")) {
-                connection = DriverManager.getConnection(
-                        connectionString,
-                        username, null);
-            } else {
-                connection = DriverManager.getConnection(
-                        connectionString,
-                        username, password);
+            if(!password.equalsIgnoreCase("")) {
+                hikari.setPassword(password);
             }
 
+            Connection connection = getConnection();
             DatabaseMetaData dbm = connection.getMetaData();
 
             ResultSet tables = dbm.getTables(null, null, "userdata", null);
@@ -60,12 +59,12 @@ public class DatabaseManager implements Listener {
                         + "`gamesplayed` INT(11) NULL DEFAULT '0',"
                         + "PRIMARY KEY (`userid`) USING BTREE"
                         + ") COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;");
-
-
             }
 
+            connection.close();
 
-        }  catch (ClassNotFoundException | SQLException e) {
+
+        }  catch (SQLException e) {
             Logger.logMessage(LogLevel.FATAL, Prefix.DATABASEMANAGER,"Could not establish connection with database...");
             throw new RuntimeException(e);
         }
@@ -76,7 +75,12 @@ public class DatabaseManager implements Listener {
     }
 
     public Connection getConnection() {
-        return connection;
+        try {
+            return hikari.getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public PlayerData getPlayerData(UUID uuid) {

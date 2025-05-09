@@ -3,6 +3,7 @@ package nl.mxndarijn.wieisdemol.managers.database;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -40,6 +41,7 @@ public class PlayerData {
             statement.setString(1, userid);
 
             ResultSet resultSet = statement.executeQuery();
+            connection.close();
 
             if (resultSet.next()) {
                 for (UserDataType type : UserDataType.values()) {
@@ -80,16 +82,7 @@ public class PlayerData {
     public void saveData() {
         try {
             Connection connection = DatabaseManager.getInstance().getConnection();
-            String query = "INSERT INTO userdata (userid, spelerwins, molwins, egowins, gamesplayed) " +
-                    "VALUES (?, ?, ?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE " +
-                    "spelerwins = VALUES(spelerwins), " +
-                    "molwins = VALUES(molwins), " +
-                    "egowins = VALUES(egowins), " +
-                    "gamesplayed = VALUES(gamesplayed)";
-
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, userid);
+            PreparedStatement statement = getPreparedStatement(connection);
 
             for (Map.Entry<UserDataType, Integer> entry : map.entrySet()) {
                 UserDataType type = entry.getKey();
@@ -98,10 +91,26 @@ public class PlayerData {
             }
 
             statement.executeUpdate();
+            connection.close();
         } catch (SQLException e) {
             Logger.logMessage(LogLevel.ERROR,  Prefix.DATABASEMANAGER,"Could not save data");
             e.printStackTrace();
         }
+    }
+
+    private @NotNull PreparedStatement getPreparedStatement(Connection connection) throws SQLException {
+        String query = "INSERT INTO userdata (userid, spelerwins, molwins, egowins, gamesplayed) " +
+                "VALUES (?, ?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "spelerwins = VALUES(spelerwins), " +
+                "molwins = VALUES(molwins), " +
+                "egowins = VALUES(egowins), " +
+                "gamesplayed = VALUES(gamesplayed)";
+
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, userid);
+
+        return statement;
     }
 
     public enum UserDataType {
