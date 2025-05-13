@@ -35,7 +35,6 @@ public class DatabaseManager implements Listener {
             FileConfiguration fc = ConfigFiles.MAIN_CONFIG.getFileConfiguration();
 
             hikari = new HikariDataSource();
-            hikari.setDataSourceClassName("com.mysql.cj.jdbc.Driver");
             hikari.setJdbcUrl(fc.getString("database-connection-string", ""));
             hikari.setUsername(fc.getString("database-username", ""));
 

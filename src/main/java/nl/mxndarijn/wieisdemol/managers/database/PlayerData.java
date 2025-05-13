@@ -41,7 +41,6 @@ public class PlayerData {
             statement.setString(1, userid);
 
             ResultSet resultSet = statement.executeQuery();
-            connection.close();
 
             if (resultSet.next()) {
                 for (UserDataType type : UserDataType.values()) {
@@ -54,6 +53,7 @@ public class PlayerData {
                 }
                 saveData();
             }
+            connection.close();
         } catch (SQLException e) {
             Logger.logMessage(LogLevel.ERROR,  Prefix.DATABASEMANAGER,"Could not load data of user " + userid);
             e.printStackTrace();
