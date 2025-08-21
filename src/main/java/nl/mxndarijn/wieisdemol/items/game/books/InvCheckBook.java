@@ -135,7 +135,14 @@ public class InvCheckBook extends Book {
                 if(player.getItemOnCursor().getType() == type) {
                     foundItems.add(player.getItemOnCursor());
                 }
-                sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCHECK_RESULT, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), type.toString().toLowerCase(), foundItems.isEmpty() ? ChatColor.RED + "niet gevonden" : ChatColor.GREEN + "gevonden")));
+
+                // Check if book is silenced
+                if (isSilenced(value)) {
+                    game.sendMessageToHosts(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCHECK_RESULT, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), type.toString().toLowerCase(), foundItems.isEmpty() ? ChatColor.RED + "niet gevonden" : ChatColor.GREEN + "gevonden")))));
+                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCHECK_RESULT, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), type.toString().toLowerCase(), foundItems.isEmpty() ? ChatColor.RED + "niet gevonden" : ChatColor.GREEN + "gevonden")))));
+                } else {
+                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCHECK_RESULT, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), type.toString().toLowerCase(), foundItems.isEmpty() ? ChatColor.RED + "niet gevonden" : ChatColor.GREEN + "gevonden")));
+                }
                 break;
             }
         }

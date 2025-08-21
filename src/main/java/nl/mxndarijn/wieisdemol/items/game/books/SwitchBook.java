@@ -78,7 +78,14 @@ public class SwitchBook extends Book {
                                     Location playerLocation = player.getLocation();
                                     p.teleport(playerLocation);
                                     player.teleport(pLoc);
-                                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SWITCH_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())));
+
+                                    // Check if book is silenced
+                                    if (isSilenced(value)) {
+                                        game.sendMessageToHosts(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SWITCH_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())))));
+                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SWITCH_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())))));
+                                    } else {
+                                        sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SWITCH_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())));
+                                    }
                                     break;
                                 }
                             }

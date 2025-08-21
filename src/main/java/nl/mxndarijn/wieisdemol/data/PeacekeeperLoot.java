@@ -12,7 +12,7 @@ public enum PeacekeeperLoot {
             .setName(ChatColor.GOLD + "Peacekeeper's Helmet")
             .addLore(ChatColor.GOLD + "Peacekeeper-Item")
             .setUnbreakable(true)
-            .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true)
+            .addEnchantment(Enchantment.PROTECTION, 5, true)
             .addEnchantment(Enchantment.BINDING_CURSE, 1, true)
             .build(),
             EquipmentSlot.HEAD),
@@ -20,7 +20,7 @@ public enum PeacekeeperLoot {
             .setName(ChatColor.GOLD + "Peacekeeper's Chestplate")
             .addLore(ChatColor.GOLD + "Peacekeeper-Item")
             .setUnbreakable(true)
-            .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true)
+            .addEnchantment(Enchantment.PROTECTION, 5, true)
             .addEnchantment(Enchantment.BINDING_CURSE, 1, true)
             .build(),
             EquipmentSlot.CHEST),
@@ -28,7 +28,7 @@ public enum PeacekeeperLoot {
             .setName(ChatColor.GOLD + "Peacekeeper's Leggings")
             .addLore(ChatColor.GOLD + "Peacekeeper-Item")
             .setUnbreakable(true)
-            .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true)
+            .addEnchantment(Enchantment.PROTECTION, 5, true)
             .addEnchantment(Enchantment.BINDING_CURSE, 1, true)
             .build(),
             EquipmentSlot.LEGS),
@@ -37,7 +37,7 @@ public enum PeacekeeperLoot {
             .setName(ChatColor.GOLD + "Peacekeeper's Boots")
             .addLore(ChatColor.GOLD + "Peacekeeper-Item")
             .setUnbreakable(true)
-            .addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 5, true)
+            .addEnchantment(Enchantment.PROTECTION, 5, true)
             .addEnchantment(Enchantment.BINDING_CURSE, 1, true)
             .build(),
             EquipmentSlot.FEET),
@@ -46,7 +46,7 @@ public enum PeacekeeperLoot {
             .setName(ChatColor.GOLD + "Peacekeeper's Sword")
             .addLore(ChatColor.GOLD + "Peacekeeper-Item")
             .setUnbreakable(true)
-            .addEnchantment(Enchantment.DAMAGE_ALL, 5, true)
+            .addEnchantment(Enchantment.SHARPNESS, 5, true)
             .build(),
             null),
     ;

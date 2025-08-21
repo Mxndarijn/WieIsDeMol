@@ -54,6 +54,8 @@ public final class WieIsDeMol extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoinEventHeadManager(), this);
 
         Logger.logMessage(LogLevel.INFORMATION, "Started Wie Is De Mol...");
+
+        DatabaseManager.getInstance().loadAllPlayers();
     }
 
 

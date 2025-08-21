@@ -6,7 +6,10 @@ import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -14,6 +17,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.sql.*;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -59,10 +63,7 @@ public class DatabaseManager implements Listener {
                         + "PRIMARY KEY (`userid`) USING BTREE"
                         + ") COLLATE='utf8mb4_general_ci' ENGINE=InnoDB;");
             }
-
             connection.close();
-
-
         }  catch (SQLException e) {
             Logger.logMessage(LogLevel.FATAL, Prefix.DATABASEMANAGER,"Could not establish connection with database...");
             throw new RuntimeException(e);
@@ -88,6 +89,26 @@ public class DatabaseManager implements Listener {
         return playerDataHashMap.get(uuid);
     }
 
+    public PlayerData getTopPlayerData(String top, int number) {
+        Comparator<PlayerData> comparator = Comparator.comparingInt(player -> player.getData(PlayerData.UserDataType.valueOf(top)));
+        return playerDataHashMap.values().stream()
+                .map(player -> (PlayerData) player)
+                .sorted(comparator.reversed())  // reversed comparator to flip order
+                .skip((number >= 1 && number <= 5) ? number - 1 : 4)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public PlayerData getTopWinrate(int number) {
+        Comparator<PlayerData> comparator = Comparator.comparingDouble(PlayerData::winRate);
+        return playerDataHashMap.values().stream()
+                .map(player -> (PlayerData) player)
+                .sorted(comparator.reversed())  // reversed comparator to flip order
+                .skip((number >= 1 && number <= 5) ? number - 1 : 4)
+                .findFirst()
+                .orElse(null);
+    }
+
     @EventHandler
     public void join(PlayerJoinEvent e) {
         playerDataHashMap.put(e.getPlayer().getUniqueId(), PlayerData.create(e.getPlayer().getUniqueId()));
@@ -95,9 +116,14 @@ public class DatabaseManager implements Listener {
 
     @EventHandler
     public void quit(PlayerQuitEvent e) {
-        PlayerData pd = playerDataHashMap.remove(e.getPlayer().getUniqueId());
+        PlayerData pd = playerDataHashMap.get(e.getPlayer().getUniqueId());
         if(pd != null) {
             pd.saveData();
         }
+    }
+
+    public void loadAllPlayers() {
+        for (OfflinePlayer p : Bukkit.getOfflinePlayers())
+            playerDataHashMap.put(p.getUniqueId(), PlayerData.create(p.getUniqueId()));
     }
 }

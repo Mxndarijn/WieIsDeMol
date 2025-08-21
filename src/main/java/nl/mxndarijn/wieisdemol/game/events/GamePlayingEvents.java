@@ -3,11 +3,13 @@ package nl.mxndarijn.wieisdemol.game.events;
 //import de.Herbystar.TTA.TTA_Methods;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import io.papermc.paper.event.player.PlayerSignCommandPreprocessEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.TitlePart;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ItemTag;
 import nl.mxndarijn.wieisdemol.data.Role;
 import nl.mxndarijn.wieisdemol.game.Game;
@@ -20,8 +22,9 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 import org.bukkit.*;
-import org.bukkit.block.Chest;
-import org.bukkit.block.ShulkerBox;
+import org.bukkit.block.*;
+import org.bukkit.command.BlockCommandSender;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -29,15 +32,21 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -374,6 +383,70 @@ public class GamePlayingEvents extends GameEvent {
     }
 
     @EventHandler
+    public void signChangeEvent(SignChangeEvent e) {
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if (!validateWorld(e.getPlayer().getWorld()))
+            return;
+        if(game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId()).isPresent())
+            e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void preProcessSignCommand(PlayerSignCommandPreprocessEvent e) {
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if (!validateWorld(e.getPlayer().getWorld()))
+            return;
+        if(game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId()).isPresent())
+            e.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onSignClick(PlayerInteractEvent e) {
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if (!validateWorld(e.getPlayer().getWorld()))
+            return;
+
+        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+            return;
+        }
+
+        Block b = e.getClickedBlock();
+        if (b != null) {
+            if (b.getType().name().toLowerCase().contains("sign")) {
+                if(game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId()).isPresent())
+                    e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent e) {
+        Player p = (Player) e.getPlayer();
+        if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
+            return;
+        if (!validateWorld(p.getWorld()))
+            return;
+
+        if (e.getRightClicked() instanceof Lectern) {
+            ItemStack item = p.getInventory().getItemInMainHand();
+
+            if (item.getType() == Material.WRITTEN_BOOK || item.getType() == Material.BOOK) {
+                if(game.getGamePlayerOfPlayer(p.getUniqueId()).isPresent()) {
+                    ItemMeta im = item.getItemMeta();
+                    PersistentDataContainer container = im.getPersistentDataContainer();
+                    String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "undroppable"), PersistentDataType.STRING);
+
+                    if (data != null && data.equalsIgnoreCase("true"))
+                        e.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
     public void paintingBreak(PlayerInteractEntityEvent e) {
         if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
             return;
@@ -432,6 +505,13 @@ public class GamePlayingEvents extends GameEvent {
         Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
         if(optionalGamePlayer.isEmpty())
             return;
+
+        if (game.getHosts().contains(p.getUniqueId()) &&
+                game.getColors().stream().noneMatch(color ->
+                        color.getPlayer().filter(uuid -> uuid.equals(p.getUniqueId())).isPresent())) {
+            e.setCancelled(true);
+        }
+
         ArrayList<ItemStack> drops = new ArrayList<>(e.getDrops());
         for (ItemStack item : drops) {
             if (item.getItemMeta() == null)
@@ -456,4 +536,43 @@ public class GamePlayingEvents extends GameEvent {
         return gamePlayer.map(GamePlayer::getMapPlayer).orElse(null);
     }
 
+    // Rune code
+    @EventHandler
+    public void onServerCommand(ServerCommandEvent event) {
+        CommandSender sender = event.getSender();
+
+        // Alleen command blocks
+        if (!(sender instanceof BlockCommandSender)) return;
+
+        BlockCommandSender blockSender = (BlockCommandSender) sender;
+        Location loc = blockSender.getBlock().getLocation();
+
+        String command = event.getCommand();
+
+        if (command.contains("@p")) {
+            Player nearest = getNearestPlayer(loc);
+            if (nearest != null) {
+                String newCommand = command.replace("@p", nearest.getName());
+                event.setCommand(newCommand);
+            } else {
+                // Geen speler in deze wereld
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    private Player getNearestPlayer(Location loc) {
+        Player nearest = null;
+        double minDistSq = Double.MAX_VALUE;
+
+        for (Player player : loc.getWorld().getPlayers()) {
+            double distSq = player.getLocation().distanceSquared(loc);
+            if (distSq < minDistSq) {
+                minDistSq = distSq;
+                nearest = player;
+            }
+        }
+
+        return nearest;
+    }
 }

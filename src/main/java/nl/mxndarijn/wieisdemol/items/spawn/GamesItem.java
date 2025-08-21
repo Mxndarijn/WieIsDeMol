@@ -83,10 +83,8 @@ public class GamesItem extends MxItem {
                                 p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_LEFT_QUEUE));
                                 p.closeInventory();
                             } else {
-                                upcomingGame.getQueue().add(p.getUniqueId());
-                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAMES_ENTERED_QUEUE));
-                                p.closeInventory();
                                 if(GameManager.getInstance().getUpcomingGameList().stream().anyMatch(gameInfo -> gameInfo.getQueue().contains(p.getUniqueId()))) {
+                                    // Message leave to join other
                                     p.sendMessage("§cLeave de huidige queue om een andere game te joinen.");
                                 } else {
                                     upcomingGame.getQueue().add(p.getUniqueId());

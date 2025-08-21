@@ -64,6 +64,16 @@ public abstract class Book extends MxItem {
         return false;
     }
 
+    public boolean isSilenced(ItemStack is) {
+        if (is == null) return false;
+
+        ItemMeta im = is.getItemMeta();
+        PersistentDataContainer container = im.getPersistentDataContainer();
+        String data = container.getOrDefault(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "notsilent"), PersistentDataType.STRING, "true");
+
+        return data.equalsIgnoreCase("false");
+    }
+
     public boolean canItemExecute(Player p, Integer entry, ItemStack is, BookFailurePlayersHolder holder) {
 
 

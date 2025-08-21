@@ -6,6 +6,7 @@ import nl.mxndarijn.wieisdemol.managers.ScoreBoardManager;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class ChangeScoreboardOnChangeWorld implements MxChangeWorld {
     private final MxScoreBoard scoreboard;
@@ -22,5 +23,10 @@ public class ChangeScoreboardOnChangeWorld implements MxChangeWorld {
     @Override
     public void leave(Player p, World w, PlayerChangedWorldEvent e) {
         ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), scoreboard);
+    }
+
+    @Override
+    public void quit(Player p, World w, PlayerQuitEvent e) {
+        // do nothing
     }
 }

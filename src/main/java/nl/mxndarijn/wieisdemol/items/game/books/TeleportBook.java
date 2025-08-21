@@ -86,7 +86,7 @@ public class TeleportBook extends Book {
                                                 .setName(ChatColor.GRAY + player1.getName())
                                                 .addLore(gameplayer.getMapPlayer().getColor().getDisplayName())
                                                 .addBlankLore()
-                                                .addLore(ChatColor.YELLOW + "Klik hier om " + player1.getName())
+                                                .addLore(ChatColor.YELLOW + "Klik hier om " + player.getName())
                                                 .addLore(" te teleporten naar " + player1.getName())
                                                 .build(),
                                         (mxInv1, e11) -> {
@@ -98,7 +98,14 @@ public class TeleportBook extends Book {
                                                     if(!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
                                                         return;
                                                     player.teleport(player1);
-                                                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_TELEPORT_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player1.getName())));
+
+                                                    // Check if book is silenced
+                                                    if (isSilenced(value)) {
+                                                        game.sendMessageToHosts(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_TELEPORT_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player1.getName())))));
+                                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_TELEPORT_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player1.getName())))));
+                                                    } else {
+                                                        sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_TELEPORT_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player1.getName())));
+                                                    }
                                                     break;
                                                 }
                                             }

@@ -30,6 +30,7 @@ import nl.mxndarijn.wieisdemol.presets.Preset;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -206,6 +207,14 @@ public class Map {
                     @Override
                     public void leave(Player p, World w, PlayerChangedWorldEvent e) {
                         p.setGameMode(GameMode.ADVENTURE);
+                    }
+
+                    @Override
+                    public void quit(Player p, World w, PlayerQuitEvent e) {
+                        unloadWorld();
+                        mapConfig.setDateModified(LocalDateTime.now());
+                        mapConfig.save();
+                        mapConfig.getPresetConfig().save();
                     }
                 });
 

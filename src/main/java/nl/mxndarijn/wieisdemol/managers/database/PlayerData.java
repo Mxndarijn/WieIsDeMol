@@ -53,6 +53,7 @@ public class PlayerData {
                 }
                 saveData();
             }
+
             connection.close();
         } catch (SQLException e) {
             Logger.logMessage(LogLevel.ERROR,  Prefix.DATABASEMANAGER,"Could not load data of user " + userid);
@@ -118,5 +119,20 @@ public class PlayerData {
         MOLWINS,
         EGOWINS,
         GAMESPLAYED,
+    }
+
+    public double winRate() {
+        int games = this.getData(PlayerData.UserDataType.GAMESPLAYED);
+
+        if (games == 0)
+            return 0.00;
+
+        int molWins = this.getData(PlayerData.UserDataType.MOLWINS);
+        int playerWins = this.getData(PlayerData.UserDataType.SPELERWINS);
+        int egoWins = this.getData(PlayerData.UserDataType.EGOWINS);
+
+        int totalWins = molWins + playerWins + egoWins;
+
+        return ((double) totalWins / games) * 100;
     }
 }

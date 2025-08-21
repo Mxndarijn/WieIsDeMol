@@ -33,6 +33,7 @@ import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -249,6 +250,11 @@ public class Preset {
                     @Override
                     public void leave(Player p, World w, PlayerChangedWorldEvent e) {
                         p.setGameMode(GameMode.ADVENTURE);
+                    }
+
+                    @Override
+                    public void quit(Player p, World w, PlayerQuitEvent e) {
+                        // do nothing
                     }
                 });
             }

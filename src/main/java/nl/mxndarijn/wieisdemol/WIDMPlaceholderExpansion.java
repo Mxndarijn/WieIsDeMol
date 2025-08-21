@@ -1,12 +1,16 @@
 package nl.mxndarijn.wieisdemol;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import nl.mxndarijn.wieisdemol.game.GameInfo;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.GameManager;
 import nl.mxndarijn.wieisdemol.managers.database.DatabaseManager;
 import nl.mxndarijn.wieisdemol.managers.database.PlayerData;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
@@ -18,6 +22,7 @@ import java.time.format.FormatStyle;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class WIDMPlaceholderExpansion extends PlaceholderExpansion {
     @Override
@@ -92,6 +97,70 @@ public class WIDMPlaceholderExpansion extends PlaceholderExpansion {
                 return timeOfNextGame.format(DateTimeFormatter.ofPattern("dd MMMM hh:mm:ss"));
             } else {
                 return "geen games ingepland.";
+            }
+        }
+
+        if (params.startsWith("games_wr_top5_")) {
+            char lastChar = params.charAt(params.length() - 1);
+
+            if (Character.isDigit(lastChar) && "12345".indexOf(lastChar) != -1) {
+                int number = Character.getNumericValue(lastChar);
+
+                if (DatabaseManager.getInstance().getTopWinrate(number) != null) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(DatabaseManager.getInstance().getTopWinrate(number).getUserid()));
+
+                    return String.format("%s > %s", offlinePlayer.getName(), DatabaseManager.getInstance().getTopWinrate(number).winRate());
+                }
+
+                return "-";
+            }
+        }
+
+        if (params.startsWith("games_pw_top5_")) {
+            char lastChar = params.charAt(params.length() - 1);
+
+            if (Character.isDigit(lastChar) && "12345".indexOf(lastChar) != -1) {
+                int number = Character.getNumericValue(lastChar);
+
+                if (DatabaseManager.getInstance().getTopPlayerData("SPELERWINS", number) != null) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(DatabaseManager.getInstance().getTopPlayerData("SPELERWINS", number).getUserid()));
+
+                    return String.format("%s > %s", offlinePlayer.getName(), DatabaseManager.getInstance().getTopPlayerData("SPELERWINS", number).getData(PlayerData.UserDataType.SPELERWINS));
+                }
+
+                return "-";
+            }
+        }
+
+        if (params.startsWith("games_mw_top5_")) {
+            char lastChar = params.charAt(params.length() - 1);
+
+            if (Character.isDigit(lastChar) && "12345".indexOf(lastChar) != -1) {
+                int number = Character.getNumericValue(lastChar);
+
+                if (DatabaseManager.getInstance().getTopPlayerData("MOLWINS", number) != null) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(DatabaseManager.getInstance().getTopPlayerData("MOLWINS", number).getUserid()));
+
+                    return String.format("%s > %s", offlinePlayer.getName(), DatabaseManager.getInstance().getTopPlayerData("MOLWINS", number).getData(PlayerData.UserDataType.MOLWINS));
+                }
+
+                return "-";
+            }
+        }
+
+        if (params.startsWith("games_ew_top5_")) {
+            char lastChar = params.charAt(params.length() - 1);
+
+            if (Character.isDigit(lastChar) && "12345".indexOf(lastChar) != -1) {
+                int number = Character.getNumericValue(lastChar);
+
+                if (DatabaseManager.getInstance().getTopPlayerData("EGOWINS", number) != null) {
+                    OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(UUID.fromString(DatabaseManager.getInstance().getTopPlayerData("EGOWINS", number).getUserid()));
+
+                    return String.format("%s > %s", offlinePlayer.getName(), DatabaseManager.getInstance().getTopPlayerData("EGOWINS", number).getData(PlayerData.UserDataType.EGOWINS));
+                }
+
+                return "-";
             }
         }
 

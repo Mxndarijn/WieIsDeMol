@@ -81,7 +81,14 @@ public class RebornBook extends Book {
                                     player.setAllowFlight(false);
                                     player.teleport(p.getLocation());
                                     player.getInventory().addItem(Items.GAME_PLAYER_TOOL.getItemStack());
-                                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_REBORN_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())));
+
+                                    // Check if book is silenced
+                                    if (isSilenced(value)) {
+                                        game.sendMessageToHosts(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_REBORN_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())))));
+                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_REBORN_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())))));
+                                    } else {
+                                        sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_REBORN_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())));
+                                    }
                                     break;
                                 }
                             }

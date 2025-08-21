@@ -119,7 +119,7 @@ public abstract class ChestAttachment {
             };
             ar.setHeadPose(new EulerAngle(0, Math.toRadians(val), 0));
 
-            AttributeInstance attribute = ar.getAttribute(Attribute.GENERIC_ARMOR);
+            AttributeInstance attribute = ar.getAttribute(Attribute.ARMOR);
 
             if (attribute != null) {
                 // Verkrijg het huidige waarde van DisabledSlots
@@ -130,7 +130,7 @@ public abstract class ChestAttachment {
 
                 // Voeg een nieuwe modifier toe voor DisabledSlots
                 int disabledSlotsValue = 4144959; // De waarde die je wilt instellen
-                attribute.addModifier(new AttributeModifier("DisabledSlots", disabledSlotsValue, AttributeModifier.Operation.ADD_NUMBER));
+//                attribute.addModifier(new AttributeModifier("DisabledSlots", disabledSlotsValue, AttributeModifier.Operation.ADD_NUMBER));
 
                 // Zorg ervoor dat de ArmorStand wordt bijgewerkt om de wijzigingen door te voeren
             }

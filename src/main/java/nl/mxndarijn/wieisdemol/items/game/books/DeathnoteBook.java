@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.items.game.books;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
 import nl.mxndarijn.api.inventory.MxItemClicked;
@@ -71,8 +72,16 @@ public class DeathnoteBook extends Book {
                                 if (isItemTheSame(value)) {
                                     if(!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
                                         return;
+                                    player.setKiller(null);
                                     player.setHealth(0);
-                                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_DEATHNOTE_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())));
+
+                                    // Check if book is silenced
+                                    if (isSilenced(value)) {
+                                        game.sendMessageToHosts(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_DEATHNOTE_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())))));
+                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_DEATHNOTE_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())))));
+                                    } else {
+                                        sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_DEATHNOTE_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())));
+                                    }
                                     break;
                                 }
                             }

@@ -33,6 +33,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -221,6 +222,11 @@ public class Game {
                             setGameStatus(UpcomingGameStatus.FINISHED, Optional.empty());
                         }
 
+                    }
+
+                    @Override
+                    public void quit(Player p, World w, PlayerQuitEvent e) {
+                        // do nothing
                     }
                 });
             }

@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
@@ -53,6 +54,11 @@ public class SaveInventoryChangeWorld implements MxChangeWorld {
         if (w.getPlayers().size() == 0) {
             event.worldReachedZeroPlayers(p, w, e);
         }
+    }
+
+    @Override
+    public void quit(Player p, World w, PlayerQuitEvent e) {
+        // do nothing
     }
 }
 
