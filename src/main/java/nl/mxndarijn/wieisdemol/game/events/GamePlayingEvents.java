@@ -281,8 +281,12 @@ public class GamePlayingEvents extends GameEvent {
             return;
         }
         if(e.getItemInHand().getItemMeta() != null) {
-            String data = e.getItemInHand().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.PLACEABLE.getPersistentDataTag()), PersistentDataType.STRING);
-            if(data != null && data.equalsIgnoreCase("false")) {
+            String placeable = e.getItemInHand().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.PLACEABLE.getPersistentDataTag()), PersistentDataType.STRING);
+            String lifebound = e.getItemInHand().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);
+            String soulbound = e.getItemInHand().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);
+            if((placeable != null && placeable.equalsIgnoreCase("false")) ||
+                    (lifebound != null && lifebound.equalsIgnoreCase("false")) ||
+                    (soulbound != null && soulbound.equalsIgnoreCase("false"))) {
                 e.setCancelled(true);
                 return;
             }
@@ -516,9 +520,15 @@ public class GamePlayingEvents extends GameEvent {
         for (ItemStack item : drops) {
             if (item.getItemMeta() == null)
                 continue;
-            String data = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.VANISHABLE.getPersistentDataTag()), PersistentDataType.STRING);
-            if (data != null && data.equalsIgnoreCase("false"))
+            String vanish = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.VANISHABLE.getPersistentDataTag()), PersistentDataType.STRING);
+            String lifebound = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);
+            String soulbound = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);
+
+            if((vanish != null && vanish.equalsIgnoreCase("false")) ||
+                    (lifebound != null && lifebound.equalsIgnoreCase("false")) ||
+                    (soulbound != null && soulbound.equalsIgnoreCase("false"))) {
                 e.getDrops().remove(item);
+            }
         }
 
         if(p.getKiller() == null) return;

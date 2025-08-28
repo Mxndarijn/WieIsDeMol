@@ -17,7 +17,6 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -72,14 +71,18 @@ public class InvClearBook extends Book {
                                 Integer key = entry.getKey();
                                 ItemStack value = entry.getValue();
                                 if (isItemTheSame(value)) {
-                                    if(!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
+                                    if (!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
                                         return;
                                     ItemStack[] inv = player.getInventory().getContents().clone();
                                     List<ItemStack> clearItems = new ArrayList<>();
                                     for (ItemStack itemStack : inv) {
-                                        if(itemStack != null && itemStack.getItemMeta() != null) {
-                                            String data = itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.CLEARABLE.getPersistentDataTag()), PersistentDataType.STRING);
-                                            if (data == null || !data.equalsIgnoreCase("false")) {
+                                        if (itemStack != null && itemStack.getItemMeta() != null) {
+                                            String clearable = itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.CLEARABLE.getPersistentDataTag()), PersistentDataType.STRING);
+                                            String lifebound = itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);
+                                            String soulbound = itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);
+                                            if ((clearable == null || !clearable.equalsIgnoreCase("false")) ||
+                                                    (lifebound != null && lifebound.equalsIgnoreCase("false")) ||
+                                                    (soulbound != null && soulbound.equalsIgnoreCase("false"))) {
                                                 clearItems.add(itemStack);
                                             }
                                         }

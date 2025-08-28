@@ -121,12 +121,25 @@ public class GameColorBindEvents extends GameEvent{
             return;
         if(is.getItemMeta() == null)
             return;
-        String data = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLE.getPersistentDataTag()), PersistentDataType.STRING);
-        if(data == null)
-            return;
         if(e.getClickedInventory() == null)
             return;
-        if(data.equalsIgnoreCase("false")) {
+        String droppable = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLE.getPersistentDataTag()), PersistentDataType.STRING);
+        String droppableonce = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLEONCE.getPersistentDataTag()), PersistentDataType.STRING);;
+        String lifebound = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);;
+        String soulbound = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);;
+
+        boolean shouldCancel = false;
+        if (droppable != null && droppable.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        }  else if (lifebound != null && lifebound.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        } else if (soulbound != null && soulbound.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        } else if (droppableonce != null && soulbound.equalsIgnoreCase("false")) {
+            is.getItemMeta().getPersistentDataContainer().set(new NamespacedKey(plugin, ItemTag.DROPPABLEONCE.getPersistentDataTag()), PersistentDataType.STRING, "true");
+            shouldCancel = true;
+        }
+        if (shouldCancel) {
             InventoryAction a = e.getAction();
             if(e.getClickedInventory().equals(player.getInventory())) {
                 if(a == InventoryAction.MOVE_TO_OTHER_INVENTORY || a == InventoryAction.SWAP_WITH_CURSOR || a == InventoryAction.HOTBAR_SWAP)
@@ -158,12 +171,25 @@ public class GameColorBindEvents extends GameEvent{
             return;
         if(is.getItemMeta() == null)
             return;
-        String data = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLE.getPersistentDataTag()), PersistentDataType.STRING);
-        if(data == null)
-            return;
         if(e.getClickedInventory() == null)
             return;
-        if(data.equalsIgnoreCase("false")) {
+        String droppable = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLE.getPersistentDataTag()), PersistentDataType.STRING);
+        String droppableonce = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLEONCE.getPersistentDataTag()), PersistentDataType.STRING);;
+        String lifebound = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);;
+        String soulbound = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);;
+
+        boolean shouldCancel = false;
+        if (droppable != null && droppable.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        }  else if (lifebound != null && lifebound.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        } else if (soulbound != null && soulbound.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        } else if (droppableonce != null && soulbound.equalsIgnoreCase("false")) {
+            is.getItemMeta().getPersistentDataContainer().set(new NamespacedKey(plugin, ItemTag.DROPPABLEONCE.getPersistentDataTag()), PersistentDataType.STRING, "true");
+            shouldCancel = true;
+        }
+        if (shouldCancel) {
             e.setCancelled(true);
         }
     }
@@ -179,10 +205,23 @@ public class GameColorBindEvents extends GameEvent{
             return;
         if(is.getItemMeta() == null)
             return;
-        String data = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLE.getPersistentDataTag()), PersistentDataType.STRING);
-        if(data == null)
-            return;
-        if(data.equalsIgnoreCase("false")) {
+        String droppable = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLE.getPersistentDataTag()), PersistentDataType.STRING);
+        String droppableonce = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLEONCE.getPersistentDataTag()), PersistentDataType.STRING);;
+        String lifebound = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);;
+        String soulbound = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);;
+
+        boolean shouldCancel = false;
+        if (droppable != null && droppable.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        }  else if (lifebound != null && lifebound.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        } else if (soulbound != null && soulbound.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        } else if (droppableonce != null && soulbound.equalsIgnoreCase("false")) {
+            is.getItemMeta().getPersistentDataContainer().set(new NamespacedKey(plugin, ItemTag.DROPPABLEONCE.getPersistentDataTag()), PersistentDataType.STRING, "true");
+            shouldCancel = true;
+        }
+        if (shouldCancel) {
             InventoryAction a = e.getAction();
             if(e.getClickedInventory() != null && !e.getClickedInventory().equals(player.getInventory())) {
                 if (a != InventoryAction.PICKUP_ALL && a != InventoryAction.PICKUP_HALF && a != InventoryAction.PICKUP_ONE && a != InventoryAction.PICKUP_SOME) {
@@ -207,10 +246,24 @@ public class GameColorBindEvents extends GameEvent{
             return;
         if(is.getItemMeta() == null)
             return;
-        String data = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLE.getPersistentDataTag()), PersistentDataType.STRING);
-        if(data == null)
-            return;
-        if(data.equalsIgnoreCase("false")) {
+        String droppable = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLE.getPersistentDataTag()), PersistentDataType.STRING);
+        String droppableonce = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DROPPABLEONCE.getPersistentDataTag()), PersistentDataType.STRING);;
+        String lifebound = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);;
+        String soulbound = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);;
+
+        boolean shouldCancel = false;
+        if (droppable != null && droppable.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        }  else if (lifebound != null && lifebound.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        } else if (soulbound != null && soulbound.equalsIgnoreCase("false")) {
+            shouldCancel = true;
+        } else if (droppableonce != null && soulbound.equalsIgnoreCase("false")) {
+            is.getItemMeta().getPersistentDataContainer().set(new NamespacedKey(plugin, ItemTag.DROPPABLEONCE.getPersistentDataTag()), PersistentDataType.STRING, "true");
+            shouldCancel = true;
+        }
+
+        if (shouldCancel) {
             e.setCancelled(true);
         }
     }

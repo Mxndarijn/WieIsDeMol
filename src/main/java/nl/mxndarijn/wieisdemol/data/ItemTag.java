@@ -39,7 +39,7 @@ public enum ItemTag {
         if (data != null && data.equalsIgnoreCase("false"))
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
-                .setSkinFromHeadsData("redstone-torch")
+                .setSkinFromHeadsData("Silent")
                 .setName(ChatColor.GRAY + "Silent")
                 .addBlankLore()
                 .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Not silent" : ChatColor.RED + "silent"))
@@ -48,6 +48,51 @@ public enum ItemTag {
                 .build();
     }, (mxInv, e) -> {
         onClick(e, "notsilent", "Silent");
+    }),
+    LIFEBOUND("lifebound", data -> {
+        boolean dataBoolean = true;
+        if (data != null && data.equalsIgnoreCase("false"))
+            dataBoolean = false;
+        return MxSkullItemStackBuilder.create(1)
+                .setSkinFromHeadsData("Lifebound")
+                .setName(ChatColor.GRAY + "Lifebound")
+                .addBlankLore()
+                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Not silent" : ChatColor.RED + "silent"))
+                .addBlankLore()
+                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .build();
+    }, (mxInv, e) -> {
+        onClick(e, "lifebound", "Lifebound");
+    }),
+    SOULBOUND("soulbound", data -> {
+        boolean dataBoolean = true;
+        if (data != null && data.equalsIgnoreCase("false"))
+            dataBoolean = false;
+        return MxSkullItemStackBuilder.create(1)
+                .setSkinFromHeadsData("Soulbound")
+                .setName(ChatColor.GRAY + "Soulbound")
+                .addBlankLore()
+                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Not silent" : ChatColor.RED + "silent"))
+                .addBlankLore()
+                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .build();
+    }, (mxInv, e) -> {
+        onClick(e, "soulbound", "Soulbound");
+    }),
+    DROPPABLEONCE("droppableonce", data -> {
+        boolean dataBoolean = true;
+        if (data != null && data.equalsIgnoreCase("false"))
+            dataBoolean = false;
+        return MxSkullItemStackBuilder.create(1)
+                .setSkinFromHeadsData("Droppable Once")
+                .setName(ChatColor.GRAY + "Droppable Once")
+                .addBlankLore()
+                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Not silent" : ChatColor.RED + "silent"))
+                .addBlankLore()
+                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .build();
+    }, (mxInv, e) -> {
+        onClick(e, "droppableonce", "Droppable Once");
     }),
     DROPPABLE("droppable", data -> {
         boolean dataBoolean = true;
