@@ -1,7 +1,10 @@
 package nl.mxndarijn.wieisdemol.data;
 
 import net.kyori.adventure.text.Component;
-import nl.mxndarijn.api.inventory.*;
+import nl.mxndarijn.api.inventory.MxInventoryIndex;
+import nl.mxndarijn.api.inventory.MxInventoryManager;
+import nl.mxndarijn.api.inventory.MxInventorySlots;
+import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
@@ -44,35 +47,7 @@ public enum ItemTag {
                 .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
-        String key = "notsilent";
-        ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
-        ItemMeta im = is.getItemMeta();
-
-        PersistentDataContainer container = im.getPersistentDataContainer();
-        String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING);
-
-        boolean dataBoolean = true;
-        if (data != null && data.equalsIgnoreCase("false"))
-            dataBoolean = false;
-        dataBoolean = !dataBoolean;
-        container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
-        String lore = ChatColor.RED + "Silent";
-        List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
-        if (dataBoolean) {
-            List<Component> newList = new ArrayList<>();
-            list.forEach(c -> {
-                if (!Functions.convertComponentToString(c).equalsIgnoreCase(lore)) {
-                    newList.add(c);
-                }
-            });
-            list = newList;
-        } else {
-            list.add(Component.text(lore));
-        }
-        im.lore(list);
-        is.setItemMeta(im);
-        e.getWhoClicked().closeInventory();
-        e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+        onClick(e, "notsilent", "Silent");
     }),
     DROPPABLE("droppable", data -> {
         boolean dataBoolean = true;
@@ -87,35 +62,7 @@ public enum ItemTag {
                 .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
-        String key = "droppable";
-        ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
-        ItemMeta im = is.getItemMeta();
-
-        PersistentDataContainer container = im.getPersistentDataContainer();
-        String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING);
-
-        boolean dataBoolean = true;
-        if (data != null && data.equalsIgnoreCase("false"))
-            dataBoolean = false;
-        dataBoolean = !dataBoolean;
-        container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
-        String lore = ChatColor.RED + "Undroppable";
-        List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
-        if (dataBoolean) {
-            List<Component> newList = new ArrayList<>();
-            list.forEach(c -> {
-                if (!Functions.convertComponentToString(c).equalsIgnoreCase(lore)) {
-                    newList.add(c);
-                }
-            });
-            list = newList;
-        } else {
-            list.add(Component.text(lore));
-        }
-        im.lore(list);
-        is.setItemMeta(im);
-        e.getWhoClicked().closeInventory();
-        e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+        onClick(e, "droppable", "Undroppable");
     }),
     VANISHABLE("vanishable", data -> {
         boolean dataBoolean = true;
@@ -130,35 +77,7 @@ public enum ItemTag {
                 .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
-        String key = "vanishable";
-        ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
-        ItemMeta im = is.getItemMeta();
-
-        PersistentDataContainer container = im.getPersistentDataContainer();
-        String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING);
-
-        boolean dataBoolean = true;
-        if (data != null && data.equalsIgnoreCase("false"))
-            dataBoolean = false;
-        dataBoolean = !dataBoolean;
-        container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
-        String lore = ChatColor.RED + "Vanish";
-        List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
-        if (dataBoolean) {
-            List<Component> newList = new ArrayList<>();
-            list.forEach(c -> {
-                if (!Functions.convertComponentToString(c).equalsIgnoreCase(lore)) {
-                    newList.add(c);
-                }
-            });
-            list = newList;
-        } else {
-            list.add(Component.text(lore));
-        }
-        im.lore(list);
-        is.setItemMeta(im);
-        e.getWhoClicked().closeInventory();
-        e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+        onClick(e, "vanishable", "Vanish");
     }),
     ITEM_LOCK("itemlock", data -> {
         boolean dataBoolean = true;
@@ -173,35 +92,7 @@ public enum ItemTag {
                 .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
-        String key = "itemlock";
-        ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
-        ItemMeta im = is.getItemMeta();
-
-        PersistentDataContainer container = im.getPersistentDataContainer();
-        String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING);
-
-        boolean dataBoolean = true;
-        if (data != null && data.equalsIgnoreCase("false"))
-            dataBoolean = false;
-        dataBoolean = !dataBoolean;
-        container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
-        String lore = ChatColor.RED + "Item-Lock";
-        List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
-        if (dataBoolean) {
-            List<Component> newList = new ArrayList<>();
-            list.forEach(c -> {
-                if (!Functions.convertComponentToString(c).equalsIgnoreCase(lore)) {
-                    newList.add(c);
-                }
-            });
-            list = newList;
-        } else {
-            list.add(Component.text(lore));
-        }
-        im.lore(list);
-        is.setItemMeta(im);
-        e.getWhoClicked().closeInventory();
-        e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+        boolean dataBoolean = onClick(e, "itemlock", "Item-Lock");
 
         if (!dataBoolean) {
             e.setCancelled(true);
@@ -220,35 +111,7 @@ public enum ItemTag {
                 .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
-        String key = "placeable";
-        ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
-        ItemMeta im = is.getItemMeta();
-
-        PersistentDataContainer container = im.getPersistentDataContainer();
-        String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING);
-
-        boolean dataBoolean = true;
-        if (data != null && data.equalsIgnoreCase("false"))
-            dataBoolean = false;
-        dataBoolean = !dataBoolean;
-        container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
-        String lore = ChatColor.RED + "Unplaceable";
-        List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
-        if (dataBoolean) {
-            List<Component> newList = new ArrayList<>();
-            list.forEach(c -> {
-                if (!Functions.convertComponentToString(c).equalsIgnoreCase(lore)) {
-                    newList.add(c);
-                }
-            });
-            list = newList;
-        } else {
-            list.add(Component.text(lore));
-        }
-        im.lore(list);
-        is.setItemMeta(im);
-        e.getWhoClicked().closeInventory();
-        e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+        onClick(e, "placeable", "Unplaceable");
     }),
     COLORBIND("colorbind", data -> {
         return MxSkullItemStackBuilder.create(1)
@@ -270,6 +133,7 @@ public enum ItemTag {
 
         List<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
         List<Colors> addedColors = new ArrayList<>();
+
         String key = "colorbind";
         ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
         ItemMeta im = is.getItemMeta();
@@ -304,7 +168,7 @@ public enum ItemTag {
                 addedColors.forEach(c -> {
                     dataTag.append(c.getType()).append(";");
                 });
-                if(!addedColors.isEmpty())
+                if (!addedColors.isEmpty())
                     dataTag.deleteCharAt(dataTag.length() - 1);
                 container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataTag.toString());
                 List<Component> loreList = im.hasLore() ? im.lore() : new ArrayList<>();
@@ -350,36 +214,7 @@ public enum ItemTag {
                 .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
-        String key = "clearable";
-        ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
-        ItemMeta im = is.getItemMeta();
-
-        PersistentDataContainer container = im.getPersistentDataContainer();
-        String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING);
-
-        boolean dataBoolean = true;
-        if (data != null && data.equalsIgnoreCase("false"))
-            dataBoolean = false;
-        dataBoolean = !dataBoolean;
-        container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
-        String lore = ChatColor.RED + "Unclearable";
-        List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
-        if (dataBoolean) {
-            List<Component> newList = new ArrayList<>();
-            list.forEach(c -> {
-                if (!Functions.convertComponentToString(c).equalsIgnoreCase(lore)) {
-                    newList.add(c);
-                }
-            });
-            list = newList;
-        } else {
-            list.add(Component.text(lore));
-        }
-        im.lore(list);
-        is.setItemMeta(im);
-
-        e.getWhoClicked().closeInventory();
-        e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+        onClick(e, "clearable", "Unclearable");
     }),
     DETECTABLE("detectable", data -> {
         boolean dataBoolean = true;
@@ -394,7 +229,20 @@ public enum ItemTag {
                 .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
-        String key = "detectable";
+        onClick(e, "detectable", "Undetectable");
+    });
+
+    private final String persistentDataTag;
+    private final ItemTagContainer container;
+    private final MxItemClicked clicked;
+    ItemTag(String persistentDataTag, ItemTagContainer item, MxItemClicked clicked) {
+        this.persistentDataTag = persistentDataTag;
+        this.container = item;
+        this.clicked = clicked;
+
+    }
+
+    private static Boolean onClick(InventoryClickEvent e, String key, String loreName) {
         ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
         ItemMeta im = is.getItemMeta();
 
@@ -406,7 +254,7 @@ public enum ItemTag {
             dataBoolean = false;
         dataBoolean = !dataBoolean;
         container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
-        String lore = ChatColor.RED + "Undetectable";
+        String lore = ChatColor.RED + loreName;
         List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
         if (dataBoolean) {
             List<Component> newList = new ArrayList<>();
@@ -421,21 +269,10 @@ public enum ItemTag {
         }
         im.lore(list);
         is.setItemMeta(im);
-
         e.getWhoClicked().closeInventory();
         e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
-    });
 
-
-    private final String persistentDataTag;
-    private final ItemTagContainer container;
-    private final MxItemClicked clicked;
-
-    ItemTag(String persistentDataTag, ItemTagContainer item, MxItemClicked clicked) {
-        this.persistentDataTag = persistentDataTag;
-        this.container = item;
-        this.clicked = clicked;
-
+        return dataBoolean;
     }
 
     public String getPersistentDataTag() {
