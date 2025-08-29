@@ -1,7 +1,7 @@
 package nl.mxndarijn.api.inventory;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -21,8 +21,8 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
 
     protected MxInventoryBuilder(String name, MxInventorySlots slotType) {
         this.slotType = slotType;
-        this.name = getRandomPrefix() + name;
-        inv = Bukkit.createInventory(null, slotType.slots, this.name);
+        this.name = name;
+        inv = Bukkit.createInventory(null, slotType.slots, MiniMessage.miniMessage().deserialize(this.name));
         onClickedMap = new HashMap<>();
     }
 
@@ -72,7 +72,7 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
     }
 
     public T changeTitle(String newTitle) {
-        this.name = getRandomPrefix() + newTitle;
+        this.name = newTitle;
         Inventory inventory = Bukkit.createInventory(null, slotType.slots, this.name);
         onClickedMap.forEach((index, clicked) -> {
             inventory.setItem(index, inv.getItem(index));
@@ -81,18 +81,6 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
         return (T) this;
     }
 
-
-    private String getRandomPrefix() {
-        StringBuilder prefix = new StringBuilder();
-        ChatColor[] list = ChatColor.values();
-        Random random = new Random();
-        for (int i = 0; i < 5; i++) {
-            ChatColor r = list[random.nextInt(list.length)];
-            prefix.append(r);
-        }
-        prefix.append(ChatColor.RESET);
-        return prefix.toString();
-    }
 
     private int getRandom(int[] array) {
         int rnd = new Random().nextInt(array.length);

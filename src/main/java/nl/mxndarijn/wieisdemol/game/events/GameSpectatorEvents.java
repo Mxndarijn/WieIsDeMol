@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.game.events;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.items.Items;
@@ -235,7 +236,7 @@ public class GameSpectatorEvents extends GameEvent {
             }
         }
         e.setCancelled(true);
-        e.getPlayer().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_TRY_CHAT));
+        MSG.msg(e.getPlayer(), LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_TRY_CHAT));
 
     }
 }

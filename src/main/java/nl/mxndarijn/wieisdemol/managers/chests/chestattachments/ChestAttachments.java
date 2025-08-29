@@ -7,7 +7,7 @@ import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
-import org.bukkit.ChatColor;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,42 +19,42 @@ public enum ChestAttachments {
     CHEST_APPEARANCE("CHEST_APPEARANCE", ChestAppearanceAttachment.class, "Kist-uiterlijk", "rainbow-chest",
             MxSkullItemStackBuilder.create(1)
                     .setSkinFromHeadsData("rainbow-chest")
-                    .setName(ChatColor.RED + "Kist uiterlijk")
+                    .setName("<red>Kist uiterlijk")
                     .addBlankLore()
-                    .addLore(ChatColor.GRAY + "Deze Attachment zorgt ervoor dat de kist van binnen")
-                    .addLore(ChatColor.GRAY + "een ander uiterlijk heeft.")
+                    .addLore("<gray>Deze Attachment zorgt ervoor dat de kist van binnen")
+                    .addLore("<gray>een ander uiterlijk heeft.")
                     .addBlankLore()
-                    .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment toe te voegen.")
+                    .addLore("<yellowKlik hier om deze chest attachment toe te voegen.")
                     .build()),
     CHEST_COLOR_BIND("CHEST_COLOR_BIND", ChestColorBindAttachment.class, "Kist-color-bind", "wool-chest",
             MxSkullItemStackBuilder.create(1)
                     .setSkinFromHeadsData("wool-chest")
-                    .setName(ChatColor.RED + "Colorbind kist")
+                    .setName("<red>Colorbind kist")
                     .addBlankLore()
-                    .addLore(ChatColor.GRAY + "Deze Attachment zorgt ervoor dat de kist maar door een")
-                    .addLore(ChatColor.GRAY + "aantal kleuren geopend kan worden.")
+                    .addLore("<gray>Deze Attachment zorgt ervoor dat de kist maar door een")
+                    .addLore("<gray>aantal kleuren geopend kan worden.")
                     .addBlankLore()
-                    .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment toe te voegen.")
+                    .addLore("<yellow>Klik hier om deze chest attachment toe te voegen.")
                     .build()),
     CHEST_LIMITED_CHOICE("CHEST_LIMITED_CHOICE", ChestLimitedChoiceAttachment.class, "Kist-limited-items", "open-chest",
             MxSkullItemStackBuilder.create(1)
                     .setSkinFromHeadsData("open-chest")
-                    .setName(ChatColor.RED + "Keuze Kist")
+                    .setName("<red>Keuze Kist")
                     .addBlankLore()
-                    .addLore(ChatColor.GRAY + "Deze Attachment zorgt ervoor dat er maar een x aantal items")
-                    .addLore(ChatColor.GRAY + "uit de kist kan worden gehaald")
+                    .addLore("<gray>Deze Attachment zorgt ervoor dat er maar een x aantal items")
+                    .addLore("<gray>uit de kist kan worden gehaald")
                     .addBlankLore()
-                    .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment toe te voegen.")
+                    .addLore("<yellow>Klik hier om deze chest attachment toe te voegen.")
                     .build()),
     CHEST_LOCK("CHEST_LOCK", ChestLockAttachment.class, "Kist-lock", "locked-chest",
             MxSkullItemStackBuilder.create(1)
                     .setSkinFromHeadsData("locked-chest")
-                    .setName(ChatColor.RED + "Kist slot")
+                    .setName("<red>Kist slot")
                     .addBlankLore()
-                    .addLore(ChatColor.GRAY + "Deze Attachment zorgt ervoor dat de kist eerst moet worden")
-                    .addLore(ChatColor.GRAY + "geopent met een sleutel voordat de kisten open kan.")
+                    .addLore("<gray>Deze Attachment zorgt ervoor dat de kist eerst moet worden")
+                    .addLore("<gray>geopent met een sleutel voordat de kisten open kan.")
                     .addBlankLore()
-                    .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment toe te voegen.")
+                    .addLore("<yellow>Klik hier om deze chest attachment toe te voegen.")
                     .build());
 
 

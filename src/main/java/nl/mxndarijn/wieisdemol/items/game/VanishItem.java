@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.items.game;
 
 import nl.mxndarijn.api.mxitem.MxItem;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
@@ -38,9 +39,9 @@ public class VanishItem extends MxItem {
 
         VanishManager.getInstance().toggleVanish(p);
         if (VanishManager.getInstance().isPlayerHidden(p)) {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_ON, ChatPrefix.WIDM));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_ON, ChatPrefix.WIDM));
         } else {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_OFF, ChatPrefix.WIDM));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_OFF, ChatPrefix.WIDM));
         }
     }
 }

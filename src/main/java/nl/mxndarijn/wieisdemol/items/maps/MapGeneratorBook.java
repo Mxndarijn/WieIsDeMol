@@ -10,6 +10,7 @@ import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
@@ -18,7 +19,7 @@ import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.map.Map;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -76,7 +77,7 @@ public class MapGeneratorBook extends MxItem {
             ItemMeta imm = i.getItemMeta();
             List<Component> lore = imm.hasLore() ? imm.lore() : new ArrayList<>();
             lore.add(Component.text(""));
-            lore.add(Component.text(ChatColor.YELLOW + "Klik hier om dit item te verwijderen."));
+            lore.add(Component.text("<yellow>Klik hier om dit item te verwijderen."));
             imm.lore(lore);
             i.setItemMeta(imm);
                 list.add(new Pair<>(
@@ -85,21 +86,21 @@ public class MapGeneratorBook extends MxItem {
                             items.remove(itemStack);
                             saveItems(items, is);
                             p.closeInventory();
-                            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MAP_GENERATOR_ITEM_REMOVED));
+                            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MAP_GENERATOR_ITEM_REMOVED));
                             //TODO delete
                         }
                 ));
             });
 
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Generator Configurator", MxInventorySlots.SIX_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Generator Configurator", MxInventorySlots.SIX_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                 .setListItems(list)
                         .setItem(MxSkullItemStackBuilder.create(1)
                                 .setSkinFromHeadsData("wooden-plus")
-                                .setName(ChatColor.GRAY + "Item toevoegen")
+                                .setName("<gray>Item toevoegen")
                                 .addBlankLore()
-                                .addLore(ChatColor.YELLOW + "Klik hier om een item toe te voegen.")
+                                .addLore("<yellow>Klik hier om een item toe te voegen.")
                                 .build(), 52, (mxInv, e12) -> {
                             ArrayList<Pair<ItemStack, MxItemClicked>> list1 = new ArrayList<>();
                             for (ItemStack content : p.getInventory().getContents()) {
@@ -110,17 +111,17 @@ public class MapGeneratorBook extends MxItem {
                                 ItemMeta imm = i.getItemMeta();
                                 List<Component> lore = imm.hasLore() ? imm.lore() : new ArrayList<>();
                                 lore.add(Component.text(""));
-                                lore.add(Component.text(ChatColor.YELLOW + "Klik hier om dit item toe te voegen."));
+                                lore.add(Component.text("<yellow>Klik hier om dit item toe te voegen."));
                                 imm.lore(lore);
                                 i.setItemMeta(imm);
                                 list1.add(new Pair<>(i, (mxInv1, e13) -> {
                                     items.add(content);
                                     saveItems(items, is);
-                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MAP_GENERATOR_ITEM_ADDED));
+                                    MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MAP_GENERATOR_ITEM_ADDED));
 
                                 }));
                             }
-                                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Generator add item", MxInventorySlots.SIX_ROWS)
+                                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Generator add item", MxInventorySlots.SIX_ROWS)
                                                     .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                                                     .setListItems(list1)
                                             .build()

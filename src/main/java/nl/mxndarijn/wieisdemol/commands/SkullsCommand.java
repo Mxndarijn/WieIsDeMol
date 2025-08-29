@@ -14,13 +14,14 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxcommand.MxCommand;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -66,26 +67,26 @@ public class SkullsCommand extends MxCommand {
                                 if (deleteSkullItem) {
                                     PersistentDataContainer container = im.getPersistentDataContainer();
                                     MxHeadManager.getInstance().removeHead(container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "skull_key"), PersistentDataType.STRING));
-                                    e.getWhoClicked().sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_DELETED, Collections.emptyList()));
+                                    MSG.msg(e.getWhoClicked(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_DELETED, Collections.emptyList()));
                                 } else {
                                     MxInventoryManager.getInstance().addAndOpenInventory(p, inv);
-                                    e.getWhoClicked().sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_NOT_DELETED, Collections.emptyList()));
+                                    MSG.msg(e.getWhoClicked(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_NOT_DELETED, Collections.emptyList()));
                                 }
 
                             }
                         };
                         MxDefaultMenuBuilder menuBuilder =
-                                MxDefaultMenuBuilder.create(ChatColor.GRAY + "Skull verwijderen", MxInventorySlots.THREE_ROWS)
+                                MxDefaultMenuBuilder.create("<gray>Skull verwijderen", MxInventorySlots.THREE_ROWS)
                                         .setItem(skullItemStack, 13, null)
                                         .setItem(MxDefaultItemStackBuilder.create(Material.LIME_STAINED_GLASS_PANE, 1)
-                                                .setName(ChatColor.GREEN + "Ja")
+                                                .setName("<green>Ja")
                                                 .addLore(" ")
-                                                .addLore(ChatColor.YELLOW + "Ja, verwijder de skull.")
+                                                .addLore("<yellow>Ja, verwijder de skull.")
                                                 .build(), 15, deleteSkull)
                                         .setItem(MxDefaultItemStackBuilder.create(Material.RED_STAINED_GLASS_PANE, 1)
-                                                .setName(ChatColor.RED + "Nee")
+                                                .setName("<red>Nee")
                                                 .addLore(" ")
-                                                .addLore(ChatColor.YELLOW + "Nee, verwijder de skull niet.")
+                                                .addLore("<yellow>Nee, verwijder de skull niet.")
                                                 .build(), 11, deleteSkull)
                                         .setPrevious(inv);
 
@@ -102,40 +103,40 @@ public class SkullsCommand extends MxCommand {
             section.ifPresent(mxHeadSection -> {
                 MxSkullItemStackBuilder b = MxSkullItemStackBuilder.create(1)
                         .setSkinFromHeadsData(key)
-                        .setName(ChatColor.GRAY + mxHeadSection.getName().get())
+                        .setName("<gray>" + mxHeadSection.getName().get())
                         .addLore(" ")
-                        .addLore(ChatColor.YELLOW + "Klik om dit item toe te voegen aan je inventory.")
+                        .addLore("<yellow>Klik om dit item toe te voegen aan je inventory.")
                         .addCustomTagString("skull_key", mxHeadSection.getKey());
                 if (p.hasPermission(Permissions.COMMAND_SKULLS_REMOVE_SKULL.getPermission())) {
-                    b.addLore(ChatColor.YELLOW + "Shift-klik op dit item om het te verwijderen.");
+                    b.addLore("<yellow>Shift-klik op dit item om het te verwijderen.");
                 }
                 list.add(new Pair<>(b.build(), giver));
             });
         });
         MxListInventoryBuilder builder =
-                MxListInventoryBuilder.create(ChatColor.RED + "Heads-Database", MxInventorySlots.SIX_ROWS)
+                MxListInventoryBuilder.create("<red>Heads-Database", MxInventorySlots.SIX_ROWS)
                         .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                         .addListItems(list)
                         .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
-                                .setName(ChatColor.GRAY + "Info")
+                                .setName("<gray>Info")
                                 .addLore(" ")
-                                .addLore(ChatColor.GRAY + "Wil je een skull toevoegen?")
-                                .addLore(ChatColor.GRAY + "Vraag een stafflid dit te doen.")
+                                .addLore("<gray>Wil je een skull toevoegen?")
+                                .addLore("<gray>Vraag een stafflid dit te doen.")
                                 .build(), 48, null);
 
         if (p.hasPermission(Permissions.COMMAND_SKULLS_ADD_SKULL.getPermission())) {
             builder.setItem(MxDefaultItemStackBuilder.create(Material.SKELETON_SKULL)
-                    .setName(ChatColor.GRAY + "Voeg een skull toe")
+                    .setName("<gray>Voeg een skull toe")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Klik hier om een skull toe te voegen.")
+                    .addLore("<yellow>Klik hier om een skull toe te voegen.")
                     .build(), 50, (inv, e) -> {
-                MxDefaultMenuBuilder menuBuilder = MxDefaultMenuBuilder.create(ChatColor.GRAY + "Skull toevoegen", MxInventorySlots.FIVE_ROWS)
+                MxDefaultMenuBuilder menuBuilder = MxDefaultMenuBuilder.create("<gray>Skull toevoegen", MxInventorySlots.FIVE_ROWS)
                         .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
-                                .setName(ChatColor.GRAY + "Info")
+                                .setName("<gray>Info")
                                 .addLore(" ")
-                                .addLore(ChatColor.GRAY + "Klik op de skull die je wilt toevoegen.")
-                                .addLore(ChatColor.GRAY + "De skull moet in je inventory zitten")
-                                .addLore(ChatColor.GRAY + "om hem toe te kunnen voegen.")
+                                .addLore("<gray>Klik op de skull die je wilt toevoegen.")
+                                .addLore("<gray>De skull moet in je inventory zitten")
+                                .addLore("<gray>om hem toe te kunnen voegen.")
                                 .build(), 40, null)
                         .setPrevious(inv);
 
@@ -148,38 +149,38 @@ public class SkullsCommand extends MxCommand {
                             ItemStack is = e2.getCurrentItem();
                             boolean isPlayerSkull = is.getType() == Material.LIME_STAINED_GLASS_PANE;
                             e.getWhoClicked().closeInventory();
-                            e.getWhoClicked().sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_GET_CHAT_INPUT, Collections.emptyList()));
+                            MSG.msg(e.getWhoClicked(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_GET_CHAT_INPUT, Collections.emptyList()));
                             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                                 if (MxHeadManager.getInstance().storeSkullTexture(skull, UUID.randomUUID().toString(), message, isPlayerSkull ? MxHeadsType.PLAYER : MxHeadsType.MANUALLY_ADDED)) {
-                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_SKULL_ADDED, Collections.emptyList()));
+                                    MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_SKULL_ADDED, Collections.emptyList()));
                                 } else {
-                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_SKULL_NOT_ADDED, Collections.emptyList()));
+                                    MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_SKULL_NOT_ADDED, Collections.emptyList()));
                                 }
                             });
                         }
                     };
-                    MxDefaultMenuBuilder menuBuilder1 = MxDefaultMenuBuilder.create(ChatColor.GRAY + "Skull toevoegen", MxInventorySlots.THREE_ROWS)
+                    MxDefaultMenuBuilder menuBuilder1 = MxDefaultMenuBuilder.create("<gray>Skull toevoegen", MxInventorySlots.THREE_ROWS)
                             .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
-                                    .setName(ChatColor.GRAY + "Info")
+                                    .setName("<gray>Info")
                                     .addLore(" ")
-                                    .addLore(ChatColor.GRAY + "Is het item een PlayerSkull:")
-                                    .addLore(ChatColor.GRAY + "- Het is geen custom skull.")
-                                    .addLore(ChatColor.GRAY + "- Elke restart moet de skin opnieuw worden opgevraagd.")
-                                    .addLore(ChatColor.GRAY + "- De skull heeft een eigenaar.")
+                                    .addLore("<gray>Is het item een PlayerSkull:")
+                                    .addLore("<gray>- Het is geen custom skull.")
+                                    .addLore("<gray>- Elke restart moet de skin opnieuw worden opgevraagd.")
+                                    .addLore("<gray>- De skull heeft een eigenaar.")
                                     .build(), 13, null)
                             .setItem(MxDefaultItemStackBuilder.create(Material.LIME_STAINED_GLASS_PANE, 1)
-                                    .setName(ChatColor.GREEN + "Ja")
+                                    .setName("<green>Ja")
                                     .addLore(" ")
-                                    .addLore(ChatColor.YELLOW + "Ja, het is een PlayerSkull.")
+                                    .addLore("<yellow>Ja, het is een PlayerSkull.")
                                     .build(), 15, clickedOnPlayerSkullQuestion)
                             .setItem(MxDefaultItemStackBuilder.create(Material.RED_STAINED_GLASS_PANE, 1)
-                                    .setName(ChatColor.RED + "Nee")
+                                    .setName("<red>Nee")
                                     .addLore(" ")
-                                    .addLore(ChatColor.YELLOW + "Nee, het is geen PlayerSkull.")
+                                    .addLore("<yellow>Nee, het is geen PlayerSkull.")
                                     .build(), 11, clickedOnPlayerSkullQuestion)
                             .setPrevious(mxInv);
                     MxInventoryManager.getInstance().addAndOpenInventory(p, menuBuilder1.build());
-                    e.getWhoClicked().sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_IS_SKULL_PLAYER_SKULL, Collections.emptyList()));
+                    MSG.msg(e.getWhoClicked(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_IS_SKULL_PLAYER_SKULL, Collections.emptyList()));
                 };
                 Arrays.stream(e.getWhoClicked().getInventory().getContents()).forEach(itemStack -> {
                     if (itemStack != null && itemStack.getType() == Material.PLAYER_HEAD) {
@@ -191,7 +192,7 @@ public class SkullsCommand extends MxCommand {
                 MxInventoryManager.getInstance().addAndOpenInventory(p, menuBuilder.build());
             });
         }
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_DEFAULT, Collections.emptyList()));
+        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_SKULLS_DEFAULT, Collections.emptyList()));
         MxInventoryManager.getInstance().addAndOpenInventory(
                 p,
                 builder.build()

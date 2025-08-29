@@ -6,6 +6,7 @@ import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.AvailablePerson;
 import nl.mxndarijn.wieisdemol.data.BookFailurePlayersHolder;
@@ -14,9 +15,6 @@ import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -60,10 +58,10 @@ public class TeleportBook extends Book {
                 list.add(new Pair<>(
                         MxSkullItemStackBuilder.create(1)
                                 .setSkinFromHeadsData(player.getUniqueId().toString())
-                                .setName(ChatColor.GRAY + player.getName())
+                                .setName("gray" + player.getName())
                                 .addLore(gamePlayer.getMapPlayer().getColor().getDisplayName())
                                 .addBlankLore()
-                                .addLore(ChatColor.YELLOW + "Klik hier om " + player.getName() + " te teleporten")
+                                .addLore("<yellow>Klik hier om " + player.getName() + " te teleporten")
                                 .build(),
                         (mxInv, e1) -> {
                             List<Pair<ItemStack, MxItemClicked>> newList = new ArrayList<>();
@@ -83,10 +81,10 @@ public class TeleportBook extends Book {
                                 newList.add(new Pair<>(
                                         MxSkullItemStackBuilder.create(1)
                                                 .setSkinFromHeadsData(player1.getUniqueId().toString())
-                                                .setName(ChatColor.GRAY + player1.getName())
+                                                .setName("gray" + player1.getName())
                                                 .addLore(gameplayer.getMapPlayer().getColor().getDisplayName())
                                                 .addBlankLore()
-                                                .addLore(ChatColor.YELLOW + "Klik hier om " + player.getName())
+                                                .addLore("<yellow>Klik hier om " + player.getName())
                                                 .addLore(" te teleporten naar " + player1.getName())
                                                 .build(),
                                         (mxInv1, e11) -> {
@@ -101,8 +99,8 @@ public class TeleportBook extends Book {
 
                                                     // Check if book is silenced
                                                     if (isSilenced(value)) {
-                                                        game.sendMessageToHosts(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_TELEPORT_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player1.getName())))));
-                                                        p.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_TELEPORT_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player1.getName())))));
+                                                        game.sendMessageToHosts(String.format("<gray>[SILENT] <white>", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_TELEPORT_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player1.getName()))));
+                                                        MSG.msg(p, String.format("<gray>[SILENT] <white>", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_TELEPORT_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player1.getName()))));
                                                     } else {
                                                         sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_TELEPORT_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player1.getName())));
                                                     }

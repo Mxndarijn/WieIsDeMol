@@ -9,6 +9,7 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
@@ -18,7 +19,6 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import nl.mxndarijn.wieisdemol.map.Map;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -57,11 +57,11 @@ public class GameChestItem extends MxItem {
         game.getChestManager().getChests().forEach(chest -> {
             list.add(new Pair<>(
                     MxDefaultItemStackBuilder.create(Material.CHEST, 1)
-                            .setName(ChatColor.GRAY + chest.getName())
+                            .setName("gray>" + chest.getName())
                             .addBlankLore()
-                            .addLore(ChatColor.GRAY + "Location: " + chest.getLocation().getX() + " " + chest.getLocation().getY() + " " + chest.getLocation().getZ())
+                            .addLore("<gray>Location: " + chest.getLocation().getX() + " " + chest.getLocation().getY() + " " + chest.getLocation().getZ())
                             .addBlankLore()
-                            .addLore(ChatColor.YELLOW + "Klik om de kist op afstand te openen.")
+                            .addLore("<yellow>Klik om de kist op afstand te openen.")
                             .build(),
                     (mxInv, e12) -> {
                         Location loc = chest.getLocation().getLocation(p.getWorld());
@@ -70,7 +70,7 @@ public class GameChestItem extends MxItem {
                             Chest chestBlock = (Chest) block.getState();
                             p.openInventory(chestBlock.getBlockInventory());
                         } else {
-                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_IS_NOT_A_CHEST));
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_IS_NOT_A_CHEST));
                             p.closeInventory();
                         }
                     }
@@ -78,7 +78,7 @@ public class GameChestItem extends MxItem {
         });
 
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Chest Hulp Tool", MxInventorySlots.SIX_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Chest Hulp Tool", MxInventorySlots.SIX_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                 .setListItems(list)
                 .build());

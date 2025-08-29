@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.commands;
 
 import nl.mxndarijn.api.mxcommand.MxCommand;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
@@ -29,36 +30,36 @@ public class MessagePlayerCommand extends MxCommand {
         Player p = (Player) sender;
         Optional<Game> optionalGame = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
         if (optionalGame.isEmpty()) {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_NOT_HOST));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_NOT_HOST));
             return;
         }
         Game game = optionalGame.get();
 
         if (!game.getHosts().contains(p.getUniqueId())) {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_NOT_HOST));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_NOT_HOST));
             return;
         }
 
         if (args.length < 2) {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_SYNTAX_ERROR));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_SYNTAX_ERROR));
             return;
         }
 
         Player player = Bukkit.getPlayer(args[0]);
         if (player == null) {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_PLAYER_NOT_FOUND));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_PLAYER_NOT_FOUND));
             return;
         }
 
         if (game.getGamePlayerOfPlayer(player.getUniqueId()).isEmpty()) {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_NOT_IN_GAME));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_NOT_IN_GAME));
             return;
         }
 
         String message = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
-        player.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST, Collections.singletonList(message)));
+        MSG.msg(player, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST, Collections.singletonList(message)));
         game.sendMessageToHosts(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_TO_ALL_HOSTS, Arrays.asList(player.getName(), message)));
-        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_SEND));
+        MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MESSAGE_FROM_HOST_SEND));
     }
 }

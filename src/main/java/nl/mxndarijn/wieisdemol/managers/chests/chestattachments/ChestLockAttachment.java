@@ -11,6 +11,7 @@ import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
@@ -18,7 +19,7 @@ import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -83,9 +84,9 @@ public class ChestLockAttachment extends ChestAttachment {
         return new Pair<>(
                 MxSkullItemStackBuilder.create(1)
                         .setSkinFromHeadsData("locked-chest")
-                        .setName(ChatColor.GREEN + "Kist slot")
+                        .setName("<green>Kist slot")
                         .addBlankLore()
-                        .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment aan te passen.")
+                        .addLore("<yellow>Klik hier om deze chest attachment aan te passen.")
                         .build(),
                 (mxInv, e) -> {
                     Player p = (Player) e.getWhoClicked();
@@ -93,22 +94,22 @@ public class ChestLockAttachment extends ChestAttachment {
                             MxDefaultMenuBuilder.create("Kist slot", MxInventorySlots.THREE_ROWS)
                                     .setItem(MxSkullItemStackBuilder.create(1)
                                                     .setSkinFromHeadsData("locked-chest")
-                                                    .setName(ChatColor.GRAY + "Krijg sleutel")
+                                                    .setName("<gray>Krijg sleutel")
                                                     .addBlankLore()
-                                                    .addLore(ChatColor.YELLOW + "Klik hier om het item in je off-hand de sleutel te maken.")
+                                                    .addLore("<yellow>Klik hier om het item in je off-hand de sleutel te maken.")
                                                     .build(),
                                             13,
                                             (mxInv1, e1) -> {
                                                 ItemStack is = p.getInventory().getItemInOffHand();
                                                 if (is.getType() == Material.AIR) {
                                                     p.closeInventory();
-                                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LOCK_NO_ITEM_IN_HAND));
+                                                    MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LOCK_NO_ITEM_IN_HAND));
                                                     return;
                                                 }
 
                                                 ItemMeta im = is.getItemMeta();
                                                 if (im == null) {
-                                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LOCK_NO_ITEM_IN_HAND));
+                                                    MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LOCK_NO_ITEM_IN_HAND));
                                                     return;
                                                 }
                                                 NamespacedKey nbtKey = new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "lockTag");
@@ -119,20 +120,20 @@ public class ChestLockAttachment extends ChestAttachment {
                                                     list = new ArrayList<>();
                                                 }
                                                 list.add(Component.text(""));
-                                                list.add(Component.text(ChatColor.GOLD + "Sleutel"));
+                                                list.add(Component.text("<gold>Sleutel"));
 
                                                 im.lore(list);
                                                 is.setItemMeta(im);
 
-                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LOCK_ITEM_SET));
+                                                MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LOCK_ITEM_SET));
                                             }
                                     )
 
                                     .setItem(MxSkullItemStackBuilder.create(1)
                                                     .setSkinFromHeadsData("red-minus")
-                                                    .setName(ChatColor.RED + "Verwijder chest attachment")
+                                                    .setName("<red>Verwijder chest attachment")
                                                     .addBlankLore()
-                                                    .addLore(ChatColor.YELLOW + "Klik hier om de chest attachment te verwijderen")
+                                                    .addLore("<yellow>Klik hier om de chest attachment te verwijderen")
 
                                                     .build(), 18,
                                             (mxInv12, e12) -> {
@@ -141,7 +142,7 @@ public class ChestLockAttachment extends ChestAttachment {
                                             }
                                     )
                                     .setItem(MxDefaultItemStackBuilder.create(Material.BARRIER)
-                                                    .setName(ChatColor.GRAY + "Terug")
+                                                    .setName("<gray>Terug")
                                                     .build()
                                             , 22,
                                             (mxInv13, e13) -> {
@@ -197,7 +198,7 @@ public class ChestLockAttachment extends ChestAttachment {
         if (s != null) {
             if (s.equals(lockTag)) {
                 locked = false;
-                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_CHEST_ATTACHMENTS_CHEST_UNLOCKED));
+                MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_CHEST_ATTACHMENTS_CHEST_UNLOCKED));
             }
         }
     }

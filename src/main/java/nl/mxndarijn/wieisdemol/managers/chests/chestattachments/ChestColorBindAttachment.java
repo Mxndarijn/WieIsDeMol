@@ -15,7 +15,7 @@ import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -74,19 +74,19 @@ public class ChestColorBindAttachment extends ChestAttachment {
     public Pair<ItemStack, MxItemClicked> getEditAttachmentItem() {
         MxSkullItemStackBuilder builder = MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("wool-chest")
-                .setName(ChatColor.GREEN + "Colorbind chest")
+                .setName("<green>Colorbind chest")
                 .addBlankLore();
-        builder.addLore(ChatColor.GRAY + "Kleuren die de kist kunnen openen:");
+        builder.addLore("<gray>Kleuren die de kist kunnen openen:");
         if (colors.isEmpty()) {
-            builder.addLore(ChatColor.GRAY + " - " + ChatColor.RED + "Geen");
+            builder.addLore("<gray> - <red>Geen");
         }
         colors.forEach(color -> {
-            builder.addLore(ChatColor.GRAY + " - " + color.getDisplayName());
+            builder.addLore("<gray> - " + color.getDisplayName());
         });
 
         return new Pair<>(
                 builder.addBlankLore()
-                        .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment aan te passen.")
+                        .addLore("<yellow>Klik hier om deze chest attachment aan te passen.")
                         .build(),
                 (mxInv, e) -> {
                     Player p = (Player) e.getWhoClicked();
@@ -109,14 +109,14 @@ public class ChestColorBindAttachment extends ChestAttachment {
                                 }
                         ));
                     });
-                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "ColorBind", MxInventorySlots.THREE_ROWS)
+                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>ColorBind", MxInventorySlots.THREE_ROWS)
                             .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                             .setListItems(list)
                             .setItem(MxSkullItemStackBuilder.create(1)
                                             .setSkinFromHeadsData("red-minus")
-                                            .setName(ChatColor.RED + "Verwijder chest attachment")
+                                            .setName("<red>Verwijder chest attachment")
                                             .addBlankLore()
-                                            .addLore(ChatColor.YELLOW + "Klik hier om de chest attachment te verwijderen")
+                                            .addLore("<yellow>Klik hier om de chest attachment te verwijderen")
 
                                             .build(), 18,
                                     (mxInv12, e12) -> {
@@ -126,7 +126,7 @@ public class ChestColorBindAttachment extends ChestAttachment {
                             )
                             .setPreviousPageItemStackSlot(19)
                             .setItem(MxDefaultItemStackBuilder.create(Material.BARRIER)
-                                            .setName(ChatColor.GRAY + "Terug")
+                                            .setName("<gray>Terug")
                                             .build()
                                     , 22,
                                     (mxInv13, e13) -> {
@@ -145,9 +145,9 @@ public class ChestColorBindAttachment extends ChestAttachment {
                 .setSkinFromHeadsData(mapPlayer.getColor().getHeadKey())
                 .setName(mapPlayer.getColor().getDisplayName())
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Kan kist openen: " + (colors.contains(mapPlayer.getColor()) ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"))
+                .addLore("<gray>Kan kist openen: " + (colors.contains(mapPlayer.getColor()) ? "<green>Ja" : "<red>Nee"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de kleur " + (colors.contains(mapPlayer.getColor()) ? "toe te voegen." : "te verwijderen."))
+                .addLore("<yellow>Klik hier om de kleur " + (colors.contains(mapPlayer.getColor()) ? "toe te voegen." : "te verwijderen."))
 
                 .build();
 

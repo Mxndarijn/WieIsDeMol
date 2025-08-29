@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.items.game.books;
 
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.AvailablePerson;
 import nl.mxndarijn.wieisdemol.data.BookFailurePlayersHolder;
@@ -52,7 +53,7 @@ public class MolCountBook extends Book {
                         if(g.getMapPlayer().getRole() != Role.MOL) continue;
                         count++;
                     }
-                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MOLCOUNT_MESSAGE, Collections.singletonList(count + "")));
+                    MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MOLCOUNT_MESSAGE, Collections.singletonList(count + "")));
                     break;
                 }
             }

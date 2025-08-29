@@ -1,6 +1,7 @@
 package nl.mxndarijn.api.item;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -34,7 +35,7 @@ public class MxItemStackBuilder<T extends MxItemStackBuilder<T>> {
     }
 
     public T setName(String name) {
-        itemMeta.setDisplayName(name);
+        itemMeta.displayName(MiniMessage.miniMessage().deserialize(name));
         return (T) this;
     }
 
@@ -71,7 +72,7 @@ public class MxItemStackBuilder<T extends MxItemStackBuilder<T>> {
     public ItemStack build() {
         List<Component> componentList = new ArrayList<>();
         lores.forEach(l -> {
-            componentList.add(Component.text(l));
+            componentList.add(MiniMessage.miniMessage().deserialize(l));
         });
         itemMeta.lore(componentList);
         itemStack.setItemMeta(itemMeta);

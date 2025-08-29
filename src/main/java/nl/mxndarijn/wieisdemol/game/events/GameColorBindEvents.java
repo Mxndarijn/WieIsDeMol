@@ -251,6 +251,10 @@ public class GameColorBindEvents extends GameEvent{
         String lifebound = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);;
         String soulbound = is.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);;
 
+        if(droppableonce != null) {
+            System.out.println("droppableonce: " + droppableonce);
+        }
+
         boolean shouldCancel = false;
         if (droppable != null && droppable.equalsIgnoreCase("false")) {
             shouldCancel = true;

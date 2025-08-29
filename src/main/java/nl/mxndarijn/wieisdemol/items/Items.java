@@ -15,7 +15,6 @@ import nl.mxndarijn.wieisdemol.items.presets.DoorConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.PresetConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.ShulkerConfigureTool;
 import nl.mxndarijn.wieisdemol.items.spawn.GamesItem;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
@@ -25,9 +24,9 @@ public enum Items {
     // Preset Items
     PRESET_CONFIGURE_TOOL(
             MxDefaultItemStackBuilder.create(Material.NETHER_STAR, 1)
-                    .setName(ChatColor.GRAY + "Preset Configure-Tool")
+                    .setName("<gray>Preset Configure-Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je instellingen in een preset aanpassen.")
+                    .addLore("<yellow>Met dit item kan je instellingen in een preset aanpassen.")
                     .build(),
             p -> {
                 return true;
@@ -39,9 +38,9 @@ public enum Items {
 
     CHEST_CONFIGURE_TOOL(
             MxDefaultItemStackBuilder.create(Material.STICK, 1)
-                    .setName(ChatColor.GRAY + "Chest Configure-Tool")
+                    .setName("<gray>Chest Configure-Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je kisten in een preset aanpassen.")
+                    .addLore("<yellow>Met dit item kan je kisten in een preset aanpassen.")
                     .build(),
             p -> {
                 return true;
@@ -52,9 +51,9 @@ public enum Items {
     ),
     SHULKER_CONFIGURE_TOOL(
             MxDefaultItemStackBuilder.create(Material.SHULKER_SHELL, 1)
-                    .setName(ChatColor.GRAY + "Shulker Configure-Tool")
+                    .setName("<gray>Shulker Configure-Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je shulkers in een preset aanpassen.")
+                    .addLore("<yellow>Met dit item kan je shulkers in een preset aanpassen.")
                     .build(),
             p -> {
                 return true;
@@ -65,11 +64,11 @@ public enum Items {
     ),
     DOOR_CONFIGURE_TOOL(
             MxDefaultItemStackBuilder.create(Material.BRICK, 1)
-                    .setName(ChatColor.GRAY + "Door Configure-Tool")
+                    .setName("<gray>Door Configure-Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je deuren in een preset aanpassen.")
-                    .addLore(ChatColor.YELLOW + "Gebruik in de lucht om deuren te maken.")
-                    .addLore(ChatColor.YELLOW + "Gebruik tegen een block om het block toe te voegen aan een deur.")
+                    .addLore("<yellow>Met dit item kan je deuren in een preset aanpassen.")
+                    .addLore("<yellow>Gebruik in de lucht om deuren te maken.")
+                    .addLore("<yellow>Gebruik tegen een block om het block toe te voegen aan een deur.")
                     .build(),
             p -> {
                 return true;
@@ -83,9 +82,9 @@ public enum Items {
 
     CHEST_TOOL(
             MxDefaultItemStackBuilder.create(Material.STICK, 1)
-                    .setName(ChatColor.GRAY + "Chest Tool")
+                    .setName("<gray>Chest Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je kisten op afstand openen.")
+                    .addLore("<yellow>Met dit item kan je kisten op afstand openen.")
                     .build(),
             p -> {
                 return true;
@@ -96,10 +95,10 @@ public enum Items {
     ),
     GAME_CHEST_TOOL(
             MxDefaultItemStackBuilder.create(Material.STICK, 1)
-                    .setName(ChatColor.GRAY + "Chest Tool")
+                    .setName("<gray>Chest Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je kisten op afstand openen tijdens een game.")
-                    .addLore(ChatColor.YELLOW + "Daarnaast merkt niemand dat je de kist opent.")
+                    .addLore("<yellow>Met dit item kan je kisten op afstand openen tijdens een game.")
+                    .addLore("<yellow>Daarnaast merkt niemand dat je de kist opent.")
                     .build(),
             p -> {
                 return true;
@@ -110,9 +109,9 @@ public enum Items {
     ),
     SHULKER_TOOL(
             MxDefaultItemStackBuilder.create(Material.SHULKER_SHELL, 1)
-                    .setName(ChatColor.GRAY + "Shulker Tool")
+                    .setName("<gray>Shulker Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je shulkers op afstand openen.")
+                    .addLore("<yellow>Met dit item kan je shulkers op afstand openen.")
                     .build(),
             p -> {
                 return true;
@@ -123,9 +122,9 @@ public enum Items {
     ),
     GAME_SHULKER_TOOL(
             MxDefaultItemStackBuilder.create(Material.SHULKER_SHELL, 1)
-                    .setName(ChatColor.GRAY + "Shulker Tool")
+                    .setName("<gray>Shulker Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je shulkers op afstand openen tijdens een game.")
+                    .addLore("<yellow>Met dit item kan je shulkers op afstand openen tijdens een game.")
                     .build(),
             p -> {
                 return true;
@@ -136,9 +135,9 @@ public enum Items {
     ),
     DOOR_ITEM(
             MxDefaultItemStackBuilder.create(Material.BRICK, 1)
-                    .setName(ChatColor.GRAY + "Door Tool")
+                    .setName("<gray>Door Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je deuren openen en sluiten.")
+                    .addLore("<yellow>Met dit item kan je deuren openen en sluiten.")
                     .build(),
             p -> {
                 return true;
@@ -149,9 +148,9 @@ public enum Items {
     ),
     GAME_DOOR_ITEM(
             MxDefaultItemStackBuilder.create(Material.BRICK, 1)
-                    .setName(ChatColor.GRAY + "Door Tool")
+                    .setName("<gray>Door Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je deuren openen en sluiten tijdens de game.")
+                    .addLore("<yellow>Met dit item kan je deuren openen en sluiten tijdens de game.")
                     .build(),
             p -> {
                 return true;
@@ -162,9 +161,9 @@ public enum Items {
     ),
     VUL_TOOL(
             MxDefaultItemStackBuilder.create(Material.NETHER_STAR, 1)
-                    .setName(ChatColor.GRAY + "Vul Tool")
+                    .setName("<gray>Vul Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je instellingen in een map aanpassen.")
+                    .addLore("<yellow>Met dit item kan je instellingen in een map aanpassen.")
                     .build(),
             p -> {
                 return true;
@@ -175,9 +174,9 @@ public enum Items {
     ),
     HOST_TOOL(
             MxDefaultItemStackBuilder.create(Material.NETHER_STAR, 1)
-                    .setName(ChatColor.GRAY + "Host Tool")
+                    .setName("<gray>Host Tool")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je een game beheren.")
+                    .addLore("<yellow>Met dit item kan je een game beheren.")
                     .build(),
             p -> {
                 return true;
@@ -188,10 +187,10 @@ public enum Items {
     ),
     GAMES_ITEM(
             MxDefaultItemStackBuilder.create(Material.COMPASS, 1)
-                    .setName(ChatColor.GRAY + "Game Menu")
+                    .setName("<gray>Game Menu")
                     .addLore(" ")
-                    .addLore(ChatColor.YELLOW + "Met dit item kan je games joinen,")
-                    .addLore(ChatColor.YELLOW + "en games aanmaken als je een host bent.")
+                    .addLore("<yellow>Met dit item kan je games joinen,")
+                    .addLore("<yellow>en games aanmaken als je een host bent.")
                     .build(),
             p -> {
                 return p.getWorld().getUID().equals(Functions.getSpawnLocation().getWorld().getUID());
@@ -201,9 +200,9 @@ public enum Items {
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     VANISH_ITEM(MxDefaultItemStackBuilder.create(Material.ENDER_EYE)
-            .setName(ChatColor.GRAY + "Vanish")
+            .setName("<gray>Vanish")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item kan je ontzichtbaar worden.")
+            .addLore("<yellow>Met dit item kan je ontzichtbaar worden.")
             .build(),
             p -> {
                 return true;
@@ -212,9 +211,9 @@ public enum Items {
             VanishItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     PLAYER_MANAGEMENT_ITEM(MxDefaultItemStackBuilder.create(Material.CYAN_DYE)
-            .setName(ChatColor.GRAY + "Kleuren tool")
+            .setName("<gray>Kleuren tool")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item kan je kleuren beheren.")
+            .addLore("<yellow>Met dit item kan je kleuren beheren.")
             .build(),
             p -> {
                 return true;
@@ -224,9 +223,9 @@ public enum Items {
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
 
     GAME_SPECTATOR_LEAVE_ITEM(MxDefaultItemStackBuilder.create(Material.RED_BED)
-            .setName(ChatColor.GRAY + "Verlaat Game")
+            .setName("<gray>Verlaat Game")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Gebruik dit item om te stoppen met spectaten.")
+            .addLore("<yellow>Gebruik dit item om te stoppen met spectaten.")
             .addCustomTagString(ItemTag.DROPPABLE.getPersistentDataTag(), false)
             .build(),
             p -> {
@@ -236,9 +235,9 @@ public enum Items {
             LeaveGameItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_SPECTATOR_TELEPORT_ITEM(MxDefaultItemStackBuilder.create(Material.COMPASS)
-            .setName(ChatColor.GRAY + "Teleporteer naar speler")
+            .setName("<gray>Teleporteer naar speler")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Gebruik dit item om te teleporteren naar spelers.")
+            .addLore("<yellow>Gebruik dit item om te teleporteren naar spelers.")
             .addCustomTagString(ItemTag.DROPPABLE.getPersistentDataTag(), false)
             .build(),
             p -> {
@@ -248,10 +247,10 @@ public enum Items {
             TeleportItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_DEATHNOTE(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Deathnote")
+            .setName("<gray>Deathnote")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item kan je iemand")
-            .addLore(ChatColor.YELLOW + "deathnoten (vermoorden).")
+            .addLore("<yellow>Met dit item kan je iemand")
+            .addLore("<yellow>deathnoten (vermoorden).")
             .build(),
             p -> {
                 return true;
@@ -260,10 +259,10 @@ public enum Items {
             DeathnoteBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_INVCLEAR(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Inv-Clear")
+            .setName("<gray>Inv-Clear")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item kan je iemand zijn")
-            .addLore(ChatColor.YELLOW + "inventory clearen. (leegmaken)")
+            .addLore("<yellow>Met dit item kan je iemand zijn")
+            .addLore("<yellow>inventory clearen. (leegmaken)")
             .build(),
             p -> {
                 return true;
@@ -272,10 +271,10 @@ public enum Items {
             InvClearBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_SWITCH(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Switch")
+            .setName("<gray>Switch")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item kan je met iemand")
-            .addLore(ChatColor.YELLOW + "switchen (verwisellen)")
+            .addLore("<yellow>Met dit item kan je met iemand")
+            .addLore("<yellow>switchen (verwisellen)")
             .build(),
             p -> {
                 return true;
@@ -284,10 +283,10 @@ public enum Items {
             SwitchBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_SPELERCOUNT(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Speler-Count")
+            .setName("<gray>Speler-Count")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item krijg je te horen")
-            .addLore(ChatColor.YELLOW + "hoeveel spelers er nog zijn.")
+            .addLore("<yellow>Met dit item krijg je te horen")
+            .addLore("<yellow>hoeveel spelers er nog zijn.")
             .build(),
             p -> {
                 return true;
@@ -297,10 +296,10 @@ public enum Items {
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
 
     GAME_MOLCOUNT(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Mol-Count")
+            .setName("<gray>Mol-Count")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item krijg je te horen")
-            .addLore(ChatColor.YELLOW + "hoeveel mollen er nog zijn.")
+            .addLore("<yellow>Met dit item krijg je te horen")
+            .addLore("<yellow>hoeveel mollen er nog zijn.")
             .build(),
             p -> {
                 return true;
@@ -310,10 +309,10 @@ public enum Items {
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
 
     GAME_EGOCOUNT(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Ego-Count")
+            .setName("<gray>Ego-Count")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item krijg je te horen")
-            .addLore(ChatColor.YELLOW + "hoeveel ego's er nog zijn.")
+            .addLore("<yellow>Met dit item krijg je te horen")
+            .addLore("<yellow>hoeveel ego's er nog zijn.")
             .build(),
             p -> {
                 return true;
@@ -322,10 +321,10 @@ public enum Items {
             EgoCountBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_SHAPESHIFTERCOUNT(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Shapeshifter-Count")
+            .setName("<gray>Shapeshifter-Count")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item krijg je te horen")
-            .addLore(ChatColor.YELLOW + "hoeveel shapeshifter's er nog zijn.")
+            .addLore("<yellow>Met dit item krijg je te horen")
+            .addLore("<yellow>hoeveel shapeshifter's er nog zijn.")
             .build(),
             p -> {
                 return true;
@@ -334,10 +333,10 @@ public enum Items {
             ShapeShifterCountBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_PEACEKEEPER_CHECKER(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Peacekeeper-Check")
+            .setName("<gray>Peacekeeper-Check")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item krijgt iedereen te ")
-            .addLore(ChatColor.YELLOW + "zien of iemand de peacekeeper is.")
+            .addLore("<yellow>Met dit item krijgt iedereen te ")
+            .addLore("<yellow>zien of iemand de peacekeeper is.")
             .build(),
             p -> {
                 return true;
@@ -346,10 +345,10 @@ public enum Items {
             PeacekeeperCheckBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_REBORN_BOOK(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Reborn")
+            .setName("<gray>Reborn")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item kan je iemand ")
-            .addLore(ChatColor.YELLOW + "rebornen. (genezen)")
+            .addLore("<yellow>Met dit item kan je iemand ")
+            .addLore("<yellow>rebornen. (genezen)")
             .build(),
             p -> {
                 return true;
@@ -358,10 +357,10 @@ public enum Items {
             RebornBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_INVCHECK_BOOK(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Inv-Check")
+            .setName("<gray>Inv-Check")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item kan je iemand ")
-            .addLore(ChatColor.YELLOW + "checken op een item.")
+            .addLore("<yellow>Met dit item kan je iemand ")
+            .addLore("<yellow>checken op een item.")
             .build(),
             p -> {
                 return true;
@@ -370,10 +369,10 @@ public enum Items {
             InvCheckBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_TELEPORT_BOOK(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Teleport")
+            .setName("<gray>Teleport")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item kan je iemand ")
-            .addLore(ChatColor.YELLOW + "teleporteren naar iemand anders.")
+            .addLore("<yellow>Met dit item kan je iemand ")
+            .addLore("<yellow>teleporteren naar iemand anders.")
             .build(),
             p -> {
                 return true;
@@ -383,9 +382,9 @@ public enum Items {
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
 
     MAP_GENERATOR_CONFIGURATOR(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Generator")
+            .setName("<gray>Generator")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met deze generator krijg je een random item.")
+            .addLore("<yellow>Met deze generator krijg je een random item.")
             .build(),
             p -> {
                 return true;
@@ -394,9 +393,9 @@ public enum Items {
             MapGeneratorBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_GENERATOR(MxDefaultItemStackBuilder.create(Material.BOOK)
-            .setName(ChatColor.GRAY + "Generator")
+            .setName("<gray>Generator")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met deze generator krijg je een random item.")
+            .addLore("<yellow>Met deze generator krijg je een random item.")
             .build(),
             p -> {
                 return true;
@@ -405,11 +404,11 @@ public enum Items {
             GeneratorBook.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK),
     GAME_PLAYER_TOOL(MxDefaultItemStackBuilder.create(Material.NETHER_STAR)
-            .setName(ChatColor.GRAY + "Speler Tool")
+            .setName("<gray>Speler Tool")
             .addBlankLore()
-            .addLore(ChatColor.YELLOW + "Met dit item kan je stemmen,")
-            .addLore(ChatColor.YELLOW + "hosts een vraag stellen,")
-            .addLore(ChatColor.YELLOW + "of alle kleuren zien.")
+            .addLore("<yellow>Met dit item kan je stemmen,")
+            .addLore("<yellow>hosts een vraag stellen,")
+            .addLore("<yellow>of alle kleuren zien.")
             .addCustomTagString(ItemTag.DROPPABLE.getPersistentDataTag(), false)
             .addCustomTagString(ItemTag.VANISHABLE.getPersistentDataTag(), false)
             .build(),

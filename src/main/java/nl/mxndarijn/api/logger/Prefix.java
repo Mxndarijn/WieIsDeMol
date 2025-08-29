@@ -1,31 +1,31 @@
 package nl.mxndarijn.api.logger;
 
-import org.bukkit.ChatColor;
+
 
 public enum Prefix {
-    MXATLAS(ChatColor.DARK_AQUA + "MxAtlas"),
-    MXCOMMAND(ChatColor.DARK_GREEN + "MxCommand"),
-    MXITEM(ChatColor.DARK_AQUA + "MxItem"),
-    ITEM_MANAGER(ChatColor.GREEN + "Item-Manager"),
-    MXHEAD_MANAGER(ChatColor.DARK_BLUE + "MxHead-Manager"),
-    MXINVENTORY(ChatColor.DARK_GREEN + "MxInventory"),
-    MXCHATINPUT_MANAGER(ChatColor.DARK_PURPLE + "MxChatInput-Manager"),
-    CHANGEWORLD_MANAGER(ChatColor.AQUA + "ChangeWorld-Manager"),
-    WORLD_MANAGER(ChatColor.AQUA + "World-Manager"),
-    PRESETS_MANAGER(ChatColor.AQUA + "Presets-Manager"),
-    MAPS_MANAGER(ChatColor.AQUA + "Maps-Manager"),
-    GAMES_MANAGER(ChatColor.AQUA + "Games-Manager"),
-    LOGGER(ChatColor.DARK_PURPLE + "Logger"),
-    LANGUAGE_MANAGER(ChatColor.GOLD + "Language-Manager"),
-    CONFIG_FILES(ChatColor.YELLOW + "Config-Files"),
-    DATABASEMANAGER(ChatColor.YELLOW + "Database-Manager"),
-    STORAGE_MANAGER(ChatColor.GREEN + "Storage-Manager");
+    MXATLAS("<dark_aqua>MxAtlas"),
+    MXCOMMAND("<dark_green>MxCommand"),
+    MXITEM("<dark_aqua>MxItem"),
+    ITEM_MANAGER("<green>Item-Manager"),
+    MXHEAD_MANAGER("<dark_blue>MxHead-Manager"),
+    MXINVENTORY("<dark_green>MxInventory"),
+    MXCHATINPUT_MANAGER("<dark_purple>MxChatInput-Manager"),
+    CHANGEWORLD_MANAGER("<aqua>ChangeWorld-Manager"),
+    WORLD_MANAGER("<aqua>World-Manager"),
+    PRESETS_MANAGER("<aqua>Presets-Manager"),
+    MAPS_MANAGER("<aqua>Maps-Manager"),
+    GAMES_MANAGER("<aqua>Games-Manager"),
+    LOGGER("<dark_purple>Logger"),
+    LANGUAGE_MANAGER("<gold>Language-Manager"),
+    CONFIG_FILES("<yellow>Config-Files"),
+    DATABASEMANAGER("<yellow>Database-Manager"),
+    STORAGE_MANAGER("<green>Storage-Manager");
 
     private final String prefix;
     private final String name;
 
     Prefix(String prefix) {
-        this.prefix = ChatColor.DARK_GRAY + "[" + prefix + ChatColor.DARK_GRAY + "] ";
+        this.prefix = "<dark_gray>" + "[" + prefix + "<dark_gray>" + "] ";
         this.name = prefix;
     }
 

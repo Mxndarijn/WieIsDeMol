@@ -14,12 +14,13 @@ import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.ChestAppearance;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -78,11 +79,11 @@ public class ChestAppearanceAttachment extends ChestAttachment {
         return new Pair<>(
                 MxSkullItemStackBuilder.create(1)
                         .setSkinFromHeadsData("rainbow-chest")
-                        .setName(ChatColor.GREEN + "Kist uiterlijk")
+                        .setName("<green>Kist uiterlijk")
                         .addBlankLore()
-                        .addLore(ChatColor.GRAY + "Uiterlijk: " + appearance.getName())
+                        .addLore("<gray>Uiterlijk: " + appearance.getName())
                         .addBlankLore()
-                        .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment aan te passen.")
+                        .addLore("<yellow>Klik hier om deze chest attachment aan te passen.")
                         .build(),
                 (mxInv, e) -> {
                     Player p = (Player) e.getWhoClicked();
@@ -90,11 +91,11 @@ public class ChestAppearanceAttachment extends ChestAttachment {
                             MxDefaultMenuBuilder.create("Kist uiterlijk", MxInventorySlots.THREE_ROWS)
                                     .setItem(MxSkullItemStackBuilder.create(1)
                                                     .setSkinFromHeadsData("rainbow-chest")
-                                                    .setName(ChatColor.GRAY + "Verander kist uiterlijk")
+                                                    .setName("<gray>Verander kist uiterlijk")
                                                     .addBlankLore()
-                                                    .addLore(ChatColor.GRAY + "Huidige status: " + appearance.getName())
+                                                    .addLore("<gray>Huidige status: " + appearance.getName())
                                                     .addBlankLore()
-                                                    .addLore(ChatColor.YELLOW + "Klik hier om het kist uiterlijk aan te passen")
+                                                    .addLore("<yellow>Klik hier om het kist uiterlijk aan te passen")
                                                     .build(),
                                             13,
                                             (mxInv1, e1) -> {
@@ -104,12 +105,12 @@ public class ChestAppearanceAttachment extends ChestAttachment {
                                                             MxSkullItemStackBuilder.create(1)
                                                                     .setSkinFromHeadsData("rainbow-chest")
                                                                     .addBlankLore()
-                                                                    .setName(ChatColor.GRAY + value.getName())
-                                                                    .addLore(ChatColor.YELLOW + "Klik hier om het uiterlijk aan te passen naar: " + value.getName())
+                                                                    .setName("<gray>" + value.getName())
+                                                                    .addLore("<yellow>Klik hier om het uiterlijk aan te passen naar: " + value.getName())
                                                                     .build(),
                                                             (mxInv2, e2) -> {
                                                                 appearance = value;
-                                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_APPEARANCE_CHANGED_TO, Collections.singletonList(value.getName())));
+                                                                MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_APPEARANCE_CHANGED_TO, Collections.singletonList(value.getName())));
                                                                 information.openAttachmentsInventory(p);
                                                             }
                                                     ));
@@ -128,9 +129,9 @@ public class ChestAppearanceAttachment extends ChestAttachment {
 
                                     .setItem(MxSkullItemStackBuilder.create(1)
                                                     .setSkinFromHeadsData("red-minus")
-                                                    .setName(ChatColor.RED + "Verwijder chest attachment")
+                                                    .setName("<red>Verwijder chest attachment")
                                                     .addBlankLore()
-                                                    .addLore(ChatColor.YELLOW + "Klik hier om de chest attachment te verwijderen")
+                                                    .addLore("<yellow>Klik hier om de chest attachment te verwijderen")
 
                                                     .build(), 18,
                                             (mxInv12, e12) -> {
@@ -144,7 +145,7 @@ public class ChestAppearanceAttachment extends ChestAttachment {
                                             }
                                     )
                                     .setItem(MxDefaultItemStackBuilder.create(Material.BARRIER)
-                                                    .setName(ChatColor.GRAY + "Terug")
+                                                    .setName("<gray>Terug")
                                                     .build()
                                             , 22,
                                             (mxInv13, e13) -> {

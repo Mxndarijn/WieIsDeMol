@@ -1,6 +1,5 @@
 package nl.mxndarijn.wieisdemol.items.game.books;
 
-import nl.mxndarijn.api.inventory.MxInventory;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
 import nl.mxndarijn.api.inventory.MxItemClicked;
@@ -9,6 +8,7 @@ import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.AvailablePerson;
 import nl.mxndarijn.wieisdemol.data.BookFailurePlayersHolder;
@@ -19,12 +19,10 @@ import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -65,37 +63,37 @@ public class InvCheckBook extends Book {
                 list.add(new Pair<>(
                         MxSkullItemStackBuilder.create(1)
                                 .setSkinFromHeadsData(player.getUniqueId().toString())
-                                .setName(ChatColor.GRAY + player.getName())
+                                .setName("<gray>" + player.getName())
                                 .addLore(gamePlayer.getMapPlayer().getColor().getDisplayName())
                                 .addBlankLore()
-                                .addLore(ChatColor.YELLOW + "Klik hier om " + player.getName() + " te selecteren.")
-                                .addLore(ChatColor.YELLOW + "Hierna kan je het item selecteren")
+                                .addLore("<yellow>Klik hier om " + player.getName() + " te selecteren.")
+                                .addLore("<yellow>Hierna kan je het item selecteren")
                                 .build(),
                         (mxInv, e1) -> {
-                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Selecteer Item", MxInventorySlots.THREE_ROWS)
+                            MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create("<gray>Selecteer Item", MxInventorySlots.THREE_ROWS)
 
                                     .setPrevious(mxInv)
                                     .setItem(MxDefaultItemStackBuilder.create(Material.GOLD_BLOCK)
-                                            .setName(ChatColor.GRAY + "Gold Block")
+                                            .setName("<gray>Gold Block")
                                             .addBlankLore()
-                                            .addLore(ChatColor.YELLOW + "Klik hier om te zoeken op")
-                                            .addLore(ChatColor.YELLOW + "een gold block.")
+                                            .addLore("<yellow>Klik hier om te zoeken op")
+                                            .addLore("<yellow>een gold block.")
                                             .build(), 11, (mxInv1, e2) -> {
                                         invCheck(p, player, gp, gamePlayer, Material.GOLD_BLOCK);
                                     })
                                     .setItem(MxDefaultItemStackBuilder.create(Material.DIAMOND_BLOCK)
-                                            .setName(ChatColor.GRAY + "Diamond Block")
+                                            .setName("<gray>Diamond Block")
                                             .addBlankLore()
-                                            .addLore(ChatColor.YELLOW + "Klik hier om te zoeken op")
-                                            .addLore(ChatColor.YELLOW + "een diamond block.")
+                                            .addLore("<yellow>Klik hier om te zoeken op")
+                                            .addLore("<yellow>een diamond block.")
                                             .build(), 13, (mxInv1, e2) -> {
                                         invCheck(p, player, gp, gamePlayer, Material.DIAMOND_BLOCK);
                                     })
                                     .setItem(MxDefaultItemStackBuilder.create(Material.BOOK)
-                                            .setName(ChatColor.GRAY + "Book")
+                                            .setName("<gray>Book")
                                             .addBlankLore()
-                                            .addLore(ChatColor.YELLOW + "Klik hier om te zoeken op")
-                                            .addLore(ChatColor.YELLOW + "een book.")
+                                            .addLore("<yellow>Klik hier om te zoeken op")
+                                            .addLore("<yellow>een book.")
                                             .build(), 15, (mxInv1, e2) -> {
                                         invCheck(p, player, gp, gamePlayer, Material.BOOK);
                                     })
@@ -120,28 +118,28 @@ public class InvCheckBook extends Book {
             Integer key = entry.getKey();
             ItemStack value = entry.getValue();
             if (isItemTheSame(value)) {
-                if(!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
+                if (!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
                     return;
                 ItemStack[] inv = player.getInventory().getContents().clone();
                 List<ItemStack> foundItems = new ArrayList<>();
                 for (ItemStack itemStack : inv) {
-                    if(itemStack != null && itemStack.getItemMeta() != null && itemStack.getType() == type) {
+                    if (itemStack != null && itemStack.getItemMeta() != null && itemStack.getType() == type) {
                         String data = itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.DETECTABLE.getPersistentDataTag()), PersistentDataType.STRING);
                         if (data == null || !data.equalsIgnoreCase("false")) {
                             foundItems.add(itemStack);
                         }
                     }
                 }
-                if(player.getItemOnCursor().getType() == type) {
+                if (player.getItemOnCursor().getType() == type) {
                     foundItems.add(player.getItemOnCursor());
                 }
 
                 // Check if book is silenced
                 if (isSilenced(value)) {
-                    game.sendMessageToHosts(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCHECK_RESULT, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), type.toString().toLowerCase(), foundItems.isEmpty() ? ChatColor.RED + "niet gevonden" : ChatColor.GREEN + "gevonden")))));
-                    p.sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("&7&o[SILENT] &f%s", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCHECK_RESULT, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), type.toString().toLowerCase(), foundItems.isEmpty() ? ChatColor.RED + "niet gevonden" : ChatColor.GREEN + "gevonden")))));
+                    game.sendMessageToHosts(String.format("<gray>[SILENT] <white>", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCHECK_RESULT, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), type.toString().toLowerCase(), foundItems.isEmpty() ? "<red>niet gevonden" : "<green>gevonden"))));
+                    MSG.msg(p, String.format("<gray>[SILENT] <white>", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCHECK_RESULT, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), type.toString().toLowerCase(), foundItems.isEmpty() ? "<red>niet gevonden" : "<green>gevonden"))));
                 } else {
-                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCHECK_RESULT, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), type.toString().toLowerCase(), foundItems.isEmpty() ? ChatColor.RED + "niet gevonden" : ChatColor.GREEN + "gevonden")));
+                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCHECK_RESULT, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName(), type.toString().toLowerCase(), foundItems.isEmpty() ? "<red>niet gevonden" : "<green>gevonden")));
                 }
                 break;
             }

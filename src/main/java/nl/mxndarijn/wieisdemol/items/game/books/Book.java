@@ -2,6 +2,7 @@ package nl.mxndarijn.wieisdemol.items.game.books;
 
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.BookFailureAction;
@@ -95,7 +96,7 @@ public abstract class Book extends MxItem {
         }
         else {
             String dataFail = container.getOrDefault(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "fail-action"), PersistentDataType.STRING, "");
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_ACTION_FAILED));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_ACTION_FAILED));
             if(dataFail.isEmpty())
                 return false;
 

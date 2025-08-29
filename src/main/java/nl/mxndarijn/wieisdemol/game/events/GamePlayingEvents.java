@@ -9,6 +9,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.TitlePart;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ItemTag;
 import nl.mxndarijn.wieisdemol.data.Role;
@@ -92,7 +93,7 @@ public class GamePlayingEvents extends GameEvent {
 
         if (!e.getClickedBlock().getType().equals(optionalGamePlayer.get().getMapPlayer().getColor().getShulkerBlock())) {
             e.setCancelled(true);
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ONLY_OPEN_OWN_SHULKER));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_ONLY_OPEN_OWN_SHULKER));
         }
     }
 
@@ -320,7 +321,7 @@ public class GamePlayingEvents extends GameEvent {
                 long now = System.currentTimeMillis();
                 long delta = now - currentMillis.get();
                 timer.addAndGet(-delta);
-                ar.customName(Component.text(ChatColor.AQUA + Functions.formatGameTime(timer.get())));
+                ar.customName(Component.text("<aqua>" + Functions.formatGameTime(timer.get())));
                 if (timer.get() <= 0) {
                     e.getBlock().setType(Material.AIR);
                     ar.remove();

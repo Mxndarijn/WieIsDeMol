@@ -4,7 +4,6 @@ import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Dropper;
@@ -55,7 +54,7 @@ public class GamePlayingPeacekeeperEvents extends GameEvent {
         }
         e.getItemDrop().getItemStack().lore().forEach(l -> {
 
-            if (Functions.convertComponentToString(l).equalsIgnoreCase((ChatColor.GOLD + "Peacekeeper-Item"))) {
+            if (Functions.convertComponentToString(l).equalsIgnoreCase(("<gold>Peacekeeper-Item"))) {
                 e.setCancelled(true);
             }
         });

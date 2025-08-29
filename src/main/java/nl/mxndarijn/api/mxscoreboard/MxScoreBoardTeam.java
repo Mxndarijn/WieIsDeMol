@@ -2,7 +2,6 @@ package nl.mxndarijn.api.mxscoreboard;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Team;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -19,6 +18,13 @@ public class MxScoreBoardTeam {
     private final String entry;
     private final MxScoreBoard scoreboard;
 
+    private static String randomHexColor() {
+        Random rand = new Random();
+        int r = rand.nextInt(256);
+        int g = rand.nextInt(256);
+        int b = rand.nextInt(256);
+        return String.format("#%02X%02X%02X", r, g, b);
+    }
 
     protected MxScoreBoardTeam(MxScoreBoard scoreboard) {
         this.line = "";
@@ -27,13 +33,8 @@ public class MxScoreBoardTeam {
 
         Random r = new Random();
 
-        ChatColor randomColor = ChatColor.values()[r.nextInt(ChatColor.values().length)];
-        ChatColor randomColor1 = ChatColor.values()[r.nextInt(ChatColor.values().length)];
-        ChatColor randomColor2 = ChatColor.values()[r.nextInt(ChatColor.values().length)];
-        ChatColor randomColor3 = ChatColor.values()[r.nextInt(ChatColor.values().length)];
-
         team = scoreboard.getScoreboard().registerNewTeam(this.id);
-        this.entry = randomColor.toString() + randomColor1.toString() + randomColor2.toString() + randomColor3.toString() + ChatColor.RESET;
+        this.entry = "<" + randomHexColor() + "><reset>";
         team.addEntry(entry);
 
     }
@@ -65,10 +66,10 @@ public class MxScoreBoardTeam {
         int lineLength = line.length() - 8 * count + count * 2;
         if (lineLength <= scoreboard.MAX_LINE_LENGTH / 2) {
             team.prefix(MiniMessage.miniMessage().deserialize(line));
-            team.suffix(Component.text(""));
+            team.suffix(MiniMessage.miniMessage().deserialize(""));
         } else {
             String prefix = line.substring(0, scoreboard.MAX_LINE_LENGTH / 2);
-            String suffix = getLatestChatColor(prefix) + line.substring(scoreboard.MAX_LINE_LENGTH / 2);
+            String suffix = "<gray>" + (prefix) + line.substring(scoreboard.MAX_LINE_LENGTH / 2);
             if ((prefix + suffix).length() > scoreboard.MAX_LINE_LENGTH)
                 throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
             team.prefix(MiniMessage.miniMessage().deserialize(prefix));
@@ -120,10 +121,6 @@ public class MxScoreBoardTeam {
 
     public void destroy() {
         team.unregister();
-    }
-
-    private String getLatestChatColor(String s) {
-        return ChatColor.getLastColors(s);
     }
 
     public String getEntry() {

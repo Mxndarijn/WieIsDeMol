@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.commands;
 
 import nl.mxndarijn.api.mxcommand.MxCommand;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Permissions;
@@ -26,9 +27,9 @@ public class VanishCommand extends MxCommand {
         Player p = (Player) sender;
         VanishManager.getInstance().toggleVanish(p);
         if (VanishManager.getInstance().isPlayerHidden(p)) {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_ON, ChatPrefix.WIDM));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_ON, ChatPrefix.WIDM));
         } else {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_OFF, ChatPrefix.WIDM));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.VANISH_OFF, ChatPrefix.WIDM));
         }
     }
 }

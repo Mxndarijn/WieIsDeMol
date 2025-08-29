@@ -7,6 +7,7 @@ import nl.mxndarijn.api.inventory.menu.MxDefaultInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.managers.PresetsManager;
@@ -16,7 +17,6 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.presets.Preset;
 import nl.mxndarijn.wieisdemol.presets.PresetConfig;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -46,22 +46,22 @@ public class ChestConfigureTool extends MxItem {
             e.setCancelled(true);
             MxLocation location = MxLocation.getFromLocation(e.getClickedBlock().getLocation());
             if (manager.containsLocation(location)) {
-                MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultInventoryBuilder.create(ChatColor.GRAY + "Verwijder kist", MxInventorySlots.THREE_ROWS)
+                MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultInventoryBuilder.create("<gray>Verwijder kist", MxInventorySlots.THREE_ROWS)
                         .setItem(MxDefaultItemStackBuilder.create(Material.LIME_STAINED_GLASS_PANE)
-                                        .setName(ChatColor.GREEN + "Verwijder kist")
+                                        .setName("<green>Verwijder kist")
                                         .build(),
                                 14,
                                 (mxInv, e1) -> {
                                     Optional<ChestInformation> information = manager.getChestByLocation(location);
                                     information.ifPresent(inf -> {
                                         manager.removeChest(inf);
-                                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_CHEST_REMOVED, ChatPrefix.WIDM));
+                                        MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_CHEST_REMOVED, ChatPrefix.WIDM));
                                     });
                                     p.closeInventory();
                                 }
                         )
                         .setItem(MxDefaultItemStackBuilder.create(Material.RED_STAINED_GLASS_PANE)
-                                        .setName(ChatColor.RED + "Behoud kist")
+                                        .setName("<red>Behoud kist")
                                         .build(),
                                 12,
                                 (mxInv, e1) -> {
@@ -72,7 +72,7 @@ public class ChestConfigureTool extends MxItem {
                 return;
             }
             // Create new
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_ENTER_NAME, ChatPrefix.WIDM));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_ENTER_NAME, ChatPrefix.WIDM));
             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(),
                     message -> {
                         if (manager.containsLocation(location))
@@ -80,7 +80,7 @@ public class ChestConfigureTool extends MxItem {
 
                         ChestInformation information = new ChestInformation(message, location);
                         manager.addChest(information);
-                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_CHEST_ADDED, Collections.singletonList(message)));
+                        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_CONFIGURE_TOOL_CHEST_ADDED, Collections.singletonList(message)));
                     }
             );
         }

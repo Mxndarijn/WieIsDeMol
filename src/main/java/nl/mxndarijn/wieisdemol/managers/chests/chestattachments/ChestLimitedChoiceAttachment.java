@@ -11,13 +11,14 @@ import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryAction;
@@ -88,11 +89,11 @@ public class ChestLimitedChoiceAttachment extends ChestAttachment {
         return new Pair<>(
                 MxSkullItemStackBuilder.create(1)
                         .setSkinFromHeadsData("open-chest")
-                        .setName(ChatColor.GREEN + "Keuze kist")
+                        .setName("<green>Keuze kist")
                         .addBlankLore()
-                        .addLore(ChatColor.GRAY + "Max items te verwijderen: " + choices)
+                        .addLore("<gray>Max items te verwijderen: " + choices)
                         .addBlankLore()
-                        .addLore(ChatColor.YELLOW + "Klik hier om deze chest attachment aan te passen.")
+                        .addLore("<yellow>Klik hier om deze chest attachment aan te passen.")
                         .build(),
                 (mxInv, e) -> {
                     Player p = (Player) e.getWhoClicked();
@@ -101,28 +102,28 @@ public class ChestLimitedChoiceAttachment extends ChestAttachment {
 //                        return;
 //
 //                    nl.mxndarijn.world.map.Map map = opt.get();
-                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Keuze kist", MxInventorySlots.THREE_ROWS)
+                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create("<gray>Keuze kist", MxInventorySlots.THREE_ROWS)
                             .setItem(MxSkullItemStackBuilder.create(1)
                                             .setSkinFromHeadsData("open-chest")
-                                            .setName(ChatColor.GREEN + "Verander aantal")
+                                            .setName("<green>Verander aantal")
                                             .addBlankLore()
-                                            .addLore(ChatColor.GRAY + "Max items te verwijderen: " + choices)
+                                            .addLore("<gray>Max items te verwijderen: " + choices)
                                             .addBlankLore()
-                                            .addLore(ChatColor.YELLOW + "Klik hier om het aantal items dat uit de kist kan worden gehaald")
-                                            .addLore(ChatColor.YELLOW + "te veranderen.")
+                                            .addLore("<yellow>Klik hier om het aantal items dat uit de kist kan worden gehaald")
+                                            .addLore("<yellow>te veranderen.")
                                             .build(),
                                     13,
                                     (mxInv1, e1) -> {
-                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LIMITED_ENTER_NEW_AMOUNT));
+                                        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LIMITED_ENTER_NEW_AMOUNT));
                                         p.closeInventory();
                                         MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                                             try {
                                                 int i = Integer.parseInt(message);
                                                 choices = i;
-                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LIMITED_CHANGED_TO, Collections.singletonList(i + "")));
+                                                MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LIMITED_CHANGED_TO, Collections.singletonList(i + "")));
 
                                             } catch (NumberFormatException ee) {
-                                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LIMITED_NOT_A_NUMBER));
+                                                MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_LIMITED_NOT_A_NUMBER));
                                             }
                                         });
                                     }
@@ -130,9 +131,9 @@ public class ChestLimitedChoiceAttachment extends ChestAttachment {
                             )
                             .setItem(MxSkullItemStackBuilder.create(1)
                                             .setSkinFromHeadsData("red-minus")
-                                            .setName(ChatColor.RED + "Verwijder chest attachment")
+                                            .setName("<red>Verwijder chest attachment")
                                             .addBlankLore()
-                                            .addLore(ChatColor.YELLOW + "Klik hier om de chest attachment te verwijderen")
+                                            .addLore("<yellow>Klik hier om de chest attachment te verwijderen")
 
                                             .build(), 18,
                                     (mxInv12, e12) -> {
@@ -141,7 +142,7 @@ public class ChestLimitedChoiceAttachment extends ChestAttachment {
                                     }
                             )
                             .setItem(MxDefaultItemStackBuilder.create(Material.BARRIER)
-                                            .setName(ChatColor.GRAY + "Terug")
+                                            .setName("<gray>Terug")
                                             .build()
                                     , 22,
                                     (mxInv13, e13) -> {

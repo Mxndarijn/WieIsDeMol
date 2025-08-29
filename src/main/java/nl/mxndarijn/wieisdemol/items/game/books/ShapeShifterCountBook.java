@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.items.game.books;
 
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.AvailablePerson;
 import nl.mxndarijn.wieisdemol.data.BookFailurePlayersHolder;
@@ -50,7 +51,7 @@ public class ShapeShifterCountBook extends Book {
                         if(g.getMapPlayer().getRole() != Role.SHAPESHIFTER) continue;
                         count++;
                     }
-                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SHAPESHIFTER_MESSAGE, Collections.singletonList(count + "")));
+                    MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SHAPESHIFTER_MESSAGE, Collections.singletonList(count + "")));
                     break;
                 }
             }

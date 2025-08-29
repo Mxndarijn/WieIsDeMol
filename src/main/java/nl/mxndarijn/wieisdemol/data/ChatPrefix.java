@@ -1,16 +1,16 @@
 package nl.mxndarijn.wieisdemol.data;
 
-import org.bukkit.ChatColor;
+
 
 public enum ChatPrefix {
-    WIDM(ChatColor.GREEN + "WIDM"),
-    NO_PERMISSION(ChatColor.RED + "Geen-Permissie");
+    WIDM("<green>WIDM"),
+    NO_PERMISSION("<red>Geen-Permissie");
 
     private final String prefix;
     private final String name;
 
     ChatPrefix(String prefix) {
-        this.prefix = prefix + ChatColor.DARK_GREEN + " \u00BB " + ChatColor.GRAY;
+        this.prefix = prefix + "<dark_green> \u00BB <gray>";
         this.name = prefix;
     }
 

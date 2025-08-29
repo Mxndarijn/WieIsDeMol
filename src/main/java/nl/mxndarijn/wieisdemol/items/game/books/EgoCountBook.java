@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.items.game.books;
 
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.AvailablePerson;
 import nl.mxndarijn.wieisdemol.data.BookFailurePlayersHolder;
@@ -52,7 +53,7 @@ public class EgoCountBook extends Book {
                         if(g.getMapPlayer().getRole() != Role.EGO) continue;
                         count++;
                     }
-                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_EGOCOUNT_MESSAGE, Collections.singletonList(count + "")));
+                    MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_EGOCOUNT_MESSAGE, Collections.singletonList(count + "")));
                     break;
                 }
             }

@@ -5,7 +5,7 @@ import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.wieisdemol.data.Permissions;
-import org.bukkit.ChatColor;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -84,9 +84,9 @@ public class StorageContainer {
     public ItemStack getItemStack() {
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData(skull)
-                .setName(ChatColor.GRAY + name)
+                .setName("<gray>" + name)
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik om deze opslag te openen")
+                .addLore("<yellow>Klik om deze opslag te openen")
                 .build();
     }
 

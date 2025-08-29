@@ -10,6 +10,7 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Colors;
@@ -21,7 +22,7 @@ import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -59,13 +60,13 @@ public class GameShulkerItem extends MxItem {
         game.getShulkerManager().getShulkers().forEach(shulker -> {
             list.add(new Pair<>(
                     MxDefaultItemStackBuilder.create(shulker.getMaterial(), 1)
-                            .setName(ChatColor.GRAY + shulker.getName())
+                            .setName("<gray>" + shulker.getName())
                             .addBlankLore()
-                            .addLore(ChatColor.GRAY + "Location: " + shulker.getLocation().getX() + " " + shulker.getLocation().getY() + " " + shulker.getLocation().getZ())
+                            .addLore("<gray>Location: " + shulker.getLocation().getX() + " " + shulker.getLocation().getY() + " " + shulker.getLocation().getZ())
                             .addBlankLore()
-                            .addLore(ChatColor.GRAY + "Beginkist: " + (shulker.isStartingRoom() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"))
+                            .addLore("<gray>Beginkist: " + (shulker.isStartingRoom() ? "<green>Ja" : "<red>Nee"))
                             .addBlankLore()
-                            .addLore(ChatColor.YELLOW + "Klik om de shulker op afstand te openen.")
+                            .addLore("<yellow>Klik om de shulker op afstand te openen.")
                             .build(),
                     (mxInv, e12) -> {
 
@@ -78,7 +79,7 @@ public class GameShulkerItem extends MxItem {
                         if (block.getState() instanceof ShulkerBox shulkerBox) {
                             p.openInventory(shulkerBox.getInventory());
                         } else {
-                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_SHULKER_IS_NOT_A_SHULKER));
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_SHULKER_IS_NOT_A_SHULKER));
                             p.closeInventory();
                         }
                     }
@@ -86,7 +87,7 @@ public class GameShulkerItem extends MxItem {
         });
 
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Shulker Hulp Tool", MxInventorySlots.SIX_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Shulker Hulp Tool", MxInventorySlots.SIX_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                 .setListItems(list)
                 .build());

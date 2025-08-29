@@ -8,6 +8,7 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.managers.PresetsManager;
@@ -17,7 +18,7 @@ import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerManager;
 import nl.mxndarijn.wieisdemol.presets.Preset;
 import nl.mxndarijn.wieisdemol.presets.PresetConfig;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.entity.Player;
@@ -53,19 +54,19 @@ public class ShulkerConfigureTool extends MxItem {
             if (manager.containsLocation(location)) {
                 Optional<ShulkerInformation> information = manager.getShulkerByLocation(location);
                 ShulkerInformation inf = information.get();
-                MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultInventoryBuilder.create(ChatColor.GRAY + "Verwijder shulker", MxInventorySlots.THREE_ROWS)
+                MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultInventoryBuilder.create("<gray>Verwijder shulker", MxInventorySlots.THREE_ROWS)
                         .setItem(MxDefaultItemStackBuilder.create(Material.LIME_STAINED_GLASS_PANE)
-                                        .setName(ChatColor.GREEN + "Verwijder shulker")
+                                        .setName("<green>Verwijder shulker")
                                         .build(),
                                 14,
                                 (mxInv, e1) -> {
                                     manager.removeShulker(inf);
-                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_CHEST_REMOVED, ChatPrefix.WIDM));
+                                    MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_CHEST_REMOVED, ChatPrefix.WIDM));
                                     p.closeInventory();
                                 }
                         )
                         .setItem(MxDefaultItemStackBuilder.create(Material.RED_STAINED_GLASS_PANE)
-                                        .setName(ChatColor.RED + "Behoud shulker")
+                                        .setName("<red>Behoud shulker")
                                         .build(),
                                 12,
                                 (mxInv, e1) -> {
@@ -74,23 +75,23 @@ public class ShulkerConfigureTool extends MxItem {
                         )
                         .setItem(MxSkullItemStackBuilder.create(1)
                                         .setSkinFromHeadsData("shulker-light-blue")
-                                        .setName(ChatColor.GRAY + "Toggle beginkist")
+                                        .setName("<gray>Toggle beginkist")
                                         .addBlankLore()
-                                        .addLore(ChatColor.GRAY + "Beginkist: " + (inf.isStartingRoom() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"))
+                                        .addLore("<gray>Beginkist: " + (inf.isStartingRoom() ? "<green>Ja" : "<red>Nee"))
                                         .addBlankLore()
-                                        .addLore(ChatColor.YELLOW + "Klik hier om de beginkist te togglen")
+                                        .addLore("<yellow>Klik hier om de beginkist te togglen")
                                         .build(),
                                 13,
                                 (mxInv, e12) -> {
                                     inf.setStartingRoom(!inf.isStartingRoom());
-                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_TOGGLED_SHULKER, Collections.singletonList(inf.isStartingRoom() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee")));
+                                    MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_TOGGLED_SHULKER, Collections.singletonList(inf.isStartingRoom() ? "<green>Ja" : "<red>Nee")));
                                     p.closeInventory();
                                 })
                         .build());
                 return;
             }
             // Create new
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_ENTER_NAME, ChatPrefix.WIDM));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_ENTER_NAME, ChatPrefix.WIDM));
             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(),
                     message -> {
                         if (manager.containsLocation(location))
@@ -103,7 +104,7 @@ public class ShulkerConfigureTool extends MxItem {
                         });
                         ShulkerInformation shulkerInformation = new ShulkerInformation(message, location, e.getClickedBlock().getType(), bool.get());
                         manager.addShulker(shulkerInformation);
-                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_CHEST_ADDED, Arrays.asList(message, (bool.get() ? "Ja" : "Nee"))));
+                        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_CONFIGURE_TOOL_CHEST_ADDED, Arrays.asList(message, (bool.get() ? "Ja" : "Nee"))));
 
                     }
             );

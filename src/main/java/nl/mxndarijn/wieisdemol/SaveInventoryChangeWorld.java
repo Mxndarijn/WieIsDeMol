@@ -4,6 +4,7 @@ import nl.mxndarijn.api.changeworld.MxChangeWorld;
 import nl.mxndarijn.api.changeworld.WorldReachedZeroPlayersEvent;
 import nl.mxndarijn.api.inventory.saver.InventoryManager;
 import nl.mxndarijn.api.item.Pair;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
@@ -40,7 +41,7 @@ public class SaveInventoryChangeWorld implements MxChangeWorld {
             if (!InventoryManager.containsItem(p.getInventory(), itemPair.first)) {
                 p.getInventory().addItem(itemPair.first);
             }
-            p.sendMessage(itemPair.second);
+            MSG.msg(p, itemPair.second);
         });
     }
 
@@ -49,7 +50,7 @@ public class SaveInventoryChangeWorld implements MxChangeWorld {
         UUID uuid = p.getUniqueId();
         FileConfiguration fc = YamlConfiguration.loadConfiguration(inventoryFile);
         InventoryManager.saveInventory(inventoryFile, fc, uuid.toString(), p.getInventory());
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INVENTORY_SAVED));
+        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.PRESET_INVENTORY_SAVED));
         p.getInventory().clear();
         if (w.getPlayers().size() == 0) {
             event.worldReachedZeroPlayers(p, w, e);

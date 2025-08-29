@@ -1,7 +1,5 @@
 package nl.mxndarijn.wieisdemol.data;
 
-import org.bukkit.ChatColor;
-
 public enum CustomInventoryOverlay {
 
     ROLES_PLAYER("\uE004"),
@@ -15,7 +13,7 @@ public enum CustomInventoryOverlay {
     GAME_DEATHNOTE("\uE043"),
     GAME_INVCLEAR("\uE044");
 
-    private final String PREFIX = ChatColor.WHITE + "\uE001\uE001\uE001\uE001\uE001\uE001\uE001\uE001";
+    private final String PREFIX = "<white>\uE001\uE001\uE001\uE001\uE001\uE001\uE001\uE001";
     private final String unicodeCharacter;
 
     CustomInventoryOverlay(String unicodeCharacter) {

@@ -6,7 +6,6 @@ import nl.mxndarijn.api.inventory.heads.MxHeadManager;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.api.util.events.PlayerJoinEventHeadManager;
 import nl.mxndarijn.wieisdemol.commands.*;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
@@ -18,8 +17,6 @@ import nl.mxndarijn.wieisdemol.managers.items.ItemManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Optional;
@@ -45,7 +42,7 @@ public final class WieIsDeMol extends JavaPlugin {
         VanishManager.getInstance();
         DatabaseManager.getInstance();
 
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new WIDMPlaceholderExpansion().register();
         }
         registerCommands();
@@ -73,10 +70,10 @@ public final class WieIsDeMol extends JavaPlugin {
         Optional<LogLevel> level = LogLevel.getLevelByInt(ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("log-level"));
         if (level.isPresent()) {
             Logger.setLogLevel(level.get());
-            Logger.logMessage(LogLevel.INFORMATION, Prefix.LOGGER, "Log-level has been set to " + level.get().getName() + ChatColor.DARK_GRAY + " (Found in config)");
+            Logger.logMessage(LogLevel.INFORMATION, Prefix.LOGGER, "Log-level has been set to " + level.get().getName() + " (Found in config)");
         } else {
             Logger.setLogLevel(LogLevel.DEBUG);
-            Logger.logMessage(LogLevel.INFORMATION, Prefix.LOGGER, "Log-level has been set to " + LogLevel.DEBUG.getName() + ChatColor.DARK_GRAY + " (default, not found in config)");
+            Logger.logMessage(LogLevel.INFORMATION, Prefix.LOGGER, "Log-level has been set to " + LogLevel.DEBUG.getName() + " (default, not found in config)");
         }
     }
 

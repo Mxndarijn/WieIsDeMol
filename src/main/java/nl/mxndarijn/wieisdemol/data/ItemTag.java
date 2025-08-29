@@ -9,6 +9,7 @@ import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
@@ -17,7 +18,7 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import nl.mxndarijn.wieisdemol.map.Map;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
-import org.bukkit.ChatColor;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -40,11 +41,11 @@ public enum ItemTag {
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("Silent")
-                .setName(ChatColor.GRAY + "Silent")
+                .setName("<gray>Silent")
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Not silent" : ChatColor.RED + "silent"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Not silent" : "<red>silent"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
         onClick(e, "notsilent", "Silent");
@@ -55,11 +56,11 @@ public enum ItemTag {
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("Lifebound")
-                .setName(ChatColor.GRAY + "Lifebound")
+                .setName("<gray>Lifebound")
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Not silent" : ChatColor.RED + "silent"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Not silent" : "<red>silent"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
         onClick(e, "lifebound", "Lifebound");
@@ -70,11 +71,11 @@ public enum ItemTag {
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("Soulbound")
-                .setName(ChatColor.GRAY + "Soulbound")
+                .setName("<gray>Soulbound")
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Not silent" : ChatColor.RED + "silent"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Not silent" : "<red>silent"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
         onClick(e, "soulbound", "Soulbound");
@@ -85,11 +86,11 @@ public enum ItemTag {
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("Droppable Once")
-                .setName(ChatColor.GRAY + "Droppable Once")
+                .setName("<gray>Droppable Once")
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Not silent" : ChatColor.RED + "silent"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Not silent" : "<red>silent"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
         onClick(e, "droppableonce", "Droppable Once");
@@ -100,11 +101,11 @@ public enum ItemTag {
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("dropper")
-                .setName(ChatColor.GRAY + "Droppable")
+                .setName("<gray>Droppable")
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Droppable" : ChatColor.RED + "Undroppable"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Droppable" : "<red>Undroppable"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
         onClick(e, "droppable", "Undroppable");
@@ -115,11 +116,11 @@ public enum ItemTag {
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("ghost")
-                .setName(ChatColor.GRAY + "Vanish")
+                .setName("<gray>Vanish")
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Blijft" : ChatColor.RED + "Verdwijnt"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Blijft" : "<red>Verdwijnt"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
         onClick(e, "vanishable", "Vanish");
@@ -130,11 +131,11 @@ public enum ItemTag {
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("redstone-block")
-                .setName(ChatColor.GRAY + "Item-Lock")
+                .setName("<gray>Item-Lock")
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Verplaatsbaar" : ChatColor.RED + "Locked"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Verplaatsbaar" : "<red>Locked"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
         boolean dataBoolean = onClick(e, "itemlock", "Item-Lock");
@@ -149,11 +150,11 @@ public enum ItemTag {
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("piston")
-                .setName(ChatColor.GRAY + "Placeable")
+                .setName("<gray>Placeable")
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Placeable" : ChatColor.RED + "Unplaceable"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Placeable" : "<red>Unplaceable"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
         onClick(e, "placeable", "Unplaceable");
@@ -161,9 +162,9 @@ public enum ItemTag {
     COLORBIND("colorbind", data -> {
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("blue-block")
-                .setName(ChatColor.GRAY + "Colorbind")
+                .setName("<gray>Colorbind")
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de colorbind van dit item aan te passen")
+                .addLore("<yellow>Klik hier om de colorbind van dit item aan te passen")
                 .build();
     }, (mxInv, e) -> {
         AtomicReference<List<Colors>> colors = new AtomicReference<>(new ArrayList<>());
@@ -184,7 +185,7 @@ public enum ItemTag {
         ItemMeta im = is.getItemMeta();
 
         PersistentDataContainer container = im.getPersistentDataContainer();
-        String specialTag = ChatColor.RED + "" + ChatColor.GRAY + ChatColor.GRAY + ChatColor.DARK_AQUA + ChatColor.UNDERLINE + ChatColor.RESET + ChatColor.DARK_RED + ChatColor.RESET;
+        String specialTag = "<red><gray><dark_aqua><underline><reset><dark_red><reset>";
         String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING);
         if (data != null) {
             for (String s : data.split(";")) {
@@ -195,18 +196,18 @@ public enum ItemTag {
 
         colors.get().forEach(color -> {
             list.add(new Pair<>(MxSkullItemStackBuilder.create(1)
-                    .setName(ChatColor.GRAY + color.getDisplayNameWithoutColor())
+                    .setName("<gray>" + color.getDisplayNameWithoutColor())
                     .setSkinFromHeadsData(color.getHeadKey())
                     .addBlankLore()
-                    .addLore(ChatColor.GRAY + "Status: " + (addedColors.contains(color) ? ChatColor.GREEN + "Toegevoegd" : ChatColor.RED + "Niet toegevoegd"))
+                    .addLore("<gray>Status: " + (addedColors.contains(color) ? "<green>Toegevoegd" : "<red>Niet toegevoegd"))
                     .addBlankLore()
-                    .addLore(ChatColor.YELLOW + "Klik hier om deze kleur te togglen.")
+                    .addLore("<yellow>Klik hier om deze kleur te togglen.")
                     .build(), (mxInv1, e1) -> {
                 if (addedColors.contains(color)) {
                     addedColors.remove(color);
-                    e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.COLORBIND_REMOVED));
+                    MSG.msg(e.getWhoClicked(), LanguageManager.getInstance().getLanguageString(LanguageText.COLORBIND_REMOVED));
                 } else {
-                    e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.COLORBIND_ADDED));
+                    MSG.msg(e.getWhoClicked(), LanguageManager.getInstance().getLanguageString(LanguageText.COLORBIND_ADDED));
                     addedColors.add(color);
                 }
                 StringBuilder dataTag = new StringBuilder();
@@ -219,27 +220,27 @@ public enum ItemTag {
                 List<Component> loreList = im.hasLore() ? im.lore() : new ArrayList<>();
                 List<Component> newLoreList = loreList.stream().filter(lore -> !Functions.convertComponentToString(lore).contains(specialTag)).collect(Collectors.toList());
                 if (!addedColors.isEmpty()) {
-                    newLoreList.add(Component.text(specialTag + ChatColor.BLUE + "Colorbind:"));
+                    newLoreList.add(Component.text(specialTag + "<blue>Colorbind:"));
                     addedColors.forEach(c -> {
-                        newLoreList.add(Component.text(specialTag + ChatColor.GRAY + " - " + c.getDisplayName()));
+                        newLoreList.add(Component.text(specialTag + "<gray> - " + c.getDisplayName()));
                     });
                 }
                 im.lore(newLoreList);
                 is.setItemMeta(im);
 
                 e1.setCurrentItem(MxSkullItemStackBuilder.create(1)
-                        .setName(ChatColor.GRAY + color.getDisplayNameWithoutColor())
+                        .setName("<gray>" + color.getDisplayNameWithoutColor())
                         .setSkinFromHeadsData(color.getHeadKey())
                         .addBlankLore()
-                        .addLore(ChatColor.GRAY + "Status: " + (addedColors.contains(color) ? ChatColor.GREEN + "Toegevoegd" : ChatColor.RED + "Niet toegevoegd"))
+                        .addLore("<gray>Status: " + (addedColors.contains(color) ? "<green>Toegevoegd" : "<red>Niet toegevoegd"))
                         .addBlankLore()
-                        .addLore(ChatColor.YELLOW + "Klik hier om deze kleur te togglen.")
+                        .addLore("<yellow>Klik hier om deze kleur te togglen.")
                         .build());
             }));
         });
 
 
-        MxInventoryManager.getInstance().addAndOpenInventory((Player) e.getWhoClicked(), MxListInventoryBuilder.create(ChatColor.GRAY + "Colorbind", MxInventorySlots.THREE_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory((Player) e.getWhoClicked(), MxListInventoryBuilder.create("<gray>Colorbind", MxInventorySlots.THREE_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                 .setPrevious(mxInv)
                 .setShowPageNumbers(false)
@@ -252,11 +253,11 @@ public enum ItemTag {
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("barrier")
-                .setName(ChatColor.GRAY + "Clearable")
+                .setName("<gray>Clearable")
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Clearable" : ChatColor.RED + "Unclearable"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Clearable" : "<red>Unclearable"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
         onClick(e, "clearable", "Unclearable");
@@ -267,11 +268,11 @@ public enum ItemTag {
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("sculk-sensor")
-                .setName(ChatColor.GRAY + "Detectable")
+                .setName("<gray>Detectable")
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + (dataBoolean ? ChatColor.GREEN + "Detectable" : ChatColor.RED + "Undetectable"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Detectable" : "<red>Undetectable"))
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik hier om de status te togglen.")
+                .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
         onClick(e, "detectable", "Undetectable");
@@ -299,7 +300,7 @@ public enum ItemTag {
             dataBoolean = false;
         dataBoolean = !dataBoolean;
         container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
-        String lore = ChatColor.RED + loreName;
+        String lore = "<red>" + loreName;
         List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
         if (dataBoolean) {
             List<Component> newList = new ArrayList<>();
@@ -315,7 +316,7 @@ public enum ItemTag {
         im.lore(list);
         is.setItemMeta(im);
         e.getWhoClicked().closeInventory();
-        e.getWhoClicked().sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+        MSG.msg(e.getWhoClicked(), LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
 
         return dataBoolean;
     }

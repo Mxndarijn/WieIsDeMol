@@ -8,6 +8,7 @@ import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
 import nl.mxndarijn.api.mxworld.MxAtlas;
 import nl.mxndarijn.api.mxworld.MxWorld;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Role;
@@ -324,7 +325,7 @@ public class Game {
         p.teleport(w.getSpawnLocation());
         ScoreBoardManager.getInstance().setPlayerScoreboard(p.getUniqueId(), hostScoreboard);
         p.setGameMode(GameMode.CREATIVE);
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAME_YOU_ARE_NOW_HOST));
+        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAME_YOU_ARE_NOW_HOST));
         p.getInventory().clear();
         p.getInventory().addItem(Items.PLAYER_MANAGEMENT_ITEM.getItemStack());
         p.getInventory().addItem(Items.HOST_TOOL.getItemStack());
@@ -452,7 +453,7 @@ public class Game {
         hosts.forEach(host -> {
             Player p = Bukkit.getPlayer(host);
             if (p != null) {
-                p.sendMessage(message);
+                MSG.msg(p, message);
             }
         });
     }
@@ -461,7 +462,7 @@ public class Game {
         spectators.forEach(host -> {
             Player p = Bukkit.getPlayer(host);
             if (p != null) {
-                p.sendMessage(message);
+                MSG.msg(p, message);
             }
         });
     }
@@ -471,7 +472,7 @@ public class Game {
             if (color.getPlayer().isPresent()) {
                 Player p = Bukkit.getPlayer(color.getPlayer().get());
                 if (p != null) {
-                    p.sendMessage(message);
+                    MSG.msg(p, message);
                 }
             }
         });
@@ -489,9 +490,9 @@ public class Game {
                 sendMessageToAll(ChatPrefix.WIDM + "Rollen:");
                 colors.forEach(color -> {
                     if(color.getPlayer().isPresent()) {
-                        sendMessageToAll(ChatColor.GRAY + " - " + Bukkit.getOfflinePlayer(color.getPlayer().get()).getName() + " " + color.getMapPlayer().getColor().getDisplayName() + " " + color.getMapPlayer().getRoleDisplayString());
+                        sendMessageToAll("<gray> - " + Bukkit.getOfflinePlayer(color.getPlayer().get()).getName() + " " + color.getMapPlayer().getColor().getDisplayName() + " " + color.getMapPlayer().getRoleDisplayString());
                     } else {
-                        sendMessageToAll(ChatColor.GRAY + " - " + "Niemand " + color.getMapPlayer().getColor().getDisplayName() + " " + color.getMapPlayer().getRoleDisplayString());
+                        sendMessageToAll("<gray> - Niemand " + color.getMapPlayer().getColor().getDisplayName() + " " + color.getMapPlayer().getRoleDisplayString());
                     }
                 });
                 List<UUID> list = new ArrayList<>();
@@ -635,7 +636,7 @@ public class Game {
         if (player != null) {
             player.getInventory().clear();
             ScoreBoardManager.getInstance().setPlayerScoreboard(uuid, spectatorScoreboard);
-            player.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_JOIN));
+            MSG.msg(player, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_JOIN));
             sendMessageToHosts(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_JOINED, Collections.singletonList(player.getName())));
         }
         addSpectatorSettings(uuid);
@@ -751,7 +752,7 @@ public class Game {
 
         sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTES, Collections.singletonList(name)));
         if (playerList.isEmpty()) {
-            sendMessageToAll(ChatColor.RED + "Geen stemmen.");
+            sendMessageToAll("<red>Geen stemmen.");
         }
         playerList.forEach(p -> {
             if (p.getPlayer().isEmpty())
@@ -771,7 +772,7 @@ public class Game {
                     Optional<UUID> targetUUID = gPlayer.getVotedOn().get().getPlayer();
                     if(targetUUID.isEmpty()) continue;
                     OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID.get());
-                    p.sendMessage(player.getName() + ": " + target.getName());
+                    MSG.msg(p, player.getName() + ": " + target.getName());
                 }
             }
         });

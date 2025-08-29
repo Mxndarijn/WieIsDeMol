@@ -10,6 +10,7 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Colors;
@@ -21,7 +22,7 @@ import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
 import nl.mxndarijn.wieisdemol.map.Map;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -60,19 +61,19 @@ public class MapShulkerItem extends MxItem {
         map.getShulkerManager().getShulkers().forEach(shulker -> {
             list.add(new Pair<>(
                     MxDefaultItemStackBuilder.create(shulker.getMaterial(), 1)
-                            .setName(ChatColor.GRAY + shulker.getName())
+                            .setName("<gray>" + shulker.getName())
                             .addBlankLore()
-                            .addLore(ChatColor.GRAY + "Location: " + shulker.getLocation().getX() + " " + shulker.getLocation().getY() + " " + shulker.getLocation().getZ())
+                            .addLore("<gray>Location: " + shulker.getLocation().getX() + " " + shulker.getLocation().getY() + " " + shulker.getLocation().getZ())
                             .addBlankLore()
-                            .addLore(ChatColor.GRAY + "Beginkist: " + (shulker.isStartingRoom() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"))
+                            .addLore("<gray>Beginkist: " + (shulker.isStartingRoom() ? "<green>Ja" : "<red>Nee"))
                             .addBlankLore()
-                            .addLore(ChatColor.YELLOW + "Klik om de shulker op afstand te openen.")
-                            .addLore(ChatColor.YELLOW + "Shift-Klik om de shulker wel of geen beginkist te maken (togglen).")
+                            .addLore("<yellow>Klik om de shulker op afstand te openen.")
+                            .addLore("<yellow>Shift-Klik om de shulker wel of geen beginkist te maken (togglen).")
                             .build(),
                     (mxInv, e12) -> {
                         if (e12.isShiftClick()) {
                             shulker.setStartingRoom(!shulker.isStartingRoom());
-                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_TOOL_TOGGLED_BEGINKIST, Collections.singletonList(shulker.isStartingRoom() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee")));
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_TOOL_TOGGLED_BEGINKIST, Collections.singletonList(shulker.isStartingRoom() ? "<green>Ja" : "<red>Nee")));
                             p.closeInventory();
                             return;
                         }
@@ -86,7 +87,7 @@ public class MapShulkerItem extends MxItem {
                         if (block.getState() instanceof ShulkerBox shulkerBox) {
                             p.openInventory(shulkerBox.getInventory());
                         } else {
-                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_SHULKER_IS_NOT_A_SHULKER));
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_SHULKER_IS_NOT_A_SHULKER));
                             p.closeInventory();
                         }
                     }
@@ -94,7 +95,7 @@ public class MapShulkerItem extends MxItem {
         });
 
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Shulker Hulp Tool", MxInventorySlots.SIX_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Shulker Hulp Tool", MxInventorySlots.SIX_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                 .setListItems(list)
                 .build());
@@ -121,7 +122,7 @@ public class MapShulkerItem extends MxItem {
             }
         });
         map.getShulkerManager().addShulker(new ShulkerInformation("Automatisch toegevoegde shulker", MxLocation.getFromLocation(e.getBlockPlaced().getLocation()), e.getBlock().getType(), bool.get()));
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_SHULKER_ADDED, Collections.singletonList(bool.get() ? "Ja" : "Nee")));
+        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_SHULKER_ADDED, Collections.singletonList(bool.get() ? "Ja" : "Nee")));
     }
 
     @EventHandler
@@ -143,7 +144,7 @@ public class MapShulkerItem extends MxItem {
         }
 
         map.getShulkerManager().removeShulker(info.get());
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_SHULKER_REMOVED));
+        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_SHULKER_REMOVED));
     }
 
     @EventHandler
