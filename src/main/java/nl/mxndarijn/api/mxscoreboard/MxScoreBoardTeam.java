@@ -18,12 +18,15 @@ public class MxScoreBoardTeam {
     private final String entry;
     private final MxScoreBoard scoreboard;
 
-    private static String randomHexColor() {
-        Random rand = new Random();
-        int r = rand.nextInt(256);
-        int g = rand.nextInt(256);
-        int b = rand.nextInt(256);
-        return String.format("#%02X%02X%02X", r, g, b);
+    private static final String PATTERN = "0123456789abcdef";
+
+    private static String generateFromPattern() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 16; i++) {
+            sb.append("§").append(PATTERN.charAt(random.nextInt(PATTERN.length())));
+        }
+        return sb.toString();
     }
 
     protected MxScoreBoardTeam(MxScoreBoard scoreboard) {
@@ -34,7 +37,7 @@ public class MxScoreBoardTeam {
         Random r = new Random();
 
         team = scoreboard.getScoreboard().registerNewTeam(this.id);
-        this.entry = "<" + randomHexColor() + "><reset>";
+        this.entry = "§r" + generateFromPattern();
         team.addEntry(entry);
 
     }

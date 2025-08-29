@@ -31,24 +31,29 @@ public class MxHeadManager {
         fileConfiguration = ConfigFiles.HEAD_DATA.getFileConfiguration();
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
             Logger.logMessage(LogLevel.INFORMATION, Prefix.MXHEAD_MANAGER, "Refreshing player skulls...");
-            for (String key : fileConfiguration.getKeys(false)) {
-                Optional<MxHeadSection> optionalSection = MxHeadSection.loadHead(key);
-                if (optionalSection.isPresent()) {
-                    MxHeadSection section = optionalSection.get();
-                    if (section.getType().get() == MxHeadsType.PLAYER) {
-                        Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Refreshing skull: " + key);
-                        Optional<String> value = getTexture(section.getUuid().get());
-                        if (!value.isPresent()) {
-                            Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not get texture for " + key + ", skipping texture...");
-                            continue;
-                        }
-                        if (!section.getValue().get().equalsIgnoreCase(value.get())) {
-                            section.setValue(value.get());
-                            section.apply();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (String key : fileConfiguration.getKeys(false)) {
+                        Optional<MxHeadSection> optionalSection = MxHeadSection.loadHead(key);
+                        if (optionalSection.isPresent()) {
+                            MxHeadSection section = optionalSection.get();
+                            if (section.getType().get() == MxHeadsType.PLAYER) {
+                                Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Refreshing skull: " + key);
+                                Optional<String> value = getTexture(section.getUuid().get());
+                                if (!value.isPresent()) {
+                                    Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not get texture for " + key + ", skipping texture...");
+                                    continue;
+                                }
+                                if (!section.getValue().get().equalsIgnoreCase(value.get())) {
+                                    section.setValue(value.get());
+                                    section.apply();
+                                }
+                            }
                         }
                     }
                 }
-            }
+            }).start();
         });
     }
 

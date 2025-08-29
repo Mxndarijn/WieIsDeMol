@@ -73,7 +73,7 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
 
     public T changeTitle(String newTitle) {
         this.name = newTitle;
-        Inventory inventory = Bukkit.createInventory(null, slotType.slots, this.name);
+        Inventory inventory = Bukkit.createInventory(null, slotType.slots, MiniMessage.miniMessage().deserialize(this.name));
         onClickedMap.forEach((index, clicked) -> {
             inventory.setItem(index, inv.getItem(index));
         });
