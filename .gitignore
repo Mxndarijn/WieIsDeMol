@@ -1,18 +1,18 @@
-# Compiled class file
-.gradle/
-.idea/
-cache/
-config/
-crash-reports/
-gradle/
-libraries/
-logs/
-plugins/
-versions/
-world/
-world_nether/
-world_the_end/
+/.gradle/
+/.idea/
+/cache/
+/config/
+/crash-reports/
+/gradle/
+/libraries/
+/logs/
+/plugins/
+/versions/
+/world/
+/world_nether/
+/world_the_end/
 
+# single files in repo root
 /banned-ips.json
 /banned-players.json
 /bukkit.yml
