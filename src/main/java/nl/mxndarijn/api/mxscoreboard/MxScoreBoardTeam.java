@@ -1,9 +1,7 @@
 package nl.mxndarijn.api.mxscoreboard;
 
-import me.neznamy.tab.shared.ProtocolVersion;
-import me.neznamy.tab.shared.chat.EnumChatFormat;
-import me.neznamy.tab.shared.chat.IChatBaseComponent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.Team;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -49,7 +47,6 @@ public class MxScoreBoardTeam {
     }
 
     public void setLine(String line) {
-        line = EnumChatFormat.color(line);
         if (line.length() > scoreboard.MAX_LINE_LENGTH) {
             throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
         }
@@ -67,15 +64,15 @@ public class MxScoreBoardTeam {
 
         int lineLength = line.length() - 8 * count + count * 2;
         if (lineLength <= scoreboard.MAX_LINE_LENGTH / 2) {
-            team.prefix(IChatBaseComponent.optimizedComponent(line).toAdventureComponent(ProtocolVersion.V1_19_4));
+            team.prefix(MiniMessage.miniMessage().deserialize(line));
             team.suffix(Component.text(""));
         } else {
             String prefix = line.substring(0, scoreboard.MAX_LINE_LENGTH / 2);
             String suffix = getLatestChatColor(prefix) + line.substring(scoreboard.MAX_LINE_LENGTH / 2);
             if ((prefix + suffix).length() > scoreboard.MAX_LINE_LENGTH)
                 throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
-            team.prefix(IChatBaseComponent.optimizedComponent(prefix).toAdventureComponent(ProtocolVersion.V1_19_4));
-            team.suffix(IChatBaseComponent.optimizedComponent(suffix).toAdventureComponent(ProtocolVersion.V1_19_4));
+            team.prefix(MiniMessage.miniMessage().deserialize(prefix));
+            team.suffix(MiniMessage.miniMessage().deserialize(suffix));
 
         }
     }

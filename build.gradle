@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id "com.github.johnrengelman.shadow" version "6.1.0"
+    id "com.gradleup.shadow" version "8.3.3"
 }
 
 group = 'nl.mxndarijn'
@@ -31,7 +31,7 @@ dependencies {
 
     // implementation 'org.projectlombok:lombok:1.18.22'
     compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
-    compileOnly 'me.clip:placeholderapi:2.11.5'
+    compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.mojang:authlib:1.5.21'
     compileOnly 'net.dmulloy2:ProtocolLib:5.4.0'
 
@@ -70,8 +70,10 @@ processResources {
     }
 }
 
-shadowJar(){
-    dependencies {
+tasks.named('shadowJar') {
+    archiveBaseName.set('wieisdemol') // Name of your plugin jar
+    archiveVersion.set('')          // optional: omit version from filename
+    archiveClassifier.set('')       // optional: omit "-all"
 
-    }
+    destinationDirectory.set(file("C:/Users/Jochem/Desktop/Minecraft Development/WieIsDeMol/plugins"))
 }
