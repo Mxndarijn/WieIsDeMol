@@ -1,23 +1,31 @@
 # Compiled class file
-*.class
+/.gradle/
+/.idea/
+/cache/
+/config/
+/crash-reports/
+/gradle/
+/libraries/
+/logs/
+/plugins/
+/versions/
+/world/
+/world_nether/
+/world_the_end/
 
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+/banned-ips.json
+/banned-players.json
+/bukkit.yml
+/commands.yml
+/eula.txt
+/gradlew
+/gradlew.bat
+/help.yml
+/ops.json
+/permissions.yml
+/server.jar
+/server.properties
+/spigot.yml
+/usercache.json
+/version_history.json
+/whitelist.json
