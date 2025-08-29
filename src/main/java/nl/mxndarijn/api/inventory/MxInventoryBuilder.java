@@ -22,7 +22,7 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
     protected MxInventoryBuilder(String name, MxInventorySlots slotType) {
         this.slotType = slotType;
         this.name = name;
-        inv = Bukkit.createInventory(null, slotType.slots, MiniMessage.miniMessage().deserialize(this.name));
+        inv = Bukkit.createInventory(null, slotType.slots, MiniMessage.miniMessage().deserialize("<!i>" + this.name));
         onClickedMap = new HashMap<>();
     }
 
@@ -73,7 +73,7 @@ public class MxInventoryBuilder<T extends MxInventoryBuilder<T>> {
 
     public T changeTitle(String newTitle) {
         this.name = newTitle;
-        Inventory inventory = Bukkit.createInventory(null, slotType.slots, MiniMessage.miniMessage().deserialize(this.name));
+        Inventory inventory = Bukkit.createInventory(null, slotType.slots, MiniMessage.miniMessage().deserialize("<!i>" + this.name));
         onClickedMap.forEach((index, clicked) -> {
             inventory.setItem(index, inv.getItem(index));
         });

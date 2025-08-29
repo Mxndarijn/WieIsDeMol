@@ -35,7 +35,7 @@ public class MxItemStackBuilder<T extends MxItemStackBuilder<T>> {
     }
 
     public T setName(String name) {
-        itemMeta.displayName(MiniMessage.miniMessage().deserialize(name));
+        itemMeta.displayName(MiniMessage.miniMessage().deserialize("<!i>" + name));
         return (T) this;
     }
 
@@ -72,7 +72,7 @@ public class MxItemStackBuilder<T extends MxItemStackBuilder<T>> {
     public ItemStack build() {
         List<Component> componentList = new ArrayList<>();
         lores.forEach(l -> {
-            componentList.add(MiniMessage.miniMessage().deserialize(l));
+            componentList.add(MiniMessage.miniMessage().deserialize("<!i>" + l));
         });
         itemMeta.lore(componentList);
         itemStack.setItemMeta(itemMeta);

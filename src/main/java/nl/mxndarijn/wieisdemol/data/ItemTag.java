@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.data;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.inventory.MxInventoryIndex;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
@@ -220,9 +221,9 @@ public enum ItemTag {
                 List<Component> loreList = im.hasLore() ? im.lore() : new ArrayList<>();
                 List<Component> newLoreList = loreList.stream().filter(lore -> !Functions.convertComponentToString(lore).contains(specialTag)).collect(Collectors.toList());
                 if (!addedColors.isEmpty()) {
-                    newLoreList.add(Component.text(specialTag + "<blue>Colorbind:"));
+                    newLoreList.add(MiniMessage.miniMessage().deserialize("<!i>" + specialTag + "<blue>Colorbind:"));
                     addedColors.forEach(c -> {
-                        newLoreList.add(Component.text(specialTag + "<gray> - " + c.getDisplayName()));
+                        newLoreList.add(MiniMessage.miniMessage().deserialize("<!i>" + specialTag + "<gray> - " + c.getDisplayName()));
                     });
                 }
                 im.lore(newLoreList);
@@ -311,7 +312,7 @@ public enum ItemTag {
             });
             list = newList;
         } else {
-            list.add(Component.text(lore));
+            list.add(MiniMessage.miniMessage().deserialize("<!i>" + lore));
         }
         im.lore(list);
         is.setItemMeta(im);

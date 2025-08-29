@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 public class MSG {
 
     public static void msg(CommandSender player, String message) {
-        player.sendMessage(MiniMessage.miniMessage().deserialize(message));
+        player.sendMessage(MiniMessage.miniMessage().deserialize("<!i>" + message));
     }
 
 }

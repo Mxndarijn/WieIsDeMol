@@ -3,6 +3,7 @@ package nl.mxndarijn.wieisdemol.items.maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
@@ -76,8 +77,8 @@ public class MapGeneratorBook extends MxItem {
             ItemStack i = itemStack.clone();
             ItemMeta imm = i.getItemMeta();
             List<Component> lore = imm.hasLore() ? imm.lore() : new ArrayList<>();
-            lore.add(Component.text(""));
-            lore.add(Component.text("<yellow>Klik hier om dit item te verwijderen."));
+            lore.add(MiniMessage.miniMessage().deserialize("<!i>" + ""));
+            lore.add(MiniMessage.miniMessage().deserialize("<!i>" + "<yellow>Klik hier om dit item te verwijderen."));
             imm.lore(lore);
             i.setItemMeta(imm);
                 list.add(new Pair<>(
@@ -110,8 +111,8 @@ public class MapGeneratorBook extends MxItem {
                                 ItemStack i = content.clone();
                                 ItemMeta imm = i.getItemMeta();
                                 List<Component> lore = imm.hasLore() ? imm.lore() : new ArrayList<>();
-                                lore.add(Component.text(""));
-                                lore.add(Component.text("<yellow>Klik hier om dit item toe te voegen."));
+                                lore.add(MiniMessage.miniMessage().deserialize("<!i>" + ""));
+                                lore.add(MiniMessage.miniMessage().deserialize("<!i>" + "<yellow>Klik hier om dit item toe te voegen."));
                                 imm.lore(lore);
                                 i.setItemMeta(imm);
                                 list1.add(new Pair<>(i, (mxInv1, e13) -> {

@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.game.events;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.GameManager;
@@ -44,7 +45,7 @@ public class GameDefaultEvents extends GameEvent {
         Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
         if (gamePlayer.isEmpty() && !game.getHosts().contains(e.getPlayer().getUniqueId()))
             return;
-        e.joinMessage(Component.text(""));
+        e.joinMessage(MiniMessage.miniMessage().deserialize("<!i>" + ""));
         game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_JOINED_AGAIN, Collections.singletonList(e.getPlayer().getName())));
         gamePlayer.ifPresent(player -> ScoreBoardManager.getInstance().setPlayerScoreboard(e.getPlayer().getUniqueId(), player.getScoreboard()));
         if (game.getHosts().contains(e.getPlayer().getUniqueId())) {
@@ -62,7 +63,7 @@ public class GameDefaultEvents extends GameEvent {
         Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
         if (gamePlayer.isEmpty() && !game.getHosts().contains(e.getPlayer().getUniqueId()))
             return;
-        e.quitMessage(Component.text(""));
+        e.quitMessage(MiniMessage.miniMessage().deserialize("<!i>" + ""));
         game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_LEAVED_AGAIN, Collections.singletonList(e.getPlayer().getName())));
     }
 

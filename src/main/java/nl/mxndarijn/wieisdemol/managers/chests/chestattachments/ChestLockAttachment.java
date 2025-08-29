@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
 import nl.mxndarijn.api.inventory.MxItemClicked;
@@ -119,8 +120,8 @@ public class ChestLockAttachment extends ChestAttachment {
                                                 if (list == null) {
                                                     list = new ArrayList<>();
                                                 }
-                                                list.add(Component.text(""));
-                                                list.add(Component.text("<gold>Sleutel"));
+                                                list.add(MiniMessage.miniMessage().deserialize("<!i>" + ""));
+                                                list.add(MiniMessage.miniMessage().deserialize("<!i>" + "<gold>Sleutel"));
 
                                                 im.lore(list);
                                                 is.setItemMeta(im);

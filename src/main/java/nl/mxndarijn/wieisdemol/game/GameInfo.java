@@ -86,7 +86,7 @@ public class GameInfo {
         Map map = optionalMap.get();
         MxSkullItemStackBuilder builder = MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData(map.getMapConfig().getPresetConfig().getSkullId())
-                .setName("gray" + map.getMapConfig().getName())
+                .setName("<gray>" + map.getMapConfig().getName())
                 .addBlankLore()
                 .addLore("<gray>Status: " + status.getStatus())
                 .addLore("<gray>Host: " + Bukkit.getOfflinePlayer(map.getMapConfig().getOwner()).getName())

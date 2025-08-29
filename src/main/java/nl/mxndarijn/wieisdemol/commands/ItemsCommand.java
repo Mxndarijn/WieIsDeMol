@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.commands;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
@@ -279,10 +280,10 @@ public class ItemsCommand extends MxCommand {
             List<Component> lores = im.hasLore() ? im.lore() : new ArrayList<>();
             if (lores == null)
                 lores = new ArrayList<>();
-            lores.add(Component.text(" "));
-            lores.add(Component.text("<yellow>Linker-muisknop om het item in je inventory te krijgen"));
+            lores.add(MiniMessage.miniMessage().deserialize("<!i>" + " "));
+            lores.add(MiniMessage.miniMessage().deserialize("<!i>" + "<yellow>Linker-muisknop om het item in je inventory te krijgen"));
             if (container.hasPermissionToEdit(p)) {
-                lores.add(Component.text("<yellow>Shift + Rechter-muisknop om het item te verwijderen"));
+                lores.add(MiniMessage.miniMessage().deserialize("<!i>" + "<yellow>Shift + Rechter-muisknop om het item te verwijderen"));
             }
 
             im.lore(lores);

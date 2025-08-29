@@ -16,7 +16,7 @@ public class Logger {
 
     public static void logMessage(LogLevel level, String message) {
         if (level.getLevel() <= logLevel.getLevel()) {
-            Bukkit.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(level.getPrefix() + message));
+            Bukkit.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize("<!i>" + level.getPrefix() + message));
         }
     }
 
@@ -26,7 +26,7 @@ public class Logger {
 
     public static void logMessage(LogLevel level, Prefix prefix, String message) {
         if (level.getLevel() <= logLevel.getLevel()) {
-            Bukkit.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize(level.getPrefix() + prefix + message));
+            Bukkit.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize("<!i>" + level.getPrefix() + prefix + message));
         }
     }
 }

@@ -22,8 +22,14 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
-import org.bukkit.*;
-import org.bukkit.block.*;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Lectern;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
@@ -39,7 +45,6 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -143,7 +148,7 @@ public class GamePlayingEvents extends GameEvent {
             if (e.getClickedBlock().getType() != Material.CHEST && e.getClickedBlock().getType() != Material.TRAPPED_CHEST) {
                 return;
             }
-            if(game.getPeacekeeperKills() == 0) {
+            if (game.getPeacekeeperKills() == 0) {
                 e.setCancelled(true);
                 return;
             }
@@ -191,7 +196,7 @@ public class GamePlayingEvents extends GameEvent {
         gamePlayer.get().setAlive(false);
         game.addSpectatorSettings(e.getPlayer().getUniqueId(), e.getPlayer().getLocation());
 
-        e.deathMessage(Component.text(""));
+        e.deathMessage(MiniMessage.miniMessage().deserialize("<!i>" + ""));
         if (e.getEntity().getKiller() != null) {
             Player killer = e.getEntity().getKiller();
             Optional<GamePlayer> optionalKiller = game.getGamePlayerOfPlayer(killer.getUniqueId());
@@ -272,8 +277,8 @@ public class GamePlayingEvents extends GameEvent {
             list.forEach(uuid -> {
                 Player p = Bukkit.getPlayer(uuid);
                 if (p != null) {
-                    p.sendTitlePart(TitlePart.TITLE, MiniMessage.miniMessage().deserialize(role.getTitle()));
-                    p.sendTitlePart(TitlePart.SUBTITLE, MiniMessage.miniMessage().deserialize(role.getSubTitle()));
+                    p.sendTitlePart(TitlePart.TITLE, MiniMessage.miniMessage().deserialize("<!i>" + role.getTitle()));
+                    p.sendTitlePart(TitlePart.SUBTITLE, MiniMessage.miniMessage().deserialize("<!i>" + role.getSubTitle()));
                 }
             });
             Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
@@ -281,11 +286,11 @@ public class GamePlayingEvents extends GameEvent {
             }, 20L * 10L);
             return;
         }
-        if(e.getItemInHand().getItemMeta() != null) {
+        if (e.getItemInHand().getItemMeta() != null) {
             String placeable = e.getItemInHand().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.PLACEABLE.getPersistentDataTag()), PersistentDataType.STRING);
             String lifebound = e.getItemInHand().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);
             String soulbound = e.getItemInHand().getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);
-            if((placeable != null && placeable.equalsIgnoreCase("false")) ||
+            if ((placeable != null && placeable.equalsIgnoreCase("false")) ||
                     (lifebound != null && lifebound.equalsIgnoreCase("false")) ||
                     (soulbound != null && soulbound.equalsIgnoreCase("false"))) {
                 e.setCancelled(true);
@@ -310,7 +315,7 @@ public class GamePlayingEvents extends GameEvent {
             ar.setInvisible(true);
             ar.setInvulnerable(true);
             ar.setGravity(false);
-            ar.customName(Component.text("removeableBlock"));
+            ar.customName(MiniMessage.miniMessage().deserialize("<!i>" + "removeableBlock"));
             ar.setCollidable(false);
             AtomicInteger taskID = new AtomicInteger(Integer.MAX_VALUE);
             blocks.put(loc, ar);
@@ -321,7 +326,7 @@ public class GamePlayingEvents extends GameEvent {
                 long now = System.currentTimeMillis();
                 long delta = now - currentMillis.get();
                 timer.addAndGet(-delta);
-                ar.customName(Component.text("<aqua>" + Functions.formatGameTime(timer.get())));
+                ar.customName(MiniMessage.miniMessage().deserialize("<aqua>" + Functions.formatGameTime(timer.get())));
                 if (timer.get() <= 0) {
                     e.getBlock().setType(Material.AIR);
                     ar.remove();
@@ -360,14 +365,14 @@ public class GamePlayingEvents extends GameEvent {
         if (!validateWorld(e.getEntity().getWorld()))
             return;
         Material type = null;
-        if(e.getEntity() instanceof ItemFrame) {
+        if (e.getEntity() instanceof ItemFrame) {
             type = Material.ITEM_FRAME;
         }
-        if(e.getEntity() instanceof GlowItemFrame) {
+        if (e.getEntity() instanceof GlowItemFrame) {
             type = Material.GLOW_ITEM_FRAME;
         }
-        if(type != null) {
-            if(game.getGamePlayerOfPlayer(e.getDamager().getUniqueId()).isPresent())
+        if (type != null) {
+            if (game.getGamePlayerOfPlayer(e.getDamager().getUniqueId()).isPresent())
                 if (!game.getInteractionManager().isInteractionWithTypeAllowed(type)) {
                     e.setCancelled(true);
                 }
@@ -381,8 +386,8 @@ public class GamePlayingEvents extends GameEvent {
             return;
         if (!validateWorld(e.getEntity().getWorld()))
             return;
-        if(game.getGamePlayerOfPlayer(e.getRemover().getUniqueId()).isPresent())
-            if(e.getEntity() instanceof ItemFrame || e.getEntity() instanceof GlowItemFrame) {
+        if (game.getGamePlayerOfPlayer(e.getRemover().getUniqueId()).isPresent())
+            if (e.getEntity() instanceof ItemFrame || e.getEntity() instanceof GlowItemFrame) {
                 e.setCancelled(true);
             }
     }
@@ -393,7 +398,7 @@ public class GamePlayingEvents extends GameEvent {
             return;
         if (!validateWorld(e.getPlayer().getWorld()))
             return;
-        if(game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId()).isPresent())
+        if (game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId()).isPresent())
             e.setCancelled(true);
     }
 
@@ -403,7 +408,7 @@ public class GamePlayingEvents extends GameEvent {
             return;
         if (!validateWorld(e.getPlayer().getWorld()))
             return;
-        if(game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId()).isPresent())
+        if (game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId()).isPresent())
             e.setCancelled(true);
     }
 
@@ -421,7 +426,7 @@ public class GamePlayingEvents extends GameEvent {
         Block b = e.getClickedBlock();
         if (b != null) {
             if (b.getType().name().toLowerCase().contains("sign")) {
-                if(game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId()).isPresent())
+                if (game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId()).isPresent())
                     e.setCancelled(true);
             }
         }
@@ -439,7 +444,7 @@ public class GamePlayingEvents extends GameEvent {
             ItemStack item = p.getInventory().getItemInMainHand();
 
             if (item.getType() == Material.WRITTEN_BOOK || item.getType() == Material.BOOK) {
-                if(game.getGamePlayerOfPlayer(p.getUniqueId()).isPresent()) {
+                if (game.getGamePlayerOfPlayer(p.getUniqueId()).isPresent()) {
                     ItemMeta im = item.getItemMeta();
                     PersistentDataContainer container = im.getPersistentDataContainer();
                     String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "undroppable"), PersistentDataType.STRING);
@@ -458,14 +463,14 @@ public class GamePlayingEvents extends GameEvent {
         if (!validateWorld(e.getRightClicked().getWorld()))
             return;
         Material type = null;
-        if(e.getRightClicked() instanceof ItemFrame) {
+        if (e.getRightClicked() instanceof ItemFrame) {
             type = Material.ITEM_FRAME;
         }
-        if(e.getRightClicked() instanceof GlowItemFrame) {
+        if (e.getRightClicked() instanceof GlowItemFrame) {
             type = Material.GLOW_ITEM_FRAME;
         }
-        if(type != null) {
-            if(game.getGamePlayerOfPlayer(e.getRightClicked().getUniqueId()).isPresent())
+        if (type != null) {
+            if (game.getGamePlayerOfPlayer(e.getRightClicked().getUniqueId()).isPresent())
                 if (!game.getInteractionManager().isInteractionWithTypeAllowed(type)) {
                     e.setCancelled(true);
                 }
@@ -475,14 +480,14 @@ public class GamePlayingEvents extends GameEvent {
     @EventHandler(priority = EventPriority.MONITOR)
     public void chat(AsyncChatEvent e) {
         Player p = e.getPlayer();
-        if(e.isCancelled())
+        if (e.isCancelled())
             return;
         if (!validateWorld(p.getWorld()))
             return;
         Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
-        if(optionalGamePlayer.isEmpty())
+        if (optionalGamePlayer.isEmpty())
             return;
-        if(!optionalGamePlayer.get().isAlive())
+        if (!optionalGamePlayer.get().isAlive())
             return;
 
         e.setCancelled(true);
@@ -495,7 +500,7 @@ public class GamePlayingEvents extends GameEvent {
         Player p = e.getPlayer();
         if (!validateWorld(p.getWorld()))
             return;
-        if(!game.getHosts().contains(p.getUniqueId()))
+        if (!game.getHosts().contains(p.getUniqueId()))
             return;
 
         e.setCancelled(true);
@@ -508,7 +513,7 @@ public class GamePlayingEvents extends GameEvent {
         if (!validateWorld(e.getPlayer().getWorld()))
             return;
         Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(p.getUniqueId());
-        if(optionalGamePlayer.isEmpty())
+        if (optionalGamePlayer.isEmpty())
             return;
 
         if (game.getHosts().contains(p.getUniqueId()) &&
@@ -525,20 +530,20 @@ public class GamePlayingEvents extends GameEvent {
             String lifebound = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);
             String soulbound = item.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);
 
-            if((vanish != null && vanish.equalsIgnoreCase("false")) ||
+            if ((vanish != null && vanish.equalsIgnoreCase("false")) ||
                     (lifebound != null && lifebound.equalsIgnoreCase("false")) ||
                     (soulbound != null && soulbound.equalsIgnoreCase("false"))) {
                 e.getDrops().remove(item);
             }
         }
 
-        if(p.getKiller() == null) return;
+        if (p.getKiller() == null) return;
         Game game = optionalGamePlayer.get().getGame();
         MapPlayer killer = getMapPlayer(p.getKiller(), game);
         MapPlayer player = getMapPlayer(p, game);
 
-        if(killer == null || player == null) return;
-        if(killer.getRole() != Role.SHAPESHIFTER) return;
+        if (killer == null || player == null) return;
+        if (killer.getRole() != Role.SHAPESHIFTER) return;
         killer.setRole(player.getRole());
     }
 

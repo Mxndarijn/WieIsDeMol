@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.inventory.MxInventoryIndex;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
@@ -166,7 +167,7 @@ public class ChestAppearanceAttachment extends ChestAttachment {
         if (chestState.customName() != null && Functions.convertComponentToString(chestState.customName()).equalsIgnoreCase(appearance.getUnicode())) {
             return;
         }
-        chestState.customName(Component.text(appearance.getUnicode()));
+        chestState.customName(MiniMessage.miniMessage().deserialize("<!i>" + appearance.getUnicode()));
         chestState.update();
 
         e.setCancelled(true);

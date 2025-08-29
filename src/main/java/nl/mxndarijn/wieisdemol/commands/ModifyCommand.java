@@ -137,7 +137,7 @@ public class ModifyCommand extends MxCommand {
                                            }
                                        });
                                        list = newList;
-                                       list.add(Component.text(lore));
+                                       list.add(MiniMessage.miniMessage().deserialize("<!i>" + lore));
                                        im.lore(list);
                                        is.setItemMeta(im);
                                    } catch(NumberFormatException ex) {
@@ -205,7 +205,7 @@ public class ModifyCommand extends MxCommand {
                                                                                 }
                                                                             });
                                                                             listLore = newList;
-                                                                            listLore.add(Component.text(lore + value.getTextInterface().getText(persons)));
+                                                                            listLore.add(MiniMessage.miniMessage().deserialize("<!i>" + lore + value.getTextInterface().getText(persons)));
                                                                             im.lore(listLore);
                                                                             is.setItemMeta(im);
 
@@ -242,7 +242,7 @@ public class ModifyCommand extends MxCommand {
             MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENTER_NEW_NAME));
             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                 ItemMeta im = is.getItemMeta();
-                im.displayName(MiniMessage.miniMessage().deserialize(message));
+                im.displayName(MiniMessage.miniMessage().deserialize("<!i>" + message));
                 is.setItemMeta(im);
                 MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_NAME_CHANGED));
             });
@@ -281,7 +281,7 @@ public class ModifyCommand extends MxCommand {
             MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENTER_NEW_LORE));
             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                 List<String> lore = new ArrayList<>(List.of(message.split("/n")));
-                List<Component> loreComp = lore.stream().map(l -> MiniMessage.miniMessage().deserialize(l)).collect(Collectors.toList());
+                List<Component> loreComp = lore.stream().map(l -> MiniMessage.miniMessage().deserialize("<!i>" + l)).collect(Collectors.toList());
                 ItemMeta im = is.getItemMeta();
                 im.lore(loreComp);
                 is.setItemMeta(im);

@@ -506,8 +506,8 @@ public class Game {
                 list.forEach(uuid -> {
                     Player p = Bukkit.getPlayer(uuid);
                     if (p != null) {
-                        p.sendTitlePart(TitlePart.TITLE, MiniMessage.miniMessage().deserialize(rol.getTitle()));
-                        p.sendTitlePart(TitlePart.SUBTITLE, MiniMessage.miniMessage().deserialize(rol.getSubTitle()));
+                        p.sendTitlePart(TitlePart.TITLE, MiniMessage.miniMessage().deserialize("<!i>" + rol.getTitle()));
+                        p.sendTitlePart(TitlePart.SUBTITLE, MiniMessage.miniMessage().deserialize("<!i>" + rol.getSubTitle()));
 //                        TTA_Methods.sendTitle(p, rol.getTitle(), 10, 100, 10, rol.getSubTitle(), 20, 90, 10);
                     }
                 });

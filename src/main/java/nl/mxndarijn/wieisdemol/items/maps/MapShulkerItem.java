@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.items.maps;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.inventory.MxInventoryIndex;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
@@ -182,10 +183,10 @@ public class MapShulkerItem extends MxItem {
 
         String title = mp.get().getRole().getUnicode();
         if (shulkerInformation.isStartingRoom()) {
-            shulkerBox.customName(Component.text(title));
+            shulkerBox.customName(MiniMessage.miniMessage().deserialize("<!i>" + title));
         } else {
             if (mp.get().isPeacekeeper()) {
-                shulkerBox.customName(Component.text(CustomInventoryOverlay.ROLES_PEACEKEEPER.getUnicodeCharacter()));
+                shulkerBox.customName(MiniMessage.miniMessage().deserialize("<!i>" + CustomInventoryOverlay.ROLES_PEACEKEEPER.getUnicodeCharacter()));
             } else {
                 shulkerBox.customName(null);
             }

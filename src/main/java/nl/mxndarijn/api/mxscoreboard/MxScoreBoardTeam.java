@@ -68,15 +68,15 @@ public class MxScoreBoardTeam {
 
         int lineLength = line.length() - 8 * count + count * 2;
         if (lineLength <= scoreboard.MAX_LINE_LENGTH / 2) {
-            team.prefix(MiniMessage.miniMessage().deserialize(line));
-            team.suffix(MiniMessage.miniMessage().deserialize(""));
+            team.prefix(MiniMessage.miniMessage().deserialize("<!i>" + line));
+            team.suffix(MiniMessage.miniMessage().deserialize("<!i>" + ""));
         } else {
             String prefix = line.substring(0, scoreboard.MAX_LINE_LENGTH / 2);
             String suffix = "<gray>" + (prefix) + line.substring(scoreboard.MAX_LINE_LENGTH / 2);
             if ((prefix + suffix).length() > scoreboard.MAX_LINE_LENGTH)
                 throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
-            team.prefix(MiniMessage.miniMessage().deserialize(prefix));
-            team.suffix(MiniMessage.miniMessage().deserialize(suffix));
+            team.prefix(MiniMessage.miniMessage().deserialize("<!i>" + prefix));
+            team.suffix(MiniMessage.miniMessage().deserialize("<!i>" + suffix));
 
         }
     }

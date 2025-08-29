@@ -63,7 +63,7 @@ public abstract class MxScoreBoard {
 
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         this.scoreboard = manager.getNewScoreboard();
-        this.objective = this.scoreboard.registerNewObjective("Title", "dummy", Component.text("Default"));
+        this.objective = this.scoreboard.registerNewObjective("Title", "dummy", MiniMessage.miniMessage().deserialize("<!i>" + "Default"));
         this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         updateScoreboard();
@@ -121,7 +121,7 @@ public abstract class MxScoreBoard {
         List<String> lines = getLines();
 
         if (!Functions.convertComponentToString(this.objective.displayName()).equals(title)) {
-            this.objective.displayName(MiniMessage.miniMessage().deserialize(title));
+            this.objective.displayName(MiniMessage.miniMessage().deserialize("<!i>" + title));
         }
 
         while (teams.size() < lines.size()) {

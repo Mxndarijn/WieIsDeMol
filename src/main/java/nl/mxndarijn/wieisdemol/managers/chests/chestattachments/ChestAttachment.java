@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
@@ -102,7 +103,7 @@ public abstract class ChestAttachment {
         ar.setInvisible(true);
         ar.setInvulnerable(true);
         ar.setGravity(false);
-        ar.customName(Component.text("attachment"));
+        ar.customName(MiniMessage.miniMessage().deserialize("<!i>" + "attachment"));
         ar.setCollidable(false);
         ar.getEquipment().setHelmet(MxSkullItemStackBuilder.create(1).setSkinFromHeadsData(ChestAttachments.getAttachmentByType(type).get().getSkullName())
                 .build());

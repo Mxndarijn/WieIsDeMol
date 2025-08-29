@@ -2,7 +2,7 @@ package nl.mxndarijn.wieisdemol.game;
 
 public enum UpcomingGameStatus {
     WAITING("<yellow>Wachtend", true),
-    CHOOSING_PLAYERS("<yellowSpelers kiezen", true),
+    CHOOSING_PLAYERS("<yellow>Spelers kiezen", true),
     PLAYING("<green>Bezig", false),
     FREEZE("<aqua>Freezed", false),
     FINISHED("<red>Afgelopen", false);
