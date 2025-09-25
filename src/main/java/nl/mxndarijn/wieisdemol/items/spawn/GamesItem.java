@@ -119,7 +119,7 @@ public class GamesItem extends MxItem {
                                                     }
                                             )
                                             .setItem(MxDefaultItemStackBuilder.create(Material.RED_CONCRETE)
-                                                            .setName("REDVerwijder Game")
+                                                            .setName("<red>Verwijder Game")
                                                             .addBlankLore()
                                                             .addLore("<yellow>Klik hier om de game te verwijderen.")
                                                             .build(), 26,

@@ -1,5 +1,7 @@
 package nl.mxndarijn.api.inventory.heads;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
@@ -132,15 +134,13 @@ public class MxHeadManager {
     private Optional<String> getTextureValue(ItemStack itemStack) {
         if (itemStack.getType() == Material.PLAYER_HEAD) {
             try {
-                SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
-                Field profileField = skullMeta.getClass().getDeclaredField("profile");
-                profileField.setAccessible(true);
-                GameProfile profile = (GameProfile) profileField.get(skullMeta);
-                Collection<Property> textures = profile.getProperties().get("textures");
 
-                Optional<Property> optionalTexture = textures.stream().findFirst();
+                SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
+                PlayerProfile profile = skullMeta.getPlayerProfile();
+
+                Optional<ProfileProperty> optionalTexture = profile.getProperties().stream().findFirst();
                 if (optionalTexture.isPresent()) {
-                    Property texture = optionalTexture.get();
+                    ProfileProperty texture = optionalTexture.get();
                     return Optional.of(texture.getValue());
                 } else {
                     Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not find texture");

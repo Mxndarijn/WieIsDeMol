@@ -2,6 +2,7 @@ package nl.mxndarijn.wieisdemol.data;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import nl.mxndarijn.api.inventory.MxInventoryIndex;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
@@ -9,6 +10,8 @@ import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
+import nl.mxndarijn.api.logger.LogLevel;
+import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
@@ -59,7 +62,7 @@ public enum ItemTag {
                 .setSkinFromHeadsData("Lifebound")
                 .setName("<gray>Lifebound")
                 .addBlankLore()
-                .addLore("<gray>Status: " + (dataBoolean ? "<green>Not silent" : "<red>silent"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Not lifebound" : "<red>lifebound"))
                 .addBlankLore()
                 .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
@@ -74,7 +77,7 @@ public enum ItemTag {
                 .setSkinFromHeadsData("Soulbound")
                 .setName("<gray>Soulbound")
                 .addBlankLore()
-                .addLore("<gray>Status: " + (dataBoolean ? "<green>Not silent" : "<red>silent"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Not soulbound" : "<red>soulbound"))
                 .addBlankLore()
                 .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
@@ -86,10 +89,10 @@ public enum ItemTag {
         if (data != null && data.equalsIgnoreCase("false"))
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
-                .setSkinFromHeadsData("Droppable Once")
+                .setSkinFromHeadsData("droppable-once")
                 .setName("<gray>Droppable Once")
                 .addBlankLore()
-                .addLore("<gray>Status: " + (dataBoolean ? "<green>Not silent" : "<red>silent"))
+                .addLore("<gray>Status: " + (dataBoolean ? "<green>Not droppable" : "<red>droppable"))
                 .addBlankLore()
                 .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
@@ -139,11 +142,12 @@ public enum ItemTag {
                 .addLore("<yellow>Klik hier om de status te togglen.")
                 .build();
     }, (mxInv, e) -> {
-        boolean dataBoolean = onClick(e, "itemlock", "Item-Lock");
-
-        if (!dataBoolean) {
-            e.setCancelled(true);
-        }
+        onClick(e, "itemlock", "Item-Lock");
+        //        boolean dataBoolean = onClick(e, "itemlock", "Item-Lock");
+//
+//        if (!dataBoolean) {
+//            e.setCancelled(true);
+//        }
     }),
     PLACEABLE("placeable", data -> {
         boolean dataBoolean = true;
@@ -219,7 +223,7 @@ public enum ItemTag {
                     dataTag.deleteCharAt(dataTag.length() - 1);
                 container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataTag.toString());
                 List<Component> loreList = im.hasLore() ? im.lore() : new ArrayList<>();
-                List<Component> newLoreList = loreList.stream().filter(lore -> !Functions.convertComponentToString(lore).contains(specialTag)).collect(Collectors.toList());
+                List<Component> newLoreList = loreList.stream().filter(lore -> !Functions.convertComponentToString(lore).contains(specialTag)).collect(Collectors.toList()).stream().map(c -> MiniMessage.miniMessage().deserialize(Functions.convertComponentToString(c))).toList();
                 if (!addedColors.isEmpty()) {
                     newLoreList.add(MiniMessage.miniMessage().deserialize("<!i>" + specialTag + "<blue>Colorbind:"));
                     addedColors.forEach(c -> {
@@ -289,37 +293,57 @@ public enum ItemTag {
 
     }
 
-    private static Boolean onClick(InventoryClickEvent e, String key, String loreName) {
+    private static void onClick(InventoryClickEvent e, String key, String loreName) {
         ItemStack is = e.getWhoClicked().getInventory().getItemInMainHand();
         ItemMeta im = is.getItemMeta();
 
         PersistentDataContainer container = im.getPersistentDataContainer();
-        String data = container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING);
+        NamespacedKey namespacedKey = new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key);
 
-        boolean dataBoolean = true;
-        if (data != null && data.equalsIgnoreCase("false"))
-            dataBoolean = false;
+        String data = container.get(namespacedKey, PersistentDataType.STRING);
+
+        boolean dataBoolean = data != null && data.equalsIgnoreCase("true");
         dataBoolean = !dataBoolean;
-        container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataBoolean + "");
-        String lore = "<red>" + loreName;
-        List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
+
+        container.set(namespacedKey, PersistentDataType.STRING, String.valueOf(dataBoolean));
+
+        Component loreComponent = MiniMessage.miniMessage().deserialize("<!i><red>" + loreName);
+
+        List<Component> list = im.hasLore() ? new ArrayList<>(im.lore()) : new ArrayList<>();
+
         if (dataBoolean) {
-            List<Component> newList = new ArrayList<>();
-            list.forEach(c -> {
-                if (!Functions.convertComponentToString(c).equalsIgnoreCase(lore)) {
-                    newList.add(c);
-                }
-            });
-            list = newList;
+            list.add(loreComponent);
         } else {
-            list.add(MiniMessage.miniMessage().deserialize("<!i>" + lore));
+            list.removeIf(c -> PlainTextComponentSerializer.plainText().serialize(c)
+                    .equalsIgnoreCase(PlainTextComponentSerializer.plainText().serialize(loreComponent)));
         }
+
         im.lore(list);
         is.setItemMeta(im);
-        e.getWhoClicked().closeInventory();
-        MSG.msg(e.getWhoClicked(), LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
 
-        return dataBoolean;
+        openItemTagInventory((Player) e.getWhoClicked(), is);
+        MSG.msg(e.getWhoClicked(), LanguageManager.getInstance().getLanguageString(LanguageText.ITEMTAG_CHANGED));
+    }
+
+    private static void openItemTagInventory(Player p, ItemStack is) {
+        PersistentDataContainer container = is.getItemMeta().getPersistentDataContainer();
+        List<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
+        for (ItemTag value : ItemTag.values()) {
+            try {
+                list.add(new Pair<>(
+                        value.getContainer().getItem(container.get(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), value.getPersistentDataTag()), PersistentDataType.STRING)),
+                        value.getClicked()
+                ));
+            } catch(Exception ex) {
+                Logger.logMessage(LogLevel.ERROR, "Could not load itemtag: ");
+                ex.printStackTrace();
+            }
+        }
+        MxInventoryManager.getInstance().addAndOpenInventory(p, new MxListInventoryBuilder("<gray>ItemTags", MxInventorySlots.THREE_ROWS)
+                .setShowPageNumbers(false)
+                .setListItems(list)
+                .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
+                .build());
     }
 
     public String getPersistentDataTag() {
