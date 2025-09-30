@@ -145,15 +145,19 @@ public class GameColorBindEvents extends GameEvent {
         if (gp.isEmpty() && !game.getSpectators().contains(player.getUniqueId())) {
             return;
         }
+        String itemLock = is.getItemMeta().getPersistentDataContainer()
+                .get(new NamespacedKey(plugin, ItemTag.ITEM_LOCK.getPersistentDataTag()),
+                     PersistentDataType.STRING);
+
+        if (itemLock != null && itemLock.equalsIgnoreCase("false")) {
+            e.setCancelled(true);
+        }
         if (is.getItemMeta() == null) {
             return;
         }
         if (e.getClickedInventory() == null) {
             return;
         }
-        String itemLock = is.getItemMeta().getPersistentDataContainer()
-                .get(new NamespacedKey(plugin, ItemTag.ITEM_LOCK.getPersistentDataTag()),
-                     PersistentDataType.STRING);
         String droppable = is.getItemMeta().getPersistentDataContainer()
                 .get(new NamespacedKey(plugin, ItemTag.DROPPABLE.getPersistentDataTag()),
                      PersistentDataType.STRING);
@@ -171,9 +175,7 @@ public class GameColorBindEvents extends GameEvent {
         ;
 
         boolean shouldCancel = false;
-        if (itemLock != null && itemLock.equalsIgnoreCase("false")) {
-            shouldCancel = true;
-        } else if (droppable != null && droppable.equalsIgnoreCase("false")) {
+        if (droppable != null && droppable.equalsIgnoreCase("false")) {
             shouldCancel = true;
         } else if (lifebound != null && lifebound.equalsIgnoreCase("false")) {
             shouldCancel = true;

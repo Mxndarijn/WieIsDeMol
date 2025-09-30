@@ -311,7 +311,7 @@ public enum ItemTag {
 
         List<Component> list = im.hasLore() ? new ArrayList<>(im.lore()) : new ArrayList<>();
 
-        if (dataBoolean) {
+        if (!dataBoolean) {
             list.add(loreComponent);
         } else {
             list.removeIf(c -> PlainTextComponentSerializer.plainText().serialize(c)

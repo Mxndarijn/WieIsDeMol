@@ -16,16 +16,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public enum ChestAttachments {
-    CHEST_APPEARANCE("CHEST_APPEARANCE", ChestAppearanceAttachment.class, "Kist-uiterlijk", "rainbow-chest",
-            MxSkullItemStackBuilder.create(1)
-                    .setSkinFromHeadsData("rainbow-chest")
-                    .setName("<red>Kist uiterlijk")
-                    .addBlankLore()
-                    .addLore("<gray>Deze Attachment zorgt ervoor dat de kist van binnen")
-                    .addLore("<gray>een ander uiterlijk heeft.")
-                    .addBlankLore()
-                    .addLore("<yellowKlik hier om deze chest attachment toe te voegen.")
-                    .build()),
     CHEST_COLOR_BIND("CHEST_COLOR_BIND", ChestColorBindAttachment.class, "Kist-color-bind", "wool-chest",
             MxSkullItemStackBuilder.create(1)
                     .setSkinFromHeadsData("wool-chest")
