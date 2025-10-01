@@ -183,10 +183,7 @@ public class GameColorBindEvents extends GameEvent {
             shouldCancel = true;
         } else if (droppableonce != null) {
             if (droppableonce.equalsIgnoreCase("false")) {
-                is.getItemMeta().getPersistentDataContainer().set(new NamespacedKey(plugin,
-                                                                                    ItemTag.DROPPABLEONCE.getPersistentDataTag()),
-                                                                  PersistentDataType.STRING,
-                                                                  "true");
+                is.getItemMeta().getPersistentDataContainer().set(new NamespacedKey(plugin, ItemTag.DROPPABLEONCE.getPersistentDataTag()), PersistentDataType.STRING, "true");
             } else {
                 shouldCancel = true;
             }
