@@ -1,8 +1,7 @@
 package nl.mxndarijn.api.mxscoreboard;
 
-import me.neznamy.tab.shared.ProtocolVersion;
-import me.neznamy.tab.shared.chat.IChatBaseComponent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.util.Functions;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -64,7 +63,7 @@ public abstract class MxScoreBoard {
 
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         this.scoreboard = manager.getNewScoreboard();
-        this.objective = this.scoreboard.registerNewObjective("Title", "dummy", Component.text("Default"));
+        this.objective = this.scoreboard.registerNewObjective("Title", "dummy", MiniMessage.miniMessage().deserialize("<!i>" + "Default"));
         this.objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         updateScoreboard();
@@ -116,13 +115,13 @@ public abstract class MxScoreBoard {
     }
 
     public void updateScoreboard() {
-        if(playersUsingScoreboard.size() == 0)
+        if(playersUsingScoreboard.isEmpty())
             return;
         String title = getTitle();
         List<String> lines = getLines();
 
         if (!Functions.convertComponentToString(this.objective.displayName()).equals(title)) {
-            this.objective.displayName(IChatBaseComponent.optimizedComponent(title).toAdventureComponent(ProtocolVersion.V1_19_4));
+            this.objective.displayName(MiniMessage.miniMessage().deserialize("<!i>" + title));
         }
 
         while (teams.size() < lines.size()) {

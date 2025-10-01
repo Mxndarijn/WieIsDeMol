@@ -3,7 +3,7 @@ package nl.mxndarijn.wieisdemol.data;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -16,14 +16,14 @@ public enum BookFailureAction {
 
     Kill("kill", 1,
             MxSkullItemStackBuilder.create(1)
-                .setName(ChatColor.GRAY + "Kill")
+                .setName("<gray>Kill")
                 .setSkinFromHeadsData("ghost")
-                .addLore(ChatColor.GRAY + "Met deze actie gaat er een persoon")
-                .addLore(ChatColor.GRAY + "dood als het boek niet succesvol is.")
+                .addLore("<gray>Met deze actie gaat er een persoon")
+                .addLore("<gray>dood als het boek niet succesvol is.")
                 .addBlankLore()
-                .addLore(ChatColor.YELLOW + "Klik om deze actie te selecteren")
+                .addLore("<yellow>Klik om deze actie te selecteren")
                 .build(),
-        List.of(ChatColor.GRAY + "Persoon die dood gaat:"),
+        List.of("<gray>Persoon die dood gaat:"),
         (data, holder) -> {
             AvailablePerson personToKill = data.get(0);
             Player p = holder.getPlayer(personToKill);
@@ -33,14 +33,14 @@ public enum BookFailureAction {
      }),
     CLEARINV("clear-inv", 1,
             MxSkullItemStackBuilder.create(1)
-                    .setName(ChatColor.GRAY + "Clear-Inv")
+                    .setName("<gray>Clear-Inv")
                     .setSkinFromHeadsData("barrier")
-                    .addLore(ChatColor.GRAY + "Met deze actie wordt de inventory")
-                    .addLore(ChatColor.GRAY + "van de geselecteerde persoon gecleared.")
+                    .addLore("<gray>Met deze actie wordt de inventory")
+                    .addLore("<gray>van de geselecteerde persoon gecleared.")
                     .addBlankLore()
-                    .addLore(ChatColor.YELLOW + "Klik om deze actie te selecteren")
+                    .addLore("<yellow>Klik om deze actie te selecteren")
                     .build(),
-            List.of(ChatColor.GRAY + "Persoon die gecleared word:"),
+            List.of("<gray>Persoon die gecleared word:"),
             (data, holder) -> {
                 AvailablePerson personToKill = data.get(0);
                 Player p = holder.getPlayer(personToKill);
@@ -50,14 +50,14 @@ public enum BookFailureAction {
     }),
     TELEPORT("teleport", 2,
             MxSkullItemStackBuilder.create(1)
-                    .setName(ChatColor.GRAY + "Teleport")
+                    .setName("<gray>Teleport")
                     .setSkinFromHeadsData("ender-pearl")
-                    .addLore(ChatColor.GRAY + "Met deze actie wordt iemand")
-                    .addLore(ChatColor.GRAY + "naar iemand anders geteleport.")
+                    .addLore("<gray>Met deze actie wordt iemand")
+                    .addLore("<gray>naar iemand anders geteleport.")
                     .addBlankLore()
-                    .addLore(ChatColor.YELLOW + "Klik om deze actie te selecteren")
+                    .addLore("<yellow>Klik om deze actie te selecteren")
                     .build(),
-            List.of(ChatColor.GRAY + "Persoon die geteleport wordt:", ChatColor.GRAY + "Persoon wordt geteleport naar:"),
+            List.of("<gray>Persoon die geteleport wordt:", "<gray>Persoon wordt geteleport naar:"),
             (data, holder) -> {
                 AvailablePerson personToTeleport = data.get(0);
                 AvailablePerson personToTeleportTo = data.get(1);
@@ -69,14 +69,14 @@ public enum BookFailureAction {
     }),
     SWITCH("switch", 2,
             MxSkullItemStackBuilder.create(1)
-                    .setName(ChatColor.GRAY + "Switch")
+                    .setName("<gray>Switch")
                     .setSkinFromHeadsData("ender-pearl")
-                    .addLore(ChatColor.GRAY + "Met deze actie worden 2 mensen")
-                    .addLore(ChatColor.GRAY + "van locatie verwisseld.")
+                    .addLore("<gray>Met deze actie worden 2 mensen")
+                    .addLore("<gray>van locatie verwisseld.")
                     .addBlankLore()
-                    .addLore(ChatColor.YELLOW + "Klik om deze actie te selecteren")
+                    .addLore("<yellow>Klik om deze actie te selecteren")
                     .build(),
-            List.of(ChatColor.GRAY + "Persoon 1 die geswitched wordt:", ChatColor.GRAY + "Persoon 2 die geswitched wordt:"),
+            List.of("<gray>Persoon 1 die geswitched wordt:", "<gray>Persoon 2 die geswitched wordt:"),
             (data, holder) -> {
                 AvailablePerson personToTeleport = data.get(0);
                 AvailablePerson personToTeleportTo = data.get(1);

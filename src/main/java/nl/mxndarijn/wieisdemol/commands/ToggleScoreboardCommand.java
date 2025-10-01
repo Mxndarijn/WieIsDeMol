@@ -2,6 +2,7 @@ package nl.mxndarijn.wieisdemol.commands;
 
 import nl.mxndarijn.api.mxcommand.MxCommand;
 import nl.mxndarijn.api.mxscoreboard.MxScoreBoard;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.managers.ScoreBoardManager;
@@ -38,13 +39,13 @@ public class ToggleScoreboardCommand extends MxCommand implements Listener {
         if(scoreboard.isPresent()) {
             scoreBoardHashMap.put(p.getUniqueId(), scoreboard.get());
             ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), scoreboard.get());
-           p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.SCOREBOARD_HIDDEN));
+           MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.SCOREBOARD_HIDDEN));
         } else if(scoreBoardHashMap.containsKey(p.getUniqueId())) {
                ScoreBoardManager.getInstance().setPlayerScoreboard(p.getUniqueId(), scoreBoardHashMap.get(p.getUniqueId()));
                scoreBoardHashMap.remove(p.getUniqueId());
-               p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.SCOREBOARD_SHOWED));
+               MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.SCOREBOARD_SHOWED));
         } else {
-               p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.SCOREBOARD_NOT_FOUND));
+               MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.SCOREBOARD_NOT_FOUND));
 
         }
     }

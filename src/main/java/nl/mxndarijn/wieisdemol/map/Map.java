@@ -30,6 +30,7 @@ import nl.mxndarijn.wieisdemol.presets.Preset;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -174,11 +175,11 @@ public class Map {
                         put("%%map_owner%%", player.getName());
                         put("%%colors_amount%%", mapConfig.getColors().size() + "");
                         put("%%vullers_amount%%", scoreboard.getPlayersUsingScoreboard().size() + "");
-                        put("%%chests_filled%%", (chestsFilled == chestManager.getChests().size() ? ChatColor.GREEN : ChatColor.RED).toString() + chestsFilled);
+                        put("%%chests_filled%%", (chestsFilled == chestManager.getChests().size() ? "<green>" : "<red>").toString() + chestsFilled);
                         put("%%total_chests%%", chestManager.getChests().size() + "");
-                        put("%%shulkers_filled%%", (shulkersFilled == shulkerManager.getShulkers().size() ? ChatColor.GREEN : ChatColor.RED).toString() + shulkersFilled);
+                        put("%%shulkers_filled%%", (shulkersFilled == shulkerManager.getShulkers().size() ? "<green>" : "<red>").toString() + shulkersFilled);
                         put("%%total_shulkers%%", shulkerManager.getShulkers().size() + "");
-                        put("%%all_doors_closed%%", (doorManager.areAllDoorsClosed(m) ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"));
+                        put("%%all_doors_closed%%", (doorManager.areAllDoorsClosed(m) ? "<green>Ja" : "<red>Nee"));
                     }});
                 });
                 scoreboard.setUpdateTimer(60L);
@@ -206,6 +207,14 @@ public class Map {
                     @Override
                     public void leave(Player p, World w, PlayerChangedWorldEvent e) {
                         p.setGameMode(GameMode.ADVENTURE);
+                    }
+
+                    @Override
+                    public void quit(Player p, World w, PlayerQuitEvent e) {
+                        unloadWorld();
+                        mapConfig.setDateModified(LocalDateTime.now());
+                        mapConfig.save();
+                        mapConfig.getPresetConfig().save();
                     }
                 });
 
@@ -332,29 +341,29 @@ public class Map {
             builder.setSkinFromHeadsData("question-mark");
         }
 
-        builder.setName(ChatColor.GRAY + mapConfig.getName());
+        builder.setName("<gray>" + mapConfig.getName());
 
         builder.addBlankLore();
-        builder.addLore(ChatColor.GRAY + "Aantal spelers: " + mapConfig.getColors().size());
+        builder.addLore("<gray>Aantal spelers: " + mapConfig.getColors().size());
         builder.addBlankLore();
 
-        builder.addLore(ChatColor.GRAY + "Host-Moeilijkheid:")
+        builder.addLore("<gray>Host-Moeilijkheid:")
                 .addLore(getStars(mapConfig.getPresetConfig().getHostDifficulty()))
-                .addLore(ChatColor.GRAY + "Speel-Moeilijkheid:")
+                .addLore("<gray>Speel-Moeilijkheid:")
                 .addLore(getStars(mapConfig.getPresetConfig().getPlayDifficulty()));
 
         builder.addBlankLore();
-        builder.addLore(ChatColor.GRAY + "Eigenaar: " + Bukkit.getOfflinePlayer(mapConfig.getOwner()).getName());
+        builder.addLore("<gray>Eigenaar: " + Bukkit.getOfflinePlayer(mapConfig.getOwner()).getName());
         if (mapConfig.getSharedPlayers().size() > 0) {
-            builder.addLore(ChatColor.GRAY + "Gedeeld met:");
+            builder.addLore("<gray>Gedeeld met:");
         }
         mapConfig.getSharedPlayers().forEach(u -> {
-            builder.addLore(ChatColor.GRAY + " - " + Bukkit.getOfflinePlayer(u).getName());
+            builder.addLore("<gray> - " + Bukkit.getOfflinePlayer(u).getName());
         });
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         builder.addBlankLore()
-                .addLore(ChatColor.GRAY + "Laatst aangepast: " + mapConfig.getDateModified().format(formatter))
-                .addLore(ChatColor.GRAY + "Aangemaakt op: " + mapConfig.getDateCreated().format(formatter));
+                .addLore("<gray>Laatst aangepast: " + mapConfig.getDateModified().format(formatter))
+                .addLore("<gray>Aangemaakt op: " + mapConfig.getDateCreated().format(formatter));
 
         builder.addCustomTagString(MAP_ITEMMETA_TAG, directory.getName());
 
@@ -366,9 +375,9 @@ public class Map {
         StringBuilder hostStars = new StringBuilder();
         for (int i = 1; i <= 5; i++) {
             if (i <= stars) {
-                hostStars.append(ChatColor.YELLOW + "\u272B");
+                hostStars.append("<yellow>\u272B");
             } else {
-                hostStars.append(ChatColor.GRAY + "\u272B");
+                hostStars.append("<gray>\u272B");
             }
         }
         return hostStars.toString();

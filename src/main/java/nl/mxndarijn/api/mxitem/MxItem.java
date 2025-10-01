@@ -5,6 +5,7 @@ import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
@@ -87,7 +88,7 @@ public abstract class MxItem implements Listener {
         } catch (Exception ex) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MXITEM, "Could not execute item: " + Functions.convertComponentToString(is.getItemMeta().displayName()));
             ex.printStackTrace();
-            p.sendMessage(languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_ITEM, Collections.emptyList(), ChatPrefix.WIDM));
+            MSG.msg(p, languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_ITEM, Collections.emptyList(), ChatPrefix.WIDM));
         }
 
     }

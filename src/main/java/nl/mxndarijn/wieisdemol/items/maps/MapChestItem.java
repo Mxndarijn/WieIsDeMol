@@ -9,6 +9,7 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
@@ -16,7 +17,7 @@ import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.map.Map;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -52,14 +53,14 @@ public class MapChestItem extends MxItem {
 
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             assert e.getClickedBlock() != null;
-            if (e.getClickedBlock().getType() != Material.CHEST) {
+            if (e.getClickedBlock().getType() != Material.CHEST && e.getClickedBlock().getType() != Material.TRAPPED_CHEST) {
                 return;
             }
             Optional<ChestInformation> inf = map.getChestManager().getChestByLocation(MxLocation.getFromLocation(e.getClickedBlock().getLocation()));
             if (inf.isPresent()) {
                 inf.get().openAttachmentsInventory(e.getPlayer());
             } else {
-                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_COULD_NOT_BE_FOUND));
+                MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_COULD_NOT_BE_FOUND));
             }
             return;
         }
@@ -68,20 +69,20 @@ public class MapChestItem extends MxItem {
         map.getChestManager().getChests().forEach(chest -> {
             list.add(new Pair<>(
                     MxDefaultItemStackBuilder.create(Material.CHEST, 1)
-                            .setName(ChatColor.GRAY + chest.getName())
+                            .setName("<gray>" + chest.getName())
                             .addBlankLore()
-                            .addLore(ChatColor.GRAY + "Location: " + chest.getLocation().getX() + " " + chest.getLocation().getY() + " " + chest.getLocation().getZ())
+                            .addLore("<gray>Location: " + chest.getLocation().getX() + " " + chest.getLocation().getY() + " " + chest.getLocation().getZ())
                             .addBlankLore()
-                            .addLore(ChatColor.YELLOW + "Klik om de kist op afstand te openen.")
+                            .addLore("<yellow>Klik om de kist op afstand te openen.")
                             .build(),
                     (mxInv, e12) -> {
                         Location loc = chest.getLocation().getLocation(p.getWorld());
                         Block block = p.getWorld().getBlockAt(loc);
-                        if (block.getType() == Material.CHEST) {
+                        if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
                             Chest chestBlock = (Chest) block.getState();
                             p.openInventory(chestBlock.getBlockInventory());
                         } else {
-                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_IS_NOT_A_CHEST));
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_IS_NOT_A_CHEST));
                             p.closeInventory();
                         }
                     }
@@ -89,7 +90,7 @@ public class MapChestItem extends MxItem {
         });
 
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Chest Hulp Tool", MxInventorySlots.SIX_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Chest Hulp Tool", MxInventorySlots.SIX_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                 .setListItems(list)
                 .build());
@@ -98,7 +99,7 @@ public class MapChestItem extends MxItem {
 
     @EventHandler
     public void blockPlace(BlockPlaceEvent e) {
-        if (e.getBlockPlaced().getType() != Material.CHEST) {
+        if (e.getBlockPlaced().getType() != Material.CHEST && e.getBlockPlaced().getType() != Material.TRAPPED_CHEST) {
             return;
         }
         Player p = e.getPlayer();
@@ -110,12 +111,12 @@ public class MapChestItem extends MxItem {
 
         Map map = mapOptional.get();
         map.getChestManager().addChest(new ChestInformation("Automatisch toegevoegde kist", MxLocation.getFromLocation(e.getBlockPlaced().getLocation())));
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_CHEST_ADDED));
+        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_CHEST_ADDED));
     }
 
     @EventHandler
     public void blockBreak(BlockBreakEvent e) {
-        if (e.getBlock().getType() != Material.CHEST) {
+        if (e.getBlock().getType() != Material.CHEST && e.getBlock().getType() != Material.TRAPPED_CHEST) {
             return;
         }
         Player p = e.getPlayer();
@@ -132,7 +133,7 @@ public class MapChestItem extends MxItem {
         }
 
         map.getChestManager().removeChest(info.get());
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_CHEST_REMOVED));
+        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_AUTOMATED_CHEST_REMOVED));
     }
 
     @EventHandler

@@ -6,7 +6,6 @@ import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
-import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -33,13 +32,13 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
 
         this.previousPageItemStack = Optional.of(
                 MxSkullItemStackBuilder.create(1)
-                        .setName(ChatColor.GRAY + "Vorige pagina")
+                        .setName("<gray>Vorige pagina")
                         .setSkinFromHeadsData("arrow-left")
                         .build());
 
         this.nextPageItemStack = Optional.of(
                 MxSkullItemStackBuilder.create(1)
-                        .setName(ChatColor.GRAY + "Volgende pagina")
+                        .setName("<gray>Volgende pagina")
                         .setSkinFromHeadsData("arrow-right")
                         .build());
     }
@@ -185,7 +184,7 @@ public class MxListInventoryBuilder extends MxMenuBuilder<MxListInventoryBuilder
     private String getSuffix(int a, int b) {
         if (!showPageNumbers)
             return "";
-        return ChatColor.DARK_GRAY + " (" + ChatColor.GRAY + a + ChatColor.DARK_GRAY + "/" + ChatColor.GRAY + b + ChatColor.DARK_GRAY + ")";
+        return "<dark_gray> (<gray>" + a + "<dark_gray>/<gray>" + b + "<dark_gray>)";
     }
 
     public MxListInventoryBuilder setShowPageNumbers(boolean b) {

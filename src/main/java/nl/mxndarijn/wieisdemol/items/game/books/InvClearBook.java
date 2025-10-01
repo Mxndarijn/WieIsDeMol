@@ -6,6 +6,7 @@ import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.AvailablePerson;
 import nl.mxndarijn.wieisdemol.data.BookFailurePlayersHolder;
@@ -16,8 +17,7 @@ import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -61,10 +61,10 @@ public class InvClearBook extends Book {
                 list.add(new Pair<>(
                         MxSkullItemStackBuilder.create(1)
                                 .setSkinFromHeadsData(player.getUniqueId().toString())
-                                .setName(ChatColor.GRAY + player.getName())
+                                .setName("<gray>" + player.getName())
                                 .addLore(gamePlayer.getMapPlayer().getColor().getDisplayName())
                                 .addBlankLore()
-                                .addLore(ChatColor.YELLOW + "Klik hier om " + player.getName() + " zijn inventory te clearen.")
+                                .addLore("<yellow>Klik hier om " + player.getName() + " zijn inventory te clearen.")
                                 .build(),
                         (mxInv, e1) -> {
                             p.closeInventory();
@@ -72,20 +72,32 @@ public class InvClearBook extends Book {
                                 Integer key = entry.getKey();
                                 ItemStack value = entry.getValue();
                                 if (isItemTheSame(value)) {
-                                    if(!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
+                                    if (!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
                                         return;
                                     ItemStack[] inv = player.getInventory().getContents().clone();
                                     List<ItemStack> clearItems = new ArrayList<>();
                                     for (ItemStack itemStack : inv) {
-                                        if(itemStack != null && itemStack.getItemMeta() != null) {
-                                            String data = itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.CLEARABLE.getPersistentDataTag()), PersistentDataType.STRING);
-                                            if (data == null || !data.equalsIgnoreCase("false")) {
+                                        if (itemStack != null && itemStack.getItemMeta() != null) {
+                                            String clearable = itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.CLEARABLE.getPersistentDataTag()), PersistentDataType.STRING);
+                                            String lifebound = itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.LIFEBOUND.getPersistentDataTag()), PersistentDataType.STRING);
+                                            String soulbound = itemStack.getItemMeta().getPersistentDataContainer().get(new NamespacedKey(plugin, ItemTag.SOULBOUND.getPersistentDataTag()), PersistentDataType.STRING);
+                                            if ((clearable == null || !clearable.equalsIgnoreCase("false")) ||
+                                                    (lifebound != null && lifebound.equalsIgnoreCase("false")) ||
+                                                    (soulbound != null && soulbound.equalsIgnoreCase("false"))) {
                                                 clearItems.add(itemStack);
                                             }
                                         }
                                     }
                                     player.getInventory().removeItem(clearItems.toArray(new ItemStack[0]));
-                                    sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCLEAR_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())));
+
+                                    // Check if book is silenced
+                                    if (isSilenced(value)) {
+                                        game.sendMessageToHosts( String.format("<gray>[SILENT] <white>", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCLEAR_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName()))));
+                                        MSG.msg(p, String.format("<gray>[SILENT] <white>", LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCLEAR_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName()))));
+                                    } else {
+                                        sendBookMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_INVCLEAR_MESSAGE, Arrays.asList(gp.getMapPlayer().getColor().getColor() + p.getName(), gamePlayer.getMapPlayer().getColor().getColor() + player.getName())));
+                                    }
+
                                     break;
                                 }
                             }

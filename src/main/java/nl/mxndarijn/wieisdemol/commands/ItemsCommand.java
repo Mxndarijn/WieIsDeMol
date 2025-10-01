@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.commands;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
@@ -11,6 +12,7 @@ import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxcommand.MxCommand;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Permissions;
@@ -25,7 +27,6 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import nl.mxndarijn.wieisdemol.map.Map;
 import nl.mxndarijn.wieisdemol.presets.Preset;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -68,29 +69,29 @@ public class ItemsCommand extends MxCommand {
                 return;
         }
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultInventoryBuilder.create(ChatColor.GRAY + "Items", MxInventorySlots.THREE_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultInventoryBuilder.create("<gray>Items", MxInventorySlots.THREE_ROWS)
                 .setItem(MxDefaultItemStackBuilder.create(Material.ENDER_CHEST)
-                                .setName(ChatColor.GRAY + "Server Opslag")
+                                .setName("<gray>Server Opslag")
                                 .addBlankLore()
-                                .addLore(ChatColor.YELLOW + "Klik hier op de server opslagen te bekijken.")
+                                .addLore("<yellow>Klik hier op de server opslagen te bekijken.")
                                 .build(),
                         10,
                         (mxInv, e) -> {
                             openServerStorages(p, mxInv);
                         })
                 .setItem(MxDefaultItemStackBuilder.create(Material.CHEST)
-                                .setName(ChatColor.GRAY + "Eigen Opslag")
+                                .setName("<gray>Eigen Opslag")
                                 .addBlankLore()
-                                .addLore(ChatColor.YELLOW + "Klik hier op je eigen opslagen te bekijken.")
+                                .addLore("<yellow>Klik hier op je eigen opslagen te bekijken.")
                                 .build(),
                         13,
                         (mxInv, e) -> {
                             openPlayerStorages(p, mxInv);
                         })
                 .setItem(MxDefaultItemStackBuilder.create(Material.BOOKSHELF)
-                                .setName(ChatColor.GRAY + "Publieke Opslag")
+                                .setName("<gray>Publieke Opslag")
                                 .addBlankLore()
-                                .addLore(ChatColor.YELLOW + "Klik hier om alle publieke opslagen te bekijken.")
+                                .addLore("<yellow>Klik hier om alle publieke opslagen te bekijken.")
                                 .build(),
                         16,
                         (mxInv, e) -> {
@@ -119,14 +120,14 @@ public class ItemsCommand extends MxCommand {
         if (p.hasPermission(Permissions.ITEM_ITEMS_EDIT_SERVER_CONTAINERS.getPermission())) {
             builder.setItem(MxSkullItemStackBuilder.create(1)
                             .setSkinFromHeadsData("wooden-plus")
-                            .setName(ChatColor.GRAY + "Voeg opslag toe")
+                            .setName("<gray>Voeg opslag toe")
                             .addBlankLore()
-                            .addLore(ChatColor.YELLOW + "Klik hier om een opslag toe te voegen")
+                            .addLore("<yellow>Klik hier om een opslag toe te voegen")
                             .build(),
                     25,
                     (mxInv, e) -> {
                         p.closeInventory();
-                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_ENTER_NAME_FOR_CONTAINER));
+                        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_ENTER_NAME_FOR_CONTAINER));
                         MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                             MxHeadManager mxHeadManager = MxHeadManager.getInstance();
                             ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
@@ -140,7 +141,7 @@ public class ItemsCommand extends MxCommand {
                                 if (section.isPresent()) {
                                     StorageContainer newContainer = new StorageContainer(message, section.get().getKey(), "server", false, new File(SpecialDirectories.STORAGE_FILES.getDirectory() + File.separator + "server" + File.separator + UUID.randomUUID() + ".yml"));
                                     StorageManager.getInstance().addServerContainer(newContainer);
-                                    p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_CONTAINER_ADDED));
+                                    MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_CONTAINER_ADDED));
                                     p.closeInventory();
                                     openContainer(p, newContainer, mainInv);
                                 }
@@ -152,22 +153,22 @@ public class ItemsCommand extends MxCommand {
                                 section.ifPresent(mxHeadSection -> {
                                     MxSkullItemStackBuilder b = MxSkullItemStackBuilder.create(1)
                                             .setSkinFromHeadsData(key)
-                                            .setName(ChatColor.GRAY + mxHeadSection.getName().get())
+                                            .setName("<gray>" + mxHeadSection.getName().get())
                                             .addBlankLore()
-                                            .addLore(ChatColor.YELLOW + "Klik om de skull te selecteren.")
+                                            .addLore("<yellow>Klik om de skull te selecteren.")
                                             .addCustomTagString("skull_key", mxHeadSection.getKey());
                                     list.add(new Pair<>(b.build(), clicked));
                                 });
                             });
 
                             MxInventoryManager.getInstance().addAndOpenInventory(p,
-                                    MxListInventoryBuilder.create(ChatColor.GRAY + "Vul-Tool", MxInventorySlots.SIX_ROWS)
+                                    MxListInventoryBuilder.create("<gray>Vul-Tool", MxInventorySlots.SIX_ROWS)
                                             .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                                             .addListItems(list)
                                             .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
-                                                    .setName(ChatColor.GRAY + "Info")
+                                                    .setName("<gray>Info")
                                                     .addBlankLore()
-                                                    .addLore(ChatColor.YELLOW + "Klik op een skull om dat het logo te maken van de opslag.")
+                                                    .addLore("<yellow>Klik op een skull om dat het logo te maken van de opslag.")
                                                     .build(), 48, null)
                                             .build());
                         });
@@ -196,14 +197,14 @@ public class ItemsCommand extends MxCommand {
                 .setListItems(containers)
                 .setItem(MxSkullItemStackBuilder.create(1)
                                 .setSkinFromHeadsData("wooden-plus")
-                                .setName(ChatColor.GRAY + "Voeg opslag toe")
+                                .setName("<gray>Voeg opslag toe")
                                 .addBlankLore()
-                                .addLore(ChatColor.YELLOW + "Klik hier om een opslag toe te voegen")
+                                .addLore("<yellow>Klik hier om een opslag toe te voegen")
                                 .build(),
                         25,
                         (mxInv, e) -> {
                             p.closeInventory();
-                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_ENTER_NAME_FOR_CONTAINER));
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_ENTER_NAME_FOR_CONTAINER));
                             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                                 MxHeadManager mxHeadManager = MxHeadManager.getInstance();
                                 ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
@@ -217,7 +218,7 @@ public class ItemsCommand extends MxCommand {
                                     if (section.isPresent()) {
                                         StorageContainer newContainer = new StorageContainer(message, section.get().getKey(), p.getUniqueId().toString(), false, new File(SpecialDirectories.STORAGE_FILES.getDirectory() + File.separator + p.getUniqueId() + File.separator + UUID.randomUUID() + ".yml"));
                                         StorageManager.getInstance().addPlayerContainer(p.getUniqueId().toString(), newContainer);
-                                        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_CONTAINER_ADDED));
+                                        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_CONTAINER_ADDED));
                                         p.closeInventory();
                                         openContainer(p, newContainer, mainInv);
                                     }
@@ -229,22 +230,22 @@ public class ItemsCommand extends MxCommand {
                                     section.ifPresent(mxHeadSection -> {
                                         MxSkullItemStackBuilder b = MxSkullItemStackBuilder.create(1)
                                                 .setSkinFromHeadsData(key)
-                                                .setName(ChatColor.GRAY + mxHeadSection.getName().get())
+                                                .setName("<gray>" + mxHeadSection.getName().get())
                                                 .addBlankLore()
-                                                .addLore(ChatColor.YELLOW + "Klik om de skull te selecteren.")
+                                                .addLore("<yellow>Klik om de skull te selecteren.")
                                                 .addCustomTagString("skull_key", mxHeadSection.getKey());
                                         list.add(new Pair<>(b.build(), clicked));
                                     });
                                 });
 
                                 MxInventoryManager.getInstance().addAndOpenInventory(p,
-                                        MxListInventoryBuilder.create(ChatColor.GRAY + "Vul-Tool", MxInventorySlots.SIX_ROWS)
+                                        MxListInventoryBuilder.create("<gray>Vul-Tool", MxInventorySlots.SIX_ROWS)
                                                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                                                 .addListItems(list)
                                                 .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
-                                                        .setName(ChatColor.GRAY + "Info")
+                                                        .setName("<gray>Info")
                                                         .addBlankLore()
-                                                        .addLore(ChatColor.YELLOW + "Klik op een skull om dat het logo te maken van de opslag.")
+                                                        .addLore("<yellow>Klik op een skull om dat het logo te maken van de opslag.")
                                                         .build(), 48, null)
                                                 .build());
                             });
@@ -279,10 +280,10 @@ public class ItemsCommand extends MxCommand {
             List<Component> lores = im.hasLore() ? im.lore() : new ArrayList<>();
             if (lores == null)
                 lores = new ArrayList<>();
-            lores.add(Component.text(" "));
-            lores.add(Component.text(ChatColor.YELLOW + "Linker-muisknop om het item in je inventory te krijgen"));
+            lores.add(MiniMessage.miniMessage().deserialize("<!i>" + " "));
+            lores.add(MiniMessage.miniMessage().deserialize("<!i>" + "<yellow>Linker-muisknop om het item in je inventory te krijgen"));
             if (container.hasPermissionToEdit(p)) {
-                lores.add(Component.text(ChatColor.YELLOW + "Shift + Rechter-muisknop om het item te verwijderen"));
+                lores.add(MiniMessage.miniMessage().deserialize("<!i>" + "<yellow>Shift + Rechter-muisknop om het item te verwijderen"));
             }
 
             im.lore(lores);
@@ -298,31 +299,19 @@ public class ItemsCommand extends MxCommand {
                 }
             }));
         });
-        MxListInventoryBuilder builder = MxListInventoryBuilder.create(ChatColor.GRAY + container.getName(), MxInventorySlots.SIX_ROWS)
+        MxListInventoryBuilder builder = MxListInventoryBuilder.create("<gray>" + container.getName(), MxInventorySlots.SIX_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                 .setListItems(items);
         if (container.hasPermissionToEdit(p)) {
             builder.setItem(MxSkullItemStackBuilder.create(1)
-                                    .setSkinFromHeadsData("red-minus")
-                                    .setName(ChatColor.RED + "Verwijder Opslag")
+                                                        .setSkinFromHeadsData("wooden-plus")
+                                    .setName("<gray>Voeg items toe")
                                     .addBlankLore()
-                                    .addLore(ChatColor.YELLOW + "Klik om de opslag te verwijderen")
-                                    .build(),
-                            46, (mxInv, e) -> {
-                                p.closeInventory();
-                                container.delete();
-                                p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_CONTAINER_DELETED));
-                            }
-                    )
-                    .setItem(MxSkullItemStackBuilder.create(1)
-                                    .setSkinFromHeadsData("wooden-plus")
-                                    .setName(ChatColor.GRAY + "Voeg items toe")
-                                    .addBlankLore()
-                                    .addLore(ChatColor.YELLOW + "Klik om items aan de opslag toe te voegen.")
+                                    .addLore("<yellow>Klik om items aan de opslag toe te voegen.")
                                     .build(),
                             52, (mxInv, e) -> {
                                 p.closeInventory();
-                                MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultInventoryBuilder.create(ChatColor.GRAY + "Voeg Items toe", MxInventorySlots.SIX_ROWS)
+                                MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultInventoryBuilder.create("<gray>Voeg Items toe", MxInventorySlots.SIX_ROWS)
                                         .defaultCancelEvent(false)
                                         .setOnInventoryCloseEvent((p1, inv, e1) -> {
                                             for (ItemStack content : inv.getInv().getContents()) {
@@ -330,7 +319,7 @@ public class ItemsCommand extends MxCommand {
                                                     container.getContents().add(content);
                                                 }
                                             }
-                                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_ADDED_NEW_ITEMS));
+                                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.COMMAND_ITEMS_ADDED_NEW_ITEMS));
                                             openContainer(p, container, mainInv);
                                         })
                                         .build());
@@ -340,11 +329,11 @@ public class ItemsCommand extends MxCommand {
             if (!container.getOwner().equalsIgnoreCase("server")) {
                 builder.setItem(MxSkullItemStackBuilder.create(1)
                                 .setSkinFromHeadsData("minecraft-world")
-                                .setName(ChatColor.GRAY + "Toggle openbaar")
+                                .setName("<gray>Toggle openbaar")
                                 .addBlankLore()
-                                .addLore(ChatColor.GRAY + "Status: " + (container.isPublic() ? "Openbaar" : "Prive"))
+                                .addLore("<gray>Status: " + (container.isPublic() ? "Openbaar" : "Prive"))
                                 .addBlankLore()
-                                .addLore(ChatColor.YELLOW + (container.isPublic() ? "Klik hier om de opslag prive te maken" : "Klik hier om de opslag openbaar te maken"))
+                                .addLore("<yellow>" + (container.isPublic() ? "Klik hier om de opslag prive te maken" : "Klik hier om de opslag openbaar te maken"))
                                 .build(),
                         51, (mxInv, e) -> {
                             container.setPublic(!container.isPublic());

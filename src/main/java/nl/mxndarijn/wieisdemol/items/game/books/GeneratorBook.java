@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.items.game.books;
 
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.AvailablePerson;
@@ -11,7 +12,7 @@ import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
 import nl.mxndarijn.wieisdemol.items.maps.MapGeneratorBook;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import org.bukkit.ChatColor;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -59,7 +60,7 @@ public class GeneratorBook extends Book {
                     String json = container.getOrDefault(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), MapGeneratorBook.containerKey), PersistentDataType.STRING, "{}");
                     List<ItemStack> items = getAllItems(json);
                     if(items.isEmpty()) {
-                        game.sendMessageToHosts(ChatPrefix.WIDM + ""+ ChatColor.RED + "Generator niet goed geconfigured! Zitten geen items in.");
+                        game.sendMessageToHosts(ChatPrefix.WIDM + ""+ "<red>Generator niet goed geconfigured! Zitten geen items in.");
                         return;
                     }
 
@@ -68,7 +69,7 @@ public class GeneratorBook extends Book {
 
                     p.getInventory().addItem(randomItem);
 
-                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_YOU_RECEIVED_ITEM));
+                    MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_YOU_RECEIVED_ITEM));
                     break;
                 }
             }

@@ -28,11 +28,12 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerManager;
 import nl.mxndarijn.wieisdemol.managers.warps.WarpManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -117,25 +118,25 @@ public class Preset {
             builder.setSkinFromHeadsData("question-mark");
         }
 
-        builder.setName(ChatColor.GRAY + config.getName())
+        builder.setName("<gray>" + config.getName())
                 .addLore(" ");
 
         if (!config.isConfigured()) {
-            builder.addLore(ChatColor.GRAY + "Wereld-Naam: " + directory.getName());
+            builder.addLore("<gray>Wereld-Naam: " + directory.getName());
             builder.addLore(" ");
         }
-        builder.addLore(ChatColor.GRAY + "Host-Moeilijkheid:")
+        builder.addLore("<gray>Host-Moeilijkheid:")
                 .addLore(getStars(config.getHostDifficulty()))
-                .addLore(ChatColor.GRAY + "Speel-Moeilijkheid:")
+                .addLore("<gray>Speel-Moeilijkheid:")
                 .addLore(getStars(config.getPlayDifficulty()));
         if (config.isLocked()) {
-            builder.addLore(ChatColor.GRAY + "Locked: " + (config.isLocked() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"))
-                    .addLore(ChatColor.GRAY + "Door: " + config.getLockedBy())
-                    .addLore(ChatColor.GRAY + "Reden: ")
-                    .addLore(ChatColor.RED + config.getLockReason());
+            builder.addLore("<gray>Locked: " + (config.isLocked() ? "<green>Ja" : "<red>Nee"))
+                    .addLore("<gray>Door: " + config.getLockedBy())
+                    .addLore("<gray>Reden: ")
+                    .addLore("<red>" + config.getLockReason());
         }
         builder.addLore(" ")
-                .addLore(ChatColor.GRAY + "Geconfigureerd: " + (config.isConfigured() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"));
+                .addLore("<gray>Geconfigureerd: " + (config.isConfigured() ? "<green>Ja" : "<red>Nee"));
 
         builder.addCustomTagString(PRESET_ITEMMETA_TAG, directory.getName());
 
@@ -152,30 +153,30 @@ public class Preset {
         }
 
         builder.addLore(" ")
-                .addLore(ChatColor.GRAY + "Aantal Spelers: " + config.getColors().size());
-        builder.setName(ChatColor.GRAY + config.getName())
+                .addLore("<gray>Aantal Spelers: " + config.getColors().size());
+        builder.setName("<gray>" + config.getName())
                 .addLore(" ");
-        builder.addLore(ChatColor.GRAY + "Host-Moeilijkheid:")
+        builder.addLore("<gray>Host-Moeilijkheid:")
                 .addLore(getStars(config.getHostDifficulty()))
-                .addLore(ChatColor.GRAY + "Speel-Moeilijkheid:")
+                .addLore("<gray>Speel-Moeilijkheid:")
                 .addLore(getStars(config.getPlayDifficulty()));
 
 
         builder.addLore(" ")
-                .addLore(ChatColor.DARK_GRAY + "Extra Info:")
-                .addLore(ChatColor.GRAY + "Aantal Kisten: " + chestManager.getChests().size())
-                .addLore(ChatColor.GRAY + "Aantal deuren: " + doorManager.getDoors().size());
+                .addLore("<dark_gray>" + "Extra Info:")
+                .addLore("<gray>Aantal Kisten: " + chestManager.getChests().size())
+                .addLore("<gray>Aantal deuren: " + doorManager.getDoors().size());
 
         if (config.isLocked()) {
-            builder.addLore(ChatColor.GRAY + "Locked: " + (config.isLocked() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"))
-                    .addLore(ChatColor.GRAY + "Door: " + config.getLockedBy())
-                    .addLore(ChatColor.GRAY + "Reden: ")
-                    .addLore(ChatColor.RED + config.getLockReason());
+            builder.addLore("<gray>Locked: " + (config.isLocked() ? "<green>Ja" : "<red>Nee"))
+                    .addLore("<gray>Door: " + config.getLockedBy())
+                    .addLore("<gray>Reden: ")
+                    .addLore("<red>" + config.getLockReason());
         }
         builder.addCustomTagString(PRESET_ITEMMETA_TAG, directory.getName());
 
         if(!p.hasPermission(Permissions.COMMAND_MAPS_CREATE_SPECIFIC_MAP + config.getName().toLowerCase().replaceAll(" ", "_"))) {
-            builder.addLore(ChatColor.RED + "Jij kan deze preset niet zelf aanmaken.");
+            builder.addLore("<red>Jij kan deze preset niet zelf aanmaken.");
         }
 
         return builder.build();
@@ -194,9 +195,9 @@ public class Preset {
         StringBuilder hostStars = new StringBuilder();
         for (int i = 1; i <= 5; i++) {
             if (i <= stars) {
-                hostStars.append(ChatColor.YELLOW + "\u272B");
+                hostStars.append("<yellow>\u272B");
             } else {
-                hostStars.append(ChatColor.GRAY + "\u272B");
+                hostStars.append("<gray>\u272B");
             }
         }
         return hostStars.toString();
@@ -226,7 +227,7 @@ public class Preset {
                     put("%%total_warps%%", warpManager.getWarps().size() + "");
                     put("%%host_dif%%", getStars(config.getHostDifficulty()));
                     put("%%play_dif%%", getStars(config.getPlayDifficulty()));
-                    put("%%configured%%", (config.isConfigured() ? ChatColor.GREEN + "Ja" : ChatColor.RED + "Nee"));
+                    put("%%configured%%", (config.isConfigured() ? "<green>Ja" : "<red>Nee"));
                 }}));
                 scoreboard.setUpdateTimer(20L);
                 ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new SaveInventoryChangeWorld(getInventoriesFile(), new ArrayList<>(
@@ -249,6 +250,11 @@ public class Preset {
                     @Override
                     public void leave(Player p, World w, PlayerChangedWorldEvent e) {
                         p.setGameMode(GameMode.ADVENTURE);
+                    }
+
+                    @Override
+                    public void quit(Player p, World w, PlayerQuitEvent e) {
+                        // do nothing
                     }
                 });
             }

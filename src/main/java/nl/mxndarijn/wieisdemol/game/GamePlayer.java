@@ -6,7 +6,7 @@ import nl.mxndarijn.wieisdemol.data.ScoreBoard;
 import nl.mxndarijn.wieisdemol.managers.ScoreBoardManager;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -60,7 +60,7 @@ public class GamePlayer {
                         put("%%game_time%%", game.getGameTime());
                         put("%%color%%", mapPlayer.getColor().getDisplayName());
                         put("%%host%%", host);
-                        put("%%role%%", (beginChestOpened ? (peacekeeperChestOpened ? mapPlayer.getRoleDisplayString() : mapPlayer.getRoleDisplayWithoutPeacekeeper()) : ChatColor.GRAY + "Onbekend"));
+                        put("%%role%%", (beginChestOpened ? (peacekeeperChestOpened ? mapPlayer.getRoleDisplayString() : mapPlayer.getRoleDisplayWithoutPeacekeeper()) : "<gray>Onbekend"));
                     }}));
                 }
             }
@@ -69,7 +69,7 @@ public class GamePlayer {
                 put("%%game_time%%", game.getGameTime());
                 put("%%color%%", mapPlayer.getColor().getDisplayName());
                 put("%%host%%", host);
-                put("%%role%%", (beginChestOpened ? (peacekeeperChestOpened ? mapPlayer.getRoleDisplayString() : mapPlayer.getRoleDisplayWithoutPeacekeeper()) : ChatColor.GRAY + "Onbekend"));
+                put("%%role%%", (beginChestOpened ? (peacekeeperChestOpened ? mapPlayer.getRoleDisplayString() : mapPlayer.getRoleDisplayWithoutPeacekeeper()) : "<gray>Onbekend"));
             }});
         });
         scoreboard.setUpdateTimer(10);

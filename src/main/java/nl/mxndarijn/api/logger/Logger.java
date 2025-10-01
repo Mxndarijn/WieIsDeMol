@@ -1,7 +1,7 @@
 package nl.mxndarijn.api.logger;
 
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 public class Logger {
     private static LogLevel logLevel = LogLevel.DEBUG;
@@ -11,12 +11,12 @@ public class Logger {
     }
 
     public static String getMainWieIsDeMolPrefix() {
-        return ChatColor.DARK_GRAY + "[" + ChatColor.GOLD + "WIDM";
+        return "<dark_gray>[<gold>WIDM";
     }
 
     public static void logMessage(LogLevel level, String message) {
         if (level.getLevel() <= logLevel.getLevel()) {
-            Bukkit.getConsoleSender().sendMessage(level.getPrefix() + message);
+            Bukkit.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize("<!i>" + level.getPrefix() + message));
         }
     }
 
@@ -26,7 +26,7 @@ public class Logger {
 
     public static void logMessage(LogLevel level, Prefix prefix, String message) {
         if (level.getLevel() <= logLevel.getLevel()) {
-            Bukkit.getConsoleSender().sendMessage(level.getPrefix() + prefix + message);
+            Bukkit.getConsoleSender().sendMessage(MiniMessage.miniMessage().deserialize("<!i>" + level.getPrefix() + prefix + message));
         }
     }
 }

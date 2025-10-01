@@ -59,6 +59,11 @@ public class SpawnManager implements Listener {
                 p.closeInventory();
                 p.getInventory().clear();
                 p.setGameMode(GameMode.ADVENTURE);
+
+                p.getActivePotionEffects().forEach(effect -> {
+                    p.removePotionEffect(effect.getType());
+                });
+
                 p.teleport(Functions.getSpawnLocation());
                 p.getInventory().addItem(Items.GAMES_ITEM.getItemStack());
                 MxSupplierScoreBoard sb = scoreboards.get(p.getUniqueId());
@@ -71,8 +76,18 @@ public class SpawnManager implements Listener {
             public void leave(Player p, World w, PlayerChangedWorldEvent e) {
                 p.closeInventory();
                 p.getInventory().clear();
+
+                p.getActivePotionEffects().forEach(effect -> {
+                    p.removePotionEffect(effect.getType());
+                });
+
                 MxSupplierScoreBoard sb = scoreboards.get(p.getUniqueId());
                 ScoreBoardManager.getInstance().removePlayerScoreboard(p.getUniqueId(), sb);
+            }
+
+            @Override
+            public void quit(Player p, World w, PlayerQuitEvent e) {
+                // do nothing
             }
         });
 

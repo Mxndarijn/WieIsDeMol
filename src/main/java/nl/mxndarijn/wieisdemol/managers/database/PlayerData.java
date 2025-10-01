@@ -3,6 +3,7 @@ package nl.mxndarijn.wieisdemol.managers.database;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -52,6 +53,8 @@ public class PlayerData {
                 }
                 saveData();
             }
+
+            connection.close();
         } catch (SQLException e) {
             Logger.logMessage(LogLevel.ERROR,  Prefix.DATABASEMANAGER,"Could not load data of user " + userid);
             e.printStackTrace();
@@ -80,16 +83,7 @@ public class PlayerData {
     public void saveData() {
         try {
             Connection connection = DatabaseManager.getInstance().getConnection();
-            String query = "INSERT INTO userdata (userid, spelerwins, molwins, egowins, gamesplayed) " +
-                    "VALUES (?, ?, ?, ?, ?) " +
-                    "ON DUPLICATE KEY UPDATE " +
-                    "spelerwins = VALUES(spelerwins), " +
-                    "molwins = VALUES(molwins), " +
-                    "egowins = VALUES(egowins), " +
-                    "gamesplayed = VALUES(gamesplayed)";
-
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, userid);
+            PreparedStatement statement = getPreparedStatement(connection);
 
             for (Map.Entry<UserDataType, Integer> entry : map.entrySet()) {
                 UserDataType type = entry.getKey();
@@ -98,10 +92,26 @@ public class PlayerData {
             }
 
             statement.executeUpdate();
+            connection.close();
         } catch (SQLException e) {
             Logger.logMessage(LogLevel.ERROR,  Prefix.DATABASEMANAGER,"Could not save data");
             e.printStackTrace();
         }
+    }
+
+    private @NotNull PreparedStatement getPreparedStatement(Connection connection) throws SQLException {
+        String query = "INSERT INTO userdata (userid, spelerwins, molwins, egowins, gamesplayed) " +
+                "VALUES (?, ?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +
+                "spelerwins = VALUES(spelerwins), " +
+                "molwins = VALUES(molwins), " +
+                "egowins = VALUES(egowins), " +
+                "gamesplayed = VALUES(gamesplayed)";
+
+        PreparedStatement statement = connection.prepareStatement(query);
+        statement.setString(1, userid);
+
+        return statement;
     }
 
     public enum UserDataType {
@@ -109,5 +119,20 @@ public class PlayerData {
         MOLWINS,
         EGOWINS,
         GAMESPLAYED,
+    }
+
+    public double winRate() {
+        int games = this.getData(PlayerData.UserDataType.GAMESPLAYED);
+
+        if (games == 0)
+            return 0.00;
+
+        int molWins = this.getData(PlayerData.UserDataType.MOLWINS);
+        int playerWins = this.getData(PlayerData.UserDataType.SPELERWINS);
+        int egoWins = this.getData(PlayerData.UserDataType.EGOWINS);
+
+        int totalWins = molWins + playerWins + egoWins;
+
+        return ((double) totalWins / games) * 100;
     }
 }

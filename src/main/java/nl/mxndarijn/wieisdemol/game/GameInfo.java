@@ -7,7 +7,6 @@ import nl.mxndarijn.wieisdemol.managers.GameManager;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
 import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -87,12 +86,12 @@ public class GameInfo {
         Map map = optionalMap.get();
         MxSkullItemStackBuilder builder = MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData(map.getMapConfig().getPresetConfig().getSkullId())
-                .setName(ChatColor.GRAY + map.getMapConfig().getName())
+                .setName("<gray>" + map.getMapConfig().getName())
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Status: " + status.getStatus())
-                .addLore(ChatColor.GRAY + "Host: " + Bukkit.getOfflinePlayer(map.getMapConfig().getOwner()).getName())
+                .addLore("<gray>Status: " + status.getStatus())
+                .addLore("<gray>Host: " + Bukkit.getOfflinePlayer(map.getMapConfig().getOwner()).getName())
                 .addBlankLore()
-                .addLore(ChatColor.GRAY + "Speel-Moeilijkheid: " + map.getStars(map.getMapConfig().getPresetConfig().getPlayDifficulty()));
+                .addLore("<gray>Speel-Moeilijkheid: " + map.getStars(map.getMapConfig().getPresetConfig().getPlayDifficulty()));
 
         Duration duration = Duration.between(time, LocalDateTime.now());
         Long minutes = Math.abs(duration.toMinutes());
@@ -100,27 +99,31 @@ public class GameInfo {
             if (minutes < ConfigFiles.MAIN_CONFIG.getFileConfiguration().getInt("time-before-queue-is-open-in-hours") * 60L) {
                 if(time.isAfter(LocalDateTime.now())) {
                     builder.addBlankLore()
-                            .addLore(ChatColor.GRAY + "Begint om: " + formattedTime + " (Over " + minutes + (minutes > 1 ? " minuten)" : " minuut)"))
-                            .addLore(ChatColor.GRAY + "Aantal wachtend: " + queue.size());
+                            .addLore("<gray>Begint om: " + formattedTime + " (Over " + minutes + (minutes > 1 ? " minuten)" : " minuut)"))
+                            .addLore("<gray>Aantal wachtend: " + queue.size());
 
                 } else {
                     builder.addBlankLore()
-                            .addLore(ChatColor.GRAY + "Begon om: " + formattedTime + ChatColor.RED + " (Tijd al geweest).")
-                            .addLore(ChatColor.GRAY + "Aantal wachtend: " + queue.size());
+                            .addLore("<gray>Begon om: " + formattedTime + "<red> (Tijd al geweest).")
+                            .addLore("<gray>Aantal wachtend: " + queue.size());
                 }
 
-                builder.addLore(ChatColor.YELLOW + "Klik hier om in de wachtrij te komen.");
+                if(queue.contains(p.getUniqueId())) {
+                    builder.addLore("<yellow>Klik hier om uit de wachtrij te gaan.");
+                } else {
+                    builder.addLore("<yellow>Klik hier om in de wachtrij te komen.");
+                }
                 if (host == p.getUniqueId() || p.hasPermission(Permissions.ITEM_GAMES_MANAGE_OTHER_GAMES.getPermission())) {
-                    builder.addLore(ChatColor.YELLOW + "Shift-Klik om de game te beheren.");
+                    builder.addLore("<yellow>Shift-Klik om de game te beheren.");
                 }
             } else {
                 builder.addBlankLore();
                 DateTimeFormatter formatter1 = DateTimeFormatter.ofPattern("EEEE HH:mm", new Locale("nl", "NL"));
                 String formattedTime1 = time.format(formatter1);
-                builder.addLore(ChatColor.GRAY + "Begint om: " + formattedTime1);
+                builder.addLore("<gray>Begint om: " + formattedTime1);
             }
         } else {
-            builder.addLore(ChatColor.YELLOW + "Klik hier om de game te spectaten.");
+            builder.addLore("<yellow>Klik hier om de game te spectaten.");
         }
 
         return builder.build();

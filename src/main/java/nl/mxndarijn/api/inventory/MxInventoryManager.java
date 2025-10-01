@@ -1,5 +1,8 @@
 package nl.mxndarijn.api.inventory;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -67,7 +70,11 @@ public class MxInventoryManager implements Listener {
         Iterator<MxInventory> i = list.iterator();
         while (i.hasNext()) {
             MxInventory mxInventory = i.next();
-            if (mxInventory.getName().equals(e.getView().getTitle())) {
+            String title = e.getView().getTitle();
+            if (e.getView().title() instanceof TextComponent) {
+                title = ((TextComponent) e.getView().title()).content();
+            }
+            if (mxInventory.getName().contains(title)) {
                 if (!mxInventory.isCanBeClosed()) {
                     Bukkit.getScheduler().runTaskLater(plugin, () -> {
                         e.getPlayer().openInventory(mxInventory.getInv());

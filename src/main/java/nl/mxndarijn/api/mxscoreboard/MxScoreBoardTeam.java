@@ -1,10 +1,7 @@
 package nl.mxndarijn.api.mxscoreboard;
 
-import me.neznamy.tab.shared.ProtocolVersion;
-import me.neznamy.tab.shared.chat.EnumChatFormat;
-import me.neznamy.tab.shared.chat.IChatBaseComponent;
 import net.kyori.adventure.text.Component;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.scoreboard.Team;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -21,6 +18,16 @@ public class MxScoreBoardTeam {
     private final String entry;
     private final MxScoreBoard scoreboard;
 
+    private static final String PATTERN = "0123456789abcdef";
+
+    private static String generateFromPattern() {
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 16; i++) {
+            sb.append("§").append(PATTERN.charAt(random.nextInt(PATTERN.length())));
+        }
+        return sb.toString();
+    }
 
     protected MxScoreBoardTeam(MxScoreBoard scoreboard) {
         this.line = "";
@@ -29,13 +36,8 @@ public class MxScoreBoardTeam {
 
         Random r = new Random();
 
-        ChatColor randomColor = ChatColor.values()[r.nextInt(ChatColor.values().length)];
-        ChatColor randomColor1 = ChatColor.values()[r.nextInt(ChatColor.values().length)];
-        ChatColor randomColor2 = ChatColor.values()[r.nextInt(ChatColor.values().length)];
-        ChatColor randomColor3 = ChatColor.values()[r.nextInt(ChatColor.values().length)];
-
         team = scoreboard.getScoreboard().registerNewTeam(this.id);
-        this.entry = randomColor.toString() + randomColor1.toString() + randomColor2.toString() + randomColor3.toString() + ChatColor.RESET;
+        this.entry = "§r" + generateFromPattern();
         team.addEntry(entry);
 
     }
@@ -49,7 +51,6 @@ public class MxScoreBoardTeam {
     }
 
     public void setLine(String line) {
-        line = EnumChatFormat.color(line);
         if (line.length() > scoreboard.MAX_LINE_LENGTH) {
             throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
         }
@@ -67,15 +68,15 @@ public class MxScoreBoardTeam {
 
         int lineLength = line.length() - 8 * count + count * 2;
         if (lineLength <= scoreboard.MAX_LINE_LENGTH / 2) {
-            team.prefix(IChatBaseComponent.optimizedComponent(line).toAdventureComponent(ProtocolVersion.V1_19_4));
-            team.suffix(Component.text(""));
+            team.prefix(MiniMessage.miniMessage().deserialize("<!i>" + line));
+            team.suffix(MiniMessage.miniMessage().deserialize("<!i>" + ""));
         } else {
             String prefix = line.substring(0, scoreboard.MAX_LINE_LENGTH / 2);
-            String suffix = getLatestChatColor(prefix) + line.substring(scoreboard.MAX_LINE_LENGTH / 2);
+            String suffix = "<gray>" + (prefix) + line.substring(scoreboard.MAX_LINE_LENGTH / 2);
             if ((prefix + suffix).length() > scoreboard.MAX_LINE_LENGTH)
                 throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
-            team.prefix(IChatBaseComponent.optimizedComponent(prefix).toAdventureComponent(ProtocolVersion.V1_19_4));
-            team.suffix(IChatBaseComponent.optimizedComponent(suffix).toAdventureComponent(ProtocolVersion.V1_19_4));
+            team.prefix(MiniMessage.miniMessage().deserialize("<!i>" + prefix));
+            team.suffix(MiniMessage.miniMessage().deserialize("<!i>" + suffix));
 
         }
     }
@@ -123,10 +124,6 @@ public class MxScoreBoardTeam {
 
     public void destroy() {
         team.unregister();
-    }
-
-    private String getLatestChatColor(String s) {
-        return ChatColor.getLastColors(s);
     }
 
     public String getEntry() {

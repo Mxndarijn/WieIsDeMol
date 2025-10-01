@@ -7,7 +7,7 @@ import nl.mxndarijn.api.util.Functions;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
-import org.bukkit.ChatColor;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,7 +47,7 @@ public class LanguageManager {
 
     public String getLanguageString(LanguageText text, List<String> placeholders) {
         checkAvailability(text);
-        String languageString = ChatColor.translateAlternateColorCodes('&', languageConfig.getString(text.getConfigValue()));
+        String languageString = languageConfig.getString(text.getConfigValue());
         for (int i = 0; i < placeholders.size(); i++) {
             String v = placeholders.get(i);
             languageString = languageString.replace("%%" + (i + 1) + "%%", v);

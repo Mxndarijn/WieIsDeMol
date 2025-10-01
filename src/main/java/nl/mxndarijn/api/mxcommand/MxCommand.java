@@ -3,6 +3,7 @@ package nl.mxndarijn.api.mxcommand;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.Permissions;
@@ -40,22 +41,22 @@ public abstract class MxCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (onlyPlayersCanExecute) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(languageManager.getLanguageString(LanguageText.NO_PLAYER, Collections.emptyList(), ChatPrefix.WIDM));
+                MSG.msg(sender, languageManager.getLanguageString(LanguageText.NO_PLAYER, Collections.emptyList(), ChatPrefix.WIDM));
                 return true;
             }
             if (worldFilter != null && !worldFilter.isPlayerInCorrectWorld((Player) sender)) {
-                sender.sendMessage(languageManager.getLanguageString(LanguageText.NOT_CORRECT_WORLD, Collections.emptyList(), ChatPrefix.WIDM));
+                MSG.msg(sender, languageManager.getLanguageString(LanguageText.NOT_CORRECT_WORLD, Collections.emptyList(), ChatPrefix.WIDM));
                 return true;
             }
         }
         if (!sender.hasPermission(permission.getPermission())) {
-            sender.sendMessage(languageManager.getLanguageString(LanguageText.NO_PERMISSION, Collections.emptyList(), ChatPrefix.WIDM));
+            MSG.msg(sender, languageManager.getLanguageString(LanguageText.NO_PERMISSION, Collections.emptyList(), ChatPrefix.WIDM));
             return true;
         }
         if (sender instanceof Player) {
             if(!canBeExecutedInGame) {
                 if(GameWorldManager.getInstance().isPlayerPLayingInAGame(((Player) sender).getUniqueId())) {
-                    sender.sendMessage(languageManager.getLanguageString(LanguageText.CAN_ONLY_BE_EXECUTED_OUT_OF_GAME, Collections.emptyList(), ChatPrefix.WIDM));
+                    MSG.msg(sender, languageManager.getLanguageString(LanguageText.CAN_ONLY_BE_EXECUTED_OUT_OF_GAME, Collections.emptyList(), ChatPrefix.WIDM));
                     return true;
                 }
             }
@@ -65,7 +66,7 @@ public abstract class MxCommand implements CommandExecutor {
         } catch (Exception e) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MXCOMMAND, "Could not execute command " + command.getName());
             e.printStackTrace();
-            sender.sendMessage(languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_COMMAND, Collections.emptyList(), ChatPrefix.WIDM));
+            MSG.msg(sender, languageManager.getLanguageString(LanguageText.ERROR_WHILE_EXECUTING_COMMAND, Collections.emptyList(), ChatPrefix.WIDM));
         }
         return true;
     }

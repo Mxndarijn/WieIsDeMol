@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.commands;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.*;
 import nl.mxndarijn.api.inventory.menu.MxDefaultMenuBuilder;
@@ -12,13 +13,14 @@ import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.mxcommand.MxCommand;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.*;
 import nl.mxndarijn.wieisdemol.items.game.books.Book;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
@@ -52,47 +54,47 @@ public class ModifyCommand extends MxCommand {
 
         ItemStack is = p.getInventory().getItemInMainHand();
         if(is == null || is.getType() == Material.AIR) {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_NO_ITEM_FOUND));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_NO_ITEM_FOUND));
             return;
         }
-        MxDefaultMenuBuilder menu = MxDefaultMenuBuilder.create(ChatColor.GRAY + "Modify", MxInventorySlots.THREE_ROWS);
+        MxDefaultMenuBuilder menu = MxDefaultMenuBuilder.create("<gray>Modify", MxInventorySlots.THREE_ROWS);
         if(is.getType() == Material.BOOK) {
             menu.setItem(MxDefaultItemStackBuilder.create(Material.BOOK)
-                    .setName(ChatColor.GRAY + "Book modify")
+                    .setName("<gray>Book modify")
                     .addBlankLore()
-                    .addLore(ChatColor.GRAY + "Met book modify kan je succes kansen instellen,")
-                    .addLore(ChatColor.GRAY + "en eventueel wat er moet gebeuren als het faalt.")
+                    .addLore("<gray>Met book modify kan je succes kansen instellen,")
+                    .addLore("<gray>en eventueel wat er moet gebeuren als het faalt.")
                     .addBlankLore()
-                    .addLore(ChatColor.YELLOW + "Klik hier om de itemtags van het item aan te passen.")
+                    .addLore("<yellow>Klik hier om de itemtags van het item aan te passen.")
                     .build(), 16, getOnClickBookLore(p, is));
         }
         MxInventoryManager.getInstance().addAndOpenInventory(p, menu
                 .setItem(MxDefaultItemStackBuilder.create(Material.OAK_SIGN)
-                        .setName(ChatColor.GRAY + "Verander Naam")
+                        .setName("<gray>Verander Naam")
                         .addBlankLore()
-                        .addLore(ChatColor.YELLOW + "Klik hier om de naam van het item aan te passen.")
+                        .addLore("<yellow>Klik hier om de naam van het item aan te passen.")
                         .build(), 10, getClickOnName(p, is))
 
                 .setItem(MxDefaultItemStackBuilder.create(Material.ANVIL)
-                        .setName(ChatColor.GRAY + "Verander Durability")
+                        .setName("<gray>Verander Durability")
                         .addBlankLore()
-                        .addLore(ChatColor.YELLOW + "Klik hier om de durability van het item aan te passen.")
+                        .addLore("<yellow>Klik hier om de durability van het item aan te passen.")
                         .build(), 12, getClickOnDurability(p, is))
 
                 .setItem(MxDefaultItemStackBuilder.create(Material.ENCHANTED_BOOK)
-                        .setName(ChatColor.GRAY + "Verander Enchantments")
+                        .setName("<gray>Verander Enchantments")
                         .addBlankLore()
-                        .addLore(ChatColor.YELLOW + "Klik hier om de enchants van het item aan te passen.")
+                        .addLore("<yellow>Klik hier om de enchants van het item aan te passen.")
                         .build(), 14, getClickOnEnchantments(p, is))
                 .setItem(MxDefaultItemStackBuilder.create(Material.PIGLIN_BANNER_PATTERN)
-                        .setName(ChatColor.GRAY + "Verander Lore")
+                        .setName("<gray>Verander Lore")
                         .addBlankLore()
-                        .addLore(ChatColor.YELLOW + "Klik hier om de lore van het item aan te passen.")
+                        .addLore("<yellow>Klik hier om de lore van het item aan te passen.")
                         .build(), 11, getClickOnLore(p, is))
                 .setItem(MxDefaultItemStackBuilder.create(Material.NAME_TAG)
-                        .setName(ChatColor.GRAY + "Verander Itemtags")
+                        .setName("<gray>Verander Itemtags")
                         .addBlankLore()
-                        .addLore(ChatColor.YELLOW + "Klik hier om de itemtags van het item aan te passen.")
+                        .addLore("<yellow>Klik hier om de itemtags van het item aan te passen.")
                         .build(), 15, getClickOnItemTags(p, is))
                 .build()
 
@@ -107,53 +109,53 @@ public class ModifyCommand extends MxCommand {
             PersistentDataContainer container = im.getPersistentDataContainer();
             int data = container.getOrDefault(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.INTEGER, 100);
 
-            MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Book Modify", MxInventorySlots.THREE_ROWS)
+            MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create("<gray>Book Modify", MxInventorySlots.THREE_ROWS)
                     .setItem(MxDefaultItemStackBuilder.create(Material.EXPERIENCE_BOTTLE)
-                                    .setName(ChatColor.GRAY + "Succeskans")
+                                    .setName("<gray>Succeskans")
                                     .addBlankLore()
-                                    .addLore(ChatColor.GRAY + "Succeskans: " + data)
+                                    .addLore("<gray>Succeskans: " + data)
                                     .addBlankLore()
-                                    .addLore(ChatColor.YELLOW + "Klik hier om de kans aan te passen.").build(), 12,
+                                    .addLore("<yellow>Klik hier om de kans aan te passen.").build(), 12,
                             (mxInv1, e1) -> {
                                 p.closeInventory();
-                                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_ENTER_NUMBER));
+                                MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_ENTER_NUMBER));
                                 MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                                    try {
                                        int i = Integer.parseInt(message);
                                        if(i < 0 || i > 100) {
-                                           p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_NOT_A_NUMBER));
+                                           MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_NOT_A_NUMBER));
                                            return;
                                        }
                                        container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.INTEGER, i);
-                                       p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_RATING_CHANGED, Collections.singletonList(i + "")));
-                                       String lore = ChatColor.BLUE + "Succeskans: " + ((i > 50) ? ChatColor.GREEN : ChatColor.RED) + i + "%";
+                                       MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_RATING_CHANGED, Collections.singletonList(i + "")));
+                                       String lore = "<blue>" + "Succeskans: " + ((i > 50) ? "<green>" : "<red>") + i + "%";
                                        List<Component> list = im.hasLore() ? im.lore() : new ArrayList<>();
                                        List<Component> newList = new ArrayList<>();
                                        list.forEach(c -> {
-                                           if (!Functions.convertComponentToString(c).contains(ChatColor.BLUE + "Succeskans: ")) {
+                                           if (!Functions.convertComponentToString(c).contains("<blue>" + "Succeskans: ")) {
                                                newList.add(c);
                                            }
                                        });
                                        list = newList;
-                                       list.add(Component.text(lore));
+                                       list.add(MiniMessage.miniMessage().deserialize("<!i>" + lore));
                                        im.lore(list);
                                        is.setItemMeta(im);
                                    } catch(NumberFormatException ex) {
-                                       p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_NOT_A_NUMBER));
+                                       MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_MODIFY_SUCCESS_NOT_A_NUMBER));
                                    }
                                 });
 
                             })
                     .setItem(MxDefaultItemStackBuilder.create(Material.LECTERN)
-                                    .setName(ChatColor.GRAY + "Faal-Actie")
+                                    .setName("<gray>Faal-Actie")
                                     .addBlankLore()
                                     .addBlankLore()
-                                    .addLore(ChatColor.YELLOW + "Klik hier om de faal-actie aan te passen.").build(), 14,
+                                    .addLore("<yellow>Klik hier om de faal-actie aan te passen.").build(), 14,
                             (mxInv1, e1) -> {
                                 List<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
                                 Optional<BookData> optionalBook = BookData.getBookByItemStack(is);
                                 if(optionalBook.isEmpty()) {
-                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_BOOK_NOT_FOUND));
+                                    MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_BOOK_NOT_FOUND));
                                     return;
                                 }
                                 for (BookFailureAction value : BookFailureAction.values()) {
@@ -172,9 +174,9 @@ public class ModifyCommand extends MxCommand {
                                                 for (AvailablePerson availablePerson : optionalBook.get().getPersons()) {
                                                     selectorsList.add(new Pair<>(
                                                             MxDefaultItemStackBuilder.create(Material.PLAYER_HEAD)
-                                                                    .setName(ChatColor.GRAY + availablePerson.getName())
+                                                                    .setName("<gray>" + availablePerson.getName())
                                                                     .addBlankLore()
-                                                                    .addLore(ChatColor.YELLOW + "Selecteer " + availablePerson.getName())
+                                                                    .addLore("<yellow>Selecteer " + availablePerson.getName())
                                                                     .build(),
                                                             (mxInv3, e3) -> {
                                                                         persons.add(availablePerson);
@@ -194,7 +196,7 @@ public class ModifyCommand extends MxCommand {
 
                                                                             String keyForFail = "fail-action";
                                                                             container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), keyForFail), PersistentDataType.STRING, dataBuilder.toString());
-                                                                            String lore = ChatColor.BLUE + "" +ChatColor.GRAY + ChatColor.DARK_AQUA + ChatColor.RESET + ChatColor.RED + "Faal-Actie: ";
+                                                                            String lore = "<blue>" + "" +"<gray><dark_aqua><reset><red>Faal-Actie: ";
                                                                             List<Component> listLore = im.hasLore() ? im.lore() : new ArrayList<>();
                                                                             List<Component> newList = new ArrayList<>();
                                                                             listLore.forEach(c -> {
@@ -203,12 +205,12 @@ public class ModifyCommand extends MxCommand {
                                                                                 }
                                                                             });
                                                                             listLore = newList;
-                                                                            listLore.add(Component.text(lore + value.getTextInterface().getText(persons)));
+                                                                            listLore.add(MiniMessage.miniMessage().deserialize("<!i>" + lore + value.getTextInterface().getText(persons)));
                                                                             im.lore(listLore);
                                                                             is.setItemMeta(im);
 
                                                                             p.closeInventory();
-                                                                            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_BOOK_CHANGED));
+                                                                            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_BOOK_CHANGED));
 
                                                                         }
                                                             }
@@ -224,7 +226,7 @@ public class ModifyCommand extends MxCommand {
                                             }
                                     ));
                                 }
-                                MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY+ "Selecteer actie", MxInventorySlots.THREE_ROWS)
+                                MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>"+ "Selecteer actie", MxInventorySlots.THREE_ROWS)
                                                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                                                 .setPrevious(mxInv1)
                                                 .setListItems(list)
@@ -237,12 +239,12 @@ public class ModifyCommand extends MxCommand {
     private MxItemClicked getClickOnName(Player p, ItemStack is) {
         return (mxInv, e) -> {
             p.closeInventory();
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENTER_NEW_NAME));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENTER_NEW_NAME));
             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                 ItemMeta im = is.getItemMeta();
-                im.displayName(Component.text(ChatColor.translateAlternateColorCodes('&', message)));
+                im.displayName(MiniMessage.miniMessage().deserialize("<!i>" + message));
                 is.setItemMeta(im);
-                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_NAME_CHANGED));
+                MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_NAME_CHANGED));
             });
         };
     }
@@ -262,7 +264,7 @@ public class ModifyCommand extends MxCommand {
                     ex.printStackTrace();
                 }
             }
-          MxInventoryManager.getInstance().addAndOpenInventory(p, new MxListInventoryBuilder(ChatColor.GRAY + "ItemTags", MxInventorySlots.THREE_ROWS)
+          MxInventoryManager.getInstance().addAndOpenInventory(p, new MxListInventoryBuilder("<gray>ItemTags", MxInventorySlots.THREE_ROWS)
                   .setShowPageNumbers(false)
                   .setListItems(list)
                   .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
@@ -276,14 +278,14 @@ public class ModifyCommand extends MxCommand {
         return (mxInv, e) -> {
 
             p.closeInventory();
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENTER_NEW_LORE));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENTER_NEW_LORE));
             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                 List<String> lore = new ArrayList<>(List.of(message.split("/n")));
-                List<Component> loreComp = lore.stream().map(l -> Component.text(ChatColor.translateAlternateColorCodes('&', l))).collect(Collectors.toList());
+                List<Component> loreComp = lore.stream().map(l -> MiniMessage.miniMessage().deserialize("<!i>" + l)).collect(Collectors.toList());
                 ItemMeta im = is.getItemMeta();
                 im.lore(loreComp);
                 is.setItemMeta(im);
-                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_LORE_CHANGED));
+                MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_LORE_CHANGED));
             });
         };
     }
@@ -291,19 +293,19 @@ public class ModifyCommand extends MxCommand {
     private MxItemClicked getClickOnDurability(Player p, ItemStack is) {
         return (mxInv, e) -> {
             p.closeInventory();
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENTER_NEW_DURABILITY));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENTER_NEW_DURABILITY));
             MxChatInputManager.getInstance().addChatInputCallback(p.getUniqueId(), message -> {
                 try {
                     int dura = Integer.parseInt(message);
                     if(is.getItemMeta() instanceof Damageable im) {
                         im.setDamage(is.getType().getMaxDurability() - dura);
                         is.setItemMeta(im);
-                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_DURABILITY_CHANGED));
+                        MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_DURABILITY_CHANGED));
                     } else {
-                        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_DURABILITY_DOES_NOT_HAVE));
+                        MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_DURABILITY_DOES_NOT_HAVE));
                     }
                 } catch (NumberFormatException ee) {
-                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_DURABILITY_ENTER_A_NUMBER));
+                    MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_DURABILITY_ENTER_A_NUMBER));
 
                 }
             });
@@ -312,13 +314,13 @@ public class ModifyCommand extends MxCommand {
 
     private MxItemClicked getClickOnEnchantments(Player p, ItemStack is) {
         return (prev, e) -> {
-            MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create(ChatColor.GRAY + "Enchantments", MxInventorySlots.THREE_ROWS)
+            MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create("<gray>Enchantments", MxInventorySlots.THREE_ROWS)
                             .setPrevious(prev)
                     .setItem(MxSkullItemStackBuilder.create(1)
-                                    .setName(ChatColor.GRAY + "Voeg enchantments toe")
+                                    .setName("<gray>Voeg enchantments toe")
                                     .setSkinFromHeadsData("light-green-block")
                                     .addBlankLore()
-                                    .addLore(ChatColor.YELLOW + "Klik hier om enchantments toe te voegen.")
+                                    .addLore("<yellow>Klik hier om enchantments toe te voegen.")
                                     .build(),
                             12, (mxInv1, e1) -> {
                                 List<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
@@ -326,14 +328,14 @@ public class ModifyCommand extends MxCommand {
                                     for(int i = value.getStartLevel(); i <= value.getMaxLevel(); i++) {
                                         int finalI = i;
                                         list.add(new Pair<>(MxDefaultItemStackBuilder.create(Material.ENCHANTED_BOOK)
-                                                .setName(ChatColor.GRAY + Functions.convertComponentToString(value.displayName(i)))
+                                                .setName("<gray>" + Functions.convertComponentToString(value.displayName(i)))
                                                 .addEnchantment(value, i, true)
                                                 .addBlankLore()
-                                                .addLore(ChatColor.YELLOW + "Klik hier om deze enchantment toe te voegen")
+                                                .addLore("<yellow>Klik hier om deze enchantment toe te voegen")
                                                 .build(),
                                                 (mxInv2, e2) -> {
                                                     is.addUnsafeEnchantment(value, finalI);
-                                                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENCHANTMENT_ADDED));
+                                                    MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENCHANTMENT_ADDED));
                                                     p.closeInventory();
                                                 }
 
@@ -341,7 +343,7 @@ public class ModifyCommand extends MxCommand {
                                     }
                                 }
 
-                                MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Enchantments toevoegen", MxInventorySlots.SIX_ROWS)
+                                MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Enchantments toevoegen", MxInventorySlots.SIX_ROWS)
                                         .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                                                 .setPrevious(mxInv1)
                                                 .setListItems(list)
@@ -350,30 +352,30 @@ public class ModifyCommand extends MxCommand {
                             }
                     )
                     .setItem(MxSkullItemStackBuilder.create(1)
-                                    .setName(ChatColor.GRAY + "Verwijder enchantments")
+                                    .setName("<gray>Verwijder enchantments")
                                     .setSkinFromHeadsData("red-block")
                                     .addBlankLore()
-                                    .addLore(ChatColor.YELLOW + "Klik hier om enchantments te verwijderen.")
+                                    .addLore("<yellow>Klik hier om enchantments te verwijderen.")
                                     .build(),
                             14, (mxInv1, e1) -> {
                                 List<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
                                 is.getEnchantments().forEach((enchantment, level) -> {
                                     list.add(new Pair<>(MxDefaultItemStackBuilder.create(Material.ENCHANTED_BOOK)
-                                            .setName(ChatColor.GRAY + Functions.convertComponentToString(enchantment.displayName(level)))
+                                            .setName("<gray>" + Functions.convertComponentToString(enchantment.displayName(level)))
                                             .addEnchantment(enchantment, level, true)
                                             .addBlankLore()
-                                            .addLore(ChatColor.YELLOW + "Klik hier om deze enchantment te verwijderen")
+                                            .addLore("<yellow>Klik hier om deze enchantment te verwijderen")
                                             .build(),
                                             (mxInv2, e2) -> {
                                                 is.removeEnchantment(enchantment);
-                                                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENCHANTMENT_REMOVED));
+                                                MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MODIFY_ENCHANTMENT_REMOVED));
                                                 p.closeInventory();
                                             }
 
                                     ));
                                 });
 
-                                MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Enchantments verwijderen", MxInventorySlots.SIX_ROWS)
+                                MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Enchantments verwijderen", MxInventorySlots.SIX_ROWS)
                                         .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                                         .setPrevious(mxInv1)
                                         .setListItems(list)

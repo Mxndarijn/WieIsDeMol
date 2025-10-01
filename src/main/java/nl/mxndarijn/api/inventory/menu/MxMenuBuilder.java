@@ -5,7 +5,7 @@ import nl.mxndarijn.api.inventory.MxInventoryBuilder;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
-import org.bukkit.ChatColor;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -23,7 +23,7 @@ public class MxMenuBuilder<T extends MxInventoryBuilder<T>> extends MxInventoryB
         super(name, slotType);
         previousMenu = Optional.empty();
         previousItem = MxDefaultItemStackBuilder.create(Material.BARRIER, 1)
-                .setName(ChatColor.GRAY + "Terug")
+                .setName("<gray>Terug")
                 .addItemFlag(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_ENCHANTS)
                 .build();
 

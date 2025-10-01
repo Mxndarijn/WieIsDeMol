@@ -9,6 +9,7 @@ import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
@@ -52,7 +53,7 @@ public class GameDoorItem extends MxItem {
 
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
         game.getDoorManager().getDoors().forEach(door -> {
-            String status = ChatColor.RED + "Lege deur";
+            String status = "<red>Lege deur";
             boolean opened;
             boolean foundDoor = !door.getLocations().isEmpty();
             if (foundDoor) {
@@ -61,9 +62,9 @@ public class GameDoorItem extends MxItem {
                 Block placedBlock = loc.getBlock();
                 if (placedBlock.getType() != Material.AIR) {
                     opened = false;
-                    status = ChatColor.RED + "Gesloten";
+                    status = "<red>Gesloten";
                 } else {
-                    status = ChatColor.GREEN + "Open";
+                    status = "<green>Open";
                     opened = true;
                 }
             } else {
@@ -72,30 +73,30 @@ public class GameDoorItem extends MxItem {
             list.add(new Pair<>(
                     MxSkullItemStackBuilder.create(1)
                             .setSkinFromHeadsData("trapdoor")
-                            .setName(ChatColor.GRAY + door.getName())
+                            .setName("<gray>" + door.getName())
                             .addBlankLore()
-                            .addLore(ChatColor.GRAY + "Status: " + status)
+                            .addLore("<gray>Status: " + status)
                             .addBlankLore()
-                            .addLore(ChatColor.YELLOW + (opened ? "Klik om de deur te sluiten" : "Klik om de deur te openen"))
+                            .addLore("<yellow>" + (opened ? "Klik om de deur te sluiten" : "Klik om de deur te openen"))
                             .build(),
                     (mxInv, e12) -> {
                         p.closeInventory();
                         if (!foundDoor) {
-                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_DOORITEM_DOOR_IS_NOT_A_DOOR));
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_DOORITEM_DOOR_IS_NOT_A_DOOR));
                             return;
                         }
                         if (opened) { // close
                             door.close(w);
-                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_DOORITEM_DOOR_CLOSED));
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_DOORITEM_DOOR_CLOSED));
                         } else { // open
                             door.open(w);
-                            p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_DOORITEM_DOOR_OPENED));
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_DOORITEM_DOOR_OPENED));
                         }
                     }
             ));
         });
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Door Hulp Tool", MxInventorySlots.SIX_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Door Hulp Tool", MxInventorySlots.SIX_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                 .setListItems(list)
                 .build());

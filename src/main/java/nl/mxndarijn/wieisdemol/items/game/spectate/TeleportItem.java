@@ -8,6 +8,7 @@ import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
 import nl.mxndarijn.api.mxitem.MxItem;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
@@ -15,7 +16,7 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -53,9 +54,9 @@ public class TeleportItem extends MxItem {
                     if (pl != null) {
                         list.add(new Pair<>(MxSkullItemStackBuilder.create(1)
                                 .setSkinFromHeadsData(gp.getPlayer().get().toString())
-                                .setName(ChatColor.GRAY + pl.getName())
+                                .setName("<gray>" + pl.getName())
                                 .addBlankLore()
-                                .addLore(ChatColor.GRAY + "Kleur: " + gp.getMapPlayer().getColor().getDisplayName())
+                                .addLore("<gray>Kleur: " + gp.getMapPlayer().getColor().getDisplayName())
                                 .build(),
                                 (mxInv, e1) -> {
                                     p.teleport(pl.getLocation());
@@ -65,10 +66,10 @@ public class TeleportItem extends MxItem {
                 }
             });
             if (list.isEmpty()) {
-                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_TELEPORT_NO_PLAYERS));
+                MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_TELEPORT_NO_PLAYERS));
                 return;
             }
-            MxInventoryManager.getInstance().addAndOpenInventory(p, new MxListInventoryBuilder(ChatColor.GRAY + "Teleporteer naar speler", MxInventorySlots.THREE_ROWS)
+            MxInventoryManager.getInstance().addAndOpenInventory(p, new MxListInventoryBuilder("<gray>Teleporteer naar speler", MxInventorySlots.THREE_ROWS)
                     .setListItems(list)
                     .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_THREE)
                     .build());

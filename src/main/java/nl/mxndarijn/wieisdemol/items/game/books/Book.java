@@ -2,6 +2,7 @@ package nl.mxndarijn.wieisdemol.items.game.books;
 
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.util.Functions;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.BookFailureAction;
@@ -64,6 +65,16 @@ public abstract class Book extends MxItem {
         return false;
     }
 
+    public boolean isSilenced(ItemStack is) {
+        if (is == null) return false;
+
+        ItemMeta im = is.getItemMeta();
+        PersistentDataContainer container = im.getPersistentDataContainer();
+        String data = container.getOrDefault(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "notsilent"), PersistentDataType.STRING, "true");
+
+        return data.equalsIgnoreCase("false");
+    }
+
     public boolean canItemExecute(Player p, Integer entry, ItemStack is, BookFailurePlayersHolder holder) {
 
 
@@ -85,7 +96,7 @@ public abstract class Book extends MxItem {
         }
         else {
             String dataFail = container.getOrDefault(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), "fail-action"), PersistentDataType.STRING, "");
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_ACTION_FAILED));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.BOOK_ACTION_FAILED));
             if(dataFail.isEmpty())
                 return false;
 

@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
@@ -102,7 +103,7 @@ public abstract class ChestAttachment {
         ar.setInvisible(true);
         ar.setInvulnerable(true);
         ar.setGravity(false);
-        ar.customName(Component.text("attachment"));
+        ar.customName(MiniMessage.miniMessage().deserialize("<!i>" + "attachment"));
         ar.setCollidable(false);
         ar.getEquipment().setHelmet(MxSkullItemStackBuilder.create(1).setSkinFromHeadsData(ChestAttachments.getAttachmentByType(type).get().getSkullName())
                 .build());
@@ -119,7 +120,7 @@ public abstract class ChestAttachment {
             };
             ar.setHeadPose(new EulerAngle(0, Math.toRadians(val), 0));
 
-            AttributeInstance attribute = ar.getAttribute(Attribute.GENERIC_ARMOR);
+            AttributeInstance attribute = ar.getAttribute(Attribute.ARMOR);
 
             if (attribute != null) {
                 // Verkrijg het huidige waarde van DisabledSlots
@@ -130,7 +131,7 @@ public abstract class ChestAttachment {
 
                 // Voeg een nieuwe modifier toe voor DisabledSlots
                 int disabledSlotsValue = 4144959; // De waarde die je wilt instellen
-                attribute.addModifier(new AttributeModifier("DisabledSlots", disabledSlotsValue, AttributeModifier.Operation.ADD_NUMBER));
+//                attribute.addModifier(new AttributeModifier("DisabledSlots", disabledSlotsValue, AttributeModifier.Operation.ADD_NUMBER));
 
                 // Zorg ervoor dat de ArmorStand wordt bijgewerkt om de wijzigingen door te voeren
             }

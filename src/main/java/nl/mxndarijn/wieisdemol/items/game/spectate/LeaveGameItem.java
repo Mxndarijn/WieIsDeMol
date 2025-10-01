@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.items.game.spectate;
 
 import nl.mxndarijn.api.mxitem.MxItem;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
@@ -25,7 +26,7 @@ public class LeaveGameItem extends MxItem {
         if (optionalGame.isPresent()) {
             if (optionalGame.get().getSpectators().contains(p.getUniqueId())) {
                 optionalGame.get().removeSpectator(p.getUniqueId());
-                p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_LEAVE));
+                MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_LEAVE));
                 optionalGame.get().sendMessageToHosts(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPECTATOR_LEFT, Collections.singletonList(p.getName())));
             }
         }

@@ -1,5 +1,7 @@
 package nl.mxndarijn.api.inventory.heads;
 
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
@@ -31,24 +33,29 @@ public class MxHeadManager {
         fileConfiguration = ConfigFiles.HEAD_DATA.getFileConfiguration();
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
             Logger.logMessage(LogLevel.INFORMATION, Prefix.MXHEAD_MANAGER, "Refreshing player skulls...");
-            for (String key : fileConfiguration.getKeys(false)) {
-                Optional<MxHeadSection> optionalSection = MxHeadSection.loadHead(key);
-                if (optionalSection.isPresent()) {
-                    MxHeadSection section = optionalSection.get();
-                    if (section.getType().get() == MxHeadsType.PLAYER) {
-                        Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Refreshing skull: " + key);
-                        Optional<String> value = getTexture(section.getUuid().get());
-                        if (!value.isPresent()) {
-                            Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not get texture for " + key + ", skipping texture...");
-                            continue;
-                        }
-                        if (!section.getValue().get().equalsIgnoreCase(value.get())) {
-                            section.setValue(value.get());
-                            section.apply();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (String key : fileConfiguration.getKeys(false)) {
+                        Optional<MxHeadSection> optionalSection = MxHeadSection.loadHead(key);
+                        if (optionalSection.isPresent()) {
+                            MxHeadSection section = optionalSection.get();
+                            if (section.getType().get() == MxHeadsType.PLAYER) {
+                                Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Refreshing skull: " + key);
+                                Optional<String> value = getTexture(section.getUuid().get());
+                                if (!value.isPresent()) {
+                                    Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not get texture for " + key + ", skipping texture...");
+                                    continue;
+                                }
+                                if (!section.getValue().get().equalsIgnoreCase(value.get())) {
+                                    section.setValue(value.get());
+                                    section.apply();
+                                }
+                            }
                         }
                     }
                 }
-            }
+            }).start();
         });
     }
 
@@ -127,15 +134,13 @@ public class MxHeadManager {
     private Optional<String> getTextureValue(ItemStack itemStack) {
         if (itemStack.getType() == Material.PLAYER_HEAD) {
             try {
-                SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
-                Field profileField = skullMeta.getClass().getDeclaredField("profile");
-                profileField.setAccessible(true);
-                GameProfile profile = (GameProfile) profileField.get(skullMeta);
-                Collection<Property> textures = profile.getProperties().get("textures");
 
-                Optional<Property> optionalTexture = textures.stream().findFirst();
+                SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
+                PlayerProfile profile = skullMeta.getPlayerProfile();
+
+                Optional<ProfileProperty> optionalTexture = profile.getProperties().stream().findFirst();
                 if (optionalTexture.isPresent()) {
-                    Property texture = optionalTexture.get();
+                    ProfileProperty texture = optionalTexture.get();
                     return Optional.of(texture.getValue());
                 } else {
                     Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not find texture");

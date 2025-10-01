@@ -1,7 +1,5 @@
 package nl.mxndarijn.wieisdemol.data;
 
-import org.bukkit.ChatColor;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,9 +19,9 @@ public enum ScoreBoard {
     ScoreBoard(ConfigFiles configFile) {
         this.uneditedLines = new ArrayList<>();
         configFile.getFileConfiguration().getStringList("lines").forEach(string -> {
-            this.uneditedLines.add(ChatColor.translateAlternateColorCodes('&', string));
+            this.uneditedLines.add(string);
         });
-        this.title = ChatColor.translateAlternateColorCodes('&', configFile.getFileConfiguration().getString("title", "Unknown"));
+        this.title = configFile.getFileConfiguration().getString("title", "Unknown");
     }
 
     public String getTitle(HashMap<String, String> placeholders) {

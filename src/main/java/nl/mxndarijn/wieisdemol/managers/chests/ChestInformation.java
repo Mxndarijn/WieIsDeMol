@@ -10,6 +10,7 @@ import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.api.mxworld.MxLocation;
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
@@ -17,7 +18,6 @@ import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachment;
 import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachments;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -123,7 +123,7 @@ public class ChestInformation {
 
         Collections.reverse(list);
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create(ChatColor.GRAY + "Chest Attachments", MxInventorySlots.THREE_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Chest Attachments", MxInventorySlots.THREE_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_TWO)
                 .setListItems(list)
                 .build());
@@ -135,18 +135,18 @@ public class ChestInformation {
 
     public void addNewAttachment(Player p, ChestAttachments attachments) {
         if (containsAttachment(attachments)) {
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_COULD_NOT_ADD, Collections.singletonList(attachments.getDisplayName())));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_COULD_NOT_ADD, Collections.singletonList(attachments.getDisplayName())));
             p.closeInventory();
             return;
         }
         Optional<ChestAttachment> attachment = attachments.createNewInstance(this);
         if (attachment.isPresent()) {
             chestAttachmentList.add(attachment.get());
-            p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_ADDED, Collections.singletonList(attachments.getDisplayName())));
+            MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_ADDED, Collections.singletonList(attachments.getDisplayName())));
             p.closeInventory();
             return;
         }
-        p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_COULD_NOT_ADD, Collections.singletonList(attachments.getDisplayName())));
+        MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_COULD_NOT_ADD, Collections.singletonList(attachments.getDisplayName())));
 
     }
 
@@ -166,7 +166,7 @@ public class ChestInformation {
 
     public void removeChestAttachment(Player p, ChestAttachment at, ChestAttachments chestAttachments) {
         getChestAttachmentList().remove(at);
-        p.sendMessage(ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_REMOVED, Collections.singletonList(chestAttachments.getDisplayName())));
+        MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_REMOVED, Collections.singletonList(chestAttachments.getDisplayName())));
     }
 
     public boolean canOpenChest(GamePlayer gamePlayer) {

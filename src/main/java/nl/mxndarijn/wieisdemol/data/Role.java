@@ -1,15 +1,15 @@
 package nl.mxndarijn.wieisdemol.data;
 
 import nl.mxndarijn.wieisdemol.managers.database.PlayerData;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 
 import java.util.Optional;
 
 public enum Role {
-    SPELER("player", ChatColor.GOLD + "Speler", ChatColor.GOLD + "Speler-Peacekeeper", "gold-block", CustomInventoryOverlay.ROLES_PLAYER.getUnicodeCharacter(), Material.GOLD_BLOCK, ChatColor.GOLD + "Spelers", ChatColor.GRAY + "Hebben gewonnen", PlayerData.UserDataType.SPELERWINS),
-    MOL("mol", ChatColor.DARK_AQUA + "Mol", ChatColor.DARK_AQUA + "Mol-Peacekeeper", "diamond-block", CustomInventoryOverlay.ROLES_MOLE.getUnicodeCharacter(), Material.DIAMOND_BLOCK, ChatColor.DARK_AQUA + "Mollen", ChatColor.GRAY + "Hebben gewonnen", PlayerData.UserDataType.MOLWINS),
-    EGO("ego", ChatColor.GRAY + "Ego", ChatColor.GRAY + "Ego-Peacekeeper", "emerald-block", CustomInventoryOverlay.ROLES_EGO.getUnicodeCharacter(), Material.AIR, ChatColor.GRAY + "" + ChatColor.UNDERLINE + "Ego", ChatColor.GRAY + "heeft gewonnen", PlayerData.UserDataType.EGOWINS);
+    SPELER("player", "<gold>Speler", "<gold>Speler-Peacekeeper", "gold-block", CustomInventoryOverlay.ROLES_PLAYER.getUnicodeCharacter(), Material.GOLD_BLOCK, "<gold>Spelers", "Hebben gewonnen", PlayerData.UserDataType.SPELERWINS),
+    MOL("mol", "<dark_aqua>Mol", "<dark_aqua>Mol-Peacekeeper", "diamond-block", CustomInventoryOverlay.ROLES_MOLE.getUnicodeCharacter(), Material.DIAMOND_BLOCK, "<#00FFFF>Mollen", "Hebben gewonnen", PlayerData.UserDataType.MOLWINS),
+    EGO("ego", "<gray>Ego", "<gray>Ego-Peacekeeper", "emerald-block", CustomInventoryOverlay.ROLES_EGO.getUnicodeCharacter(), Material.AIR, "<gray>Ego", "heeft gewonnen", PlayerData.UserDataType.EGOWINS),
+    SHAPESHIFTER("shapeshifter", "<dark_green>Shapeshifter", "<green>Shapeshifter-Peacekeeper", "emerald-block", CustomInventoryOverlay.ROLES_SHAPESHIFTER.getUnicodeCharacter(), Material.AIR, "<green>Shapeshifter", "heeft gewonnen", PlayerData.UserDataType.EGOWINS);
 
     private final String rolName;
     private final String peacekeeperName;

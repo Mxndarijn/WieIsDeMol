@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.items.game.books;
 
+import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.AvailablePerson;
 import nl.mxndarijn.wieisdemol.data.BookFailurePlayersHolder;
@@ -45,17 +46,14 @@ public class SpelerCountBook extends Book {
                 if (isItemTheSame(value)) {
                     if(!canItemExecute(p, key, value, BookFailurePlayersHolder.create().setData(AvailablePerson.EXECUTOR, p)))
                         return;
-                    AtomicInteger count = new AtomicInteger(0);
-                    game.getColors().forEach(g -> {
-                        if (!g.isAlive())
-                            return;
-                        if (g.getPlayer().isEmpty())
-                            return;
-                        if (g.getMapPlayer().getRole() == Role.SPELER) {
-                            count.getAndIncrement();
-                        }
-                    });
-                    p.sendMessage(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPELERCOUNT_MESSAGE, Collections.singletonList(count.get() + "")));
+                    int count = 0;
+                    for (GamePlayer g : game.getColors()) {
+                        if(!g.isAlive()) continue;
+                        if(g.getPlayer().isEmpty()) continue;
+                        if(g.getMapPlayer().getRole() != Role.SPELER) continue;
+                        count++;
+                    }
+                    MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_SPELERCOUNT_MESSAGE, Collections.singletonList(count + "")));
                     break;
                 }
             }
