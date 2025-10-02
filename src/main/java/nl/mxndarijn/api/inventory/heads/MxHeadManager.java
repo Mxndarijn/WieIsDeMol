@@ -41,7 +41,7 @@ public class MxHeadManager {
                         if (optionalSection.isPresent()) {
                             MxHeadSection section = optionalSection.get();
                             if (section.getType().get() == MxHeadsType.PLAYER) {
-                                Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Refreshing skull: " + key);
+                                //Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Refreshing skull: " + key);
                                 Optional<String> value = getTexture(section.getUuid().get());
                                 if (!value.isPresent()) {
                                     Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not get texture for " + key + ", skipping texture...");

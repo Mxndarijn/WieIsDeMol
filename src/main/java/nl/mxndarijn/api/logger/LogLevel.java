@@ -3,21 +3,23 @@ package nl.mxndarijn.api.logger;
 import java.util.Optional;
 
 public enum LogLevel {
-    FATAL("Fatal", 1),
-    DEBUG_HIGHLIGHT("Debug-Highlight", 1),
-    ERROR("Error", 2),
-    WARNING("Warning", 3),
-    INFORMATION("Information", 4),
-    DEBUG("Debug", 5);
+    FATAL("Fatal", 1, "dark_red"),
+    DEBUG_HIGHLIGHT("Debug-Highlight", 1, "#ff00ff"),
+    ERROR("Error", 2, "red"),
+    WARNING("Warning", 3, "gold"),
+    INFORMATION("Information", 4, "aqua"),
+    DEBUG("Debug", 5, "gray");
 
     private final String prefix;
     private final int level;
     private final String name;
+    private final String color;
 
-    LogLevel(String logName, int level) {
+    LogLevel(String logName, int level, String color) {
         this.level = level;
         this.name = logName;
-        this.prefix = Logger.getMainWieIsDeMolPrefix() +"-" +logName + "] » ";
+        this.color = color;
+        this.prefix = Logger.getMainWieIsDeMolPrefix() + "-" + "<" + this.color + ">" + logName + "<dark_gray>] <yellow>» ";
     }
 
     public static Optional<LogLevel> getLevelByInt(int i) {

@@ -107,7 +107,7 @@ public class MxHeadSection {
     }
 
     public void apply() {
-        Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Saving MxHeadSection " + key + "...");
+//        Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Saving MxHeadSection " + key + "...");
         if (!validate()) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not save MxHeadSection " + key + " because it was not valid.");
             return;
