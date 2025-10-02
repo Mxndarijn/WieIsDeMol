@@ -145,6 +145,10 @@ public class GameColorBindEvents extends GameEvent {
         if (gp.isEmpty() && !game.getSpectators().contains(player.getUniqueId())) {
             return;
         }
+        if (is.getItemMeta() == null) {
+            return;
+        }
+        
         String itemLock = is.getItemMeta().getPersistentDataContainer()
                 .get(new NamespacedKey(plugin, ItemTag.ITEM_LOCK.getPersistentDataTag()),
                      PersistentDataType.STRING);
@@ -152,9 +156,7 @@ public class GameColorBindEvents extends GameEvent {
         if (itemLock != null && itemLock.equalsIgnoreCase("false")) {
             e.setCancelled(true);
         }
-        if (is.getItemMeta() == null) {
-            return;
-        }
+        
         if (e.getClickedInventory() == null) {
             return;
         }
