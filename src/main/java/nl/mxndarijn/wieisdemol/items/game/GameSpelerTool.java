@@ -102,7 +102,7 @@ public class GameSpelerTool extends MxItem {
                                                 }
                                                 gp.get().setVotedOn(Optional.of(gamePlayer));
                                                 MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTED, Arrays.asList(pl.getName(), gamePlayer.getMapPlayer().getColor().getDisplayName())));
-                                                game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_VOTED, Arrays.asList(p.getName(), gp.get().getMapPlayer().getColor().getDisplayName(), game.getTotalVotes() + "", ""+game.getColors().size())));
+                                                game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_VOTED, Arrays.asList(p.getName(), gp.get().getMapPlayer().getColor().getDisplayName(), game.getTotalVotes() + "", ""+game.getAlivePlayerCount())));
                                             }
                                     ));
                                 }

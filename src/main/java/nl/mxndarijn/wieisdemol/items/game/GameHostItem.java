@@ -191,7 +191,7 @@ public class GameHostItem extends MxItem {
                                                             .addBlankLore()
                                                             .addLore("<yellow>Klik hier om de status te togglen")
                                                             .build(),
-                                                    12,
+                                                    13,
                                                     (mxInv12, e14) -> {
                                                         game.setPlayersCanEndVote(!game.isPlayersCanEndVote());
                                                         p.closeInventory();
@@ -199,12 +199,27 @@ public class GameHostItem extends MxItem {
                                                     }
                                             )
                                             .setItem(MxSkullItemStackBuilder.create(1)
+                                                            .setSkinFromHeadsData("anonymous")
+                                                            .setName("<gray>Stem-anoniemheid " + (game.areVotesAnonymous() ? "<red>Uitschakelen" : "<green>Inschakelen"))
+                                                            .addBlankLore()
+                                                            .addLore("<gray>Status: " + (game.areVotesAnonymous() ? "<green>Anoniem" : "<red>Publiek") + "<gray>.")
+                                                            .addBlankLore()
+                                                            .addLore("<yellow>Klik hier om de status te togglen.")
+                                                            .build(),
+                                                    10,
+                                                    (mxInv12, e14) -> {
+                                                        game.setVotesAnonymous(!game.areVotesAnonymous());
+                                                        p.closeInventory();
+                                                        game.sendMessageToAll("<gray>Stemmen zijn nu " + (game.areVotesAnonymous() ? "<green>Anoniem<gray>." : "<red>Publiek<gray>."));
+                                                    }
+                                            )
+                                            .setItem(MxSkullItemStackBuilder.create(1)
                                                             .setSkinFromHeadsData("message-icon")
-                                                            .setName("<gray>Laat resultaten zien")
+                                                            .setName("<gray>Laat resultaten zien.")
                                                             .addBlankLore()
                                                             .addLore("<yellow>Klik hier om de vote resultaten te bekijken.")
                                                             .build(),
-                                                    14,
+                                                    16,
                                                     (mxInv12, e14) -> {
                                                         game.showVotingResults("Host");
                                                         p.closeInventory();

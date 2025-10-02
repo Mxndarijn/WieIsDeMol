@@ -67,6 +67,7 @@ public class Game {
     private long gameTime = 0;
     private int peacekeeperKills;
     private boolean playersCanEndVote = true;
+    private boolean voteAnonymous = true;
     private List<GameEvent> events;
     private BukkitTask chestAttachmentUpdater;
     private BukkitTask updateGameUpdater;
@@ -630,6 +631,16 @@ public class Game {
         return i.get();
     }
 
+    public int getAlivePlayerCount() {
+        AtomicInteger i = new AtomicInteger();
+        colors.forEach(c -> {
+            if (c.getPlayer().isPresent() && c.isAlive())
+                i.getAndIncrement();
+        });
+
+        return i.get();
+    }
+
     public void addSpectator(UUID uuid) {
         spectators.add(uuid);
         Player player = Bukkit.getPlayer(uuid);
@@ -758,25 +769,21 @@ public class Game {
             if (p.getPlayer().isEmpty())
                 return;
             OfflinePlayer player = Bukkit.getOfflinePlayer(p.getPlayer().get());
-            sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTES_SUBJECT, Arrays.asList(player.getName(), p.getMapPlayer().getColor().getDisplayName(), votes.get(p) + "")));
-        });
-
-        hosts.forEach(host -> {
-            Player p = Bukkit.getPlayer(host);
-            if (p != null) {
-                for(GamePlayer gPlayer : playerList) {
-                    if(gPlayer.getPlayer().isEmpty()) continue;
-                    if(!gPlayer.isAlive()) continue;
-                    OfflinePlayer player = Bukkit.getOfflinePlayer(gPlayer.getPlayer().get());
-                    if(gPlayer.getVotedOn().isEmpty()) continue;
-                    Optional<UUID> targetUUID = gPlayer.getVotedOn().get().getPlayer();
-                    if(targetUUID.isEmpty()) continue;
-                    OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID.get());
-                    MSG.msg(p, player.getName() + ": " + target.getName());
+            StringBuilder voterNames = new StringBuilder();
+            colors.forEach(voter -> {
+                if (voter.getVotedOn().isPresent() && voter.getVotedOn().get() == p && voter.getPlayer().isPresent()) {
+                    if (!voterNames.isEmpty()) voterNames.append(", ");
+                    voterNames.append(Bukkit.getOfflinePlayer(voter.getPlayer().get()).getName());
                 }
+            });
+            if(areVotesAnonymous()) {
+                sendMessageToPlayers(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTES_SUBJECT, Arrays.asList(player.getName(), p.getMapPlayer().getColor().getDisplayName(), votes.get(p) + "")));
+                sendMessageToSpectators(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTES_SUBJECT, Arrays.asList(player.getName(), p.getMapPlayer().getColor().getDisplayName(), votes.get(p) + "")));
+                sendMessageToHosts(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTES_SUBJECT_NON_ANONYMOUS, Arrays.asList(player.getName(), p.getMapPlayer().getColor().getDisplayName(), votes.get(p) + "", voterNames.toString())));
+            } else {
+                sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_VOTES_SUBJECT_NON_ANONYMOUS, Arrays.asList(player.getName(), p.getMapPlayer().getColor().getDisplayName(), votes.get(p) + "", voterNames.toString())));
             }
         });
-
         clearVotingResults();
 
 
@@ -794,5 +801,13 @@ public class Game {
 
     public void setPlayersCanEndVote(boolean playersCanEndVote) {
         this.playersCanEndVote = playersCanEndVote;
+    }
+
+    public boolean areVotesAnonymous() {
+        return voteAnonymous;
+    }
+
+    public void setVotesAnonymous(boolean b) {
+        this.voteAnonymous = b;
     }
 }

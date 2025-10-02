@@ -94,6 +94,19 @@ public class MapCommand extends MxCommand {
                         (clickedInv, e) -> {
                             ArrayList<Preset> presets = new ArrayList<>(PresetsManager.getInstance().getAllPresets());
                             presets.removeIf(preset -> !preset.getConfig().isConfigured());
+                            presets.sort((p1, p2) -> {
+                                boolean p1Permission = p.hasPermission(Permissions.COMMAND_MAPS_CREATE_SPECIFIC_MAP + p1.getConfig().getName().toLowerCase().replaceAll(" ", "_"));
+                                boolean p2Permission = p.hasPermission(Permissions.COMMAND_MAPS_CREATE_SPECIFIC_MAP + p2.getConfig().getName().toLowerCase().replaceAll(" ", "_"));
+                                if (p1Permission != p2Permission) {
+                                    return Boolean.compare(p2Permission, p1Permission);
+                                }
+                                int difficultyCompare = Integer.compare(p1.getConfig().getHostDifficulty(), p2.getConfig().getHostDifficulty());
+                                if (difficultyCompare != 0) {
+                                    return difficultyCompare;
+                                }
+                                return p1.getConfig().getName().compareTo(p2.getConfig().getName());
+                            });
+
                             MxItemClicked clickedOnConfiguredPreset = (mxInv, e1) -> {
                                 //Create map
                                 Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
