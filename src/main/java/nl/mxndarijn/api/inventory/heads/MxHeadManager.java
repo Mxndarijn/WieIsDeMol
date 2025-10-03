@@ -15,9 +15,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,32 +33,74 @@ public class MxHeadManager {
 
     public MxHeadManager() {
         fileConfiguration = ConfigFiles.HEAD_DATA.getFileConfiguration();
-        Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
-            Logger.logMessage(LogLevel.INFORMATION, Prefix.MXHEAD_MANAGER, "Refreshing player skulls...");
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (String key : fileConfiguration.getKeys(false)) {
-                        Optional<MxHeadSection> optionalSection = MxHeadSection.loadHead(key);
-                        if (optionalSection.isPresent()) {
-                            MxHeadSection section = optionalSection.get();
-                            if (section.getType().get() == MxHeadsType.PLAYER) {
-                                //Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Refreshing skull: " + key);
-                                Optional<String> value = getTexture(section.getUuid().get());
-                                if (!value.isPresent()) {
-                                    Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not get texture for " + key + ", skipping texture...");
-                                    continue;
-                                }
-                                if (!section.getValue().get().equalsIgnoreCase(value.get())) {
-                                    section.setValue(value.get());
-                                    section.apply();
-                                }
-                            }
+        // Ensure all default head-data keys from resources are present in the plugin's head-data file
+        try {
+            JavaPlugin plugin = JavaPlugin.getPlugin(WieIsDeMol.class);
+            InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(plugin.getResource(ConfigFiles.HEAD_DATA.getFileName())));
+            FileConfiguration defaults = YamlConfiguration.loadConfiguration(reader);
+            int before = fileConfiguration.getKeys(false).size();
+            fileConfiguration.addDefaults(defaults);
+            fileConfiguration.options().copyDefaults(true);
+            ConfigFiles.HEAD_DATA.save();
+            int after = fileConfiguration.getKeys(false).size();
+            int added = Math.max(0, after - before);
+            if (added > 0) {
+                Logger.logMessage(LogLevel.INFORMATION, Prefix.MXHEAD_MANAGER, "Added " + added + " missing head-data entries from defaults.");
+            }
+        } catch (Exception e) {
+            Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Error while ensuring head-data defaults: " + e.getMessage());
+        }
+        long period = 30L * 60L * 20L; // 30 minutes in ticks
+        long delay = 200L; // 10 seconds initial delay
+        Bukkit.getScheduler().runTaskTimerAsynchronously(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
+            try {
+                Logger.logMessage(LogLevel.INFORMATION, Prefix.MXHEAD_MANAGER, "Refreshing up to 40 player skulls older than 2 days (least recently refreshed first)...");
+                // Collect PLAYER heads with their lastRefreshed
+                List<MxHeadSection> playerHeads = new ArrayList<>();
+                for (String key : fileConfiguration.getKeys(false)) {
+                    Optional<MxHeadSection> optionalSection = MxHeadSection.loadHead(key);
+                    if (optionalSection.isPresent()) {
+                        MxHeadSection section = optionalSection.get();
+                        if (section.getType().isPresent() && section.getType().get() == MxHeadsType.PLAYER) {
+                            playerHeads.add(section);
                         }
                     }
                 }
-            }).start();
-        });
+                // Filter: only refresh if never refreshed or lastRefreshed older than 2 days
+                java.time.LocalDateTime cutoff = java.time.LocalDateTime.now().minusDays(2);
+                List<MxHeadSection> eligibleHeads = new ArrayList<>();
+                for (MxHeadSection s : playerHeads) {
+                    java.time.LocalDateTime lr = s.getLastRefreshed().orElse(java.time.LocalDateTime.MIN);
+                    if (!lr.isAfter(cutoff)) {
+                        eligibleHeads.add(s);
+                    }
+                }
+                // Sort eligible by lastRefreshed (null/empty treated as oldest)
+                eligibleHeads.sort(Comparator.comparing(s -> s.getLastRefreshed().orElse(java.time.LocalDateTime.MIN)));
+                int toProcess = Math.min(40, eligibleHeads.size());
+                for (int i = 0; i < toProcess; i++) {
+                    MxHeadSection section = eligibleHeads.get(i);
+                    String key = section.getKey();
+                    if (!section.getUuid().isPresent()) continue;
+                    Optional<String> value = getTexture(section.getUuid().get());
+                    if (!value.isPresent()) {
+                        Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not get texture for " + key + ", skipping texture...");
+                        // Still mark as refreshed to avoid hot-looping failing entries
+                        section.setLastRefreshed(java.time.LocalDateTime.now());
+                        section.apply();
+                        continue;
+                    }
+                    if (!section.getValue().isPresent() || !section.getValue().get().equalsIgnoreCase(value.get())) {
+                        section.setValue(value.get());
+                    }
+                    section.setLastRefreshed(java.time.LocalDateTime.now());
+                    section.apply();
+                }
+            } catch (Exception e) {
+                Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Error during scheduled skull refresh: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }, delay, period);
     }
 
     public static MxHeadManager getInstance() {

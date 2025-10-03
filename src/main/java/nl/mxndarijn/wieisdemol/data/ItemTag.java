@@ -44,7 +44,7 @@ public enum ItemTag {
         if (data != null && data.equalsIgnoreCase("false"))
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
-                .setSkinFromHeadsData("Silent")
+                .setSkinFromHeadsData("silent")
                 .setName("<gray>Silent")
                 .addBlankLore()
                 .addLore("<gray>Status: " + (dataBoolean ? "<green>Not silent" : "<red>silent"))
@@ -59,7 +59,7 @@ public enum ItemTag {
         if (data != null && data.equalsIgnoreCase("false"))
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
-                .setSkinFromHeadsData("Lifebound")
+                .setSkinFromHeadsData("lifebound")
                 .setName("<gray>Lifebound")
                 .addBlankLore()
                 .addLore("<gray>Status: " + (dataBoolean ? "<green>Not lifebound" : "<red>lifebound"))
@@ -74,7 +74,7 @@ public enum ItemTag {
         if (data != null && data.equalsIgnoreCase("false"))
             dataBoolean = false;
         return MxSkullItemStackBuilder.create(1)
-                .setSkinFromHeadsData("Soulbound")
+                .setSkinFromHeadsData("soulbound")
                 .setName("<gray>Soulbound")
                 .addBlankLore()
                 .addLore("<gray>Status: " + (dataBoolean ? "<green>Not soulbound" : "<red>soulbound"))

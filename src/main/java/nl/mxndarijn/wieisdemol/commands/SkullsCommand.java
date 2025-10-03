@@ -159,7 +159,7 @@ public class SkullsCommand extends MxCommand {
                             });
                         }
                     };
-                    MxDefaultMenuBuilder menuBuilder1 = MxDefaultMenuBuilder.create("<gray>Skull toevoegen", MxInventorySlots.THREE_ROWS)
+                    MxDefaultMenuBuilder menuBuilder1 = MxDefaultMenuBuilder.create("<gray>Is het een PlayerSkull?", MxInventorySlots.THREE_ROWS)
                             .setItem(MxDefaultItemStackBuilder.create(Material.PAPER)
                                     .setName("<gray>Info")
                                     .addLore(" ")

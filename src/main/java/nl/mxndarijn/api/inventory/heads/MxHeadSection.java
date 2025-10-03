@@ -7,6 +7,7 @@ import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ public class MxHeadSection {
     private Optional<UUID> uuid = Optional.empty();
     private Optional<MxHeadsType> type = Optional.empty();
     private Optional<String> name = Optional.empty();
+    private Optional<LocalDateTime> lastRefreshed = Optional.empty();
 
     private String key;
 
@@ -51,6 +53,16 @@ public class MxHeadSection {
         MxHeadSection mxHeadSection = new MxHeadSection();
         mxHeadSection.name = Optional.ofNullable(section.getString("name", null));
         mxHeadSection.value = Optional.ofNullable(section.getString("value", null));
+        String refreshedStr = section.getString("refreshed", null);
+        if (refreshedStr != null) {
+            try {
+                mxHeadSection.lastRefreshed = Optional.of(LocalDateTime.parse(refreshedStr));
+            } catch (Exception e) {
+                mxHeadSection.lastRefreshed = Optional.empty();
+            }
+        } else {
+            mxHeadSection.lastRefreshed = Optional.empty();
+        }
 
         String uuidValue = section.getString("uuid", null);
         if (uuidValue != null) {
@@ -106,6 +118,14 @@ public class MxHeadSection {
         return name.isPresent() && value.isPresent() && type.isPresent() && (type.get() != MxHeadsType.PLAYER || uuid.isPresent());
     }
 
+    public Optional<LocalDateTime> getLastRefreshed() {
+        return lastRefreshed;
+    }
+
+    public void setLastRefreshed(LocalDateTime lastRefreshed) {
+        this.lastRefreshed = Optional.ofNullable(lastRefreshed);
+    }
+
     public void apply() {
 //        Logger.logMessage(LogLevel.DEBUG, Prefix.MXHEAD_MANAGER, "Saving MxHeadSection " + key + "...");
         if (!validate()) {
@@ -123,6 +143,6 @@ public class MxHeadSection {
         if (uuid.isPresent()) {
             section.set("uuid", uuid.get().toString());
         }
-
+        section.set("refreshed", lastRefreshed.map(LocalDateTime::toString).orElse(null));
     }
 }

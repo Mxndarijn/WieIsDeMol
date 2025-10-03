@@ -269,3 +269,19 @@ anonymous:
   name: Anonymous
   type: manually-added
   value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGUxMmNjOWExODI3OGIwODhiYjMyMmU3OTUwMDM1MDg2YjIyZjI3YjcyMTA2Y2Y0ZjRkZTY2MmFkMWMxNjVhZSJ9fX0=
+silent:
+  name: Silent
+  type: manually-added
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGNkNmExMmJmMDk4YTk3NjZkOTdmOTk1YTljZTVkOWI0ODE1MzQyMzQxYTMzNDAwODE5NGRhOWUyZmU3ZGZjNyJ9fX0=
+lifebound:
+  name: LifeBound
+  type: manually-added
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvY2UxYjdiYjhkMTkxODYyM2YxYWQ4MDRkZmUzNGQwZDJhODg1Y2ZhZjNkYzRmNmFmOTE3YTU3M2ZlODYxYTc2ZiJ9fX0=
+soulbound:
+  name: SoulBound
+  type: manually-added
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDExZDI1YmNkYWJhZmFkNWZkNmUwMTBjNWIxY2Y3YTAwYzljY2E0MGM1YTQ2NzQ3ZjcwNmRjOWNiM2EifX19
+droppable-once:
+  name: Droppable Once
+  type: manually-added
+  value: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjVlOTE1MmVmZDg5MmY2MGQ3ZTBkN2U1MzM2OWUwNDc3OWVkMzExMWUyZmIyNzUyYjZmNGMyNmRmNTQwYWVkYyJ9fX0=

@@ -12,6 +12,7 @@
 /world/
 /world_nether/
 /world_the_end/
+/out/
 
 # single files in repo root
 /banned-ips.json
