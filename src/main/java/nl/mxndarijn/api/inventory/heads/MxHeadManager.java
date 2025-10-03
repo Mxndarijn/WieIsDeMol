@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class MxHeadManager {
@@ -67,33 +68,33 @@ public class MxHeadManager {
                     }
                 }
                 // Filter: only refresh if never refreshed or lastRefreshed older than 2 days
-                java.time.LocalDateTime cutoff = java.time.LocalDateTime.now().minusDays(2);
+                LocalDateTime cutoff = LocalDateTime.now().minusDays(2);
                 List<MxHeadSection> eligibleHeads = new ArrayList<>();
                 for (MxHeadSection s : playerHeads) {
-                    java.time.LocalDateTime lr = s.getLastRefreshed().orElse(java.time.LocalDateTime.MIN);
+                    LocalDateTime lr = s.getLastRefreshed().orElse(LocalDateTime.MIN);
                     if (!lr.isAfter(cutoff)) {
                         eligibleHeads.add(s);
                     }
                 }
                 // Sort eligible by lastRefreshed (null/empty treated as oldest)
-                eligibleHeads.sort(Comparator.comparing(s -> s.getLastRefreshed().orElse(java.time.LocalDateTime.MIN)));
+                eligibleHeads.sort(Comparator.comparing(s -> s.getLastRefreshed().orElse(LocalDateTime.MIN)));
                 int toProcess = Math.min(40, eligibleHeads.size());
                 for (int i = 0; i < toProcess; i++) {
                     MxHeadSection section = eligibleHeads.get(i);
                     String key = section.getKey();
-                    if (!section.getUuid().isPresent()) continue;
+                    if (section.getUuid().isEmpty()) continue;
                     Optional<String> value = getTexture(section.getUuid().get());
-                    if (!value.isPresent()) {
+                    if (value.isEmpty()) {
                         Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not get texture for " + key + ", skipping texture...");
                         // Still mark as refreshed to avoid hot-looping failing entries
-                        section.setLastRefreshed(java.time.LocalDateTime.now());
+                        section.setLastRefreshed(LocalDateTime.now());
                         section.apply();
                         continue;
                     }
-                    if (!section.getValue().isPresent() || !section.getValue().get().equalsIgnoreCase(value.get())) {
+                    if (section.getValue().isEmpty() || !section.getValue().get().equalsIgnoreCase(value.get())) {
                         section.setValue(value.get());
                     }
-                    section.setLastRefreshed(java.time.LocalDateTime.now());
+                    section.setLastRefreshed(LocalDateTime.now());
                     section.apply();
                 }
             } catch (Exception e) {
