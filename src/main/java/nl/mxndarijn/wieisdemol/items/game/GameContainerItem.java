@@ -13,15 +13,15 @@ import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
-import nl.mxndarijn.wieisdemol.managers.MapManager;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
+import nl.mxndarijn.wieisdemol.managers.chests.ContainerInformation;
+import nl.mxndarijn.wieisdemol.managers.chests.ContainerType;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
-import nl.mxndarijn.wieisdemol.map.Map;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Container;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,10 +33,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 import java.util.Optional;
 
-public class GameChestItem extends MxItem {
+public class GameContainerItem extends MxItem {
 
 
-    public GameChestItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
+    public GameContainerItem(ItemStack is, MxWorldFilter worldFilter, boolean gameItem, Action... actions) {
         super(is, worldFilter, gameItem, actions);
     }
 
@@ -54,20 +54,33 @@ public class GameChestItem extends MxItem {
             return;
 
         ArrayList<Pair<ItemStack, MxItemClicked>> list = new ArrayList<>();
-        game.getChestManager().getChests().forEach(chest -> {
+        game.getChestManager().getChests().forEach(container -> {
+            ContainerType type = container.getType();
             list.add(new Pair<>(
-                    MxDefaultItemStackBuilder.create(Material.CHEST, 1)
-                            .setName("gray>" + chest.getName())
+                    MxDefaultItemStackBuilder.create(type.getIcon(), 1)
+                            .setName("<gray>" + container.getName())
                             .addBlankLore()
-                            .addLore("<gray>Location: " + chest.getLocation().getX() + " " + chest.getLocation().getY() + " " + chest.getLocation().getZ())
+                            .addLore("<gray>Location: " + container.getLocation().getX() + " " + container.getLocation().getY() + " " + container.getLocation().getZ())
                             .addBlankLore()
-                            .addLore("<yellow>Klik om de kist op afstand te openen.")
+                            .addLore("<yellow>Klik om de container op afstand te openen.")
                             .build(),
                     (mxInv, e12) -> {
-                        Location loc = chest.getLocation().getLocation(p.getWorld());
+                        Location loc = container.getLocation().getLocation(p.getWorld());
                         Block block = p.getWorld().getBlockAt(loc);
-                        if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
-                            Chest chestBlock = (Chest) block.getState();
+                        Optional<ContainerType> typeOpt = ContainerType.fromBlock(block);
+                        if (typeOpt.isEmpty()) {
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_IS_NOT_A_CHEST));
+                            p.closeInventory();
+                            return;
+                        }
+                        if (!typeOpt.get().equals(container.getType())) {
+                            MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_IS_NOT_A_CHEST));
+                            p.closeInventory();
+                            return;
+                        }
+                        if (block.getState() instanceof Container state) {
+                            p.openInventory(state.getInventory());
+                        } else if (block.getState() instanceof Chest chestBlock) {
                             p.openInventory(chestBlock.getBlockInventory());
                         } else {
                             MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_IS_NOT_A_CHEST));
@@ -78,7 +91,7 @@ public class GameChestItem extends MxItem {
         });
 
 
-        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Chest Hulp Tool", MxInventorySlots.SIX_ROWS)
+        MxInventoryManager.getInstance().addAndOpenInventory(p, MxListInventoryBuilder.create("<gray>Container Hulp Tool", MxInventorySlots.SIX_ROWS)
                 .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                 .setListItems(list)
                 .build());
@@ -91,25 +104,23 @@ public class GameChestItem extends MxItem {
         if (loc == null) {
             return;
         }
-        if (!(e.getInventory().getHolder() instanceof Chest))
-            return;
         Block b = loc.getBlock();
 
         Player p = (Player) e.getPlayer();
-        Optional<Map> mapOptional = MapManager.getInstance().getMapByWorldUID(p.getWorld().getUID());
+        Optional<Game> gameOptional = GameWorldManager.getInstance().getGameByWorldUID(p.getWorld().getUID());
 
-        if (mapOptional.isEmpty()) {
+        if (gameOptional.isEmpty()) {
             return;
         }
 
-        Map map = mapOptional.get();
-        Optional<ChestInformation> optionalChestInformation = map.getChestManager().getChestByLocation(MxLocation.getFromLocation(b.getLocation()));
+        Game game = gameOptional.get();
+        Optional<ContainerInformation> optionalChestInformation = game.getChestManager().getChestByLocation(MxLocation.getFromLocation(b.getLocation()));
         if (optionalChestInformation.isEmpty()) {
             return;
         }
 
-        ChestInformation chestInformation = optionalChestInformation.get();
-        chestInformation.getChestAttachmentList().forEach(a -> {
+        ContainerInformation containerInformation = optionalChestInformation.get();
+        containerInformation.getChestAttachmentList().forEach(a -> {
             a.onOpenChest(e);
         });
 

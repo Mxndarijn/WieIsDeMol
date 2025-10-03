@@ -15,7 +15,7 @@ import nl.mxndarijn.api.util.MSG;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
+import nl.mxndarijn.wieisdemol.managers.chests.ContainerInformation;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 
@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ChestLimitedChoiceAttachment extends ChestAttachment {
+public class ContainerLimitedChoiceAttachment extends ContainerAttachment {
     private static final HashMap<Integer, String> map = new HashMap<>() {{
         put(0, "number-zero");
         put(1, "number-one");
@@ -48,8 +48,8 @@ public class ChestLimitedChoiceAttachment extends ChestAttachment {
     private int choices;
     private String currentHead = "";
 
-    public static Optional<ChestAttachment> createFromSection(Map<String, Object> section, ChestInformation inf) {
-        ChestLimitedChoiceAttachment attachment = new ChestLimitedChoiceAttachment();
+    public static Optional<ContainerAttachment> createFromSection(Map<String, Object> section, ContainerInformation inf) {
+        ContainerLimitedChoiceAttachment attachment = new ContainerLimitedChoiceAttachment();
         if (!getDefaultValues(attachment, inf, section)) {
             return Optional.empty();
         }
@@ -64,8 +64,8 @@ public class ChestLimitedChoiceAttachment extends ChestAttachment {
         return Optional.of(attachment);
     }
 
-    public static ChestAttachment createNewInstance(String type, ChestInformation inf) {
-        ChestLimitedChoiceAttachment attachment = new ChestLimitedChoiceAttachment();
+    public static ContainerAttachment createNewInstance(String type, ContainerInformation inf) {
+        ContainerLimitedChoiceAttachment attachment = new ContainerLimitedChoiceAttachment();
         attachment.setDefaults(type, inf);
         attachment.choices = 1;
         return attachment;
@@ -89,11 +89,11 @@ public class ChestLimitedChoiceAttachment extends ChestAttachment {
         return new Pair<>(
                 MxSkullItemStackBuilder.create(1)
                         .setSkinFromHeadsData("open-chest")
-                        .setName("<green>Keuze kist")
+                        .setName("<green>Keuze container")
                         .addBlankLore()
                         .addLore("<gray>Max items te verwijderen: " + choices)
                         .addBlankLore()
-                        .addLore("<yellow>Klik hier om deze chest attachment aan te passen.")
+                        .addLore("<yellow>Klik hier om deze container attachment aan te passen.")
                         .build(),
                 (mxInv, e) -> {
                     Player p = (Player) e.getWhoClicked();
@@ -102,14 +102,14 @@ public class ChestLimitedChoiceAttachment extends ChestAttachment {
 //                        return;
 //
 //                    nl.mxndarijn.world.map.Map map = opt.get();
-                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create("<gray>Keuze kist", MxInventorySlots.THREE_ROWS)
+                    MxInventoryManager.getInstance().addAndOpenInventory(p, MxDefaultMenuBuilder.create("<gray>Keuze container", MxInventorySlots.THREE_ROWS)
                             .setItem(MxSkullItemStackBuilder.create(1)
                                             .setSkinFromHeadsData("open-chest")
                                             .setName("<green>Verander aantal")
                                             .addBlankLore()
                                             .addLore("<gray>Max items te verwijderen: " + choices)
                                             .addBlankLore()
-                                            .addLore("<yellow>Klik hier om het aantal items dat uit de kist kan worden gehaald")
+                                            .addLore("<yellow>Klik hier om het aantal items dat uit de container kan worden gehaald")
                                             .addLore("<yellow>te veranderen.")
                                             .build(),
                                     13,
@@ -137,7 +137,7 @@ public class ChestLimitedChoiceAttachment extends ChestAttachment {
 
                                             .build(), 18,
                                     (mxInv12, e12) -> {
-                                        information.removeChestAttachment(p, this, ChestAttachments.CHEST_LIMITED_CHOICE);
+                                        information.removeChestAttachment(p, this, ContainerAttachments.CONTAINER_LIMITED_CHOICE);
                                         p.closeInventory();
                                     }
                             )

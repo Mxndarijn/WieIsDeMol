@@ -17,7 +17,7 @@ import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
+import nl.mxndarijn.wieisdemol.managers.chests.ContainerInformation;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 
@@ -32,7 +32,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
-public class ChestLockAttachment extends ChestAttachment {
+public class ContainerLockAttachment extends ContainerAttachment {
     private static final HashMap<Boolean, String> map = new HashMap<>() {{
         put(true, "locked-chest");
         put(false, "open-chest");
@@ -41,8 +41,8 @@ public class ChestLockAttachment extends ChestAttachment {
     private String lockTag;
     private boolean locked = true;
 
-    public static Optional<ChestLockAttachment> createFromSection(Map<String, Object> section, ChestInformation information) {
-        ChestLockAttachment attachment = new ChestLockAttachment();
+    public static Optional<ContainerLockAttachment> createFromSection(Map<String, Object> section, ContainerInformation information) {
+        ContainerLockAttachment attachment = new ContainerLockAttachment();
         if (!getDefaultValues(attachment, information, section)) {
             return Optional.empty();
         }
@@ -58,8 +58,8 @@ public class ChestLockAttachment extends ChestAttachment {
         return Optional.of(attachment);
     }
 
-    public static ChestAttachment createNewInstance(String type, ChestInformation information) {
-        ChestLockAttachment attachment = new ChestLockAttachment();
+    public static ContainerAttachment createNewInstance(String type, ContainerInformation information) {
+        ContainerLockAttachment attachment = new ContainerLockAttachment();
         attachment.setDefaults(type, information);
         attachment.locked = true;
         attachment.lockTag = UUID.randomUUID().toString();
@@ -85,14 +85,14 @@ public class ChestLockAttachment extends ChestAttachment {
         return new Pair<>(
                 MxSkullItemStackBuilder.create(1)
                         .setSkinFromHeadsData("locked-chest")
-                        .setName("<green>Kist slot")
+                        .setName("<green>Container slot")
                         .addBlankLore()
-                        .addLore("<yellow>Klik hier om deze chest attachment aan te passen.")
+                        .addLore("<yellow>Klik hier om deze container attachment aan te passen.")
                         .build(),
                 (mxInv, e) -> {
                     Player p = (Player) e.getWhoClicked();
                     MxInventoryManager.getInstance().addAndOpenInventory(p.getUniqueId(),
-                            MxDefaultMenuBuilder.create("Kist slot", MxInventorySlots.THREE_ROWS)
+                            MxDefaultMenuBuilder.create("Container slot", MxInventorySlots.THREE_ROWS)
                                     .setItem(MxSkullItemStackBuilder.create(1)
                                                     .setSkinFromHeadsData("locked-chest")
                                                     .setName("<gray>Krijg sleutel")
@@ -132,13 +132,13 @@ public class ChestLockAttachment extends ChestAttachment {
 
                                     .setItem(MxSkullItemStackBuilder.create(1)
                                                     .setSkinFromHeadsData("red-minus")
-                                                    .setName("<red>Verwijder chest attachment")
+                                                    .setName("<red>Verwijder container attachment")
                                                     .addBlankLore()
-                                                    .addLore("<yellow>Klik hier om de chest attachment te verwijderen")
+                                                    .addLore("<yellow>Klik hier om de container attachment te verwijderen")
 
                                                     .build(), 18,
                                             (mxInv12, e12) -> {
-                                                information.removeChestAttachment(p, this, ChestAttachments.CHEST_COLOR_BIND);
+                                                information.removeChestAttachment(p, this, ContainerAttachments.CONTAINER_LOCK);
                                                 p.closeInventory();
                                             }
                                     )

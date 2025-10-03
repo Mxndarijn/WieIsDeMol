@@ -1,6 +1,5 @@
 package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
@@ -10,7 +9,7 @@ import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
+import nl.mxndarijn.wieisdemol.managers.chests.ContainerInformation;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
@@ -30,13 +29,13 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class ChestAttachment {
-    public ChestInformation information;
+public abstract class ContainerAttachment {
+    public ContainerInformation information;
     public String type;
     public Optional<ArmorStand> armorStand;
     private Optional<Game> game;
 
-    public static boolean getDefaultValues(ChestAttachment attachment, ChestInformation information, Map<String, Object> section) {
+    public static boolean getDefaultValues(ContainerAttachment attachment, ContainerInformation information, Map<String, Object> section) {
 
         if (section == null) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MAPS_MANAGER, "Could not load ChestAttachment (No Section)");
@@ -55,7 +54,7 @@ public abstract class ChestAttachment {
         this.game = Optional.of(game);
     }
 
-    public void setDefaults(String type, ChestInformation information) {
+    public void setDefaults(String type, ContainerInformation information) {
         this.type = type;
         this.information = information;
     }
@@ -105,7 +104,7 @@ public abstract class ChestAttachment {
         ar.setGravity(false);
         ar.customName(MiniMessage.miniMessage().deserialize("<!i>" + "attachment"));
         ar.setCollidable(false);
-        ar.getEquipment().setHelmet(MxSkullItemStackBuilder.create(1).setSkinFromHeadsData(ChestAttachments.getAttachmentByType(type).get().getSkullName())
+        ar.getEquipment().setHelmet(MxSkullItemStackBuilder.create(1).setSkinFromHeadsData(ContainerAttachments.getAttachmentByType(type).get().getSkullName())
                 .build());
 
         Location blockLocation = information.getLocation().getLocation(Bukkit.getWorld(game.get().getMxWorld().get().getWorldUID()));

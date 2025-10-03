@@ -21,7 +21,7 @@ import nl.mxndarijn.wieisdemol.data.Permissions;
 import nl.mxndarijn.wieisdemol.data.ScoreBoard;
 import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.InteractionManager;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestManager;
+import nl.mxndarijn.wieisdemol.managers.chests.ContainerManager;
 import nl.mxndarijn.wieisdemol.managers.doors.DoorManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
@@ -53,7 +53,7 @@ public class Preset {
     private PresetConfig config;
     private Optional<MxWorld> mxWorld;
     private WarpManager warpManager;
-    private ChestManager chestManager;
+    private ContainerManager containerManager;
     private ShulkerManager shulkerManager;
     private DoorManager doorManager;
     private InteractionManager interactionManager;
@@ -79,7 +79,7 @@ public class Preset {
             this.config = new PresetConfig(presetConfigFile);
             this.mxWorld = MxAtlas.getInstance().loadWorld(directory);
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
-            this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
+            this.containerManager = new ContainerManager(new File(getDirectory(), "chests.yml"));
             this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
             this.doorManager = new DoorManager(new File(getDirectory(), "doors.yml"));
             this.interactionManager = new InteractionManager(new File(getDirectory(), "interactions.yml"));
@@ -164,7 +164,7 @@ public class Preset {
 
         builder.addLore(" ")
                 .addLore("<dark_gray>" + "Extra Info:")
-                .addLore("<gray>Aantal Kisten: " + chestManager.getChests().size())
+                .addLore("<gray>Aantal Kisten: " + containerManager.getChests().size())
                 .addLore("<gray>Aantal deuren: " + doorManager.getDoors().size());
 
         if (config.isLocked()) {
@@ -221,7 +221,7 @@ public class Preset {
                     put("%%preset_name%%", config.getName());
                 }}), () -> ScoreBoard.PRESET.getLines(new HashMap<>() {{
                     put("%%colors_amount%%", config.getColors().size() + "");
-                    put("%%total_chests%%", chestManager.getChests().size() + "");
+                    put("%%total_chests%%", containerManager.getChests().size() + "");
                     put("%%total_shulkers%%", shulkerManager.getShulkers().size() + "");
                     put("%%total_doors%%", doorManager.getDoors().size() + "");
                     put("%%total_warps%%", warpManager.getWarps().size() + "");
@@ -289,8 +289,8 @@ public class Preset {
         return warpManager;
     }
 
-    public ChestManager getChestManager() {
-        return chestManager;
+    public ContainerManager getChestManager() {
+        return containerManager;
     }
 
     public ShulkerManager getShulkerManager() {

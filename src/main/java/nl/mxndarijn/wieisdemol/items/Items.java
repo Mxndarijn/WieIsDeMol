@@ -10,7 +10,7 @@ import nl.mxndarijn.wieisdemol.items.game.books.*;
 import nl.mxndarijn.wieisdemol.items.game.spectate.LeaveGameItem;
 import nl.mxndarijn.wieisdemol.items.game.spectate.TeleportItem;
 import nl.mxndarijn.wieisdemol.items.maps.*;
-import nl.mxndarijn.wieisdemol.items.presets.ChestConfigureTool;
+import nl.mxndarijn.wieisdemol.items.presets.ContainerConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.DoorConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.PresetConfigureTool;
 import nl.mxndarijn.wieisdemol.items.presets.ShulkerConfigureTool;
@@ -38,15 +38,15 @@ public enum Items {
 
     CHEST_CONFIGURE_TOOL(
             MxDefaultItemStackBuilder.create(Material.STICK, 1)
-                    .setName("<gray>Chest Configure-Tool")
+                    .setName("<gray>Container Configure-Tool")
                     .addLore(" ")
-                    .addLore("<yellow>Met dit item kan je kisten in een preset aanpassen.")
+                    .addLore("<yellow>Met dit item kan je containers (kist/hopper/dropper/disp.) in een preset aanpassen.")
                     .build(),
             p -> {
                 return true;
             },
             false,
-            ChestConfigureTool.class,
+            ContainerConfigureTool.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     SHULKER_CONFIGURE_TOOL(
@@ -82,29 +82,29 @@ public enum Items {
 
     CHEST_TOOL(
             MxDefaultItemStackBuilder.create(Material.STICK, 1)
-                    .setName("<gray>Chest Tool")
+                    .setName("<gray>Container Tool")
                     .addLore(" ")
-                    .addLore("<yellow>Met dit item kan je kisten op afstand openen.")
+                    .addLore("<yellow>Met dit item kan je containers op afstand openen.")
                     .build(),
             p -> {
                 return true;
             },
             false,
-            MapChestItem.class,
+            MapContainerItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     GAME_CHEST_TOOL(
             MxDefaultItemStackBuilder.create(Material.STICK, 1)
-                    .setName("<gray>Chest Tool")
+                    .setName("<gray>Container Tool")
                     .addLore(" ")
-                    .addLore("<yellow>Met dit item kan je kisten op afstand openen tijdens een game.")
-                    .addLore("<yellow>Daarnaast merkt niemand dat je de kist opent.")
+                    .addLore("<yellow>Met dit item kan je containers op afstand openen tijdens een game.")
+                    .addLore("<yellow>Daarnaast merkt niemand dat je de container opent.")
                     .build(),
             p -> {
                 return true;
             },
             false,
-            GameChestItem.class,
+            GameContainerItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     SHULKER_TOOL(

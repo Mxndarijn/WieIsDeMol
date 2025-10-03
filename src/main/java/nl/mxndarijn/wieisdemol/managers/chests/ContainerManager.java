@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ChestManager {
+public class ContainerManager {
 
     private final File chestFile;
-    private final List<ChestInformation> chests;
+    private final List<ContainerInformation> chests;
 
-    public ChestManager(File f) {
+    public ContainerManager(File f) {
         this.chestFile = f;
         if (!this.chestFile.exists()) {
             try {
@@ -39,12 +39,12 @@ public class ChestManager {
         chests = loadFile();
     }
 
-    private List<ChestInformation> loadFile() {
+    private List<ContainerInformation> loadFile() {
         FileConfiguration fc = YamlConfiguration.loadConfiguration(chestFile);
-        ArrayList<ChestInformation> list = new ArrayList<>();
+        ArrayList<ContainerInformation> list = new ArrayList<>();
 
         fc.getKeys(false).forEach(key -> {
-            Optional<ChestInformation> optionalChestInformation = ChestInformation.load(fc.getConfigurationSection(key));
+            Optional<ContainerInformation> optionalChestInformation = ContainerInformation.load(fc.getConfigurationSection(key));
             optionalChestInformation.ifPresent(list::add);
         });
 
@@ -67,18 +67,18 @@ public class ChestManager {
         }
     }
 
-    public void addChest(ChestInformation information) {
+    public void addChest(ContainerInformation information) {
         chests.add(information);
         save();
     }
 
-    public void removeChest(ChestInformation information) {
+    public void removeChest(ContainerInformation information) {
         chests.remove(information);
         save();
     }
 
     public boolean containsLocation(MxLocation location) {
-        for (ChestInformation chest : chests) {
+        for (ContainerInformation chest : chests) {
             if (chest.getLocation().equals(location)) {
                 return true;
             }
@@ -86,13 +86,13 @@ public class ChestManager {
         return false;
     }
 
-    public List<ChestInformation> getChests() {
+    public List<ContainerInformation> getChests() {
         return chests;
     }
 
 
-    public Optional<ChestInformation> getChestByLocation(MxLocation location) {
-        for (ChestInformation chest : chests) {
+    public Optional<ContainerInformation> getChestByLocation(MxLocation location) {
+        for (ContainerInformation chest : chests) {
             if (chest.getLocation().equals(location)) {
                 return Optional.of(chest);
             }
@@ -107,7 +107,7 @@ public class ChestManager {
             return -1;
         MxWorld m = world.get();
         World w = Bukkit.getWorld(m.getWorldUID());
-        for (ChestInformation chestInformation : chests) {
+        for (ContainerInformation chestInformation : chests) {
             Block b = chestInformation.getLocation().getLocation(w).getBlock();
             if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {
                 Chest c = (Chest) b.getState();

@@ -8,6 +8,7 @@ gamerules:
   spectatorsGenerateChunks: 0
   spawnRadius: 0
   doImmediateRespawn: true
+  locatorBar: false
 autosave: false
 keepSpawnInMemory: false
 spawn:

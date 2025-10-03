@@ -20,7 +20,7 @@ import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
 import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.InteractionManager;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestManager;
+import nl.mxndarijn.wieisdemol.managers.chests.ContainerManager;
 import nl.mxndarijn.wieisdemol.managers.doors.DoorManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
@@ -49,7 +49,7 @@ public class Map {
     private File inventoriesFile;
     private Optional<MxWorld> mxWorld;
     private WarpManager warpManager;
-    private ChestManager chestManager;
+    private ContainerManager containerManager;
     private ShulkerManager shulkerManager;
     private DoorManager doorManager;
     private InteractionManager interactionManager;
@@ -73,7 +73,7 @@ public class Map {
             }
             this.mxWorld = MxAtlas.getInstance().loadWorld(directory);
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
-            this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
+            this.containerManager = new ContainerManager(new File(getDirectory(), "chests.yml"));
             this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
             this.doorManager = new DoorManager(new File(getDirectory(), "doors.yml"));
             this.interactionManager = new InteractionManager(new File(getDirectory(), "interactions.yml"));
@@ -105,7 +105,7 @@ public class Map {
             }
             this.mxWorld = MxAtlas.getInstance().loadWorld(directory);
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
-            this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
+            this.containerManager = new ContainerManager(new File(getDirectory(), "chests.yml"));
             this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
             this.doorManager = new DoorManager(new File(getDirectory(), "doors.yml"));
             this.interactionManager = new InteractionManager(new File(getDirectory(), "interactions.yml"));
@@ -167,7 +167,7 @@ public class Map {
                         put("%%map_name%%", mapConfig.getName());
                     }});
                 }, () -> {
-                    int chestsFilled = chestManager.getAmountOfChestsFilled(this);
+                    int chestsFilled = containerManager.getAmountOfChestsFilled(this);
                     int shulkersFilled = shulkerManager.getAmountOfShulkersFilled(this);
                     Map m = this;
                     return ScoreBoard.MAP.getLines(new HashMap<>() {{
@@ -175,8 +175,8 @@ public class Map {
                         put("%%map_owner%%", player.getName());
                         put("%%colors_amount%%", mapConfig.getColors().size() + "");
                         put("%%vullers_amount%%", scoreboard.getPlayersUsingScoreboard().size() + "");
-                        put("%%chests_filled%%", (chestsFilled == chestManager.getChests().size() ? "<green>" : "<red>").toString() + chestsFilled);
-                        put("%%total_chests%%", chestManager.getChests().size() + "");
+                        put("%%chests_filled%%", (chestsFilled == containerManager.getChests().size() ? "<green>" : "<red>").toString() + chestsFilled);
+                        put("%%total_chests%%", containerManager.getChests().size() + "");
                         put("%%shulkers_filled%%", (shulkersFilled == shulkerManager.getShulkers().size() ? "<green>" : "<red>").toString() + shulkersFilled);
                         put("%%total_shulkers%%", shulkerManager.getShulkers().size() + "");
                         put("%%all_doors_closed%%", (doorManager.areAllDoorsClosed(m) ? "<green>Ja" : "<red>Nee"));
@@ -244,7 +244,7 @@ public class Map {
 
     private void saveAllData() {
         mapConfig.save();
-        chestManager.save();
+        containerManager.save();
         doorManager.save();
         interactionManager.save();
         shulkerManager.save();
@@ -300,12 +300,12 @@ public class Map {
         this.warpManager = warpManager;
     }
 
-    public ChestManager getChestManager() {
-        return chestManager;
+    public ContainerManager getChestManager() {
+        return containerManager;
     }
 
-    public void setChestManager(ChestManager chestManager) {
-        this.chestManager = chestManager;
+    public void setChestManager(ContainerManager containerManager) {
+        this.containerManager = containerManager;
     }
 
     public ShulkerManager getShulkerManager() {

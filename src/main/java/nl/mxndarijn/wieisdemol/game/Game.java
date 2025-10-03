@@ -18,7 +18,7 @@ import nl.mxndarijn.wieisdemol.game.events.GameEvent;
 import nl.mxndarijn.wieisdemol.game.events.*;
 import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.*;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestManager;
+import nl.mxndarijn.wieisdemol.managers.chests.ContainerManager;
 import nl.mxndarijn.wieisdemol.managers.database.DatabaseManager;
 import nl.mxndarijn.wieisdemol.managers.database.PlayerData;
 import nl.mxndarijn.wieisdemol.managers.doors.DoorManager;
@@ -49,7 +49,7 @@ public class Game {
     private final GameInfo gameInfo;
     private final UUID mainHost;
     private final WarpManager warpManager;
-    private final ChestManager chestManager;
+    private final ContainerManager containerManager;
     private final ShulkerManager shulkerManager;
     private final DoorManager doorManager;
     private final InteractionManager interactionManager;
@@ -84,7 +84,7 @@ public class Game {
         this.respawnLocations = new HashMap<>();
 
         this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
-        this.chestManager = new ChestManager(new File(getDirectory(), "chests.yml"));
+        this.containerManager = new ContainerManager(new File(getDirectory(), "chests.yml"));
         this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
         this.doorManager = new DoorManager(new File(getDirectory(), "doors.yml"));
         this.interactionManager = new InteractionManager(new File(getDirectory(), "interactions.yml"));
@@ -352,8 +352,8 @@ public class Game {
         return warpManager;
     }
 
-    public ChestManager getChestManager() {
-        return chestManager;
+    public ContainerManager getChestManager() {
+        return containerManager;
     }
 
     public ShulkerManager getShulkerManager() {
@@ -483,7 +483,7 @@ public class Game {
         getGameInfo().setStatus(upcomingGameStatus);
         if (upcomingGameStatus == UpcomingGameStatus.PLAYING && !firstStart) {
             firstStart = true;
-            chestManager.onGameStart(this);
+            containerManager.onGameStart(this);
             gameInfo.getQueue().clear();
         }
         if (upcomingGameStatus == UpcomingGameStatus.FINISHED) {
@@ -546,7 +546,7 @@ public class Game {
             if (gameInfo.getStatus() != UpcomingGameStatus.PLAYING)
                 return;
             long l = System.currentTimeMillis();
-            chestManager.getChests().forEach(chestInformation -> {
+            containerManager.getChests().forEach(chestInformation -> {
                 chestInformation.getChestAttachmentList().forEach(chestAttachment -> {
                     chestAttachment.onGameUpdate(l - lastUpdateTime.get());
                 });

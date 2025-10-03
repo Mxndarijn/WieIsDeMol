@@ -16,8 +16,8 @@ import nl.mxndarijn.wieisdemol.data.Role;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.game.UpcomingGameStatus;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
-import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ChestAttachments;
+import nl.mxndarijn.wieisdemol.managers.chests.ContainerInformation;
+import nl.mxndarijn.wieisdemol.managers.chests.chestattachments.ContainerAttachments;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerInformation;
@@ -152,7 +152,7 @@ public class GamePlayingEvents extends GameEvent {
                 e.setCancelled(true);
                 return;
             }
-            Optional<ChestInformation> inf = game.getChestManager().getChestByLocation(MxLocation.getFromLocation(e.getClickedBlock().getLocation()));
+            Optional<ContainerInformation> inf = game.getChestManager().getChestByLocation(MxLocation.getFromLocation(e.getClickedBlock().getLocation()));
             Optional<GamePlayer> optionalGamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
             if (optionalGamePlayer.isPresent()) {
                 if (inf.isPresent()) {
@@ -179,7 +179,7 @@ public class GamePlayingEvents extends GameEvent {
                 if (c.getInventory().equals(e.getClickedInventory())) {
                     chestInformation.onChestInventoryClick(gamePlayer.get(), e, game, (Player) e.getWhoClicked());
                 }
-                if (e.getWhoClicked().getOpenInventory().getTopInventory().equals(c.getInventory()) && chestInformation.containsChestAttachment(ChestAttachments.CHEST_LIMITED_CHOICE)) {
+                if (e.getWhoClicked().getOpenInventory().getTopInventory().equals(c.getInventory()) && chestInformation.containsChestAttachment(ContainerAttachments.CONTAINER_LIMITED_CHOICE)) {
                     if (e.getAction() == InventoryAction.HOTBAR_SWAP || e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY || e.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
                         e.setCancelled(true);
                     }

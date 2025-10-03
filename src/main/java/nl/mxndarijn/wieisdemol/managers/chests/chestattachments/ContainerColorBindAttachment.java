@@ -8,12 +8,11 @@ import nl.mxndarijn.api.inventory.menu.MxListInventoryBuilder;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
-import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.wieisdemol.data.Colors;
 import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.game.GamePlayer;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
+import nl.mxndarijn.wieisdemol.managers.chests.ContainerInformation;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
 
 import org.bukkit.Material;
@@ -22,14 +21,14 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
 
-public class ChestColorBindAttachment extends ChestAttachment {
+public class ContainerColorBindAttachment extends ContainerAttachment {
     private final int changeTime = 2000;
     private List<Colors> colors;
     private long time;
     private Colors currentColor;
 
-    public static Optional<ChestAttachment> createFromSection(Map<String, Object> section, ChestInformation inf) {
-        ChestColorBindAttachment attachment = new ChestColorBindAttachment();
+    public static Optional<ContainerAttachment> createFromSection(Map<String, Object> section, ContainerInformation inf) {
+        ContainerColorBindAttachment attachment = new ContainerColorBindAttachment();
         if (!getDefaultValues(attachment, inf, section)) {
             return Optional.empty();
         }
@@ -48,8 +47,8 @@ public class ChestColorBindAttachment extends ChestAttachment {
         return Optional.of(attachment);
     }
 
-    public static ChestAttachment createNewInstance(String type, ChestInformation inf) {
-        ChestColorBindAttachment attachment = new ChestColorBindAttachment();
+    public static ContainerAttachment createNewInstance(String type, ContainerInformation inf) {
+        ContainerColorBindAttachment attachment = new ContainerColorBindAttachment();
         attachment.setDefaults(type, inf);
         attachment.colors = new ArrayList<>();
         return attachment;
@@ -74,9 +73,9 @@ public class ChestColorBindAttachment extends ChestAttachment {
     public Pair<ItemStack, MxItemClicked> getEditAttachmentItem() {
         MxSkullItemStackBuilder builder = MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData("wool-chest")
-                .setName("<green>Colorbind chest")
+                .setName("<green>Colorbind container")
                 .addBlankLore();
-        builder.addLore("<gray>Kleuren die de kist kunnen openen:");
+        builder.addLore("<gray>Kleuren die de container kunnen openen:");
         if (colors.isEmpty()) {
             builder.addLore("<gray> - <red>Geen");
         }
@@ -86,7 +85,7 @@ public class ChestColorBindAttachment extends ChestAttachment {
 
         return new Pair<>(
                 builder.addBlankLore()
-                        .addLore("<yellow>Klik hier om deze chest attachment aan te passen.")
+                        .addLore("<yellow>Klik hier om deze container attachment aan te passen.")
                         .build(),
                 (mxInv, e) -> {
                     Player p = (Player) e.getWhoClicked();
@@ -114,13 +113,13 @@ public class ChestColorBindAttachment extends ChestAttachment {
                             .setListItems(list)
                             .setItem(MxSkullItemStackBuilder.create(1)
                                             .setSkinFromHeadsData("red-minus")
-                                            .setName("<red>Verwijder chest attachment")
+                                            .setName("<red>Verwijder container attachment")
                                             .addBlankLore()
-                                            .addLore("<yellow>Klik hier om de chest attachment te verwijderen")
+                                            .addLore("<yellow>Klik hier om de container attachment te verwijderen")
 
                                             .build(), 18,
                                     (mxInv12, e12) -> {
-                                        information.removeChestAttachment(p, this, ChestAttachments.CHEST_COLOR_BIND);
+                                        information.removeChestAttachment(p, this, ContainerAttachments.CONTAINER_COLOR_BIND);
                                         p.closeInventory();
                                     }
                             )
@@ -145,7 +144,7 @@ public class ChestColorBindAttachment extends ChestAttachment {
                 .setSkinFromHeadsData(mapPlayer.getColor().getHeadKey())
                 .setName(mapPlayer.getColor().getDisplayName())
                 .addBlankLore()
-                .addLore("<gray>Kan kist openen: " + (colors.contains(mapPlayer.getColor()) ? "<green>Ja" : "<red>Nee"))
+                .addLore("<gray>Kan container openen: " + (colors.contains(mapPlayer.getColor()) ? "<green>Ja" : "<red>Nee"))
                 .addBlankLore()
                 .addLore("<yellow>Klik hier om de kleur " + (colors.contains(mapPlayer.getColor()) ? "toe te voegen." : "te verwijderen."))
 

@@ -16,7 +16,6 @@ import nl.mxndarijn.api.util.MxWorldFilter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
-import nl.mxndarijn.wieisdemol.managers.chests.ChestInformation;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.map.Map;
