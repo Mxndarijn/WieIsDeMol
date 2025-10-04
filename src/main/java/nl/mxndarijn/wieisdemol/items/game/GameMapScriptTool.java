@@ -44,13 +44,13 @@ public class GameMapScriptTool extends MxItem {
 
         ArrayList<Pair<ItemStack, nl.mxndarijn.api.inventory.MxItemClicked>> list = new ArrayList<>();
         for (MapAction<?> action : script.getMapActions()) {
-            ItemStack display = action.createItemStack().build();
+            ItemStack display = action.createItemStack();
             list.add(new Pair<>(display, (mxInv, clickEvent) -> {
                 try {
-                    action.onActivate(null, p);
+                    action.onActivate(clickEvent, p);
                     MSG.msg(p, ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.GAME_MAPSCRIPT_ACTION_EXECUTED));
                 } catch (Exception ex) {
-                    // Swallow exceptions to avoid breaking inventory; could add logging if desired
+                    ex.printStackTrace();
                 } finally {
                     p.closeInventory();
                 }
@@ -58,7 +58,7 @@ public class GameMapScriptTool extends MxItem {
         }
 
         MxInventoryManager.getInstance().addAndOpenInventory(p,
-                MxListInventoryBuilder.create("<gray>MapScript Acties", MxInventorySlots.SIX_ROWS)
+                MxListInventoryBuilder.create("<gray>Script Acties", MxInventorySlots.SIX_ROWS)
                         .setAvailableSlots(MxInventoryIndex.ROW_ONE_TO_FIVE)
                         .setListItems(list)
                         .build()

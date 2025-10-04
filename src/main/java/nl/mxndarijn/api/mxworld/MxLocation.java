@@ -19,6 +19,26 @@ public class MxLocation {
     private int yaw = 0;
     private int pitch = 0;
 
+    public MxLocation(int x, int y, int z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = 0;
+        this.pitch = 0;
+    }
+
+    public MxLocation(int x, int y, int z, int yaw, int pitch) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.yaw = yaw;
+        this.pitch = pitch;
+    }
+
+    public MxLocation() {
+
+    }
+
     public static MxLocation getFromLocation(Location loc) {
         MxLocation mxLocation = new MxLocation();
         mxLocation.setX(loc.getX());

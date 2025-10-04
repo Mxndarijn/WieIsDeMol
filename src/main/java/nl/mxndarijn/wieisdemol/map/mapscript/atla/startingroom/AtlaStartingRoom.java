@@ -1,6 +1,5 @@
 package nl.mxndarijn.wieisdemol.map.mapscript.atla.startingroom;
 
-import net.kyori.adventure.text.Component;
 import nl.mxndarijn.api.builders.ArmorStandHelper;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.mxworld.MxWorld;
@@ -14,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +32,7 @@ public class AtlaStartingRoom extends MapRoom {
     @Override
     public @NotNull MapRoomResult build() {
         return MapRoomResult.builder(this)
-                .addMapAction(new AtlaStartingRoomTeleportAppa(this))
+                .addMapAction(new AtlaActionStartingRoomTeleportAppa(this))
                 .build();
     }
 
@@ -60,7 +58,7 @@ public class AtlaStartingRoom extends MapRoom {
         World w = Bukkit.getWorld(world.getWorldUID());
         assert w != null;
 
-        Location loc = new Location(w, -153, 65, 47);
+        Location loc = new Location(w, -153, 66, 47);
         int maxRadius = 6;
 
         Collection<Player> nearbyPlayers = w.getEntitiesByClass(Player.class);
@@ -118,10 +116,11 @@ public class AtlaStartingRoom extends MapRoom {
         Game game = this.getGame().orElseThrow();
 
         armorStand = ArmorStandHelper.create()
-                .setLocation(new Location(w, -153, 66, 47))
+                .setLocation(new Location(w, -153, 65, 47))
                 .setInvisible(true)
                 .setInvulnerable(true)
                 .setCollidable(false)
+                .setGravity(false)
                 .setCustomNameVisible(true)
                 .setName("<gray>" + playersAtLocation + "<dark_gray>/<gray>" + game.getAlivePlayerCount() + " spelers aanwezig")
                 .build();
@@ -130,7 +129,7 @@ public class AtlaStartingRoom extends MapRoom {
             Game currentGame = this.getGame().orElseThrow();
             updatePlayerCount();
             armorStand.customName(Functions.buildComponentFromString("<gray>" + playersAtLocation + "<dark_gray>/<gray>" + currentGame.getAlivePlayerCount() + " spelers aanwezig."));
-            if(playersAtLocation == currentGame.getAlivePlayerCount()) {
+            if(playersAtLocation == currentGame.getAlivePlayerCount() && currentGame.getAlivePlayerCount() > 0) {
                 Bukkit.getScheduler().cancelTask(taskId);
 
                 Bukkit.getScheduler().runTaskLater(game.getPlugin(), () -> {

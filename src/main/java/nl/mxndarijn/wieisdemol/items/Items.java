@@ -109,16 +109,27 @@ public enum Items {
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     GAME_MAPSCRIPT_TOOL(
-            MxDefaultItemStackBuilder.create(Material.REPEATER, 1)
-                    .setName("<gray>MapScript Tool")
+            MxDefaultItemStackBuilder.create(Material.PAPER, 1)
+                    .setName("<gray>Script Tool")
                     .addLore(" ")
-                    .addLore("<yellow>Open een lijst met MapScript acties (alleen host).")
+                    .addLore("<yellow>Open een lijst met Script acties.")
                     .build(),
             p -> {
                 return true;
             },
             false,
             GameMapScriptTool.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+    MAPSCRIPT_PARAMETER_TOOL(
+            MxDefaultItemStackBuilder.create(Material.PAPER, 1)
+                    .setName("<gray>Script Parameter Tool")
+                    .addLore(" ")
+                    .addLore("<yellow>Met dit item kan je script parameters aanpassen.")
+                    .build(),
+            p -> { return true; },
+            false,
+            MapScriptParameterToolItem.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     SHULKER_TOOL(

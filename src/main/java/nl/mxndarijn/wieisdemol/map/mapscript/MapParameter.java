@@ -14,29 +14,30 @@ import java.util.Optional;
 public sealed interface MapParameter<T> permits MapParameter.StringParam, MapParameter.NumberParam, MapParameter.DecimalParam, MapParameter.BooleanParam, MapParameter.LocationParam {
 
     @NotNull MapParameterType getType();
+    @NotNull String getId();
     @NotNull String getDescription();
     @Nullable T getDefaultValue();
     @NotNull MapRoom getMapRoom();
 
     // ---- Factories (ergonomic) ----
-    static MapParameter<String> stringParam(@NotNull MapRoom mapRoom, @NotNull String description, @Nullable String defaultValue) {
-        return new StringParam(mapRoom, description, defaultValue);
+    static MapParameter<String> stringParam(@NotNull MapRoom mapRoom, @NotNull String id, @NotNull String description, @Nullable String defaultValue) {
+        return new StringParam(mapRoom, id, description, defaultValue);
     }
 
-    static MapParameter<Integer> numberParam(@NotNull MapRoom mapRoom, @NotNull String description, int defaultValue) {
-        return new NumberParam(mapRoom, description, defaultValue);
+    static MapParameter<Integer> numberParam(@NotNull MapRoom mapRoom, @NotNull String id, @NotNull String description, int defaultValue) {
+        return new NumberParam(mapRoom, id, description, defaultValue);
     }
 
-    static MapParameter<Double> decimalParam(@NotNull MapRoom mapRoom, @NotNull String description, double defaultValue) {
-        return new DecimalParam(mapRoom, description, defaultValue);
+    static MapParameter<Double> decimalParam(@NotNull MapRoom mapRoom, @NotNull String id, @NotNull String description, double defaultValue) {
+        return new DecimalParam(mapRoom, id, description, defaultValue);
     }
 
-    static MapParameter<Boolean> booleanParam(@NotNull MapRoom mapRoom, @NotNull String description, boolean defaultValue) {
-        return new BooleanParam(mapRoom, description, defaultValue);
+    static MapParameter<Boolean> booleanParam(@NotNull MapRoom mapRoom, @NotNull String id, @NotNull String description, boolean defaultValue) {
+        return new BooleanParam(mapRoom, id, description, defaultValue);
     }
 
-    static MapParameter<Location> locationParam(@NotNull MapRoom mapRoom, @NotNull String description, @Nullable Location defaultValue) {
-        return new LocationParam(mapRoom, description, defaultValue);
+    static MapParameter<Location> locationParam(@NotNull MapRoom mapRoom, @NotNull String id, @NotNull String description, @Nullable Location defaultValue) {
+        return new LocationParam(mapRoom, id, description, defaultValue);
     }
 
     // ---- Convenience typed Optional accessors (compat-friendly) ----
@@ -57,36 +58,41 @@ public sealed interface MapParameter<T> permits MapParameter.StringParam, MapPar
     }
 
     // ---- Subtypes ----
-    record StringParam(@NotNull MapRoom mapRoom, @NotNull String description, @Nullable String defaultValue) implements MapParameter<String> {
+    record StringParam(@NotNull MapRoom mapRoom, @NotNull String id, @NotNull String description, @Nullable String defaultValue) implements MapParameter<String> {
         @Override public @NotNull MapParameterType getType() { return MapParameterType.STRING; }
+        @Override public @NotNull String getId() { return id; }
         @Override public @NotNull String getDescription() { return description; }
         @Override public @Nullable String getDefaultValue() { return defaultValue; }
         @Override public @NotNull MapRoom getMapRoom() { return mapRoom; }
     }
 
-    record NumberParam(@NotNull MapRoom mapRoom, @NotNull String description, @Nullable Integer defaultValue) implements MapParameter<Integer> {
+    record NumberParam(@NotNull MapRoom mapRoom, @NotNull String id, @NotNull String description, @Nullable Integer defaultValue) implements MapParameter<Integer> {
         @Override public @NotNull MapParameterType getType() { return MapParameterType.NUMBER; }
+        @Override public @NotNull String getId() { return id; }
         @Override public @NotNull String getDescription() { return description; }
         @Override public @Nullable Integer getDefaultValue() { return defaultValue; }
         @Override public @NotNull MapRoom getMapRoom() { return mapRoom; }
     }
 
-    record DecimalParam(@NotNull MapRoom mapRoom, @NotNull String description, @Nullable Double defaultValue) implements MapParameter<Double> {
+    record DecimalParam(@NotNull MapRoom mapRoom, @NotNull String id, @NotNull String description, @Nullable Double defaultValue) implements MapParameter<Double> {
         @Override public @NotNull MapParameterType getType() { return MapParameterType.DECIMAL; }
+        @Override public @NotNull String getId() { return id; }
         @Override public @NotNull String getDescription() { return description; }
         @Override public @Nullable Double getDefaultValue() { return defaultValue; }
         @Override public @NotNull MapRoom getMapRoom() { return mapRoom; }
     }
 
-    record BooleanParam(@NotNull MapRoom mapRoom, @NotNull String description, @Nullable Boolean defaultValue) implements MapParameter<Boolean> {
+    record BooleanParam(@NotNull MapRoom mapRoom, @NotNull String id, @NotNull String description, @Nullable Boolean defaultValue) implements MapParameter<Boolean> {
         @Override public @NotNull MapParameterType getType() { return MapParameterType.BOOLEAN; }
+        @Override public @NotNull String getId() { return id; }
         @Override public @NotNull String getDescription() { return description; }
         @Override public @Nullable Boolean getDefaultValue() { return defaultValue; }
         @Override public @NotNull MapRoom getMapRoom() { return mapRoom; }
     }
 
-    record LocationParam(@NotNull MapRoom mapRoom, @NotNull String description, @Nullable Location defaultValue) implements MapParameter<Location> {
+    record LocationParam(@NotNull MapRoom mapRoom, @NotNull String id, @NotNull String description, @Nullable Location defaultValue) implements MapParameter<Location> {
         @Override public @NotNull MapParameterType getType() { return MapParameterType.LOCATION; }
+        @Override public @NotNull String getId() { return id; }
         @Override public @NotNull String getDescription() { return description; }
         @Override public @Nullable Location getDefaultValue() { return defaultValue; }
         @Override public @NotNull MapRoom getMapRoom() { return mapRoom; }

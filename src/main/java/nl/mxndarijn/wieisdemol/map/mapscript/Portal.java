@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.map.mapscript;
 
+import nl.mxndarijn.api.mxworld.MxLocation;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,15 +17,15 @@ import java.util.Objects;
  * - shouldReceiveFallDamage: whether players should receive fall damage after teleporting
  * - mapRoom: back-reference to the room that owns this portal
  */
-public record Portal(@NotNull Location corner1,
-                     @NotNull Location corner2,
-                     @NotNull List<Location> teleportsTo,
+public record Portal(@NotNull MxLocation corner1,
+                     @NotNull MxLocation corner2,
+                     @NotNull List<MxLocation> teleportsTo,
                      @NotNull MapPlayerType applicableTo,
                      boolean shouldReceiveFallDamage,
                      @NotNull MapRoom mapRoom) {
-    public Portal(@NotNull Location corner1,
-                  @NotNull Location corner2,
-                  @NotNull List<Location> teleportsTo,
+    public Portal(@NotNull MxLocation corner1,
+                  @NotNull MxLocation corner2,
+                  @NotNull List<MxLocation> teleportsTo,
                   @NotNull MapPlayerType applicableTo,
                   boolean shouldReceiveFallDamage,
                   @NotNull MapRoom mapRoom) {

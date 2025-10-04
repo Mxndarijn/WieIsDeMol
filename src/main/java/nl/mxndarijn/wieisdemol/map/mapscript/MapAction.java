@@ -4,6 +4,7 @@ import lombok.Getter;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,5 +36,9 @@ public abstract class MapAction<T extends MapRoom> {
     /**
      * Create an ItemStack that represents this action in a GUI or inventory.
      */
-    public abstract @NotNull MxSkullItemStackBuilder createItemStack();
+    public abstract @NotNull ItemStack createItemStack();
+
+    public String getDefaultLoreLine() {
+        return "<gray>Kamer: " + this.getMapRoom().getTitle();
+    }
 }

@@ -19,6 +19,7 @@ import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import nl.mxndarijn.wieisdemol.data.ChatPrefix;
 import nl.mxndarijn.wieisdemol.data.ScoreBoard;
 import nl.mxndarijn.wieisdemol.data.SpecialDirectories;
+import nl.mxndarijn.wieisdemol.game.Game;
 import nl.mxndarijn.wieisdemol.items.Items;
 import nl.mxndarijn.wieisdemol.managers.InteractionManager;
 import nl.mxndarijn.wieisdemol.managers.MapManager;
@@ -28,6 +29,8 @@ import nl.mxndarijn.wieisdemol.managers.language.LanguageManager;
 import nl.mxndarijn.wieisdemol.managers.language.LanguageText;
 import nl.mxndarijn.wieisdemol.managers.shulkers.ShulkerManager;
 import nl.mxndarijn.wieisdemol.managers.warps.WarpManager;
+import nl.mxndarijn.wieisdemol.map.mapscript.MapScript;
+import nl.mxndarijn.wieisdemol.map.mapscript.MapScripts;
 import nl.mxndarijn.wieisdemol.presets.Preset;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
@@ -73,6 +76,9 @@ public class Map {
     private InteractionManager interactionManager;
     private MxSupplierScoreBoard scoreboard;
 
+    @Getter
+    private Optional<MapScript> optionalMapScript = Optional.empty();
+
 
     public Map(File directory) {
         this.directory = directory;
@@ -90,6 +96,7 @@ public class Map {
                 }
             }
             this.mxWorld = MxAtlas.getInstance().loadWorld(directory);
+
             this.warpManager = new WarpManager(new File(getDirectory(), "warps.yml"));
             this.containerManager = new ContainerManager(new File(getDirectory(), "chests.yml"));
             this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
@@ -97,6 +104,22 @@ public class Map {
             this.interactionManager = new InteractionManager(new File(getDirectory(), "interactions.yml"));
         }
     }
+
+    private void loadMapScript() {
+        Optional<MapScripts> mapScripts = MapScripts.byId(this.mapConfig.getPresetConfig().getName());
+        if (mapScripts.isPresent()) {
+            try {
+                this.optionalMapScript = Optional.of(mapScripts.get().getScriptClass().getDeclaredConstructor(File.class).newInstance(new File(getDirectory(), "script-parameters.yml")));
+            } catch (Exception e) {
+                Logger.logMessage(LogLevel.ERROR, "Could not load MapScript: ");
+                e.printStackTrace();
+                this.optionalMapScript = Optional.empty();
+            }
+        } else {
+            this.optionalMapScript = Optional.empty();
+        }
+    }
+
 
     public Map(File directory, String name, UUID owner) {
         this.directory = directory;
@@ -127,6 +150,7 @@ public class Map {
             this.shulkerManager = new ShulkerManager(new File(getDirectory(), "shulkers.yml"));
             this.doorManager = new DoorManager(new File(getDirectory(), "doors.yml"));
             this.interactionManager = new InteractionManager(new File(getDirectory(), "interactions.yml"));
+
         }
     }
 
@@ -200,14 +224,19 @@ public class Map {
                         put("%%all_doors_closed%%", (doorManager.areAllDoorsClosed(m) ? "<green>Ja" : "<red>Nee"));
                     }});
                 });
+                this.loadMapScript();
+
                 scoreboard.setUpdateTimer(60L);
-                ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new SaveInventoryChangeWorld(getInventoriesFile(), new ArrayList<>(
-                        Arrays.asList(
-                                new Pair<>(Items.VUL_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.VUL_TOOL_INFO)),
-                                new Pair<>(Items.CHEST_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_TOOL_INFO)),
-                                new Pair<>(Items.SHULKER_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_TOOL_INFO)),
-                                new Pair<>(Items.DOOR_ITEM.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_TOOL_INFO))
-                        )),
+                List<Pair<ItemStack, String>> items = new ArrayList<>(Arrays.asList(
+                        new Pair<>(Items.VUL_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.VUL_TOOL_INFO)),
+                        new Pair<>(Items.CHEST_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.CHEST_TOOL_INFO)),
+                        new Pair<>(Items.SHULKER_TOOL.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.SHULKER_TOOL_INFO)),
+                        new Pair<>(Items.DOOR_ITEM.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_TOOL_INFO))
+                ));
+                if(optionalMapScript.isPresent()) {
+                    items.add(new Pair<>(Items.GAME_SPECTATOR_LEAVE_ITEM.getItemStack(), ChatPrefix.WIDM + LanguageManager.getInstance().getLanguageString(LanguageText.MAP_SCRIPT_INFO)));
+                }
+                ChangeWorldManager.getInstance().addWorld(this.mxWorld.get().getWorldUID(), new SaveInventoryChangeWorld(getInventoriesFile(), new ArrayList<>(items),
                         (p, w, e) -> {
                             unloadWorld();
                             mapConfig.setDateModified(LocalDateTime.now());

@@ -223,7 +223,14 @@ LanguageText {
     MAP_GENERATOR_ITEM_ADDED(),
     GAME_YOU_RECEIVED_ITEM(),
     COMMAND_MAPS_ENTER_FILTER(),
-    GAME_MAPSCRIPT_ACTION_EXECUTED();
+    GAME_MAPSCRIPT_ACTION_EXECUTED(),
+    MAP_SCRIPT_PARAM_MENU_TITLE("map-script-params-menu-title"),
+    MAP_SCRIPT_PARAM_PROMPT("map-script-params-change-prompt"),
+    MAP_SCRIPT_PARAM_FORMAT("map-script-params-format"),
+    MAP_SCRIPT_PARAM_UPDATED("map-script-params-updated"),
+    MAP_SCRIPT_PARAM_INVALID_INPUT("map-script-params-invalid-input"),
+    MAP_SCRIPT_INFO(),
+    MAP_SCRIPT_PARAM_NO_MAPSCRIPT("map-script-params-no-mapscript");
     private final String configValue;
 
     LanguageText(String value) {

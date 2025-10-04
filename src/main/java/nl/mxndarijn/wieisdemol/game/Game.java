@@ -180,7 +180,7 @@ public class Game {
         Optional<MapScripts> mapScripts = MapScripts.byId(this.config.getPresetConfig().getName());
         if (mapScripts.isPresent()) {
             try {
-                this.optionalMapScript = Optional.of(mapScripts.get().getScriptClass().getDeclaredConstructor(Game.class).newInstance(this));
+                this.optionalMapScript = Optional.of(mapScripts.get().getScriptClass().getDeclaredConstructor(File.class, Game.class).newInstance(new File(getDirectory(), "script-parameters.yml"), this));
             } catch (Exception e) {
                 e.printStackTrace();
                 this.optionalMapScript = Optional.empty();
@@ -380,6 +380,9 @@ public class Game {
         p.getInventory().addItem(Items.GAME_SHULKER_TOOL.getItemStack());
         p.getInventory().addItem(Items.GAME_DOOR_ITEM.getItemStack());
         p.getInventory().addItem(Items.VANISH_ITEM.getItemStack());
+        if(optionalMapScript.isPresent()) {
+            p.getInventory().addItem(Items.GAME_MAPSCRIPT_TOOL.getItemStack());
+        }
     }
 
     public ContainerManager getChestManager() {

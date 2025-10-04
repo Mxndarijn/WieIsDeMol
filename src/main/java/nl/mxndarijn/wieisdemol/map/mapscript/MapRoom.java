@@ -5,8 +5,10 @@ import nl.mxndarijn.api.mxworld.MxWorld;
 import nl.mxndarijn.wieisdemol.game.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.EventListener;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -16,7 +18,7 @@ import java.util.Optional;
  * Concrete rooms will build their components via build().
  */
 @Getter
-public abstract class MapRoom {
+public abstract class MapRoom implements Listener {
     private final @NotNull MapScript mapScript;
 
     protected MapRoom(@NotNull MapScript mapScript) {
