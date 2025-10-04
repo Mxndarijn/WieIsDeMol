@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.managers.warps;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -9,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Setter
+@Getter
 public class Warp {
 
     private String name;
@@ -54,27 +58,4 @@ public class Warp {
         mxLocation.write(section.createSection("location"));
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public MxLocation getMxLocation() {
-        return mxLocation;
-    }
-
-    public void setMxLocation(MxLocation mxLocation) {
-        this.mxLocation = mxLocation;
-    }
-
-    public String getSkullId() {
-        return skullId;
-    }
-
-    public void setSkullId(String skullId) {
-        this.skullId = skullId;
-    }
 }

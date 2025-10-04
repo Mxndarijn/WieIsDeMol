@@ -1,5 +1,8 @@
 package nl.mxndarijn.wieisdemol.presets;
 
+import lombok.Getter;
+
+@Getter
 public enum PresetConfigValue {
     NAME("name"),
     HOST_DIFFICULTY("host-difficulty"),
@@ -15,10 +18,6 @@ public enum PresetConfigValue {
 
     PresetConfigValue(String value) {
         this.configValue = value;
-    }
-
-    public String getConfigValue() {
-        return configValue;
     }
 
     @Override

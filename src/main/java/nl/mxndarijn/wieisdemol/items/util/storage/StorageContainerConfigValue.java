@@ -1,5 +1,8 @@
 package nl.mxndarijn.wieisdemol.items.util.storage;
 
+import lombok.Getter;
+
+@Getter
 public enum StorageContainerConfigValue {
 
     ITEMS("items"),
@@ -12,10 +15,6 @@ public enum StorageContainerConfigValue {
 
     StorageContainerConfigValue(String name) {
         this.configValue = name;
-    }
-
-    public String getConfigValue() {
-        return configValue;
     }
 
     @Override

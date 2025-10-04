@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.game;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.mxndarijn.api.mxscoreboard.MxSupplierScoreBoard;
 import nl.mxndarijn.wieisdemol.data.PeacekeeperLoot;
 import nl.mxndarijn.wieisdemol.data.ScoreBoard;
@@ -18,14 +20,32 @@ import java.util.UUID;
 public class GamePlayer {
 
     private final boolean canReborn;
+    @Setter
+    @Getter
     private MapPlayer mapPlayer;
+    @Setter
+    @Getter
     private Optional<UUID> player;
+    @Setter
+    @Getter
     private boolean alive;
+    @Setter
+    @Getter
     private MxSupplierScoreBoard scoreboard;
+    @Setter
+    @Getter
     private boolean beginChestOpened;
+    @Setter
+    @Getter
     private boolean peacekeeperChestOpened;
+    @Setter
+    @Getter
     private Game game;
+    @Setter
+    @Getter
     private JavaPlugin plugin;
+    @Setter
+    @Getter
     private Optional<GamePlayer> votedOn;
 
     public GamePlayer(MapPlayer mapPlayer, JavaPlugin plugin, Game game) {
@@ -87,70 +107,6 @@ public class GamePlayer {
         }
     }
 
-    public MapPlayer getMapPlayer() {
-        return mapPlayer;
-    }
-
-    public void setMapPlayer(MapPlayer mapPlayer) {
-        this.mapPlayer = mapPlayer;
-    }
-
-    public Optional<UUID> getPlayer() {
-        return player;
-    }
-
-    public void setPlayer(Optional<UUID> player) {
-        this.player = player;
-    }
-
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public void setAlive(boolean alive) {
-        this.alive = alive;
-    }
-
-    public MxSupplierScoreBoard getScoreboard() {
-        return scoreboard;
-    }
-
-    public void setScoreboard(MxSupplierScoreBoard scoreboard) {
-        this.scoreboard = scoreboard;
-    }
-
-    public boolean isBeginChestOpened() {
-        return beginChestOpened;
-    }
-
-    public void setBeginChestOpened(boolean beginChestOpened) {
-        this.beginChestOpened = beginChestOpened;
-    }
-
-    public boolean isPeacekeeperChestOpened() {
-        return peacekeeperChestOpened;
-    }
-
-    public void setPeacekeeperChestOpened(boolean peacekeeperChestOpened) {
-        this.peacekeeperChestOpened = peacekeeperChestOpened;
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    public void setGame(Game game) {
-        this.game = game;
-    }
-
-    public JavaPlugin getPlugin() {
-        return plugin;
-    }
-
-    public void setPlugin(JavaPlugin plugin) {
-        this.plugin = plugin;
-    }
-
     public void givePeacekeeperLoot() {
         if (player.isPresent()) {
             Player p = Bukkit.getPlayer(player.get());
@@ -166,11 +122,4 @@ public class GamePlayer {
         }
     }
 
-    public Optional<GamePlayer> getVotedOn() {
-        return votedOn;
-    }
-
-    public void setVotedOn(Optional<GamePlayer> votedOn) {
-        this.votedOn = votedOn;
-    }
 }

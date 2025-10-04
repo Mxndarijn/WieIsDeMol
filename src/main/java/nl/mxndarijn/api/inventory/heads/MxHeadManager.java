@@ -152,7 +152,7 @@ public class MxHeadManager {
                 if (type == MxHeadsType.PLAYER) {
                     if (ownerOptional.isPresent()) {
                         Optional<MxHeadSection> section = MxHeadSection.create(textureName, displayName, type, texture, ownerOptional.get());
-                        if (!section.isPresent()) {
+                        if (section.isEmpty()) {
                             Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not create MxHeadSection, wrong input.");
                             return false;
                         }
@@ -164,7 +164,7 @@ public class MxHeadManager {
                     }
                 } else {
                     Optional<MxHeadSection> section = MxHeadSection.create(textureName, displayName, type, texture);
-                    if (!section.isPresent()) {
+                    if (section.isEmpty()) {
                         Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Could not create MxHeadSection, wrong input.");
                         return false;
                     }

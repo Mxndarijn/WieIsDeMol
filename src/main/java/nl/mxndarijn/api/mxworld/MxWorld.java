@@ -1,13 +1,22 @@
 package nl.mxndarijn.api.mxworld;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.File;
 import java.util.UUID;
 
 public class MxWorld {
+    @Getter
     private final String name;
     private final String uuid;
+    @Getter
     private final File dir;
+    @Setter
+    @Getter
     private UUID worldUID;
+    @Setter
+    @Getter
     private boolean loaded;
 
     public MxWorld(String name, String uuid, File dir) {
@@ -22,27 +31,4 @@ public class MxWorld {
         return uuid;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public UUID getWorldUID() {
-        return worldUID;
-    }
-
-    public void setWorldUID(UUID uid) {
-        this.worldUID = uid;
-    }
-
-    public File getDir() {
-        return dir;
-    }
-
-    public boolean isLoaded() {
-        return loaded;
-    }
-
-    public void setLoaded(boolean b) {
-        this.loaded = b;
-    }
 }

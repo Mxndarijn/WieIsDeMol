@@ -49,9 +49,11 @@ import java.util.concurrent.CompletableFuture;
 public class Preset {
 
     public static final String PRESET_ITEMMETA_TAG = "preset_id";
+    @Getter
     private final File directory;
     @Getter
     private final File inventoriesFile;
+    @Getter
     private PresetConfig config;
     @Getter
     private Optional<MxWorld> mxWorld;
@@ -108,14 +110,6 @@ public class Preset {
             }
             return Optional.empty();
         }
-    }
-
-    public File getDirectory() {
-        return directory;
-    }
-
-    public PresetConfig getConfig() {
-        return config;
     }
 
     public ItemStack getItemStack() {
@@ -273,7 +267,7 @@ public class Preset {
 
     public void unloadWorld() {
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
-            if (!this.mxWorld.isPresent()) {
+            if (this.mxWorld.isEmpty()) {
                 return;
             }
             if (!this.mxWorld.get().isLoaded()) {

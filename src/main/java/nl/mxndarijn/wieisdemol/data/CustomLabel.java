@@ -1,5 +1,8 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
+
+@Getter
 public enum CustomLabel {
 
     ICON_BLUE("\uE027"),
@@ -47,7 +50,4 @@ public enum CustomLabel {
         return unicodeCharacter;
     }
 
-    public String getUnicodeCharacter() {
-        return unicodeCharacter;
-    }
 }

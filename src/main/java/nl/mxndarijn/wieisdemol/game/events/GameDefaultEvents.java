@@ -45,7 +45,7 @@ public class GameDefaultEvents extends GameEvent {
         Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
         if (gamePlayer.isEmpty() && !game.getHosts().contains(e.getPlayer().getUniqueId()))
             return;
-        e.joinMessage(MiniMessage.miniMessage().deserialize("<!i>" + ""));
+        e.joinMessage(MiniMessage.miniMessage().deserialize("<!i>"));
         game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_JOINED_AGAIN, Collections.singletonList(e.getPlayer().getName())));
         gamePlayer.ifPresent(player -> ScoreBoardManager.getInstance().setPlayerScoreboard(e.getPlayer().getUniqueId(), player.getScoreboard()));
         if (game.getHosts().contains(e.getPlayer().getUniqueId())) {
@@ -63,7 +63,7 @@ public class GameDefaultEvents extends GameEvent {
         Optional<GamePlayer> gamePlayer = game.getGamePlayerOfPlayer(e.getPlayer().getUniqueId());
         if (gamePlayer.isEmpty() && !game.getHosts().contains(e.getPlayer().getUniqueId()))
             return;
-        e.quitMessage(MiniMessage.miniMessage().deserialize("<!i>" + ""));
+        e.quitMessage(MiniMessage.miniMessage().deserialize("<!i>"));
         game.sendMessageToAll(LanguageManager.getInstance().getLanguageString(LanguageText.GAME_PLAYER_LEAVED_AGAIN, Collections.singletonList(e.getPlayer().getName())));
     }
 

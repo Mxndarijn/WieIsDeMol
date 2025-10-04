@@ -196,7 +196,7 @@ public class GamePlayingEvents extends GameEvent {
         gamePlayer.get().setAlive(false);
         game.addSpectatorSettings(e.getPlayer().getUniqueId(), e.getPlayer().getLocation());
 
-        e.deathMessage(MiniMessage.miniMessage().deserialize("<!i>" + ""));
+        e.deathMessage(MiniMessage.miniMessage().deserialize("<!i>"));
         if (e.getEntity().getKiller() != null) {
             Player killer = e.getEntity().getKiller();
             Optional<GamePlayer> optionalKiller = game.getGamePlayerOfPlayer(killer.getUniqueId());
@@ -434,7 +434,7 @@ public class GamePlayingEvents extends GameEvent {
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent e) {
-        Player p = (Player) e.getPlayer();
+        Player p = e.getPlayer();
         if (game.getGameInfo().getStatus() != UpcomingGameStatus.PLAYING)
             return;
         if (!validateWorld(p.getWorld()))

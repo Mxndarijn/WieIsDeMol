@@ -1,7 +1,9 @@
 package nl.mxndarijn.wieisdemol.data;
 
 
+import lombok.Getter;
 
+@Getter
 public enum ChatPrefix {
     WIDM("<green>WIDM"),
     NO_PERMISSION("<red>Geen-Permissie");
@@ -19,11 +21,4 @@ public enum ChatPrefix {
         return prefix;
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public String getName() {
-        return name;
-    }
 }

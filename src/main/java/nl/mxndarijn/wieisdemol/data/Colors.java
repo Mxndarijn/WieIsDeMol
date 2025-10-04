@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.data;
 
 
+import lombok.Getter;
 import org.bukkit.Material;
 
 import java.util.Optional;
@@ -23,12 +24,19 @@ public enum Colors {
     GRIJS("gray", "<dark_gray>", "Grijs", Material.GRAY_SHULKER_BOX, "gray-block", "\uE031"),
     GEEL("yellow", "<yellow>", "Geel", Material.YELLOW_SHULKER_BOX, "yellow-block", "\uE030");
 
+    @Getter
     private final String type;
+    @Getter
     private final String color;
+    @Getter
     private final String displayName;
+    @Getter
     private final String displayNameWithoutColor;
+    @Getter
     private final Material shulkerBlock;
+    @Getter
     private final String headKey;
+    @Getter
     private final String unicodeIcon;
 
     private final String PREFIX = "<white>\uE001\uE001\uE001\uE001\uE001";
@@ -63,31 +71,4 @@ public enum Colors {
         return Optional.empty();
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public Material getShulkerBlock() {
-        return shulkerBlock;
-    }
-
-    public String getHeadKey() {
-        return headKey;
-    }
-
-    public String getDisplayNameWithoutColor() {
-        return displayNameWithoutColor;
-    }
-
-    public String getUnicodeIcon() {
-        return unicodeIcon;
-    }
 }

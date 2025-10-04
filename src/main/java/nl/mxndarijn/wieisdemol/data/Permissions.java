@@ -1,5 +1,8 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
+
+@Getter
 public enum Permissions {
     NO_PERMISSION(""),
     COMMAND_MAPS("widm.maps"),
@@ -30,10 +33,6 @@ public enum Permissions {
 
     Permissions(String permission) {
         this.permission = permission;
-    }
-
-    public String getPermission() {
-        return permission;
     }
 
     @Override

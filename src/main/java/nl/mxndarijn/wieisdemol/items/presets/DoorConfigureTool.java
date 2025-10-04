@@ -44,7 +44,7 @@ public class DoorConfigureTool extends MxItem {
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Preset> optionalPreset = PresetsManager.getInstance().getPresetByWorldUID(e.getPlayer().getWorld().getUID());
-        if (!optionalPreset.isPresent()) {
+        if (optionalPreset.isEmpty()) {
             return;
         }
         Preset preset = optionalPreset.get();
@@ -131,7 +131,7 @@ public class DoorConfigureTool extends MxItem {
                 if (manager.getDoors().contains(information)) {
                     MxLocation location = MxLocation.getFromLocation(e.getClickedBlock().getLocation());
                     Optional<MxLocation> optionalMxLocation = information.getLocation(location);
-                    if (!optionalMxLocation.isPresent() && !p.isSneaking()) {
+                    if (optionalMxLocation.isEmpty() && !p.isSneaking()) {
                         information.addLocation(location, e.getClickedBlock().getType());
                         manager.save();
                         MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.DOOR_CONFIGURE_TOOL_ADDED, ChatPrefix.WIDM));

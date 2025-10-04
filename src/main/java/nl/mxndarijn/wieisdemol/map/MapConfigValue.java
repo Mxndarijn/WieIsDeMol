@@ -1,5 +1,8 @@
 package nl.mxndarijn.wieisdemol.map;
 
+import lombok.Getter;
+
+@Getter
 public enum MapConfigValue {
     NAME("name"),
     DATE_CREATED("date-created"),
@@ -12,10 +15,6 @@ public enum MapConfigValue {
 
     MapConfigValue(String value) {
         this.configValue = value;
-    }
-
-    public String getConfigValue() {
-        return configValue;
     }
 
     @Override

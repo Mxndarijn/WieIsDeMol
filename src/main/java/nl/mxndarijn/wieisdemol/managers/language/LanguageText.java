@@ -1,5 +1,8 @@
 package nl.mxndarijn.wieisdemol.managers.language;
 
+import lombok.Getter;
+
+@Getter
 public enum
 LanguageText {
     NO_PERMISSION("no-permission"),
@@ -231,7 +234,4 @@ LanguageText {
         this.configValue = name().toLowerCase().replaceAll("_", "-");
     }
 
-    public String getConfigValue() {
-        return configValue;
-    }
 }

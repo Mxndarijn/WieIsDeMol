@@ -1,11 +1,13 @@
 package nl.mxndarijn.wieisdemol.managers.chests;
 
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import java.util.Arrays;
 import java.util.Optional;
 
+@Getter
 public enum ContainerType {
     CHEST(Material.CHEST, "Chest"),
     TRAPPED_CHEST(Material.TRAPPED_CHEST, "Trapped Chest"),
@@ -20,14 +22,6 @@ public enum ContainerType {
     ContainerType(Material icon, String display) {
         this.icon = icon;
         this.display = display;
-    }
-
-    public Material getIcon() {
-        return icon;
-    }
-
-    public String getDisplay() {
-        return display;
     }
 
     public static Optional<ContainerType> fromMaterial(Material material) {

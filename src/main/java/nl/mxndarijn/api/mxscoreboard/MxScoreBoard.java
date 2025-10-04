@@ -1,5 +1,7 @@
 package nl.mxndarijn.api.mxscoreboard;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.util.Functions;
@@ -21,9 +23,12 @@ public abstract class MxScoreBoard {
     public final int MAX_LINE_LENGTH = 128;
     private final List<MxScoreBoardTeam> teams;
     private final JavaPlugin plugin;
+    @Getter
     public List<UUID> playersUsingScoreboard;
+    @Getter
     private Scoreboard scoreboard;
     private Objective objective;
+    @Setter
     private long updateTimer = -1;
     private BukkitTask task;
 
@@ -144,21 +149,9 @@ public abstract class MxScoreBoard {
         }
     }
 
-    public Scoreboard getScoreboard() {
-        return scoreboard;
-    }
-
     abstract String getTitle();
 
     abstract List<String> getLines();
-
-    public List<UUID> getPlayersUsingScoreboard() {
-        return playersUsingScoreboard;
-    }
-
-    public void setUpdateTimer(long l) {
-        this.updateTimer = l;
-    }
 
     private void checkTimer() {
         if (this.updateTimer == -1 || task != null)

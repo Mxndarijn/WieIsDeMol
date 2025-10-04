@@ -76,7 +76,7 @@ public class MapGeneratorBook extends MxItem {
             ItemStack i = itemStack.clone();
             ItemMeta imm = i.getItemMeta();
             List<Component> lore = imm.hasLore() ? imm.lore() : new ArrayList<>();
-            lore.add(MiniMessage.miniMessage().deserialize("<!i>" + ""));
+            lore.add(MiniMessage.miniMessage().deserialize("<!i>"));
             lore.add(MiniMessage.miniMessage().deserialize("<!i>" + "<yellow>Klik hier om dit item te verwijderen."));
             imm.lore(lore);
             i.setItemMeta(imm);
@@ -110,7 +110,7 @@ public class MapGeneratorBook extends MxItem {
                                 ItemStack i = content.clone();
                                 ItemMeta imm = i.getItemMeta();
                                 List<Component> lore = imm.hasLore() ? imm.lore() : new ArrayList<>();
-                                lore.add(MiniMessage.miniMessage().deserialize("<!i>" + ""));
+                                lore.add(MiniMessage.miniMessage().deserialize("<!i>"));
                                 lore.add(MiniMessage.miniMessage().deserialize("<!i>" + "<yellow>Klik hier om dit item toe te voegen."));
                                 imm.lore(lore);
                                 i.setItemMeta(imm);

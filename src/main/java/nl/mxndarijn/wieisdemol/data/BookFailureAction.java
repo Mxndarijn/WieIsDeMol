@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Getter
 public enum BookFailureAction {
 
     Kill("kill", 1,
@@ -151,28 +153,5 @@ public enum BookFailureAction {
         String getText(List<AvailablePerson> persons);
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public int getPlayersNeeded() {
-        return playersNeeded;
-    }
-
-    public BookFailureActionInterface getAction() {
-        return action;
-    }
-
-    public List<String> getSelectors() {
-        return selectors;
-    }
-
-    public ItemStack getIs() {
-        return is;
-    }
-
-    public BookFailureActionTextInterface getTextInterface() {
-        return textInterface;
-    }
 }
 

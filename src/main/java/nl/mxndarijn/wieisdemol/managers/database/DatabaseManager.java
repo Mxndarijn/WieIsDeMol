@@ -1,6 +1,7 @@
 package nl.mxndarijn.wieisdemol.managers.database;
 
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.Getter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -24,6 +25,7 @@ import java.util.UUID;
 public class DatabaseManager implements Listener {
 
     private static DatabaseManager instance;
+    @Getter
     private HashMap<UUID, PlayerData> playerDataHashMap;
     private final HikariDataSource hikari;
     public static DatabaseManager getInstance() {
@@ -70,10 +72,6 @@ public class DatabaseManager implements Listener {
         }
     }
 
-    public HashMap<UUID, PlayerData> getPlayerDataHashMap() {
-        return playerDataHashMap;
-    }
-
     public Connection getConnection() {
         try {
             return hikari.getConnection();
@@ -92,7 +90,7 @@ public class DatabaseManager implements Listener {
     public PlayerData getTopPlayerData(String top, int number) {
         Comparator<PlayerData> comparator = Comparator.comparingInt(player -> player.getData(PlayerData.UserDataType.valueOf(top)));
         return playerDataHashMap.values().stream()
-                .map(player -> (PlayerData) player)
+                .map(player -> player)
                 .sorted(comparator.reversed())  // reversed comparator to flip order
                 .skip((number >= 1 && number <= 5) ? number - 1 : 4)
                 .findFirst()
@@ -102,7 +100,7 @@ public class DatabaseManager implements Listener {
     public PlayerData getTopWinrate(int number) {
         Comparator<PlayerData> comparator = Comparator.comparingDouble(PlayerData::winRate);
         return playerDataHashMap.values().stream()
-                .map(player -> (PlayerData) player)
+                .map(player -> player)
                 .sorted(comparator.reversed())  // reversed comparator to flip order
                 .skip((number >= 1 && number <= 5) ? number - 1 : 4)
                 .findFirst()

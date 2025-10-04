@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
+import lombok.Setter;
 import nl.mxndarijn.api.inventory.MxInventoryIndex;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
@@ -23,6 +24,7 @@ import java.util.*;
 
 public class ContainerColorBindAttachment extends ContainerAttachment {
     private final int changeTime = 2000;
+    @Setter
     private List<Colors> colors;
     private long time;
     private Colors currentColor;
@@ -52,10 +54,6 @@ public class ContainerColorBindAttachment extends ContainerAttachment {
         attachment.setDefaults(type, inf);
         attachment.colors = new ArrayList<>();
         return attachment;
-    }
-
-    public void setColors(List<Colors> colors) {
-        this.colors = colors;
     }
 
     @Override

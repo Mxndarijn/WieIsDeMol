@@ -1,5 +1,6 @@
 package nl.mxndarijn.api.mxscoreboard;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.scoreboard.Team;
@@ -11,10 +12,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MxScoreBoardTeam {
+    @Getter
     private final String id;
+    @Getter
     private final String line;
 
+    @Getter
     private final Team team;
+    @Getter
     private final String entry;
     private final MxScoreBoard scoreboard;
 
@@ -42,14 +47,6 @@ public class MxScoreBoardTeam {
 
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String getLine() {
-        return line;
-    }
-
     public void setLine(String line) {
         if (line.length() > scoreboard.MAX_LINE_LENGTH) {
             throw new ScoreboardNameToLongException(line, scoreboard.MAX_LINE_LENGTH);
@@ -69,7 +66,7 @@ public class MxScoreBoardTeam {
         int lineLength = line.length() - 8 * count + count * 2;
         if (lineLength <= scoreboard.MAX_LINE_LENGTH / 2) {
             team.prefix(MiniMessage.miniMessage().deserialize("<!i>" + line));
-            team.suffix(MiniMessage.miniMessage().deserialize("<!i>" + ""));
+            team.suffix(MiniMessage.miniMessage().deserialize("<!i>"));
         } else {
             String prefix = line.substring(0, scoreboard.MAX_LINE_LENGTH / 2);
             String suffix = "<gray>" + (prefix) + line.substring(scoreboard.MAX_LINE_LENGTH / 2);
@@ -118,15 +115,8 @@ public class MxScoreBoardTeam {
         }
     }
 
-    public Team getTeam() {
-        return team;
-    }
-
     public void destroy() {
         team.unregister();
     }
 
-    public String getEntry() {
-        return entry;
-    }
 }

@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
@@ -38,6 +39,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
+@Getter
 public enum ItemTag {
     NOTSILENT("notsilent", data -> {
         boolean dataBoolean = true;
@@ -223,7 +225,7 @@ public enum ItemTag {
                     dataTag.deleteCharAt(dataTag.length() - 1);
                 container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), key), PersistentDataType.STRING, dataTag.toString());
                 List<Component> loreList = im.hasLore() ? im.lore() : new ArrayList<>();
-                List<Component> newLoreList = loreList.stream().filter(lore -> !Functions.convertComponentToString(lore).contains(specialTag)).collect(Collectors.toList()).stream().map(c -> MiniMessage.miniMessage().deserialize(Functions.convertComponentToString(c))).toList();
+                List<Component> newLoreList = loreList.stream().filter(lore -> !Functions.convertComponentToString(lore).contains(specialTag)).toList().stream().map(c -> MiniMessage.miniMessage().deserialize(Functions.convertComponentToString(c))).toList();
                 if (!addedColors.isEmpty()) {
                     newLoreList.add(MiniMessage.miniMessage().deserialize("<!i>" + specialTag + "<blue>Colorbind:"));
                     addedColors.forEach(c -> {
@@ -346,16 +348,5 @@ public enum ItemTag {
                 .build());
     }
 
-    public String getPersistentDataTag() {
-        return persistentDataTag;
-    }
-
-    public ItemTagContainer getContainer() {
-        return container;
-    }
-
-    public MxItemClicked getClicked() {
-        return clicked;
-    }
 }
 

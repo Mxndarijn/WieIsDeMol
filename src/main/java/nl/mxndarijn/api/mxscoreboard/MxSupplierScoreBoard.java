@@ -1,10 +1,12 @@
 package nl.mxndarijn.api.mxscoreboard;
 
+import lombok.Setter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 import java.util.function.Supplier;
 
+@Setter
 public class MxSupplierScoreBoard extends MxScoreBoard {
 
     private Supplier<String> titleSupplier;
@@ -13,14 +15,6 @@ public class MxSupplierScoreBoard extends MxScoreBoard {
     public MxSupplierScoreBoard(JavaPlugin plugin, Supplier<String> titleSupplier, Supplier<List<String>> linesSupplier) {
         super(plugin);
         this.titleSupplier = titleSupplier;
-        this.linesSupplier = linesSupplier;
-    }
-
-    public void setTitleSupplier(Supplier<String> titleSupplier) {
-        this.titleSupplier = titleSupplier;
-    }
-
-    public void setLinesSupplier(Supplier<List<String>> linesSupplier) {
         this.linesSupplier = linesSupplier;
     }
 

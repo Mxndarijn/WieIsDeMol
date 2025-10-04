@@ -1,5 +1,8 @@
 package nl.mxndarijn.api.inventory;
 
+import lombok.Getter;
+
+@Getter
 public enum MxInventoryIndex {
     ROW_ONE_ONLY(0, 8),
     ROW_TWO_ONLY(9, 17),
@@ -22,11 +25,4 @@ public enum MxInventoryIndex {
         this.endIndex = endIndex;
     }
 
-    public int getBeginIndex() {
-        return beginIndex;
-    }
-
-    public int getEndIndex() {
-        return endIndex;
-    }
 }

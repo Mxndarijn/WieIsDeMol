@@ -1,7 +1,9 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
 import org.bukkit.Material;
 
+@Getter
 public enum Interaction {
     CHEST(Material.CHEST),
     TRAPPED_CHEST(Material.TRAPPED_CHEST),
@@ -123,11 +125,4 @@ public enum Interaction {
         this.defaultValue = defValue;
     }
 
-    public Material getMat() {
-        return mat;
-    }
-
-    public boolean isDefaultValue() {
-        return defaultValue;
-    }
 }

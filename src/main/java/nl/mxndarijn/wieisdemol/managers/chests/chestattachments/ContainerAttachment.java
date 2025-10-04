@@ -113,7 +113,6 @@ public abstract class ContainerAttachment {
             float val = switch (bf) {
                 case NORTH -> 180f;
                 case EAST -> -90f;
-                case SOUTH -> 0f;
                 case WEST -> 90f;
                 default -> 0f;
             };

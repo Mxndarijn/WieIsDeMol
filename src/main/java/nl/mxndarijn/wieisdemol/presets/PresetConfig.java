@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.presets;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -16,15 +18,33 @@ import java.util.HashMap;
 import java.util.Optional;
 
 public class PresetConfig {
+    @Getter
     private final HashMap<Colors, MxLocation> colors;
+    @Setter
     private File file;
+    @Setter
+    @Getter
     private String name;
+    @Setter
+    @Getter
     private int hostDifficulty;
+    @Setter
+    @Getter
     private int playDifficulty;
+    @Setter
+    @Getter
     private String skullId;
+    @Setter
+    @Getter
     private boolean locked;
+    @Setter
+    @Getter
     private String lockedBy;
+    @Setter
+    @Getter
     private String lockReason;
+    @Setter
+    @Getter
     private boolean configured;
 
     public PresetConfig(File file) {
@@ -97,75 +117,4 @@ public class PresetConfig {
 
     }
 
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getHostDifficulty() {
-        return hostDifficulty;
-    }
-
-    public void setHostDifficulty(int hostDifficulty) {
-        this.hostDifficulty = hostDifficulty;
-    }
-
-    public int getPlayDifficulty() {
-        return playDifficulty;
-    }
-
-    public void setPlayDifficulty(int playDifficulty) {
-        this.playDifficulty = playDifficulty;
-    }
-
-    public String getSkullId() {
-        return skullId;
-    }
-
-    public void setSkullId(String skullId) {
-        this.skullId = skullId;
-    }
-
-    public boolean isLocked() {
-        return locked;
-    }
-
-    public void setLocked(boolean locked) {
-        this.locked = locked;
-    }
-
-    public String getLockedBy() {
-        return lockedBy;
-    }
-
-    public void setLockedBy(String lockedBy) {
-        this.lockedBy = lockedBy;
-    }
-
-    public String getLockReason() {
-        return lockReason;
-    }
-
-    public void setLockReason(String lockReason) {
-        this.lockReason = lockReason;
-    }
-
-    public boolean isConfigured() {
-        return configured;
-    }
-
-    public void setConfigured(boolean configured) {
-        this.configured = configured;
-    }
-
-    public HashMap<Colors, MxLocation> getColors() {
-        return colors;
-    }
 }

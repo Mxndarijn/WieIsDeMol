@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.database;
 
+import lombok.Getter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Getter
 public class PlayerData {
 
     private String userid;
@@ -66,14 +68,6 @@ public class PlayerData {
             map.put(type, values.get(type));
         }
         saveData();
-    }
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public Map<UserDataType, Integer> getMap() {
-        return map;
     }
 
     public int getData(UserDataType type) {

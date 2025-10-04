@@ -1,5 +1,7 @@
 package nl.mxndarijn.api.mxworld;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -7,6 +9,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.Map;
 import java.util.Optional;
 
+@Setter
+@Getter
 public class MxLocation {
 
     private double x = Double.MIN_VALUE;
@@ -56,46 +60,6 @@ public class MxLocation {
         }
 
         return mxLocation.validate() ? Optional.of(mxLocation) : Optional.empty();
-    }
-
-    public double getX() {
-        return x;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public double getZ() {
-        return z;
-    }
-
-    public void setZ(double z) {
-        this.z = z;
-    }
-
-    public int getYaw() {
-        return yaw;
-    }
-
-    public void setYaw(int yaw) {
-        this.yaw = yaw;
-    }
-
-    public int getPitch() {
-        return pitch;
-    }
-
-    public void setPitch(int pitch) {
-        this.pitch = pitch;
     }
 
     public Location getLocation(World w) {

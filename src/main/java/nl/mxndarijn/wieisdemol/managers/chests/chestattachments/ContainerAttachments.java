@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
+import lombok.Getter;
 import nl.mxndarijn.api.inventory.MxItemClicked;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.item.Pair;
@@ -15,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Optional;
 
+@Getter
 public enum ContainerAttachments {
     CONTAINER_COLOR_BIND("CONTAINER_COLOR_BIND", ContainerColorBindAttachment.class, "Container-color-bind", "wool-chest",
             MxSkullItemStackBuilder.create(1)
@@ -103,23 +105,4 @@ public enum ContainerAttachments {
         return new Pair<>(is, clicked);
     }
 
-    public Class<? extends ContainerAttachment> getAttachmentClass() {
-        return attachmentClass;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public ItemStack getIs() {
-        return is;
-    }
-
-    public String getSkullName() {
-        return skullName;
-    }
 }

@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.doors;
 
+import lombok.Getter;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -8,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.*;
 
+@Getter
 public class DoorInformation {
     private final HashMap<MxLocation, Material> locations;
     private String uuid;
@@ -57,18 +59,6 @@ public class DoorInformation {
             list.add(l);
         });
         section.set("locations", list);
-    }
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public HashMap<MxLocation, Material> getLocations() {
-        return locations;
     }
 
     public void addLocation(MxLocation location, Material mat) {

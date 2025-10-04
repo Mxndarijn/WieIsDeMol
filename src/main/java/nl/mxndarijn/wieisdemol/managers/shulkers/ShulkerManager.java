@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.shulkers;
 
+import lombok.Getter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -22,6 +23,7 @@ import java.util.Optional;
 public class ShulkerManager {
 
     private final File shulkerFile;
+    @Getter
     private final List<ShulkerInformation> shulkers;
 
     public ShulkerManager(File f) {
@@ -91,10 +93,6 @@ public class ShulkerManager {
             }
         }
         return Optional.empty();
-    }
-
-    public List<ShulkerInformation> getShulkers() {
-        return shulkers;
     }
 
     public int getAmountOfShulkersFilled(Map map) {

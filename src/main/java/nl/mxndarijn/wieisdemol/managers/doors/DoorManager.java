@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.doors;
 
+import lombok.Getter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -23,6 +24,7 @@ import java.util.Optional;
 public class DoorManager {
 
     private final File doorFile;
+    @Getter
     private final List<DoorInformation> doors;
 
     public DoorManager(File f) {
@@ -83,10 +85,6 @@ public class DoorManager {
             }
         }
         return Optional.empty();
-    }
-
-    public List<DoorInformation> getDoors() {
-        return doors;
     }
 
     public boolean areAllDoorsClosed(Map map) {

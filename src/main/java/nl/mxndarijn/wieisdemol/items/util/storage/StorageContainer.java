@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.items.util.storage;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
@@ -19,11 +21,17 @@ import java.util.List;
 
 public class StorageContainer {
 
+    @Getter
     private final ArrayList<ItemStack> contents;
+    @Getter
     private final String skull;
+    @Getter
     private final String name;
+    @Getter
     private final String owner;
     private final File file;
+    @Setter
+    @Getter
     private boolean isPublic;
 
     public StorageContainer(File file) {
@@ -61,26 +69,6 @@ public class StorageContainer {
         save();
     }
 
-    public ArrayList<ItemStack> getContents() {
-        return contents;
-    }
-
-    public String getSkull() {
-        return skull;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isPublic() {
-        return isPublic;
-    }
-
-    public void setPublic(boolean b) {
-        isPublic = b;
-    }
-
     public ItemStack getItemStack() {
         return MxSkullItemStackBuilder.create(1)
                 .setSkinFromHeadsData(skull)
@@ -88,10 +76,6 @@ public class StorageContainer {
                 .addBlankLore()
                 .addLore("<yellow>Klik om deze opslag te openen")
                 .build();
-    }
-
-    public String getOwner() {
-        return owner;
     }
 
     public boolean hasPermissionToEdit(Player p) {

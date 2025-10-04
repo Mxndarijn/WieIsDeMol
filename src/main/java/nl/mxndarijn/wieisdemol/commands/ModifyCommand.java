@@ -196,7 +196,7 @@ public class ModifyCommand extends MxCommand {
 
                                                                             String keyForFail = "fail-action";
                                                                             container.set(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), keyForFail), PersistentDataType.STRING, dataBuilder.toString());
-                                                                            String lore = "<blue>" + "" +"<gray><dark_aqua><reset><red>Faal-Actie: ";
+                                                                            String lore = "<blue>" +"<gray><dark_aqua><reset><red>Faal-Actie: ";
                                                                             List<Component> listLore = im.hasLore() ? im.lore() : new ArrayList<>();
                                                                             List<Component> newList = new ArrayList<>();
                                                                             listLore.forEach(c -> {

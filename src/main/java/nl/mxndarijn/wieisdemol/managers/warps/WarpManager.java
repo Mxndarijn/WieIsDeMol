@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.warps;
 
+import lombok.Getter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+@Getter
 public class WarpManager {
 
     private final File warpFile;
@@ -28,10 +30,6 @@ public class WarpManager {
         }
         FileConfiguration fc = YamlConfiguration.loadConfiguration(warpFile);
         warps = Warp.getWarpsFromFile(f, fc);
-    }
-
-    public List<Warp> getWarps() {
-        return warps;
     }
 
     public void save() {
@@ -58,10 +56,6 @@ public class WarpManager {
     public void removeWarp(Warp w) {
         warps.remove(w);
         save();
-    }
-
-    public File getWarpFile() {
-        return warpFile;
     }
 
     public Optional<Warp> getWarpByName(String warpName) {

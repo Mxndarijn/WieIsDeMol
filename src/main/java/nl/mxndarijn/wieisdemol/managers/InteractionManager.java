@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers;
 
+import lombok.Getter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Getter
 public class InteractionManager {
 
     private final File interactionFile;
@@ -65,14 +67,6 @@ public class InteractionManager {
     public void setInteraction(Interaction i, boolean value) {
         interactions.put(i, value);
         save();
-    }
-
-    public File getInteractionFile() {
-        return interactionFile;
-    }
-
-    public HashMap<Interaction, Boolean> getInteractions() {
-        return interactions;
     }
 
 

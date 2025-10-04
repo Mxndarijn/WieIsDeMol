@@ -1,7 +1,10 @@
 package nl.mxndarijn.api.inventory.heads;
 
+import lombok.Getter;
+
 import java.util.Optional;
 
+@Getter
 public enum MxHeadsType {
     MANUALLY_ADDED("manually-added"),
     PLAYER("player");
@@ -19,10 +22,6 @@ public enum MxHeadsType {
             }
         }
         return Optional.empty();
-    }
-
-    public String getType() {
-        return type;
     }
 
     @Override

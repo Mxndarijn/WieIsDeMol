@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.map;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
@@ -44,14 +46,30 @@ import java.util.concurrent.CompletableFuture;
 public class Map {
 
     public static final String MAP_ITEMMETA_TAG = "map_id";
+    @Setter
+    @Getter
     private File directory;
+    @Setter
+    @Getter
     private MapConfig mapConfig;
+    @Setter
+    @Getter
     private File inventoriesFile;
+    @Setter
+    @Getter
     private Optional<MxWorld> mxWorld;
+    @Setter
+    @Getter
     private WarpManager warpManager;
     private ContainerManager containerManager;
+    @Setter
+    @Getter
     private ShulkerManager shulkerManager;
+    @Setter
+    @Getter
     private DoorManager doorManager;
+    @Setter
+    @Getter
     private InteractionManager interactionManager;
     private MxSupplierScoreBoard scoreboard;
 
@@ -175,9 +193,9 @@ public class Map {
                         put("%%map_owner%%", player.getName());
                         put("%%colors_amount%%", mapConfig.getColors().size() + "");
                         put("%%vullers_amount%%", scoreboard.getPlayersUsingScoreboard().size() + "");
-                        put("%%chests_filled%%", (chestsFilled == containerManager.getChests().size() ? "<green>" : "<red>").toString() + chestsFilled);
+                        put("%%chests_filled%%", (chestsFilled == containerManager.getChests().size() ? "<green>" : "<red>") + chestsFilled);
                         put("%%total_chests%%", containerManager.getChests().size() + "");
-                        put("%%shulkers_filled%%", (shulkersFilled == shulkerManager.getShulkers().size() ? "<green>" : "<red>").toString() + shulkersFilled);
+                        put("%%shulkers_filled%%", (shulkersFilled == shulkerManager.getShulkers().size() ? "<green>" : "<red>") + shulkersFilled);
                         put("%%total_shulkers%%", shulkerManager.getShulkers().size() + "");
                         put("%%all_doors_closed%%", (doorManager.areAllDoorsClosed(m) ? "<green>Ja" : "<red>Nee"));
                     }});
@@ -227,7 +245,7 @@ public class Map {
     public CompletableFuture<Boolean> unloadWorld() {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
         Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(WieIsDeMol.class), () -> {
-            if (!Map.this.mxWorld.isPresent()) {
+            if (Map.this.mxWorld.isEmpty()) {
                 future.complete(true);
                 return;
             }
@@ -260,76 +278,12 @@ public class Map {
         return f.exists();
     }
 
-    public File getDirectory() {
-        return directory;
-    }
-
-    public void setDirectory(File directory) {
-        this.directory = directory;
-    }
-
-    public MapConfig getMapConfig() {
-        return mapConfig;
-    }
-
-    public void setMapConfig(MapConfig mapConfig) {
-        this.mapConfig = mapConfig;
-    }
-
-    public File getInventoriesFile() {
-        return inventoriesFile;
-    }
-
-    public void setInventoriesFile(File inventoriesFile) {
-        this.inventoriesFile = inventoriesFile;
-    }
-
-    public Optional<MxWorld> getMxWorld() {
-        return mxWorld;
-    }
-
-    public void setMxWorld(Optional<MxWorld> mxWorld) {
-        this.mxWorld = mxWorld;
-    }
-
-    public WarpManager getWarpManager() {
-        return warpManager;
-    }
-
-    public void setWarpManager(WarpManager warpManager) {
-        this.warpManager = warpManager;
-    }
-
     public ContainerManager getChestManager() {
         return containerManager;
     }
 
     public void setChestManager(ContainerManager containerManager) {
         this.containerManager = containerManager;
-    }
-
-    public ShulkerManager getShulkerManager() {
-        return shulkerManager;
-    }
-
-    public void setShulkerManager(ShulkerManager shulkerManager) {
-        this.shulkerManager = shulkerManager;
-    }
-
-    public DoorManager getDoorManager() {
-        return doorManager;
-    }
-
-    public void setDoorManager(DoorManager doorManager) {
-        this.doorManager = doorManager;
-    }
-
-    public InteractionManager getInteractionManager() {
-        return interactionManager;
-    }
-
-    public void setInteractionManager(InteractionManager interactionManager) {
-        this.interactionManager = interactionManager;
     }
 
     public ItemStack getItemStack() {

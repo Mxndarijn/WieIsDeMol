@@ -1,7 +1,10 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
+
 import java.util.Optional;
 
+@Getter
 public enum AvailablePerson {
     EXECUTOR("ex", "Uitvoerder"),
     SELECTED_PERSON_1("s0", "Eerstgekozene"),
@@ -14,10 +17,6 @@ public enum AvailablePerson {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public static Optional<AvailablePerson> getByType(String type) {
         for (AvailablePerson value : values()) {
             if(value.type.equalsIgnoreCase(type))
@@ -26,7 +25,4 @@ public enum AvailablePerson {
         return Optional.empty();
     }
 
-    public String getName() {
-        return name;
-    }
 }

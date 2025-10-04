@@ -1,9 +1,11 @@
 package nl.mxndarijn.api.inventory;
 
+import lombok.Getter;
 import org.bukkit.inventory.Inventory;
 
 import java.util.HashMap;
 
+@Getter
 public class MxInventory {
     private final Inventory inv;
     private final HashMap<Integer, MxItemClicked> onClickedMap;
@@ -24,31 +26,4 @@ public class MxInventory {
         this.closeEvent = closeEvent;
     }
 
-    public Inventory getInv() {
-        return inv;
-    }
-
-    public HashMap<Integer, MxItemClicked> getOnClickedMap() {
-        return onClickedMap;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public boolean isDelete() {
-        return delete;
-    }
-
-    public boolean isCancelEvent() {
-        return cancelEvent;
-    }
-
-    public boolean isCanBeClosed() {
-        return canBeClosed;
-    }
-
-    public MxOnInventoryCloseEvent getCloseEvent() {
-        return closeEvent;
-    }
 }

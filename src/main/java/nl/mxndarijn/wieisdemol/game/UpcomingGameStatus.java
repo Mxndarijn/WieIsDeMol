@@ -1,5 +1,8 @@
 package nl.mxndarijn.wieisdemol.game;
 
+import lombok.Getter;
+
+@Getter
 public enum UpcomingGameStatus {
     WAITING("<yellow>Wachtend", true),
     CHOOSING_PLAYERS("<yellow>Spelers kiezen", true),
@@ -20,11 +23,4 @@ public enum UpcomingGameStatus {
         return status;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public boolean isCanJoinQueue() {
-        return canJoinQueue;
-    }
 }

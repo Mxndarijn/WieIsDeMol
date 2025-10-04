@@ -1,10 +1,12 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
 import nl.mxndarijn.wieisdemol.managers.database.PlayerData;
 import org.bukkit.Material;
 
 import java.util.Optional;
 
+@Getter
 public enum Role {
     SPELER("player", "<gold>Speler", "<gold>Speler-Peacekeeper", "gold-block", CustomInventoryOverlay.ROLES_PLAYER.getUnicodeCharacter(), Material.GOLD_BLOCK, "<gold>Spelers", "Hebben gewonnen", PlayerData.UserDataType.SPELERWINS),
     MOL("mol", "<dark_aqua>Mol", "<dark_aqua>Mol-Peacekeeper", "diamond-block", CustomInventoryOverlay.ROLES_MOLE.getUnicodeCharacter(), Material.DIAMOND_BLOCK, "<#00FFFF>Mollen", "Hebben gewonnen", PlayerData.UserDataType.MOLWINS),
@@ -41,39 +43,4 @@ public enum Role {
         return Optional.empty();
     }
 
-    public String getRolName() {
-        return rolName;
-    }
-
-    public String getPeacekeeperName() {
-        return peacekeeperName;
-    }
-
-    public String getRoleType() {
-        return roleType;
-    }
-
-    public String getHeadKey() {
-        return headKey;
-    }
-
-    public String getUnicode() {
-        return unicode;
-    }
-
-    public Material getType() {
-        return type;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getSubTitle() {
-        return subTitle;
-    }
-
-    public PlayerData.UserDataType getWinType() {
-        return winType;
-    }
 }

@@ -54,7 +54,7 @@ public class PresetConfigureTool extends MxItem {
     @Override
     public void execute(Player p, PlayerInteractEvent e) {
         Optional<Preset> optionalPreset = PresetsManager.getInstance().getPresetByWorldUID(e.getPlayer().getWorld().getUID());
-        if (!optionalPreset.isPresent()) {
+        if (optionalPreset.isEmpty()) {
             return;
         }
         Preset preset = optionalPreset.get();

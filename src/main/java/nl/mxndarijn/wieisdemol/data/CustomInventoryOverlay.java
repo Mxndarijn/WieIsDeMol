@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
+
 public enum CustomInventoryOverlay {
 
     ROLES_PLAYER("\uE004"),
@@ -14,6 +16,7 @@ public enum CustomInventoryOverlay {
     GAME_INVCLEAR("\uE044");
 
     private final String PREFIX = "<white>\uE001\uE001\uE001\uE001\uE001\uE001\uE001\uE001";
+    @Getter
     private final String unicodeCharacter;
 
     CustomInventoryOverlay(String unicodeCharacter) {
@@ -25,7 +28,4 @@ public enum CustomInventoryOverlay {
         return unicodeCharacter;
     }
 
-    public String getUnicodeCharacter() {
-        return unicodeCharacter;
-    }
 }

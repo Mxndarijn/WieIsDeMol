@@ -60,7 +60,7 @@ public class GeneratorBook extends Book {
                     String json = container.getOrDefault(new NamespacedKey(JavaPlugin.getPlugin(WieIsDeMol.class), MapGeneratorBook.containerKey), PersistentDataType.STRING, "{}");
                     List<ItemStack> items = getAllItems(json);
                     if(items.isEmpty()) {
-                        game.sendMessageToHosts(ChatPrefix.WIDM + ""+ "<red>Generator niet goed geconfigured! Zitten geen items in.");
+                        game.sendMessageToHosts(ChatPrefix.WIDM + "<red>Generator niet goed geconfigured! Zitten geen items in.");
                         return;
                     }
 

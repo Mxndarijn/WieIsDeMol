@@ -1,14 +1,12 @@
 package nl.mxndarijn.api.logger;
 
+import lombok.Setter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 
 public class Logger {
+    @Setter
     private static LogLevel logLevel = LogLevel.DEBUG;
-
-    public static void setLogLevel(LogLevel newLogLevel) {
-        logLevel = newLogLevel;
-    }
 
     public static String getMainWieIsDeMolPrefix() {
         return "<dark_gray>[<gold>WIDM";

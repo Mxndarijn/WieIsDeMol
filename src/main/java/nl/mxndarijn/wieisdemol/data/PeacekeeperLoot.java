@@ -1,11 +1,13 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+@Getter
 public enum PeacekeeperLoot {
     HEAD(MxDefaultItemStackBuilder.create(Material.NETHERITE_HELMET)
             .setName("<gold>Peacekeeper's Helmet")
@@ -59,13 +61,6 @@ public enum PeacekeeperLoot {
         this.slot = slot;
     }
 
-    public ItemStack getIs() {
-        return is;
-    }
-
-    public EquipmentSlot getSlot() {
-        return slot;
-    }
 }
 
 

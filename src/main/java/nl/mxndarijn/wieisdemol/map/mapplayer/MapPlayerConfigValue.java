@@ -1,5 +1,8 @@
 package nl.mxndarijn.wieisdemol.map.mapplayer;
 
+import lombok.Getter;
+
+@Getter
 public enum MapPlayerConfigValue {
     LOCATION("location"),
     ROLE("role"),
@@ -8,10 +11,6 @@ public enum MapPlayerConfigValue {
 
     MapPlayerConfigValue(String value) {
         this.configValue = value;
-    }
-
-    public String getConfigValue() {
-        return configValue;
     }
 
     @Override

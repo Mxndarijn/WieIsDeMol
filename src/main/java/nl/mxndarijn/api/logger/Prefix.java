@@ -1,7 +1,9 @@
 package nl.mxndarijn.api.logger;
 
 
+import lombok.Getter;
 
+@Getter
 public enum Prefix {
     MXATLAS("<dark_aqua>MxAtlas"),
     MXCOMMAND("<dark_green>MxCommand"),
@@ -34,11 +36,4 @@ public enum Prefix {
         return prefix;
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public String getName() {
-        return name;
-    }
 }

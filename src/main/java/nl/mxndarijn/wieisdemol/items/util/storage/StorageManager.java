@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.items.util.storage;
 
+import lombok.Getter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -14,6 +15,7 @@ public class StorageManager {
 
     private static StorageManager instance;
 
+    @Getter
     private final List<StorageContainer> serverContainers;
 
     private final HashMap<String, List<StorageContainer>> playerContainers;
@@ -72,10 +74,6 @@ public class StorageManager {
         Logger.logMessage(LogLevel.INFORMATION, Prefix.STORAGE_MANAGER, "Saving all storages...");
         serverContainers.forEach(StorageContainer::save);
         playerContainers.forEach((s, storageContainers) -> storageContainers.forEach(StorageContainer::save));
-    }
-
-    public List<StorageContainer> getServerContainers() {
-        return serverContainers;
     }
 
     public List<StorageContainer> getPlayerContainers(String uuid) {

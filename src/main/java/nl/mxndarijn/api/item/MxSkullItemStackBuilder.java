@@ -60,11 +60,11 @@ public class MxSkullItemStackBuilder extends MxItemStackBuilder<MxSkullItemStack
 
     public MxSkullItemStackBuilder setSkinFromHeadsData(String value) {
         Optional<String> dataOpt = MxHeadManager.getInstance().getTextureValue(value);
-        if (!dataOpt.isPresent()) {
+        if (dataOpt.isEmpty()) {
             dataOpt = MxHeadManager.getInstance().getTextureValue("question-mark");
         }
 
-        if (!dataOpt.isPresent()) {
+        if (dataOpt.isEmpty()) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MXINVENTORY, "Could not find skull: " + value + " in heads-data.yml");
             return this;
         }

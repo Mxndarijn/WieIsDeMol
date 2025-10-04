@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.chests;
 
+import lombok.Getter;
 import nl.mxndarijn.api.inventory.MxInventoryIndex;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
@@ -29,11 +30,15 @@ import java.io.File;
 import java.util.*;
 
 public class ContainerInformation {
+    @Getter
     private String uuid;
+    @Getter
     private String name;
+    @Getter
     private MxLocation location;
     private ContainerType type;
 
+    @Getter
     private File file;
     private String path;
 
@@ -113,10 +118,6 @@ public class ContainerInformation {
     }
 
 
-    public String getName() {
-        return name;
-    }
-
     private boolean containsAttachment(ContainerAttachments attachments) {
         for (ContainerAttachment at : containerAttachmentList) {
             if (at.getClass().equals(attachments.getAttachmentClass())) {
@@ -146,10 +147,6 @@ public class ContainerInformation {
                 .build());
     }
 
-    public MxLocation getLocation() {
-        return location;
-    }
-
     public ContainerType getType() {
         return type == null ? ContainerType.CHEST : type;
     }
@@ -169,15 +166,6 @@ public class ContainerInformation {
         }
         MSG.msg(p, LanguageManager.getInstance().getLanguageString(LanguageText.MAP_CHEST_ATTACHMENT_COULD_NOT_ADD, Collections.singletonList(attachments.getDisplayName())));
 
-    }
-
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public File getFile() {
-        return file;
     }
 
 

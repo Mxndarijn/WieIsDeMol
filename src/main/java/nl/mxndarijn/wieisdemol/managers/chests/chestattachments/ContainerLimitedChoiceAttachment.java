@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
+import lombok.Setter;
 import nl.mxndarijn.api.chatinput.MxChatInputManager;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
 import nl.mxndarijn.api.inventory.MxInventorySlots;
@@ -45,6 +46,7 @@ public class ContainerLimitedChoiceAttachment extends ContainerAttachment {
         put(9, "number-nine");
     }};
     private static final String moreThan9 = "wooden-plus";
+    @Setter
     private int choices;
     private String currentHead = "";
 
@@ -69,10 +71,6 @@ public class ContainerLimitedChoiceAttachment extends ContainerAttachment {
         attachment.setDefaults(type, inf);
         attachment.choices = 1;
         return attachment;
-    }
-
-    public void setChoices(int choices) {
-        this.choices = choices;
     }
 
     @Override

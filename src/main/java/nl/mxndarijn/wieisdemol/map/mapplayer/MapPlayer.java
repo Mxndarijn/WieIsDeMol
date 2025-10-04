@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.map.mapplayer;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -10,10 +12,14 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Optional;
 
+@Getter
 public class MapPlayer {
     private final Colors color;
+    @Setter
     private MxLocation location;
+    @Setter
     private Role role;
+    @Setter
     private boolean isPeacekeeper;
 
     public MapPlayer(Colors color, MxLocation location) {
@@ -68,34 +74,6 @@ public class MapPlayer {
         location.write(locationSection);
         colorSection.set(MapPlayerConfigValue.ROLE.getConfigValue(), role.getRoleType());
         colorSection.set(MapPlayerConfigValue.IS_PEACEKEEPER.getConfigValue(), isPeacekeeper);
-    }
-
-    public Colors getColor() {
-        return color;
-    }
-
-    public MxLocation getLocation() {
-        return location;
-    }
-
-    public void setLocation(MxLocation location) {
-        this.location = location;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public boolean isPeacekeeper() {
-        return isPeacekeeper;
-    }
-
-    public void setPeacekeeper(boolean peacekeeper) {
-        isPeacekeeper = peacekeeper;
     }
 
     public String getRoleDisplayString() {

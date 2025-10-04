@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.chests.chestattachments;
 
+import lombok.Setter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import nl.mxndarijn.api.inventory.MxInventoryManager;
@@ -38,6 +39,7 @@ public class ContainerLockAttachment extends ContainerAttachment {
         put(false, "open-chest");
     }};
     String currentHead = "";
+    @Setter
     private String lockTag;
     private boolean locked = true;
 
@@ -74,10 +76,6 @@ public class ContainerLockAttachment extends ContainerAttachment {
         map.put("locked", locked);
 
         return map;
-    }
-
-    public void setLockTag(String lockTag) {
-        this.lockTag = lockTag;
     }
 
     @Override
@@ -120,7 +118,7 @@ public class ContainerLockAttachment extends ContainerAttachment {
                                                 if (list == null) {
                                                     list = new ArrayList<>();
                                                 }
-                                                list.add(MiniMessage.miniMessage().deserialize("<!i>" + ""));
+                                                list.add(MiniMessage.miniMessage().deserialize("<!i>"));
                                                 list.add(MiniMessage.miniMessage().deserialize("<!i>" + "<gold>Sleutel"));
 
                                                 im.lore(list);

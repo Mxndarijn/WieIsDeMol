@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.managers.shulkers;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.mxndarijn.api.mxworld.MxLocation;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -8,11 +10,13 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.Optional;
 import java.util.UUID;
 
+@Getter
 public class ShulkerInformation {
     private String uuid;
     private String name;
     private MxLocation location;
     private Material material;
+    @Setter
     private boolean isStartingRoom;
 
     public ShulkerInformation(String name, MxLocation location, Material material, boolean isStartingRoom) {
@@ -53,27 +57,4 @@ public class ShulkerInformation {
         location.write(section.createSection("location"));
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public MxLocation getLocation() {
-        return location;
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
-    public boolean isStartingRoom() {
-        return isStartingRoom;
-    }
-
-    public void setStartingRoom(boolean startingRoom) {
-        isStartingRoom = startingRoom;
-    }
 }

@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers;
 
+import lombok.Getter;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.wieisdemol.game.GameInfo;
 import nl.mxndarijn.wieisdemol.map.Map;
@@ -18,6 +19,7 @@ public class GameManager {
 
     private static GameManager instance;
     private final ConfigFiles config;
+    @Getter
     private List<GameInfo> upcomingGameList;
 
     private GameManager() {
@@ -29,10 +31,6 @@ public class GameManager {
         if (instance == null)
             instance = new GameManager();
         return instance;
-    }
-
-    public List<GameInfo> getUpcomingGameList() {
-        return upcomingGameList;
     }
 
     public void removeAllGamesWithMap(Map map) {

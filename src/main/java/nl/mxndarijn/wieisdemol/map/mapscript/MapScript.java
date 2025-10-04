@@ -92,7 +92,7 @@ public abstract class MapScript implements EventListener {
             }
         }).collect(Collectors.toList());
 
-        List<MapRoomResult> results = rooms.stream().map(MapRoom::build).collect(Collectors.toList());
+        List<MapRoomResult> results = rooms.stream().map(MapRoom::build).toList();
 
         List<Portal> portals = results.stream().flatMap(r -> r.getPortals().stream()).collect(Collectors.toList());
         List<RedstoneTrigger<?>> redstoneTriggers = results.stream().flatMap(r -> r.getRedstoneTriggers().stream()).collect(Collectors.toList());

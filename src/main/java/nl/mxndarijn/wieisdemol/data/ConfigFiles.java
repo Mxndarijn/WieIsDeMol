@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -24,8 +25,11 @@ public enum ConfigFiles {
     UPCOMING_GAMES("upcoming-games.yml", "upcoming-games.yml", true),
     SCOREBOARD_SPAWN("scoreboard_spawn.yml", "scoreboards/scoreboard_spawn.yml", false);
 
+    @Getter
     private final FileConfiguration fileConfiguration;
+    @Getter
     private final File file;
+    @Getter
     private final String fileName;
 
     private final String path;
@@ -51,18 +55,6 @@ public enum ConfigFiles {
             if (value.autoSave)
                 value.save();
         }
-    }
-
-    public FileConfiguration getFileConfiguration() {
-        return fileConfiguration;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public String getFileName() {
-        return fileName;
     }
 
     public void save() {

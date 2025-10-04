@@ -1,5 +1,7 @@
 package nl.mxndarijn.api.inventory.heads;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+@Getter
 public class MxHeadSection {
 
     private Optional<String> value = Optional.empty();
@@ -19,6 +22,7 @@ public class MxHeadSection {
     private Optional<String> name = Optional.empty();
     private Optional<LocalDateTime> lastRefreshed = Optional.empty();
 
+    @Setter
     private String key;
 
     private MxHeadSection() {
@@ -74,52 +78,24 @@ public class MxHeadSection {
 
     }
 
-    public Optional<String> getValue() {
-        return value;
-    }
-
     public void setValue(String value) {
         this.value = Optional.ofNullable(value);
-    }
-
-    public Optional<UUID> getUuid() {
-        return uuid;
     }
 
     public void setUuid(UUID uuid) {
         this.uuid = Optional.ofNullable(uuid);
     }
 
-    public Optional<MxHeadsType> getType() {
-        return type;
-    }
-
     public void setType(MxHeadsType type) {
         this.type = Optional.ofNullable(type);
-    }
-
-    public Optional<String> getName() {
-        return name;
     }
 
     public void setName(String name) {
         this.name = Optional.ofNullable(name);
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public boolean validate() {
         return name.isPresent() && value.isPresent() && type.isPresent() && (type.get() != MxHeadsType.PLAYER || uuid.isPresent());
-    }
-
-    public Optional<LocalDateTime> getLastRefreshed() {
-        return lastRefreshed;
     }
 
     public void setLastRefreshed(LocalDateTime lastRefreshed) {

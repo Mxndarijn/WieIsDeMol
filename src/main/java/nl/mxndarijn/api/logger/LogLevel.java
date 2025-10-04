@@ -1,5 +1,7 @@
 package nl.mxndarijn.api.logger;
 
+import lombok.Getter;
+
 import java.util.Optional;
 
 public enum LogLevel {
@@ -10,8 +12,11 @@ public enum LogLevel {
     INFORMATION("Information", 4, "aqua"),
     DEBUG("Debug", 5, "gray");
 
+    @Getter
     private final String prefix;
+    @Getter
     private final int level;
+    @Getter
     private final String name;
     private final String color;
 
@@ -31,15 +36,4 @@ public enum LogLevel {
         return Optional.empty();
     }
 
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public String getName() {
-        return name;
-    }
 }

@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.map;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -19,18 +21,27 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Getter
 public class MapConfig {
     private final ArrayList<MapPlayer> colors;
+    @Setter
     private File file;
+    @Setter
     private String name;
+    @Setter
     private UUID owner;
 
+    @Setter
     private ArrayList<UUID> sharedPlayers;
 
+    @Setter
     private LocalDateTime dateCreated;
+    @Setter
     private LocalDateTime dateModified;
 
+    @Setter
     private PresetConfig presetConfig;
+    @Setter
     private int peacekeeperKills;
 
     public MapConfig(File file, String name, UUID owner) {
@@ -116,66 +127,6 @@ public class MapConfig {
         }
     }
 
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public ArrayList<MapPlayer> getColors() {
-        return colors;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public UUID getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UUID owner) {
-        this.owner = owner;
-    }
-
-    public ArrayList<UUID> getSharedPlayers() {
-        return sharedPlayers;
-    }
-
-    public void setSharedPlayers(ArrayList<UUID> sharedPlayers) {
-        this.sharedPlayers = sharedPlayers;
-    }
-
-    public LocalDateTime getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(LocalDateTime dateCreated) {
-        this.dateCreated = dateCreated;
-    }
-
-    public LocalDateTime getDateModified() {
-        return dateModified;
-    }
-
-    public void setDateModified(LocalDateTime dateModified) {
-        this.dateModified = dateModified;
-    }
-
-    public PresetConfig getPresetConfig() {
-        return presetConfig;
-    }
-
-    public void setPresetConfig(PresetConfig presetConfig) {
-        this.presetConfig = presetConfig;
-    }
-
     public Optional<MapPlayer> getMapPlayerOfColor(Colors color) {
         for (MapPlayer mapPlayer : colors) {
             if (mapPlayer.getColor().equals(color))
@@ -184,11 +135,4 @@ public class MapConfig {
         return Optional.empty();
     }
 
-    public int getPeacekeeperKills() {
-        return peacekeeperKills;
-    }
-
-    public void setPeacekeeperKills(int peacekeeperKills) {
-        this.peacekeeperKills = peacekeeperKills;
-    }
 }
