@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.items;
 
+import lombok.Getter;
 import nl.mxndarijn.api.item.MxDefaultItemStackBuilder;
 import nl.mxndarijn.api.mxitem.MxItem;
 import nl.mxndarijn.api.util.Functions;
@@ -105,6 +106,19 @@ public enum Items {
             },
             false,
             GameContainerItem.class,
+            Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
+    ),
+    GAME_MAPSCRIPT_TOOL(
+            MxDefaultItemStackBuilder.create(Material.REPEATER, 1)
+                    .setName("<gray>MapScript Tool")
+                    .addLore(" ")
+                    .addLore("<yellow>Open een lijst met MapScript acties (alleen host).")
+                    .build(),
+            p -> {
+                return true;
+            },
+            false,
+            GameMapScriptTool.class,
             Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK
     ),
     SHULKER_TOOL(
@@ -422,9 +436,13 @@ public enum Items {
 
 
     private final ItemStack itemStack;
+    @Getter
     private final MxWorldFilter worldFilter;
+    @Getter
     private final boolean gameItem;
+    @Getter
     private final Class<? extends MxItem> classObject;
+    @Getter
     private final Action[] actions;
 
     Items(ItemStack is, MxWorldFilter mxWorldFilter, boolean gameItem, Class<? extends MxItem> classObject, Action... actions) {
@@ -439,19 +457,4 @@ public enum Items {
         return itemStack.clone();
     }
 
-    public MxWorldFilter getWorldFilter() {
-        return worldFilter;
-    }
-
-    public boolean isGameItem() {
-        return gameItem;
-    }
-
-    public Class<? extends MxItem> getClassObject() {
-        return classObject;
-    }
-
-    public Action[] getActions() {
-        return actions;
-    }
 }

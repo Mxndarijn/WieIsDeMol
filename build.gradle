@@ -29,7 +29,12 @@ repositories {
 dependencies {
     implementation 'org.jetbrains:annotations:24.0.0'
 
-    // implementation 'org.projectlombok:lombok:1.18.22'
+    // Lombok - enabled for compileOnly with annotation processors
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
     compileOnly 'me.clip:placeholderapi:2.11.6'
     compileOnly 'com.mojang:authlib:1.5.21'

@@ -1,6 +1,7 @@
 package nl.mxndarijn.api.util;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
@@ -116,4 +117,8 @@ public class Functions {
 //        // Maak een java.awt.Color object en retourneer het
 //        return new java.awt.Color(red, green, blue);
 //    }
+
+    public static Component buildComponentFromString(String input) {
+        return MiniMessage.miniMessage().deserialize("<!i>" + input);
+    }
 }

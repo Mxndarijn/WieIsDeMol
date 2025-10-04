@@ -42,11 +42,11 @@ public class MxHeadManager {
             int before = fileConfiguration.getKeys(false).size();
             fileConfiguration.addDefaults(defaults);
             fileConfiguration.options().copyDefaults(true);
-            ConfigFiles.HEAD_DATA.save();
             int after = fileConfiguration.getKeys(false).size();
             int added = Math.max(0, after - before);
             if (added > 0) {
                 Logger.logMessage(LogLevel.INFORMATION, Prefix.MXHEAD_MANAGER, "Added " + added + " missing head-data entries from defaults.");
+                ConfigFiles.HEAD_DATA.save();
             }
         } catch (Exception e) {
             Logger.logMessage(LogLevel.ERROR, Prefix.MXHEAD_MANAGER, "Error while ensuring head-data defaults: " + e.getMessage());

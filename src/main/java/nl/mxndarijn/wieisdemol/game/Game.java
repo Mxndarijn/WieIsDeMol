@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.game;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.TitlePart;
 import nl.mxndarijn.api.changeworld.ChangeWorldManager;
@@ -30,6 +32,8 @@ import nl.mxndarijn.wieisdemol.managers.world.GameWorldManager;
 import nl.mxndarijn.wieisdemol.map.Map;
 import nl.mxndarijn.wieisdemol.map.MapConfig;
 import nl.mxndarijn.wieisdemol.map.mapplayer.MapPlayer;
+import nl.mxndarijn.wieisdemol.map.mapscript.MapScript;
+import nl.mxndarijn.wieisdemol.map.mapscript.MapScripts;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -40,6 +44,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -56,6 +61,7 @@ public class Game {
     private final File directory;
     private final ArrayList<UUID> hosts;
     private final MapConfig config;
+    @Getter
     private final List<GamePlayer> colors;
     private final MxSupplierScoreBoard hostScoreboard;
     private final MxSupplierScoreBoard spectatorScoreboard;
@@ -66,11 +72,18 @@ public class Game {
     private boolean firstStart = false;
     private long gameTime = 0;
     private int peacekeeperKills;
+    @Getter
+    @Setter
     private boolean playersCanEndVote = true;
     private boolean voteAnonymous = true;
     private List<GameEvent> events;
     private BukkitTask chestAttachmentUpdater;
     private BukkitTask updateGameUpdater;
+    private Optional<MapScript> optionalMapScript;
+
+    public Optional<MapScript> getMapScript() {
+        return optionalMapScript;
+    }
 
 
     public Game(UUID mainHost, GameInfo gameInfo, MapConfig mapConfig, MxWorld mxWorld) {
@@ -144,6 +157,19 @@ public class Game {
 
             }});
         });
+        
+        Optional<MapScripts> mapScripts = MapScripts.byId(this.config.getPresetConfig().getName());
+        if (mapScripts.isPresent()) {
+            try {
+                this.optionalMapScript = Optional.of(mapScripts.get().getScriptClass().getDeclaredConstructor(Game.class).newInstance(this));
+            } catch (Exception e) {
+                e.printStackTrace();
+                this.optionalMapScript = Optional.empty();
+            }
+        } else {
+            this.optionalMapScript = Optional.empty();
+        }
+
         loadWorld().thenAccept(loaded -> {
             if (!loaded) {
                 stopGame();
@@ -271,6 +297,7 @@ public class Game {
             w.getPlayers().forEach(p -> {
                 p.teleport(Functions.getSpawnLocation());
             });
+            this.optionalMapScript.ifPresent(MapScript::gameUnload);
         }
         unregisterEvents();
 
@@ -384,10 +411,6 @@ public class Game {
         return plugin;
     }
 
-    public List<GamePlayer> getColors() {
-        return colors;
-    }
-
     public boolean addPlayer(UUID playerUUID, GamePlayer gamePlayer) {
         //TODO Change Inventory
         Player p = Bukkit.getPlayer(playerUUID);
@@ -481,9 +504,11 @@ public class Game {
 
     public void setGameStatus(UpcomingGameStatus upcomingGameStatus, Optional<Role> role) {
         getGameInfo().setStatus(upcomingGameStatus);
+        //First game start
         if (upcomingGameStatus == UpcomingGameStatus.PLAYING && !firstStart) {
             firstStart = true;
             containerManager.onGameStart(this);
+            this.optionalMapScript.ifPresent(MapScript::gameSetup);
             gameInfo.getQueue().clear();
         }
         if (upcomingGameStatus == UpcomingGameStatus.FINISHED) {
@@ -795,19 +820,17 @@ public class Game {
         });
     }
 
-    public boolean isPlayersCanEndVote() {
-        return playersCanEndVote;
-    }
-
-    public void setPlayersCanEndVote(boolean playersCanEndVote) {
-        this.playersCanEndVote = playersCanEndVote;
-    }
-
     public boolean areVotesAnonymous() {
         return voteAnonymous;
     }
 
     public void setVotesAnonymous(boolean b) {
         this.voteAnonymous = b;
+    }
+
+    public List<GamePlayer> getAlivePlayers() {
+        return colors.stream()
+                .filter(GamePlayer::isAlive)
+                .collect(Collectors.toList());
     }
 }

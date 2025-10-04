@@ -219,7 +219,8 @@ LanguageText {
     MAP_GENERATOR_ITEM_REMOVED(),
     MAP_GENERATOR_ITEM_ADDED(),
     GAME_YOU_RECEIVED_ITEM(),
-    COMMAND_MAPS_ENTER_FILTER();
+    COMMAND_MAPS_ENTER_FILTER(),
+    GAME_MAPSCRIPT_ACTION_EXECUTED();
     private final String configValue;
 
     LanguageText(String value) {

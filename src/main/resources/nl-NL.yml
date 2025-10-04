@@ -209,6 +209,8 @@ game-spectator-teleport-no-players: "<red>Er zijn geen spelers om naartoe te tel
 command-maps-dont-have-permission-for-map: "<red>Jij hebt geen permissie om een map te kunnen maken met deze preset."
 book-modify-success-enter-number: "<gray>Typ de succeskans in de chat, dit moet een heel getal zijn."
 book-modify-success-rating-changed: "<green>Succeskans is aangepast naar %%1%%<green>%."
+
+game-mapscript-action-executed: "<green>Actie uitgevoerd"
 book-modify-success-not-a-number: "<red>Dit is geen getal, let erop dat het een heel getal moet zijn."
 modify-book-changed: "<green>Boek aangepast!"
 book-action-failed: "<red>Het uitvoeren van het boek is mislukt!"

@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.presets;
 
+import lombok.Getter;
 import nl.mxndarijn.api.changeworld.ChangeWorldManager;
 import nl.mxndarijn.api.changeworld.MxChangeWorld;
 import nl.mxndarijn.api.inventory.heads.MxHeadManager;
@@ -49,13 +50,20 @@ public class Preset {
 
     public static final String PRESET_ITEMMETA_TAG = "preset_id";
     private final File directory;
+    @Getter
     private final File inventoriesFile;
     private PresetConfig config;
+    @Getter
     private Optional<MxWorld> mxWorld;
+    @Getter
     private WarpManager warpManager;
+    @Getter
     private ContainerManager containerManager;
+    @Getter
     private ShulkerManager shulkerManager;
+    @Getter
     private DoorManager doorManager;
+    @Getter
     private InteractionManager interactionManager;
     private MxScoreBoard scoreboard;
 
@@ -274,35 +282,6 @@ public class Preset {
             config.save();
             MxAtlas.getInstance().unloadMxWorld(this.mxWorld.get(), true);
         });
-    }
-
-    public Optional<MxWorld> getMxWorld() {
-        return mxWorld;
-    }
-
-
-    public File getInventoriesFile() {
-        return inventoriesFile;
-    }
-
-    public WarpManager getWarpManager() {
-        return warpManager;
-    }
-
-    public ContainerManager getChestManager() {
-        return containerManager;
-    }
-
-    public ShulkerManager getShulkerManager() {
-        return shulkerManager;
-    }
-
-    public DoorManager getDoorManager() {
-        return doorManager;
-    }
-
-    public InteractionManager getInteractionManager() {
-        return interactionManager;
     }
 }
 

@@ -42,7 +42,7 @@ public class ContainerConfigureTool extends MxItem {
         }
         Preset preset = optionalPreset.get();
         PresetConfig config = preset.getConfig();
-        ContainerManager manager = preset.getChestManager();
+        ContainerManager manager = preset.getContainerManager();
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getClickedBlock() != null && ContainerType.isSupported(e.getClickedBlock().getType())) {
             e.setCancelled(true);
             MxLocation location = MxLocation.getFromLocation(e.getClickedBlock().getLocation());
