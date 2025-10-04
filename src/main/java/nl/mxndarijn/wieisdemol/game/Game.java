@@ -51,33 +51,52 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Game {
 
+    @Getter
     private final GameInfo gameInfo;
+    @Getter
     private final UUID mainHost;
+    @Getter
     private final WarpManager warpManager;
     private final ContainerManager containerManager;
+    @Getter
     private final ShulkerManager shulkerManager;
+    @Getter
     private final DoorManager doorManager;
+    @Getter
     private final InteractionManager interactionManager;
     private final File directory;
+    @Getter
     private final ArrayList<UUID> hosts;
+    @Getter
     private final MapConfig config;
     @Getter
     private final List<GamePlayer> colors;
+    @Getter
     private final MxSupplierScoreBoard hostScoreboard;
     private final MxSupplierScoreBoard spectatorScoreboard;
+    @Getter
     private final List<UUID> spectators;
+    @Getter
     private final HashMap<UUID, Location> respawnLocations;
+    @Getter
     private final JavaPlugin plugin;
+    @Getter
     private Optional<MxWorld> mxWorld;
+    @Getter
     private boolean firstStart = false;
     private long gameTime = 0;
+    @Setter
+    @Getter
     private int peacekeeperKills;
     @Getter
     @Setter
     private boolean playersCanEndVote = true;
     private boolean voteAnonymous = true;
+    @Getter
     private List<GameEvent> events;
+    @Getter
     private BukkitTask chestAttachmentUpdater;
+    @Getter
     private BukkitTask updateGameUpdater;
     private Optional<MapScript> optionalMapScript;
 
@@ -363,52 +382,8 @@ public class Game {
         p.getInventory().addItem(Items.VANISH_ITEM.getItemStack());
     }
 
-    public GameInfo getGameInfo() {
-        return gameInfo;
-    }
-
-    public UUID getMainHost() {
-        return mainHost;
-    }
-
-    public Optional<MxWorld> getMxWorld() {
-        return mxWorld;
-    }
-
-    public WarpManager getWarpManager() {
-        return warpManager;
-    }
-
     public ContainerManager getChestManager() {
         return containerManager;
-    }
-
-    public ShulkerManager getShulkerManager() {
-        return shulkerManager;
-    }
-
-    public DoorManager getDoorManager() {
-        return doorManager;
-    }
-
-    public InteractionManager getInteractionManager() {
-        return interactionManager;
-    }
-
-    public ArrayList<UUID> getHosts() {
-        return hosts;
-    }
-
-    public MapConfig getConfig() {
-        return config;
-    }
-
-    public MxSupplierScoreBoard getHostScoreboard() {
-        return hostScoreboard;
-    }
-
-    public JavaPlugin getPlugin() {
-        return plugin;
     }
 
     public boolean addPlayer(UUID playerUUID, GamePlayer gamePlayer) {
@@ -711,38 +686,6 @@ public class Game {
         }
     }
 
-
-    public boolean isFirstStart() {
-        return firstStart;
-    }
-
-    public int getPeacekeeperKills() {
-        return peacekeeperKills;
-    }
-
-    public void setPeacekeeperKills(int peacekeeperKills) {
-        this.peacekeeperKills = peacekeeperKills;
-    }
-
-    public List<GameEvent> getEvents() {
-        return events;
-    }
-
-    public BukkitTask getChestAttachmentUpdater() {
-        return chestAttachmentUpdater;
-    }
-
-    public BukkitTask getUpdateGameUpdater() {
-        return updateGameUpdater;
-    }
-
-    public List<UUID> getSpectators() {
-        return spectators;
-    }
-
-    public HashMap<UUID, Location> getRespawnLocations() {
-        return respawnLocations;
-    }
 
     public void removeSpectator(UUID uniqueId, boolean teleport) {
         spectators.remove(uniqueId);

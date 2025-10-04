@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.managers.chests;
 
+import lombok.Getter;
 import nl.mxndarijn.api.logger.LogLevel;
 import nl.mxndarijn.api.logger.Logger;
 import nl.mxndarijn.api.logger.Prefix;
@@ -24,6 +25,7 @@ import java.util.Optional;
 public class ContainerManager {
 
     private final File chestFile;
+    @Getter
     private final List<ContainerInformation> chests;
 
     public ContainerManager(File f) {
@@ -84,10 +86,6 @@ public class ContainerManager {
             }
         }
         return false;
-    }
-
-    public List<ContainerInformation> getChests() {
-        return chests;
     }
 
 

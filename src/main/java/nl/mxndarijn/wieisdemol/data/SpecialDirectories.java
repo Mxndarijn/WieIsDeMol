@@ -1,5 +1,6 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
 import nl.mxndarijn.wieisdemol.WieIsDeMol;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@Getter
 public enum SpecialDirectories {
     PRESET_WORLDS("presets"),
     MAP_WORLDS("maps"),
@@ -34,11 +36,4 @@ public enum SpecialDirectories {
         return folderName.startsWith("/") ? folderName : "/" + folderName;
     }
 
-    public File getDirectory() {
-        return directory;
-    }
-
-    public String getFolderName() {
-        return folderName;
-    }
 }

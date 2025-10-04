@@ -1,11 +1,13 @@
 package nl.mxndarijn.wieisdemol.data;
 
+import lombok.Getter;
 import nl.mxndarijn.api.inventory.saver.InventoryManager;
 import nl.mxndarijn.wieisdemol.items.Items;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
 
+@Getter
 public enum BookData {
     DEATH_NOTE(Items.GAME_DEATHNOTE, AvailablePerson.EXECUTOR, AvailablePerson.SELECTED_PERSON_1),
     EGO_COUNT(Items.GAME_EGOCOUNT, AvailablePerson.EXECUTOR),
@@ -39,11 +41,4 @@ public enum BookData {
         return Optional.empty();
     }
 
-    public Items getItem() {
-        return item;
-    }
-
-    public AvailablePerson[] getPersons() {
-        return persons;
-    }
 }

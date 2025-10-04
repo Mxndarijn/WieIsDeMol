@@ -1,5 +1,7 @@
 package nl.mxndarijn.wieisdemol.game;
 
+import lombok.Getter;
+import lombok.Setter;
 import nl.mxndarijn.api.item.MxSkullItemStackBuilder;
 import nl.mxndarijn.wieisdemol.data.ConfigFiles;
 import nl.mxndarijn.wieisdemol.data.Permissions;
@@ -15,12 +17,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+@Getter
 public class GameInfo {
 
     private final List<UUID> queue;
     private String mapId;
     private UUID host;
     private LocalDateTime time;
+    @Setter
     private UpcomingGameStatus status;
 
     private GameInfo() {
@@ -53,18 +57,6 @@ public class GameInfo {
         }
 
         return Optional.of(game);
-    }
-
-    public String getMapId() {
-        return mapId;
-    }
-
-    public UUID getHost() {
-        return host;
-    }
-
-    public LocalDateTime getTime() {
-        return time;
     }
 
     public java.util.Map<String, Object> getDataForSaving() {
@@ -130,15 +122,4 @@ public class GameInfo {
 
     }
 
-    public List<UUID> getQueue() {
-        return queue;
-    }
-
-    public UpcomingGameStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(UpcomingGameStatus status) {
-        this.status = status;
-    }
 }
